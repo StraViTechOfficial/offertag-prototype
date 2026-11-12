@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}} at {{PRICE}} ({{PCT}}% off) — OfferTag</title>
+<meta name="description" content="{{TITLE}} for {{PRICE}} at {{STORE}}, MRP {{MRP}}. Posted {{AGE}} ago on OfferTag.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/theme.css">
+<script>if(/[?&]embed=1/.test(location.search))document.documentElement.classList.add('is-embed');</script>
+</head>
+<body data-page="detail">
+
+{{HEADER}}
+
+<div class="banner banner-withdrawn" id="withdrawn-banner" hidden role="status"><div class="container"><i data-lucide="circle-alert"></i><span>This deal is no longer available. The price and link below are kept for reference.</span><a href="#related" class="btn btn-link">See similar deals</a></div></div>
+
+<main class="detail-page">
+  <div class="container narrow">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><i data-lucide="chevron-right"></i><a href="{{CAT_PAGE}}">{{CAT}}</a><i data-lucide="chevron-right"></i><span class="crumb-title">{{TITLE_SHORT}}</span></nav>
+
+    <article class="detail" itemscope itemtype="https://schema.org/Product">
+      <!-- Left column: image, steps, description, comments -->
+      <div class="detail-main">
+        <button class="deal-image" type="button" id="zoom-open" aria-label="Zoom image">
+          <img src="assets/deals/lg/{{FILE}}" alt="{{TITLE}}" width="300" height="300" itemprop="image">
+          {{BADGE}}
+          <span class="zoom-hint"><i data-lucide="zoom-in"></i></span>
+        </button>
+
+        <!-- Content blocks (contract §7, order 13–17). Each block is omitted by the build when its field is blank. -->
+        {{HIGHLIGHTS}}
+        {{LINKS}}
+        {{DESCRIPTION}}
+        {{SPECS}}
+        {{STEPS}}
+
+        <section class="comments" id="comments" aria-labelledby="h-comments">
+          <div class="section-head"><h2 id="h-comments">Comments <span class="count-n" id="comment-count">({{COMMENT_COUNT}})</span></h2></div>
+
+          <div class="composer" id="composer">
+            <div class="signed-out" id="composer-out"><a class="btn btn-outline" href="login.html" data-signin-open><i data-lucide="log-in"></i>Sign in to comment</a><span>Google or email code, takes a few seconds.</span></div>
+            <form class="signed-in" id="composer-in" hidden>
+              <div class="avatar" aria-hidden="true">A</div>
+              <div class="field">
+                <textarea class="textarea" id="comment-text" rows="2" placeholder="Write a comment…" maxlength="191" aria-label="Write a comment"></textarea>
+                <div class="composer-bar">
+                  <div class="tools"><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Bold" data-wrap="**"><i data-lucide="bold"></i></button><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Link" data-wrap="link"><i data-lucide="link"></i></button><span class="chars" id="chars">0/191</span></div>
+                  <button type="submit" class="btn btn-default btn-sm">Post</button>
+                </div>
+                <p class="form-error" id="comment-error" hidden>Could not post. Your text is kept, try again.</p>
+              </div>
+            </form>
+          </div>
+
+          <ol class="comment-list" id="comment-list">{{COMMENTS}}</ol>
+          <p class="comments-empty" id="comments-empty" {{COMMENTS_EMPTY_HIDDEN}}>Be the first to comment.</p>
+          <div class="more-row" id="comments-more" {{COMMENTS_MORE_HIDDEN}}><button class="btn btn-outline" type="button">Show more comments</button></div>
+        </section>
+
+        <div class="report-row"><button class="btn btn-link" type="button" id="report-open"><i data-lucide="flag"></i>Report a problem with this deal</button></div>
+      </div>
+
+      <!-- Right column: sticky panel -->
+      <aside class="detail-panel">
+        <div class="panel-sticky">
+          <div class="panel-core">
+          <div class="kicker">{{TYPE}}<span class="kstore" itemprop="brand"><i data-lucide="store"></i>{{STORE}}</span><span class="dot">·</span><time datetime="{{POSTED_ISO}}" title="Posted {{POSTED}}">{{AGE}} ago</time></div>
+          <h1 class="deal-title" itemprop="name">{{TITLE}}</h1>
+          {{CAPTION}}
+          <div class="pricebox" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <meta itemprop="priceCurrency" content="INR"><meta itemprop="price" content="{{PRICE_RAW}}">
+            {{PRICEBOX}}
+          </div>
+          {{COUPON}}
+          {{OFFERS}}
+          <a class="btn btn-default btn-lg btn-block buy" id="buy" href="{{LINK}}" target="_blank" rel="nofollow sponsored noopener" itemprop="url"><span class="buy-label">Buy at {{STORE}}</span><i data-lucide="external-link"></i></a>
+          <p class="disclosure">Opens {{STORE}} in a new tab. We may earn a commission.</p>
+          {{NOTE}}
+          <div class="share-row" role="group" aria-label="Share">
+            <a class="btn btn-outline btn-sm" href="{{WA}}" target="_blank" rel="noopener"><i data-lucide="message-circle"></i>WhatsApp</a>
+            <a class="btn btn-outline btn-sm" href="{{TG}}" target="_blank" rel="noopener"><i data-lucide="send"></i>Telegram</a>
+            <button class="btn btn-outline btn-sm" type="button" id="copy-link" data-share="{{SHARE_TEXT}}"><i data-lucide="link"></i>Copy link</button>
+          </div>
+          <a class="comment-link" href="#comments"><i data-lucide="message-square"></i>{{COMMENT_COUNT}} comments<i data-lucide="arrow-down"></i></a>
+          </div>
+
+          <div class="alerts card">
+            <div class="t"><b>Never miss a loot</b><p>Deals like this go in minutes. Get them as they land.</p></div>
+            <div class="acts"><button class="btn btn-outline btn-sm" type="button" id="alerts-toggle" aria-pressed="false"><i data-lucide="bell"></i><span>Browser alerts</span></button><a class="btn btn-outline btn-sm" href="#wa"><i data-lucide="message-circle"></i>WhatsApp</a><a class="btn btn-outline btn-sm" href="#tg"><i data-lucide="send"></i>Telegram</a></div>
+          </div>
+        </div>
+      </aside>
+
+    <!-- Related -->
+      <section class="section deals related" id="related" aria-labelledby="h-related">
+        <div class="section-head"><div><h2 id="h-related">Related deals</h2><p>Same category, then more from {{STORE}}</p></div></div>
+        {{RELATED}}
+        <div class="related-links">
+          <a href="{{CAT_PAGE}}">See all in {{CAT}} <i data-lucide="chevron-right"></i></a>
+          <a href="{{STORE_PAGE}}">More from {{STORE}} <i data-lucide="chevron-right"></i></a>
+          <span class="quiet">Search this on <a href="{{AMZ_SEARCH}}" target="_blank" rel="nofollow sponsored noopener">Amazon</a> · <a href="{{FK_SEARCH}}" target="_blank" rel="nofollow sponsored noopener">Flipkart</a></span>
+        </div>
+      </section>
+    </article>
+
+  </div>
+</main>
+
+{{FOOTER}}
+
+<!-- Phone sticky buy bar -->
+<div class="buybar" id="buybar">
+  <div class="container">
+    {{COUPON_BAR}}
+    {{BAR_PRICE}}
+    <a class="btn btn-default buy" href="{{LINK}}" target="_blank" rel="nofollow sponsored noopener"><span class="buy-label">Buy at {{STORE}}</span></a>
+  </div>
+</div>
+
+<button class="btn btn-outline btn-icon to-top" id="to-top" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
+
+<div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
+{{MENU_SHEET}}
+{{SEARCH_SHEET}}
+
+<!-- Report a problem: bottom sheet on phone, centred dialog on desktop (shadcn responsive Dialog/Drawer) -->
+<aside class="sheet sheet-bottom dialog-md" id="report-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="report-title">
+  <div class="handle"></div>
+  <div class="sheet-header"><div class="sheet-title" id="report-title">Report a problem</div><p class="sheet-desc">Tell us what's wrong and we'll check the deal.</p></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <form class="sheet-body report-form" id="report-form">
+    <div class="opts" role="radiogroup" aria-label="Problem">
+      <label class="opt"><input type="radio" name="reason" value="link" checked><span class="box radio"></span><span class="txt">Link not working</span></label>
+      <label class="opt"><input type="radio" name="reason" value="price"><span class="box radio"></span><span class="txt">Price has changed</span></label>
+      <label class="opt"><input type="radio" name="reason" value="stock"><span class="box radio"></span><span class="txt">Out of stock</span></label>
+      <label class="opt"><input type="radio" name="reason" value="other"><span class="box radio"></span><span class="txt">Something else</span></label>
+    </div>
+    <label class="field-label">Details <span>(optional)</span><textarea class="textarea" name="note" rows="2" placeholder="e.g. Now ₹1,299 on the store page"></textarea></label>
+    <label class="field-label">Email <span>(optional, if you want a reply)</span><input class="input" type="email" name="email" placeholder="you@example.com" autocomplete="email"></label>
+  </form>
+  <div class="sheet-footer"><button class="btn btn-ghost" type="button" data-sheet-close>Cancel</button><button class="btn btn-default" type="submit" form="report-form">Send report</button></div>
+  <div class="sheet-done" id="report-done" hidden><i data-lucide="circle-check"></i><b>Thanks, we'll check it.</b><p>Reports go straight to the OfferTag team.</p><button class="btn btn-outline" type="button" data-sheet-close>Close</button></div>
+</aside>
+
+<!-- Image zoom -->
+<div class="lightbox" id="lightbox" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Image">
+  <button class="lb-close btn btn-outline btn-icon" type="button" data-lightbox-close aria-label="Close"><i data-lucide="x"></i></button>
+  <img src="assets/deals/lg/{{FILE}}" alt="{{TITLE}}">
+</div>
+
+<div class="toaster" id="toaster" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.3.0/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="js/deals-index.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/site.js"></script>
+<script src="js/detail.js"></script>
+</body>
+</html>

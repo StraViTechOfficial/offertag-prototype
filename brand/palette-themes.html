@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en" data-theme="royal" data-font="jost-inter">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OfferTag palette themes</title>
+<meta name="description" content="Three navy-led palette directions derived from the OfferTag logo, each shown in light and dark with sample button, input and deal card.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Jost:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ---------- primitives (shared by all themes) ---------- */
+:root{
+  /* neutrals, navy-tinted */
+  --n-0:#FFFFFF;--n-50:#F5F7FB;--n-100:#E9EDF4;--n-200:#D6DCE8;--n-300:#B4BDCF;--n-400:#8A96AE;--n-450:#7C889F;--n-500:#66738F;--n-600:#475473;--n-700:#2B3752;--n-800:#1B2640;--n-900:#111A2E;--n-950:#0A1022;
+  /* navy scale from logo #082454 (p-800) */
+  --p-50:#EEF3FC;--p-100:#DCE5F7;--p-200:#B3C6EE;--p-300:#7FA0E0;--p-400:#4A78CC;--p-500:#2254AD;--p-500-hover:#2F62C2;--p-600:#16418F;--p-700:#0E3270;--p-800:#082454;--p-900:#061A42;--p-950:#04112D;
+  /* accents */
+  --gold-100:#F7EDD3;--gold-300:#E6CC8D;--gold-400:#D6B35E;--gold-500:#C49A3C;--gold-700:#8A6A1E;--gold-800:#6E5316;--gold-950:#2A2412;
+  --teal-100:#D5F3F0;--teal-300:#7DD6CF;--teal-400:#3DBDB4;--teal-600:#11857E;--teal-700:#0E6E68;--teal-800:#0B5753;--teal-950:#123B38;
+  /* semantic */
+  --ok-100:#DCF5E7;--ok-300:#4CC38A;--ok-800:#166A41;--warn-300:#F5B84A;--warn-700:#8A5200;--err-100:#FDE3E1;--err-300:#F97066;--err-700:#B42318;
+  /* shape */
+  --r-sm:6px;--r-md:8px;--r-lg:12px;--r-pill:999px;
+  /* fonts (switched by data-font) */
+  --font-display:"Jost",system-ui,sans-serif;--font-body:"Inter",system-ui,sans-serif;
+  /* image well stays light in dark mode: product photos have white backgrounds */
+  --img-well:#FFFFFF;--img-well-edge:rgba(8,36,84,.08);
+  --whatsapp:#25D366;
+}
+[data-font="manrope"]{--font-display:"Manrope",system-ui,sans-serif;--font-body:"Manrope",system-ui,sans-serif}
+[data-font="inter"]{--font-display:"Inter",system-ui,sans-serif;--font-body:"Inter",system-ui,sans-serif}
+[data-font="system"]{--font-display:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+/* ---------- role tokens: light ---------- */
+.mode-light{
+  color-scheme:light;
+  --bg:var(--n-50);--surface:var(--n-0);--surface-2:var(--n-100);
+  --text:var(--n-900);--text-muted:var(--n-600);--text-subtle:var(--n-500);
+  --border:var(--n-200);--border-strong:var(--n-450);
+  --primary:var(--p-800);--primary-hover:var(--p-700);--on-primary:var(--n-0);--primary-text:var(--p-800);
+  --link:var(--p-600);--focus:var(--p-500);
+  --ok:var(--ok-800);--ok-bg:var(--ok-100);--warn:var(--warn-700);--err:var(--err-700);--err-bg:var(--err-100);
+  --shadow:0 1px 2px rgba(8,36,84,.06),0 6px 16px rgba(8,36,84,.08);
+  --img-a:var(--p-100);--img-b:var(--n-100);
+  /* theme-varied, defaults = Ink */
+  --badge-bg:var(--p-100);--badge-fg:var(--p-800);--price:var(--n-900);--label:var(--p-700);--save:var(--p-700);--rule:transparent;--chip-active-bg:var(--p-800);--chip-active-fg:var(--n-0);
+}
+/* ---------- role tokens: dark ---------- */
+.mode-dark{
+  color-scheme:dark;
+  --bg:var(--n-950);--surface:var(--n-900);--surface-2:var(--n-800);
+  --text:var(--n-100);--text-muted:var(--n-300);--text-subtle:var(--n-400);
+  --border:var(--n-700);--border-strong:var(--n-500);
+  --primary:var(--p-500);--primary-hover:var(--p-500-hover);--on-primary:var(--n-0);--primary-text:var(--p-200);
+  --link:var(--p-200);--focus:var(--p-300);
+  --ok:var(--ok-300);--ok-bg:#12301F;--warn:var(--warn-300);--err:var(--err-300);--err-bg:#3A1714;
+  --shadow:0 1px 0 rgba(255,255,255,.03),0 8px 20px rgba(0,0,0,.35);
+  --img-a:var(--p-900);--img-b:var(--n-800);--img-well-edge:rgba(255,255,255,.10);
+  --badge-bg:var(--p-200);--badge-fg:var(--p-950);--price:var(--n-50);--label:var(--p-200);--save:var(--p-200);--rule:transparent;--chip-active-bg:var(--p-200);--chip-active-fg:var(--p-950);
+}
+/* ---------- theme B: Royal (navy + gold) ---------- */
+[data-theme="royal"] .mode-light{--badge-bg:var(--gold-500);--badge-fg:var(--p-900);--price:var(--p-800);--label:var(--gold-800);--save:var(--gold-800);--rule:var(--gold-500)}
+[data-theme="royal"] .mode-dark{--badge-bg:var(--gold-400);--badge-fg:var(--p-950);--price:var(--n-0);--label:var(--gold-400);--save:var(--gold-400);--rule:var(--gold-400)}
+/* ---------- theme C: Lagoon (navy + teal) ---------- */
+[data-theme="lagoon"] .mode-light{--badge-bg:var(--teal-100);--badge-fg:var(--teal-800);--price:var(--n-900);--label:var(--teal-700);--save:var(--teal-700);--rule:var(--teal-700)}
+[data-theme="lagoon"] .mode-dark{--badge-bg:var(--teal-950);--badge-fg:var(--teal-300);--price:var(--n-50);--label:var(--teal-300);--save:var(--teal-300);--rule:var(--teal-400)}
+
+/* ---------- page chrome (neutral, not part of the design) ---------- */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#E4E7EE;color:#111A2E;font:15px/1.5 var(--font-body);}
+.chrome{position:sticky;top:0;z-index:5;background:#F8F9FC;border-bottom:1px solid #D6DCE8;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.chrome h1{font:600 15px/1.2 var(--font-display);margin:0;letter-spacing:.01em}
+.tabs{display:flex;gap:6px}
+.tab{appearance:none;border:1px solid #B4BDCF;background:#fff;color:#2B3752;font:500 13px/1 var(--font-body);padding:8px 12px;border-radius:999px;cursor:pointer}
+.tab[aria-pressed="true"]{background:#082454;border-color:#082454;color:#fff}
+.tab:focus-visible,.fontsel:focus-visible{outline:2px solid #2254AD;outline-offset:2px}
+.fontsel{font:500 13px/1 var(--font-body);padding:7px 10px;border:1px solid #B4BDCF;border-radius:8px;background:#fff;color:#2B3752}
+.intro{max-width:1240px;margin:0 auto;padding:18px 16px 0}
+.intro p{margin:0 0 6px;color:#2B3752;max-width:70ch}
+.intro .concept{display:none;margin-top:8px;padding:12px 14px;background:#fff;border:1px solid #D6DCE8;border-radius:10px}
+.intro .concept.on{display:block}
+.intro .concept h2{font:600 16px/1.3 var(--font-display);margin:0 0 4px}
+.intro .concept ul{margin:0;padding-left:18px;color:#2B3752}
+.intro .concept li{margin:2px 0}
+.panels{max-width:1240px;margin:0 auto;padding:16px;display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:900px){.panels{grid-template-columns:1fr 1fr}}
+
+/* ---------- panel = a slice of the product in one mode ---------- */
+.panel{background:var(--bg);color:var(--text);border-radius:14px;overflow:hidden;border:1px solid rgba(0,0,0,.06);font-family:var(--font-body);font-size:15px;line-height:1.5}
+.panel .inner{padding:16px}
+.mode-tag{display:inline-block;font:600 11px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--text-subtle);margin-bottom:12px}
+h3.sec{font:600 13px/1.2 var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--text-subtle);margin:22px 0 10px}
+h3.sec:first-of-type{margin-top:4px}
+
+/* nav sample */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 2px 0 var(--rule);display:flex;align-items:center;gap:10px;padding:10px 12px}
+.logo{height:34px;display:block}
+.logo-plate{background:#fff;border-radius:var(--r-sm);padding:2px 6px;display:inline-flex;align-items:center}
+.nav .search{flex:1;min-width:0}
+.nav .search input{height:38px}
+
+/* text */
+.h1{font:600 clamp(22px,4vw,28px)/1.2 var(--font-display);letter-spacing:-.01em;margin:0 0 6px;color:var(--text)}
+.body{margin:0 0 6px;color:var(--text)}
+.muted{color:var(--text-muted);margin:0 0 6px}
+.subtle{color:var(--text-subtle);font-size:13px;margin:0}
+a.link{color:var(--link);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
+a.link:hover{text-decoration-thickness:2px}
+
+/* chips */
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;font:500 13px/1 var(--font-body);padding:9px 14px;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--chip-active-bg);color:var(--chip-active-fg);border-color:var(--chip-active-bg)}
+
+/* buttons */
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{appearance:none;font:600 14px/1 var(--font-body);min-height:42px;padding:0 18px;border-radius:var(--r-md);border:1.5px solid transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,border-color .15s}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-secondary{background:transparent;border-color:var(--primary-text);color:var(--primary-text)}
+.btn-secondary:hover{background:var(--surface-2)}
+.btn-ghost{background:transparent;color:var(--primary-text)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.input:focus-visible,.chip:focus-visible,.card:focus-within{outline:2px solid var(--focus);outline-offset:2px}
+
+/* inputs */
+.field{display:grid;gap:6px;margin-bottom:12px}
+.field label{font:500 13px/1.2 var(--font-body);color:var(--text-muted)}
+.input{width:100%;min-height:42px;padding:0 12px;font:400 15px/1 var(--font-body);color:var(--text);background:var(--surface);border:1.5px solid var(--border-strong);border-radius:var(--r-md)}
+.input::placeholder{color:var(--text-subtle)}
+.input.is-focus{border-color:var(--focus);outline:2px solid var(--focus);outline-offset:1px}
+.input.is-error{border-color:var(--err)}
+.help{font-size:13px;color:var(--text-subtle)}
+.help.err{color:var(--err)}
+.help.ok{color:var(--ok)}
+
+/* deal cards */
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.thumb{aspect-ratio:4/3;background:var(--img-well);box-shadow:inset 0 0 0 1px var(--img-well-edge);display:grid;place-items:center;color:#8A96AE;position:relative}
+.thumb svg{width:44px;height:44px;opacity:.6}
+.badge{position:absolute;top:8px;left:8px;background:var(--badge-bg);color:var(--badge-fg);font:700 12px/1 var(--font-body);padding:6px 8px;border-radius:var(--r-sm);letter-spacing:.01em}
+.card-body{padding:10px 12px 12px;display:grid;gap:6px;flex:1}
+.card.is-expired .thumb{filter:grayscale(1);opacity:.75}
+.card.is-expired .title,.card.is-expired .price{color:var(--text-muted)}
+.card.is-expired .shop{color:var(--text-subtle)}
+.badge-expired{background:var(--surface-2);color:var(--text);border:1px solid var(--border-strong)}
+.shop{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--label)}
+.shop .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.title{margin:0;font:500 14px/1.35 var(--font-body);color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.prices{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.price{font:700 18px/1 var(--font-display);color:var(--price);letter-spacing:-.01em}
+.was{font-size:13px;color:var(--text-subtle);text-decoration:line-through}
+.save{font:600 13px/1 var(--font-body);color:var(--save)}
+.mrp-label{font-size:11px;color:var(--text-subtle);letter-spacing:.04em;text-transform:uppercase}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-subtle)}
+.actions{display:flex;gap:8px;margin-top:4px}
+.actions .btn{flex:1;min-height:40px;margin:0}
+.icon-btn{flex:0 0 40px;min-height:40px;width:40px;padding:0;border-radius:var(--r-md);border:1.5px solid var(--border-strong);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn svg{width:20px;height:20px;fill:var(--whatsapp)}
+.icon-btn:hover{background:var(--surface-2)}
+.btn:active,.chip:active,.icon-btn:active{transform:translateY(1px);filter:brightness(.92)}
+
+
+/* swatches */
+.swatches{display:grid;gap:8px}
+.scale{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.scale span{aspect-ratio:1;border-radius:4px;border:1px solid rgba(127,127,127,.15)}
+.scale-label{font-size:12px;color:var(--text-subtle)}
+
+/* contrast table */
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{text-align:left;padding:6px 4px;border-bottom:1px solid var(--border);vertical-align:middle}
+th{font-weight:600;color:var(--text-muted)}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:1px solid rgba(127,127,127,.3)}
+.grade{display:inline-block;font:700 11px/1 var(--font-body);padding:4px 6px;border-radius:4px}
+.grade.aaa,.grade.aa{background:var(--ok-bg);color:var(--ok)}
+.grade.lg{background:var(--surface-2);color:var(--text-muted)}
+.grade.fail{background:var(--err-bg);color:var(--err)}
+.foot{max-width:1240px;margin:0 auto;padding:0 16px 32px;color:#475473;font-size:13px}
+</style>
+</head>
+<body>
+
+<header class="chrome">
+  <h1>OfferTag · palette themes</h1>
+  <div class="tabs" role="group" aria-label="Theme">
+    <button class="tab" data-set="ink" aria-pressed="false">A · Ink</button>
+    <button class="tab" data-set="royal" aria-pressed="true">B · Royal (chosen, D-037)</button>
+    <button class="tab" data-set="lagoon" aria-pressed="false">C · Lagoon</button>
+  </div>
+  <label style="margin-left:auto;font-size:13px;color:#475473">Type
+    <select class="fontsel" id="fontsel" aria-label="Typography pairing">
+      <option value="jost-inter">1 · Jost + Inter (chosen, D-038)</option>
+      <option value="manrope">2 · Manrope</option>
+      <option value="inter">3 · Inter</option>
+      <option value="system">4 · System stack (0 KB)</option>
+    </select>
+  </label>
+</header>
+
+<section class="intro">
+  <p>All three derive from the logo navy <strong>#082454</strong>. Same navy scale, same navy-tinted neutrals, same type. Only the accent role changes. Each is shown in light and dark with the same sample content. Research rules applied: Fresh is the default tab; the image well stays white in dark mode because product photos are white; price hierarchy is current → MRP → "Save ₹x" in the accent; "Buy at Store" names the destination; WhatsApp share is a card action; expired is text + icon + greyscale with the CTA disabled; red is reserved for form errors; every badge passes 4.5:1 in both modes. Scoring in <code>research-to-brand.md</code>.</p>
+  <div class="concept" data-for="ink">
+    <h2>A · Ink — navy-led monochrome</h2>
+    <ul>
+      <li>No accent colour. Emphasis comes from weight, size and navy tints.</li>
+      <li>Discount badge is a navy tint. Price is plain strong text.</li>
+      <li>Research: best for calm and CVD safety; weakest card scan-ability at 360 px for older users (research-to-brand #4, #8, #10).</li>
+    </ul>
+  </div>
+  <div class="concept" data-for="royal">
+    <h2>B · Royal — navy + antique gold</h2>
+    <ul>
+      <li>One warm accent, used only for the discount badge, shop label and a 2px nav rule.</li>
+      <li>Gold is muted (#C49A3C) so it reads premium rather than yellow.</li>
+      <li>Research: strongest premium signal; gold sits next to Amazon's orange/yellow on every card and muddies (research-to-brand #2). Hold gold to the badge and savings line.</li>
+    </ul>
+  </div>
+  <div class="concept" data-for="lagoon">
+    <h2>C · Lagoon — navy + deep teal</h2>
+    <ul>
+      <li>One cool accent for price, discount badge and shop label. Nav rule is teal.</li>
+      <li>Keeps continuity with the current site's teal price colour, but re-derived to pass AA.</li>
+      <li>Research: clear of all store-logo colours, passes every criterion; common pairing is the only cost. Recommended (research-to-brand scoring).</li>
+    </ul>
+  </div>
+</section>
+
+<main class="panels" id="panels"></main>
+
+<template id="panel-tpl">
+  <div class="inner">
+    <span class="mode-tag"></span>
+
+    <h3 class="sec">Navigation</h3>
+    <div class="nav">
+      <span class="logo-wrap"><img class="logo" src="assets/offertag-logo.png" alt="Offertag"></span>
+      <div class="search"><input class="input" type="search" placeholder="Search deals, shops…" aria-label="Search"></div>
+      <button class="btn btn-primary">Sign in</button>
+    </div>
+
+    <h3 class="sec">Deal types</h3>
+    <div class="chips">
+      <button class="chip" aria-pressed="true">Fresh</button>
+      <button class="chip" aria-pressed="false">Loot</button>
+      <button class="chip" aria-pressed="false">Top</button>
+      <button class="chip" aria-pressed="false">New</button>
+      <button class="chip" aria-pressed="false">Pantry</button>
+    </div>
+    <p class="subtle" style="margin-top:8px">Fresh · posted today · updated 4 min ago</p>
+
+    <h3 class="sec">Text</h3>
+    <p class="h1">Today's best deals</p>
+    <p class="body">Verified offers from 19 shops, refreshed through the day. Tap a deal to open it on the shop.</p>
+    <p class="muted">Muted text for descriptions and secondary lines.</p>
+    <p class="subtle">Subtle text for timestamps and metadata · <a class="link" href="#">Inline link</a></p>
+
+    <h3 class="sec">Buttons</h3>
+    <div class="row">
+      <button class="btn btn-primary">Get deal</button>
+      <button class="btn btn-secondary">Share</button>
+      <button class="btn btn-ghost">Details</button>
+      <button class="btn btn-primary" disabled>Expired</button>
+    </div>
+
+    <h3 class="sec">Inputs</h3>
+    <div class="field"><label>Email</label><input class="input" type="email" placeholder="you@example.com"></div>
+    <div class="field"><label>Email (focused)</label><input class="input is-focus" type="email" value="adil@offertag.in"><span class="help">We'll send a 6-digit code.</span></div>
+    <div class="field"><label>Code (error)</label><input class="input is-error" type="text" value="12345"><span class="help err">Enter the 6-digit code from your email.</span></div>
+
+    <h3 class="sec">Deal cards</h3>
+    <div class="cards">
+      <article class="card">
+        <div class="thumb"><span class="badge">67% off</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></div>
+        <div class="card-body">
+          <span class="shop"><span class="dot"></span>Loot · Amazon</span>
+          <p class="title">boAt Rockerz 450 Bluetooth On-Ear Headphones with Mic</p>
+          <div class="prices"><span class="price">₹1,299</span><span class="was"><span class="mrp-label">MRP</span> ₹3,990</span></div>
+          <div class="save">Save ₹2,691</div>
+          <div class="meta"><span>Posted 2h ago</span><span>Ends in 3h</span></div>
+          <div class="actions"><button class="btn btn-primary">Buy at Amazon</button><button class="icon-btn" aria-label="Share on WhatsApp" title="Share on WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.3 5.3 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4.1c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3z"/></svg></button></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="badge">25% off</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></div>
+        <div class="card-body">
+          <span class="shop"><span class="dot"></span>Pantry · Flipkart</span>
+          <p class="title">Tata Sampann Unpolished Toor Dal, 1 kg</p>
+          <div class="prices"><span class="price">₹139</span><span class="was"><span class="mrp-label">MRP</span> ₹185</span></div>
+          <div class="save">Save ₹46</div>
+          <div class="meta"><span>Posted 5h ago</span><span>Min. order 2</span></div>
+          <div class="actions"><button class="btn btn-primary">Buy at Flipkart</button><button class="icon-btn" aria-label="Share on WhatsApp" title="Share on WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.3 5.3 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4.1c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3z"/></svg></button></div>
+        </div>
+      </article>
+      <article class="card is-expired" aria-label="Expired deal">
+        <div class="thumb"><span class="badge badge-expired">&#10005; Expired</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></div>
+        <div class="card-body">
+          <span class="shop"><span class="dot"></span>Top · Amazon</span>
+          <p class="title">Philips 1200W Mixer Grinder, 3 Jars</p>
+          <div class="prices"><span class="price">₹2,499</span><span class="was"><span class="mrp-label">MRP</span> ₹4,295</span></div>
+          <div class="save" style="color:var(--text-subtle)">Was 42% off</div>
+          <div class="meta"><span>Ended 11:40</span><span>Curated by OfferTag</span></div>
+          <div class="actions"><button class="btn btn-primary" disabled>Deal ended</button></div>
+        </div>
+      </article>
+    </div>
+
+    <h3 class="sec">Swatches</h3>
+    <div class="swatches">
+      <div><div class="scale-label">Navy (from logo)</div><div class="scale navy"></div></div>
+      <div><div class="scale-label">Neutrals (navy-tinted)</div><div class="scale neutral"></div></div>
+      <div class="accent-row"><div class="scale-label accent-label">Accent</div><div class="scale accent"></div></div>
+    </div>
+
+    <h3 class="sec">Contrast (computed live)</h3>
+    <table class="contrast"><thead><tr><th>Pair</th><th>Ratio</th><th>WCAG</th></tr></thead><tbody></tbody></table>
+  </div>
+</template>
+
+<p class="foot">Decided 2026-11-09: B Royal (D-037) with Jost + Inter (D-038). Other tabs kept for reference. Logo shown on a white plate in dark mode pending a reversed logo (Q-006). Labels and copy are placeholders (D-034).</p>
+
+<script>
+(function(){
+  const root=document.documentElement;
+  const panels=document.getElementById('panels');
+  const tpl=document.getElementById('panel-tpl');
+  const NAVY=['--p-50','--p-100','--p-200','--p-300','--p-400','--p-500','--p-600','--p-700','--p-800','--p-900','--p-950'];
+  const NEUT=['--n-0','--n-50','--n-100','--n-200','--n-300','--n-400','--n-500','--n-600','--n-700','--n-800','--n-900','--n-950'];
+  const ACC={ink:[],royal:['--gold-100','--gold-300','--gold-400','--gold-500','--gold-700','--gold-800','--gold-950'],lagoon:['--teal-100','--teal-300','--teal-400','--teal-600','--teal-700','--teal-800','--teal-950']};
+
+  function build(mode){
+    const p=document.createElement('section');
+    p.className='panel mode-'+mode;
+    p.appendChild(tpl.content.cloneNode(true));
+    p.querySelector('.mode-tag').textContent=mode+' mode';
+    if(mode==='dark'){const w=p.querySelector('.logo-wrap');w.classList.add('logo-plate');}
+    panels.appendChild(p);
+    return p;
+  }
+  const light=build('light'), dark=build('dark');
+
+  function cssVar(el,name){return getComputedStyle(el).getPropertyValue(name).trim();}
+  function lum(hex){const h=hex.replace('#','');const c=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+  function ratio(a,b){const la=lum(a),lb=lum(b);return (Math.max(la,lb)+.05)/(Math.min(la,lb)+.05);}
+  function fillScale(el,vars){el.innerHTML='';vars.forEach(v=>{const s=document.createElement('span');s.style.background=`var(${v})`;s.title=v+' '+cssVar(root,v);el.appendChild(s);});}
+
+  const PAIRS=[
+    ['Body text / surface','--text','--surface',4.5],
+    ['Muted text / surface','--text-muted','--surface',4.5],
+    ['Subtle text / surface','--text-subtle','--surface',4.5],
+    ['Link / surface','--link','--surface',4.5],
+    ['Button label / primary','--on-primary','--primary',4.5],
+    ['Outline button text / surface','--primary-text','--surface',4.5],
+    ['Badge text / badge','--badge-fg','--badge-bg',4.5],
+    ['Price / surface','--price','--surface',4.5],
+    ['Shop label / surface','--label','--surface',4.5],
+    ['Savings line / surface','--save','--surface',4.5],
+    ['Error text / surface','--err','--surface',4.5],
+    ['Input border / surface (UI 3:1)','--border-strong','--surface',3],
+    ['Focus ring / page bg (UI 3:1)','--focus','--bg',3],
+  ];
+  function grade(r,min){if(r>=7)return['AAA','aaa'];if(r>=4.5)return['AA','aa'];if(r>=3)return[min===3?'AA (UI)':'AA large only','lg'];return['Fail','fail'];}
+  function fillContrast(panel){
+    const tb=panel.querySelector('.contrast tbody');tb.innerHTML='';
+    PAIRS.forEach(([label,fg,bg,min])=>{
+      const f=cssVar(panel,fg),b=cssVar(panel,bg);if(!f||!b)return;
+      const r=ratio(f,b);const [g,cls]=grade(r,min);
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td><span class="sw" style="background:${f}"></span><span class="sw" style="background:${b}"></span>${label}</td><td>${r.toFixed(2)}:1</td><td><span class="grade ${cls}">${g}</span></td>`;
+      tb.appendChild(tr);
+    });
+  }
+  function refresh(){
+    const t=root.dataset.theme;
+    document.querySelectorAll('.concept').forEach(c=>c.classList.toggle('on',c.dataset.for===t));
+    document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.set===t)));
+    [light,dark].forEach(p=>{
+      fillScale(p.querySelector('.scale.navy'),NAVY);
+      fillScale(p.querySelector('.scale.neutral'),NEUT);
+      const acc=ACC[t];const row=p.querySelector('.accent-row');
+      row.style.display=acc.length?'':'none';
+      p.querySelector('.accent-label').textContent=t==='royal'?'Accent · antique gold':'Accent · deep teal';
+      fillScale(p.querySelector('.scale.accent'),acc);
+      fillContrast(p);
+    });
+  }
+  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{root.dataset.theme=b.dataset.set;history.replaceState(null,'','#'+b.dataset.set);refresh();}));
+  document.getElementById('fontsel').addEventListener('change',e=>{root.dataset.font=e.target.value;});
+  const h=location.hash.replace('#','');if(['ink','royal','lagoon'].includes(h))root.dataset.theme=h;
+  document.fonts&&document.fonts.ready.then(refresh);
+  refresh();
+})();
+</script>
+</body>
+</html>

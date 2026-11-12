@@ -1,0 +1,43 @@
+[
+ {"name":"lunch-boxes-and-tiffins-worth-packing","title":"Lunch boxes and tiffins worth packing this week","summary":"Insulated tiffins and steel boxes for office and school, with live prices.","date":"2026-11-09","cover":30,
+  "body":[
+   {"p":"A good lunch box does two jobs: it keeps food warm until the break and it does not leak in a bag. This week several Milton boxes came up on our feed together, so here they are in one place."},
+   {"h":"For a full office lunch"},
+   {"p":"A jacketed box with more than one container lets you carry rice and curry apart. It takes more room in a bag, so check that it fits before you buy."},
+   {"deal":30},{"deal":29},
+   {"h":"For something smaller"},
+   {"p":"Compact inner-steel tiffins suit a short commute or a child's school bag. Steel is easier to clean than plastic and holds on to smells less."},
+   {"deal":28},{"deal":32},
+   {"h":"Before you buy"},
+   {"p":"Prices on these move during the day. The cards here always show the current price, and the store page has the final amount after any bank offer."}
+  ]},
+ {"name":"running-shoes-from-puma-and-reebok","title":"Running shoes from Puma and Reebok on sale","summary":"Three pairs for road running and daily walks, and how to pick a size online.","date":"2026-11-06","cover":5,
+  "body":[
+   {"p":"Sports shoes are one of the few things worth waiting for a sale on, because the same pair often returns at a much lower price. These three are on our feed now."},
+   {"h":"Daily running"},
+   {"p":"If you run on roads most days, look for cushioning under the heel and a sole with some flex at the toe."},
+   {"deal":5},{"deal":6},
+   {"h":"One more from Reebok"},
+   {"deal":12},
+   {"h":"Getting the size right"},
+   {"p":"Sizes differ between brands. Measure your foot in the evening, go by the brand's own chart, and check the return window on the store page before you pay."}
+  ]},
+ {"name":"laptop-backpacks-for-work-and-college","title":"Laptop backpacks for work and college","summary":"What to check on a laptop bag before you pay, with three picks.","date":"2026-11-03","cover":null,
+  "body":[
+   {"p":"A laptop bag gets carried every day, so small things matter more than the look. Three bags are on our feed at the moment, each for a slightly different need."},
+   {"h":"What to check"},
+   {"p":"Match the laptop sleeve to your screen size, look for a padded back panel, and see whether the bag has a separate pocket for a charger."},
+   {"h":"Our picks"},
+   {"deal":37},{"deal":39},{"deal":34}
+  ]},
+ {"name":"why-bldc-ceiling-fans-cost-more","title":"Why BLDC ceiling fans cost more, and when they pay off","summary":"A plain guide to BLDC fans and two models on sale now.","date":"2026-10-30","cover":13,
+  "body":[
+   {"p":"BLDC is a type of motor. Fans built with one use much less electricity than regular ceiling fans, but they cost more to buy. Whether that is worth it depends on how many hours a day the fan runs."},
+   {"h":"Who should switch"},
+   {"p":"If a fan runs most of the day, the lower power use adds up. For a room used now and then, a regular fan is often the better buy."},
+   {"img":20,"alt":"RR Signature Raptor ceiling fan"},
+   {"h":"Two on our feed"},
+   {"deal":13},{"deal":20},
+   {"p":"Check that the blade size suits your room before you order."}
+  ]}
+]

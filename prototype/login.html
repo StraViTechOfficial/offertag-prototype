@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign in — OfferTag</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body data-page="login" class="is-focus">
+
+
+<main class="auth-main"><div class="auth-card">
+  <a class="btn btn-ghost btn-icon auth-back" href="index.html" data-back aria-label="Back"><i data-lucide="chevron-left"></i></a>
+  <a class="auth-logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo.png" alt="OfferTag"></a>
+  <div class="signin" data-signin>
+  <div class="signin-head"><h1 class="auth-title" data-signin-title>Sign in</h1><p class="signin-sub" data-signin-sub>New here? Signing in creates your account.</p></div>
+  <div class="signin-step" data-step="start">
+    <button class="btn btn-outline signin-google" type="button" data-google><svg class="g-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.5 5.5 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>Continue with Google</button>
+    <div class="signin-or"><span>or</span></div>
+    <form class="signin-form" data-email-form novalidate>
+      <label class="field-label">Email<input class="input" type="email" name="email" inputmode="email" autocomplete="email" maxlength="255" placeholder="you@example.com"></label>
+      <p class="form-error" data-email-error role="alert" hidden></p>
+      <label class="turnstile" data-turnstile hidden><input type="checkbox" data-turnstile-box><span>Verify you are human</span><small>Cloudflare Turnstile</small></label>
+      <button class="btn btn-default" type="submit">Send code</button>
+    </form>
+    <p class="signin-legal">By continuing you agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy policy</a>.</p>
+  </div>
+  <div class="signin-step" data-step="code" hidden>
+    <div class="otp" role="group" aria-label="6-digit code"><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 1" autocomplete=one-time-code><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 2" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 3" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 4" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 5" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 6" autocomplete=off></div>
+    <p class="form-error" data-code-error role="alert" hidden></p>
+    <p class="signin-help">Valid for 10 minutes</p>
+    <button class="btn btn-link signin-resend" type="button" data-resend disabled>Resend code in 0:30</button>
+  </div>
+</div>
+</div></main>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="js/deals-index.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

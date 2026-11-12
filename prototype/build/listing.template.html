@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}} — OfferTag</title>
+<meta name="description" content="{{RULE}}. Live prices from Amazon, Flipkart and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body data-page="{{PAGE_KIND}}" data-default-sort="{{SORT}}">
+
+{{HEADER}}
+{{NAV}}
+
+<main>
+  <div class="container">
+    <div class="crumbs">{{CRUMBS}}</div>
+    <div class="page-head"><h1 id="page-title">{{TITLE}}</h1><p id="page-rule">{{RULE}}</p></div>
+
+    <div class="listing">
+      {{COMMUNITY}}
+      <aside class="filters" id="filters" aria-label="Filters">
+        <div class="fhead"><span>Filters</span><button class="btn btn-link" id="clear-all" type="button">Clear all</button></div>
+        <form id="filter-form">
+          <!-- Shown once the BRD coupon field exists (D-075). Hidden in this prototype: no coupon data yet. -->
+          <label class="opt coupon-toggle" hidden><input type="checkbox" name="coupon" value="1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Has a coupon</span><span class="cnt" data-cnt="coupon:1"></span></label>
+          <details class="fgroup" open data-group-name="cat" {{CAT_HIDDEN}}><summary>Category <i data-lucide="chevron-down"></i></summary>
+            <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a category" data-find="cat" aria-label="Find a category"></label>
+            <div class="opts scroll" data-group="cat">{{CAT_OPTS}}</div>
+          </details>
+          <details class="fgroup" open data-group-name="store" {{STORE_HIDDEN}}><summary>Store <i data-lucide="chevron-down"></i></summary>
+            <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a store" data-find="store" aria-label="Find a store"></label>
+            <div class="opts scroll" data-group="store">{{STORE_OPTS}}</div>
+          </details>
+          <details class="fgroup" open data-group-name="disc"><summary>Discount <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="disc">
+              <label class="opt"><input type="radio" name="disc" value="0" checked><span class="box radio"></span><span class="txt">Any</span></label>
+              <label class="opt"><input type="radio" name="disc" value="50"><span class="box radio"></span><span class="txt">50% or more</span><span class="cnt" data-cnt="disc:50"></span></label>
+              <label class="opt"><input type="radio" name="disc" value="70"><span class="box radio"></span><span class="txt">70% or more</span><span class="cnt" data-cnt="disc:70"></span></label>
+              <label class="opt"><input type="radio" name="disc" value="90"><span class="box radio"></span><span class="txt">90% or more</span><span class="cnt" data-cnt="disc:90"></span></label>
+            </div>
+          </details>
+          <details class="fgroup" open data-group-name="price"><summary>Price <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="price">
+              <label class="opt"><input type="radio" name="price" value="" checked><span class="box radio"></span><span class="txt">Any</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-499"><span class="box radio"></span><span class="txt">Under ₹499</span><span class="cnt" data-cnt="price:0-499"></span></label>
+              <label class="opt"><input type="radio" name="price" value="0-999"><span class="box radio"></span><span class="txt">Under ₹999</span><span class="cnt" data-cnt="price:0-999"></span></label>
+              <label class="opt"><input type="radio" name="price" value="0-2499"><span class="box radio"></span><span class="txt">Under ₹2,499</span><span class="cnt" data-cnt="price:0-2499"></span></label>
+              <label class="opt"><input type="radio" name="price" value="0-4999"><span class="box radio"></span><span class="txt">Under ₹4,999</span><span class="cnt" data-cnt="price:0-4999"></span></label>
+              <label class="opt"><input type="radio" name="price" value="5000-"><span class="box radio"></span><span class="txt">₹5,000 and above</span><span class="cnt" data-cnt="price:5000-"></span></label>
+            </div>
+            <div class="minmax"><label><span class="visually-hidden">Minimum price</span><input class="input" type="number" inputmode="numeric" placeholder="Min" name="pmin" min="0"></label><span>–</span><label><span class="visually-hidden">Maximum price</span><input class="input" type="number" inputmode="numeric" placeholder="Max" name="pmax" min="0"></label></div>
+          </details>
+          <!-- Deal type: hidden on type pages, shown on search / category / store pages (D-075) -->
+          <details class="fgroup" data-group-name="type" {{TYPE_HIDDEN}}><summary>Deal type <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="type">{{TYPE_OPTS}}</div>
+          </details>
+          <details class="fgroup" data-group-name="posted"><summary>Posted <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="posted">
+              <label class="opt"><input type="radio" name="posted" value="" checked><span class="box radio"></span><span class="txt">Any time</span></label>
+              <label class="opt"><input type="radio" name="posted" value="1440"><span class="box radio"></span><span class="txt">Last 24 hours</span><span class="cnt" data-cnt="posted:1440"></span></label>
+              <label class="opt"><input type="radio" name="posted" value="10080"><span class="box radio"></span><span class="txt">Last 7 days</span><span class="cnt" data-cnt="posted:10080"></span></label>
+            </div>
+          </details>
+        </form>
+      </aside>
+
+      <section aria-label="Results">
+        <div class="toolbar">
+          <button class="btn btn-outline phone-only" id="open-filters" type="button"><i data-lucide="sliders-horizontal"></i>Filter <span class="badge badge-default" id="filter-count" hidden>0</span></button>
+          <button class="btn btn-outline phone-only" id="open-sort" type="button"><i data-lucide="arrow-up-down"></i><span id="sort-label-m">Sort</span></button>
+          <span class="count"><b id="count">{{COUNT}}</b> deals</span>
+          <div class="chips locked" id="locked">{{LOCKED}}</div>
+          <div class="chips" id="chips"></div>
+          <div class="right">
+            <div class="dropdown sort-desktop" id="sort-menu">
+              <button class="btn btn-outline" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><i data-lucide="arrow-up-down"></i><span id="sort-label">Sort</span><i data-lucide="chevron-down"></i></button>
+              <div class="menu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-sort="recommended">Recommended</button>
+                <button type="button" role="menuitemradio" data-sort="newest">Newest</button>
+                <button type="button" role="menuitemradio" data-sort="disc">Discount: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="saving">Biggest saving</button>
+                <button type="button" role="menuitemradio" data-sort="price-asc">Price: low to high</button>
+                <button type="button" role="menuitemradio" data-sort="price-desc">Price: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="views">Most viewed</button>
+              </div>
+            </div>
+            <div class="density" role="group" aria-label="Density"><button type="button" data-density="grid" aria-pressed="true" aria-label="Grid"><i data-lucide="layout-grid"></i></button><button type="button" data-density="list" aria-pressed="false" aria-label="List"><i data-lucide="list"></i></button></div>
+          </div>
+        </div>
+
+        <div class="deal-grid results" id="results">{{CARDS}}
+          <div class="empty" id="empty" hidden><p id="empty-text">No deals match these filters.</p><button class="btn btn-outline" type="button" data-clear id="empty-clear">Clear all filters</button><p class="nearby">Try nearby: {{NEARBY}}</p></div>
+        </div>
+
+        <div class="load-state" id="load-state" aria-live="polite"></div>
+        <section class="section deals empty-feed" id="empty-feed" hidden aria-labelledby="h-ef"><div class="section-head"><div><h2 id="h-ef">Fresh deals</h2><p>Posted today, newest first</p></div><a class="view-all" href="fresh.html">View all <i data-lucide="chevron-right"></i></a></div>{{FRESH_RAIL}}</section>
+
+        <!-- Alerts opt-in card (B23, D-055): moved after the 16th card by listing.js on the second visit; ?visit=2 forces it -->
+        <div class="card alerts-card" id="alerts-card" hidden role="region" aria-label="Deal alerts">
+          <i data-lucide="bell"></i>
+          <div class="t"><b>Get loot alerts in your browser</b><p>Free, no account. Only the big ones, never more than a few a day.</p></div>
+          <button class="btn btn-default btn-sm" type="button" id="alerts-card-on">Turn on</button>
+          <button class="btn btn-ghost btn-icon btn-sm" type="button" id="alerts-card-x" aria-label="Dismiss for 30 days"><i data-lucide="x"></i></button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+{{FOOTER}}
+
+<!-- Desktop slide-over (D-050, D-065): the deal page in a 480 px panel, URL moves to the deal, Esc / ✕ / backdrop / Back close -->
+<div class="slideover-overlay" id="slideover-overlay" hidden data-state="closed"></div>
+<aside class="slideover" id="slideover" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Deal">
+  <div class="so-head"><button class="btn btn-ghost btn-icon" type="button" id="so-close" aria-label="Close"><i data-lucide="x"></i></button><span class="so-title" id="so-title"></span><a class="btn btn-outline btn-sm" id="so-full" href="#">Open full page <i data-lucide="external-link"></i></a></div>
+  <iframe id="so-frame" title="Deal" loading="eager"></iframe>
+</aside>
+
+<button class="btn btn-outline btn-icon to-top" id="to-top" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
+
+<!-- Phone sheets -->
+<div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
+{{MENU_SHEET}}
+{{SEARCH_SHEET}}
+<aside class="sheet sheet-bottom" id="filter-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="filter-sheet-title">
+  <div class="handle"></div>
+  <div class="sheet-header"><div class="sheet-title" id="filter-sheet-title">Filters</div><div style="font-size:13px;color:hsl(var(--muted-foreground))"><b id="sheet-count" style="color:hsl(var(--foreground))">{{COUNT}}</b> deals match</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body" id="filter-sheet-body"></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" type="button" data-clear>Clear all</button><button class="btn btn-default btn-lg" type="button" data-sheet-close id="apply-filters">Show deals</button></div>
+</aside>
+<aside class="sheet sheet-bottom" id="sort-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="sort-sheet-title">
+  <div class="handle"></div>
+  <div class="sheet-header"><div class="sheet-title" id="sort-sheet-title">Sort by</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body opts" id="sort-opts">
+    <label class="opt"><input type="radio" name="sortm" value="recommended"><span class="box radio"></span><span class="txt">Recommended<div style="font-size:12px;color:hsl(var(--muted-foreground))">Pinned first, then fresh and big discounts, mixed across categories.</div></span></label>
+    <label class="opt"><input type="radio" name="sortm" value="newest"><span class="box radio"></span><span class="txt">Newest</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="disc"><span class="box radio"></span><span class="txt">Discount: high to low</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="saving"><span class="box radio"></span><span class="txt">Biggest saving</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="price-asc"><span class="box radio"></span><span class="txt">Price: low to high</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="price-desc"><span class="box radio"></span><span class="txt">Price: high to low</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="views"><span class="box radio"></span><span class="txt">Most viewed</span></label>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.3.0/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="js/deals-index.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/site.js"></script>
+<script src="js/listing.js"></script>
+</body>
+</html>

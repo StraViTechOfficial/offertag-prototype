@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITLE}} — OfferTag</title>
+<meta name="description" content="{{DESC}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body data-page="index-list">
+
+{{HEADER}}
+{{NAV}}
+{{COMMUNITY}}
+
+<main>
+  <div class="container narrow">
+    <div class="crumbs"><a href="index.html">Home</a><i data-lucide="chevron-right"></i><span>{{TITLE}}</span></div>
+    <div class="page-head"><h1>{{TITLE}}</h1><p>{{RULE}}</p></div>
+    {{FIND}}
+    <ol class="index-list" id="index-list">{{ROWS}}</ol>
+    <p class="index-empty" id="index-empty" hidden>Nothing matches.</p>
+    <p class="index-note">{{NOTE}}</p>
+  </div>
+</main>
+
+{{FOOTER}}
+
+<button class="btn btn-outline btn-icon to-top" id="to-top" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
+<div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
+{{MENU_SHEET}}
+{{SEARCH_SHEET}}
+
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.3.0/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="js/deals-index.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/site.js"></script>
+<script>
+(function(){var f=document.getElementById('index-find'),rows=document.querySelectorAll('#index-list li'),empty=document.getElementById('index-empty');if(!f)return;f.addEventListener('input',function(){var q=f.value.trim().toLowerCase(),n=0;rows.forEach(function(r){var hit=!q||r.textContent.toLowerCase().indexOf(q)>=0;r.hidden=!hit;if(hit)n++;});empty.hidden=n>0;});})();
+</script>
+</body>
+</html>

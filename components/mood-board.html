@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Midnight and Marigold</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* ============================================================
+   OfferTag mood board · "Midnight and Marigold" · D-071
+   Self-contained palette proposal (replaces brand.md colours if approved).
+   Light only (D-069). Real deal photos from offertag.in (client's own).
+   Layout: palette strip → phone Home · phone detail · desktop slice.
+   ============================================================ */
+:root {
+  color-scheme: light;
+  /* midnight */
+  --midnight: #081D49; --royal: #164A9E; --band: linear-gradient(165deg, #081D49 0%, #0F3376 58%, #164A9E 100%);
+  --ink: #0F1A33; --ink-2: #4B5570; --ink-3: #7A8299;
+  /* marigold */
+  --mari: #F7A928; --mari-deep: #E28F0F; --mari-light: #FFC75A; --mari-tint: #FFF2D9; --on-mari: #1B1300;
+  --mari-grad: linear-gradient(180deg, #FFC14D 0%, #F3A01A 100%);
+  /* money green */
+  --green: #0B7A45; --green-tint: #E2F5EA;
+  /* ivory + stone */
+  --page: #FFFAF1; --card: #FFFFFF; --tile: #F6F0E4; --edge: #EEE6D6; --edge-2: #DDD3BE;
+  --shadow-card: 0 1px 2px rgba(60,40,10,.05), 0 12px 32px -14px rgba(60,40,10,.22);
+  --shadow-float: 0 -8px 28px -10px rgba(60,40,10,.22);
+  --shadow-mari: 0 1px 0 rgba(120,70,0,.25), 0 8px 18px -8px rgba(226,143,15,.75);
+  --font-display: "Jost", system-ui, sans-serif; --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --ease: cubic-bezier(.2,0,0,1); --ease-out: cubic-bezier(0,0,0,1);
+}
+html, body { background: var(--page); color: var(--ink); }
+body { margin: 0; font: 400 15px/22px var(--font-body); }
+* { box-sizing: border-box; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 80px; max-width: 1240px; margin: 0 auto; }
+.head { padding: 24px 0 16px; display: grid; gap: 6px; }
+.head .eyebrow { font: 600 11px/16px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--mari-deep); }
+.head h1 { margin: 0; font: 700 30px/36px var(--font-display); letter-spacing: -0.015em; color: var(--midnight); text-wrap: balance; }
+.head p { margin: 0; color: var(--ink-2); max-width: 70ch; }
+.tools { display: flex; gap: 8px; margin-top: 6px; }
+.tbtn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--edge-2); background: var(--card); color: var(--midnight); font: 600 13px/18px var(--font-body); cursor: pointer; }
+.cap { font: 600 11px/16px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+section { padding: 20px 0 8px; }
+section h2 { margin: 0 0 12px; font: 700 20px/26px var(--font-display); letter-spacing: -0.01em; color: var(--midnight); }
+
+/* ---- palette strip ---- */
+.swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 10px; }
+.sw { border-radius: 14px; padding: 12px; min-height: 96px; display: grid; align-content: end; gap: 2px; border: 1px solid var(--edge); }
+.sw b { font: 600 13px/18px var(--font-body); }
+.sw span { font: 500 11px/14px ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .8; }
+.sw small { font: 400 11px/14px var(--font-body); opacity: .85; }
+.type { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; padding: 18px; background: var(--card); border: 1px solid var(--edge); border-radius: 16px; }
+@media (max-width: 760px) { .type { grid-template-columns: 1fr; } }
+.type .big { font: 700 44px/48px var(--font-display); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.type .h { font: 700 24px/30px var(--font-display); letter-spacing: -0.01em; }
+.type .b { color: var(--ink-2); }
+.type .lbl { font: 600 13px/18px var(--font-body); }
+
+/* ---- board grid ---- */
+.board { display: grid; grid-template-columns: minmax(0, 390px) minmax(0, 390px); gap: 24px; justify-content: start; }
+@media (max-width: 860px) { .board { grid-template-columns: 1fr; justify-items: center; } .board > div { width: 100%; max-width: 390px; } }
+.col { display: grid; gap: 10px; }
+
+/* ---- phone ---- */
+.phone { background: var(--page); border: 1px solid var(--edge-2); border-radius: 30px; overflow: hidden; position: relative; box-shadow: 0 2px 6px rgba(60,40,10,.06), 0 24px 60px -30px rgba(8,29,73,.35); }
+.band { background: var(--band); color: #fff; padding: 0 0 20px; border-radius: 0 0 26px 26px; position: relative; overflow: hidden; }
+.band::before { content: ""; position: absolute; right: -60px; top: -80px; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,199,90,.22), rgba(255,199,90,0)); pointer-events: none; }
+.topbar { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; }
+.topbar .ic { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; color: rgba(255,255,255,.92); }
+.topbar.light .ic { color: var(--midnight); }
+.plate { background: #fff; border-radius: 8px; padding: 3px 8px; display: inline-flex; align-items: center; height: 32px; }
+.plate img { height: 24px; width: auto; display: block; }
+.topbar.light .plate { background: transparent; padding: 0; }
+.tabs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 4px 14px 0; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.08); color: rgba(255,255,255,.9); font: 500 14px/20px var(--font-body); cursor: pointer; transition: transform .1s var(--ease), background-color .15s; }
+.tab:active { transform: scale(.96); }
+.tab.is-on { background: #fff; color: var(--midnight); border-color: #fff; font-weight: 700; }
+.ruleline { display: flex; align-items: center; gap: 8px; padding: 12px 16px 0; font: 500 13px/18px var(--font-body); color: rgba(255,255,255,.78); }
+.ruleline b { color: var(--mari-light); font-weight: 700; font-variant-numeric: tabular-nums; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: #58D68D; box-shadow: 0 0 0 0 rgba(88,214,141,.6); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(88,214,141,.55); } 70% { box-shadow: 0 0 0 7px rgba(88,214,141,0); } 100% { box-shadow: 0 0 0 0 rgba(88,214,141,0); } }
+.quick { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 12px 14px 0; }
+.quick::-webkit-scrollbar { display: none; }
+.qchip { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.16); color: #fff; font: 500 13px/18px var(--font-body); cursor: pointer; }
+.qchip svg { width: 14px; height: 14px; }
+.qchip .cnt { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--mari); color: var(--on-mari); font: 700 11px/18px var(--font-body); display: inline-grid; place-items: center; }
+.feed { display: grid; gap: 12px; padding: 0 12px 16px; margin-top: -14px; position: relative; }
+.join { display: flex; align-items: center; gap: 8px; margin: 2px 2px 0; padding: 9px 12px; border-radius: 12px; background: var(--tile); color: var(--ink-2); font: 500 13px/18px var(--font-body); }
+.join b { color: var(--ink); font-weight: 600; }
+.join svg { width: 16px; height: 16px; color: var(--green); }
+.join .x { margin-left: auto; color: var(--ink-3); }
+
+/* ---- card ---- */
+.card { position: relative; display: grid; grid-template-columns: 44% 1fr; gap: 12px; padding: 12px; background: var(--card); border: 1px solid var(--edge); border-radius: 20px; box-shadow: var(--shadow-card); cursor: pointer; transition: transform .12s var(--ease), box-shadow .2s; animation: rise .5s var(--ease-out) both; }
+.card:nth-child(2) { animation-delay: .06s; } .card:nth-child(3) { animation-delay: .12s; } .card:nth-child(4) { animation-delay: .18s; } .card:nth-child(5) { animation-delay: .24s; }
+.card:active { transform: scale(.985); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.well { position: relative; aspect-ratio: 1; border-radius: 14px; background: radial-gradient(120% 90% at 50% 20%, #FFFFFF 0%, var(--tile) 100%); overflow: hidden; display: grid; place-items: center; }
+.well img { width: 86%; height: 86%; object-fit: contain; mix-blend-mode: multiply; display: block; }
+.badge { position: absolute; left: 8px; bottom: 8px; background: var(--mari-grad); color: var(--on-mari); font: 700 13px/16px var(--font-body); padding: 4px 8px 4px 13px; border-radius: 6px 8px 8px 6px; clip-path: polygon(0 50%, 8px 0, 100% 0, 100% 100%, 8px 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.55); font-variant-numeric: tabular-nums; animation: pop .5s var(--ease-out) both; animation-delay: .25s; }
+.badge::before { content: ""; position: absolute; left: 7px; top: 50%; width: 3px; height: 3px; margin-top: -1.5px; border-radius: 50%; background: rgba(255,255,255,.9); }
+@keyframes pop { 0% { transform: scale(.5); opacity: 0; } 70% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
+.body { display: grid; gap: 3px; align-content: start; min-width: 0; }
+.meta { font: 500 12px/16px var(--font-body); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.title { font: 600 15px/20px var(--font-body); color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.labels { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-height: 16px; }
+.caption { color: var(--mari-deep); font: 600 12px/16px var(--font-body); }
+.coupon { display: inline-flex; align-items: center; gap: 4px; background: var(--mari-tint); color: #8A5A05; font: 600 11px/14px var(--font-body); padding: 1px 7px; border-radius: 6px; }
+.coupon svg { width: 11px; height: 11px; }
+.priceline { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; flex-wrap: wrap; }
+.price { font: 700 26px/30px var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.015em; }
+.was { font: 500 13px/18px var(--font-body); color: var(--ink-3); text-decoration: line-through; }
+.save { display: inline-flex; align-items: center; gap: 4px; color: var(--green); font: 700 13px/18px var(--font-body); }
+.save svg { width: 13px; height: 13px; }
+.acts { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 12px; border: 1px solid transparent; font: 700 15px/20px var(--font-body); cursor: pointer; white-space: nowrap; transition: transform .1s var(--ease), filter .15s, background-color .15s; -webkit-tap-highlight-color: transparent; }
+.btn::after { content: ""; position: absolute; inset: -4px; }
+.btn:active { transform: scale(.97); }
+.btn-buy { flex: 1; background: var(--mari-grad); color: var(--on-mari); box-shadow: var(--shadow-mari); }
+.btn-buy:hover { filter: brightness(1.04); }
+.btn-quiet { background: var(--card); color: var(--ink); border-color: var(--edge-2); font-weight: 600; }
+.btn-lg { height: 48px; font-size: 16px; border-radius: 14px; }
+.icbtn { width: 40px; height: 40px; display: inline-grid; place-items: center; border-radius: 12px; border: 1px solid var(--edge-2); background: var(--card); color: var(--ink-2); cursor: pointer; flex: none; transition: transform .1s; }
+.icbtn:active { transform: scale(.94); }
+.icbtn svg, .btn svg { width: 18px; height: 18px; }
+
+/* ---- detail ---- */
+.detail { position: relative; padding-bottom: 76px; }
+.hero { margin: 4px 12px 0; aspect-ratio: 5 / 4; border-radius: 20px; background: radial-gradient(120% 90% at 50% 20%, #FFFFFF 0%, var(--tile) 100%); display: grid; place-items: center; position: relative; overflow: hidden; }
+.hero img { width: 62%; height: 62%; object-fit: contain; mix-blend-mode: multiply; }
+.hero .badge { left: auto; right: 14px; bottom: 14px; font-size: 15px; padding: 5px 10px 5px 15px; }
+.dbody { padding: 14px 16px 0; display: grid; gap: 6px; }
+.dmeta { display: flex; align-items: center; gap: 8px; font: 600 12px/16px var(--font-body); color: var(--ink-3); letter-spacing: .02em; }
+.dmeta .type { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 6px; background: var(--midnight); color: #fff; font: 700 11px/16px var(--font-body); letter-spacing: .04em; text-transform: uppercase; grid-template-columns: none; margin: 0; border: 0; }
+.dtitle { font: 700 22px/28px var(--font-display); letter-spacing: -0.015em; color: var(--ink); }
+.dprice { font: 700 38px/42px var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.dsub { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.savepill { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 999px; background: var(--green-tint); color: var(--green); font: 700 13px/18px var(--font-body); }
+.savepill svg { width: 13px; height: 13px; }
+.code { display: flex; align-items: center; gap: 10px; margin-top: 6px; padding: 8px 10px 8px 12px; border: 1.5px dashed var(--edge-2); border-radius: 12px; background: var(--tile); font: 700 15px/20px var(--font-body); color: var(--ink); letter-spacing: .06em; }
+.code .lbl { font-weight: 500; color: var(--ink-3); letter-spacing: 0; font-size: 13px; }
+.code .copy { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--edge-2); background: var(--card); color: var(--royal); font: 700 13px/18px var(--font-body); letter-spacing: 0; cursor: pointer; transition: transform .1s; }
+.code .copy:active { transform: scale(.95); }
+.code .copy svg { width: 14px; height: 14px; }
+.code .copy.is-done { color: var(--green); border-color: #9ED8B6; background: var(--green-tint); }
+.disc { font: 400 12px/16px var(--font-body); color: var(--ink-3); margin-top: 2px; }
+.share { display: flex; gap: 8px; margin-top: 8px; }
+.share .btn { height: 38px; font-size: 13px; padding: 0 10px; flex: 1; border-radius: 11px; }
+.steps { margin-top: 14px; display: grid; gap: 8px; }
+.steps h4 { margin: 0; font: 700 15px/20px var(--font-body); }
+.step { display: flex; gap: 10px; align-items: flex-start; font: 400 14px/20px var(--font-body); color: var(--ink-2); }
+.step i { flex: none; width: 22px; height: 22px; border-radius: 7px; background: var(--midnight); color: #fff; display: grid; place-items: center; font: 700 11px/1 var(--font-body); font-style: normal; }
+.sticky { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 10px; padding: 10px 12px 12px; background: rgba(255,255,255,.86); -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3); border-top: 1px solid var(--edge); box-shadow: var(--shadow-float); }
+.sticky .price { font-size: 22px; line-height: 26px; }
+.mini-code { display: inline-flex; align-items: center; gap: 4px; font: 700 12px/16px var(--font-body); color: var(--ink-2); border: 1.5px dashed var(--edge-2); border-radius: 8px; padding: 4px 8px; letter-spacing: .04em; }
+.mini-code svg { width: 12px; height: 12px; }
+
+/* ---- desktop slice ---- */
+.deskwrap { width: 100%; overflow: hidden; border-radius: 20px; border: 1px solid var(--edge-2); background: var(--page); box-shadow: 0 2px 6px rgba(60,40,10,.06), 0 24px 60px -30px rgba(8,29,73,.3); }
+.desk { width: 1180px; transform-origin: top left; }
+.dhead { background: var(--band); color: #fff; height: 68px; display: flex; align-items: center; gap: 20px; padding: 0 28px; }
+.dhead .plate { height: 36px; }
+.dhead .plate img { height: 28px; }
+.dsearch { flex: 0 1 520px; height: 42px; border-radius: 999px; background: #fff; color: var(--ink-3); display: flex; align-items: center; gap: 10px; padding: 0 16px; font: 500 14px/20px var(--font-body); }
+.dsearch svg { width: 18px; height: 18px; }
+.dnav { margin-left: auto; display: flex; align-items: center; gap: 18px; font: 600 14px/20px var(--font-body); color: rgba(255,255,255,.9); }
+.dnav .new { background: var(--mari); color: var(--on-mari); font: 700 10px/14px var(--font-body); letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px; border-radius: 5px; margin-left: 6px; vertical-align: 2px; }
+.dnav .ic { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: rgba(255,255,255,.1); }
+.dnav .ic svg { width: 18px; height: 18px; }
+.dtabs { display: flex; align-items: flex-end; gap: 28px; padding: 6px 28px 0; border-bottom: 1px solid var(--edge); }
+.dtabs a { padding: 14px 2px 12px; font: 600 15px/20px var(--font-body); color: var(--ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.dtabs a.is-on { color: var(--midnight); border-bottom-color: var(--mari); }
+.dtabs .rl { margin-left: auto; padding: 14px 0 12px; font: 500 13px/18px var(--font-body); color: var(--ink-3); display: flex; gap: 8px; align-items: center; }
+.dmain { display: grid; grid-template-columns: 250px 1fr; gap: 24px; padding: 20px 28px 28px; }
+.facets { display: grid; gap: 14px; align-content: start; }
+.facet { background: var(--card); border: 1px solid var(--edge); border-radius: 16px; padding: 14px; display: grid; gap: 8px; }
+.facet h5 { margin: 0 0 4px; font: 700 14px/20px var(--font-body); color: var(--ink); display: flex; justify-content: space-between; }
+.frow { display: flex; align-items: center; gap: 10px; font: 500 14px/20px var(--font-body); color: var(--ink-2); }
+.frow .bx { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--edge-2); display: grid; place-items: center; }
+.frow .bx.on { background: var(--midnight); border-color: var(--midnight); color: #fff; }
+.frow .bx svg { width: 12px; height: 12px; }
+.frow .c { margin-left: auto; color: var(--ink-3); font-variant-numeric: tabular-nums; font-size: 13px; }
+.listhead { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; font: 500 14px/20px var(--font-body); color: var(--ink-2); }
+.listhead .achip { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px 0 12px; border-radius: 999px; background: var(--midnight); color: #fff; font: 600 13px/18px var(--font-body); }
+.listhead .achip svg { width: 12px; height: 12px; }
+.listhead .sort { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--edge-2); background: var(--card); color: var(--ink); font: 600 13px/18px var(--font-body); }
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ccard { background: var(--card); border: 1px solid var(--edge); border-radius: 18px; padding: 10px; display: grid; gap: 4px; box-shadow: var(--shadow-card); cursor: pointer; animation: rise .5s var(--ease-out) both; transition: transform .15s var(--ease), box-shadow .2s; }
+.ccard:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(60,40,10,.05), 0 18px 40px -16px rgba(60,40,10,.3); }
+.ccard:nth-child(2) { animation-delay: .06s; } .ccard:nth-child(3) { animation-delay: .12s; } .ccard:nth-child(4) { animation-delay: .18s; }
+.ccard .well { border-radius: 12px; }
+.ccard .meta { margin-top: 4px; }
+.ccard .title { font-size: 14px; line-height: 19px; }
+.ccard .price { font-size: 22px; line-height: 26px; }
+.ccard .btn { height: 36px; font-size: 14px; margin-top: 4px; width: 100%; border-radius: 10px; }
+
+.notes { display: grid; gap: 8px; padding: 16px 18px; background: var(--card); border: 1px solid var(--edge); border-radius: 16px; font: 400 14px/20px var(--font-body); color: var(--ink-2); }
+.notes b { color: var(--ink); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .card, .ccard, .badge { animation: none !important; } .dot { animation: none; } .btn, .tab, .icbtn, .ccard { transition: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" stroke="currentColor" stroke-width="1.8"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.6 2.6 21 11a2 2 0 0 1 0 2.8l-7.2 7.2a2 2 0 0 1-2.8 0L2.6 12.6V4a1.4 1.4 0 0 1 1.4-1.4h8.6z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M5 15V5a2 2 0 0 1 2-2h10" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+<symbol id="i-sort" viewBox="0 0 24 24"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v16M12 20l-6-6M12 20l6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 9.5c.3 2.6 2.9 5.2 5.5 5.5l1-1.4-1.8-.9-.9.8c-1-.4-1.9-1.3-2.3-2.3l.8-.9-.9-1.8z" fill="currentColor"/></symbol>
+<symbol id="i-tg" viewBox="0 0 24 24"><path d="m3 11 17-7-3 16-5-4-3 3v-4l8-7-10 6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+  <div class="head">
+    <span class="eyebrow">Mood board · D-071</span>
+    <h1>Midnight and Marigold</h1>
+    <p>Navy as ink and as the night-sky band on top. Marigold for the one thing you want to press and the one number you want to see. Green when you are saving. Ivory paper under everything. Real deals, real photos from offertag.in. Press anything.</p>
+    <div class="tools"><button class="tbtn" id="replay">Replay entrance</button></div>
+  </div>
+
+  <section>
+    <h2>Palette and type</h2>
+    <div class="swatches">
+      <div class="sw" style="background:#081D49;color:#fff"><b>Midnight</b><span>#081D49</span><small>brand ink, header band</small></div>
+      <div class="sw" style="background:#164A9E;color:#fff"><b>Royal</b><span>#164A9E</span><small>band highlight, links</small></div>
+      <div class="sw" style="background:#F7A928;color:#1B1300"><b>Marigold</b><span>#F7A928</span><small>Buy, discount badge</small></div>
+      <div class="sw" style="background:#FFC75A;color:#1B1300"><b>Marigold light</b><span>#FFC75A</span><small>numbers on navy</small></div>
+      <div class="sw" style="background:#0B7A45;color:#fff"><b>Money green</b><span>#0B7A45</span><small>saving, live dot</small></div>
+      <div class="sw" style="background:#FFFAF1;color:#0F1A33"><b>Ivory</b><span>#FFFAF1</span><small>page</small></div>
+      <div class="sw" style="background:#F6F0E4;color:#0F1A33"><b>Stone</b><span>#F6F0E4</span><small>photo tiles, quiet fills</small></div>
+      <div class="sw" style="background:#0F1A33;color:#fff"><b>Ink</b><span>#0F1A33</span><small>text</small></div>
+    </div>
+    <div class="type">
+      <div>
+        <div class="cap" style="margin-bottom:6px">Jost · prices and headlines</div>
+        <div class="big">₹2,014</div>
+        <div class="h">Puma Comfortcush Lite running shoe</div>
+      </div>
+      <div>
+        <div class="cap" style="margin-bottom:6px">Plus Jakarta Sans · everything else</div>
+        <div class="lbl">Buy at Amazon · Filter · Sort: Newest</div>
+        <p class="b" style="margin:6px 0 0">Opens Amazon in a new tab. We may earn a commission. Prices change fast; check the store before you buy.</p>
+        <p class="b" style="margin:6px 0 0;font-size:13px;color:var(--ink-3)">Amazon · Footwear · 29 min ago</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Phone</h2>
+    <div class="board">
+      <div class="col">
+        <span class="cap">Home · Fresh · first screen</span>
+        <div class="phone">
+          <div class="band">
+            <div class="topbar"><span class="ic"><svg width="24" height="24"><use href="#i-menu"/></svg></span><span class="plate"><img src="assets/mood/logo.png" alt="OfferTag"></span><span class="ic"><svg width="24" height="24"><use href="#i-search"/></svg></span></div>
+            <div class="tabs"><button class="tab is-on">Fresh</button><button class="tab">Top picks</button><button class="tab">Loot</button><button class="tab">New</button><button class="tab">Pantry</button></div>
+            <div class="ruleline"><span class="dot"></span>Posted today · <b id="count">312</b>&nbsp;deals · updated 3 min ago</div>
+            <div class="quick"><button class="qchip"><svg><use href="#i-filter"/></svg>Filter <span class="cnt">2</span></button><button class="qchip"><svg><use href="#i-sort"/></svg>Sort</button><button class="qchip">Store <svg><use href="#i-chev"/></svg></button><button class="qchip">Category <svg><use href="#i-chev"/></svg></button><button class="qchip">Discount <svg><use href="#i-chev"/></svg></button></div>
+          </div>
+          <div class="feed">
+            <div class="card">
+              <div class="well"><img src="assets/mood/puma-shoe.jpg" alt=""><span class="badge">69%</span></div>
+              <div class="body"><div class="meta">Amazon · Footwear · 29 min</div><div class="title">Puma Men's Comfortcush Lite running shoe</div><div class="labels"><span class="caption">Lowest ever</span></div><div class="priceline"><span class="price">₹2,014</span><span class="was">₹6,499</span></div><div class="save"><svg><use href="#i-down"/></svg>You save ₹4,485</div></div>
+              <div class="acts"><button class="btn btn-buy">Buy at Amazon</button><button class="icbtn" aria-label="Share"><svg><use href="#i-share"/></svg></button></div>
+            </div>
+            <div class="join"><svg><use href="#i-wa"/></svg><span>Join OfferTag on <b>WhatsApp</b> · <b>Telegram</b></span><svg class="x"><use href="#i-x"/></svg></div>
+            <div class="card">
+              <div class="well"><img src="assets/mood/samyang-lens.jpg" alt=""><span class="badge">76%</span></div>
+              <div class="body"><div class="meta">Amazon · Electronics · 41 min</div><div class="title">Samyang XP 35mm F1.2 lens for Canon EF</div><div class="labels"><span class="coupon"><svg><use href="#i-tag"/></svg>Bank offer</span></div><div class="priceline"><span class="price">₹23,990</span><span class="was">₹1,01,990</span></div><div class="save"><svg><use href="#i-down"/></svg>You save ₹78,000</div></div>
+              <div class="acts"><button class="btn btn-buy">Buy at Amazon</button><button class="icbtn" aria-label="Share"><svg><use href="#i-share"/></svg></button></div>
+            </div>
+            <div class="card">
+              <div class="well"><img src="assets/mood/haldiram-ladoo.jpg" alt=""><span class="badge">50%</span></div>
+              <div class="body"><div class="meta">Amazon · Grocery · 53 min</div><div class="title">Haldiram's Mithas dry fruit panjeeri ladoo, 400 g</div><div class="labels"></div><div class="priceline"><span class="price">₹175</span><span class="was">₹350</span></div><div class="save"><svg><use href="#i-down"/></svg>You save ₹175</div></div>
+              <div class="acts"><button class="btn btn-buy">Buy at Amazon</button><button class="icbtn" aria-label="Share"><svg><use href="#i-share"/></svg></button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <span class="cap">Deal detail · price block and sticky bar</span>
+        <div class="phone"><div class="detail">
+          <div class="topbar light"><span class="ic"><svg width="24" height="24"><use href="#i-back"/></svg></span><span class="plate"><img src="assets/mood/logo.png" alt="OfferTag"></span><span class="ic"><svg width="24" height="24"><use href="#i-share"/></svg></span></div>
+          <div class="hero"><img src="assets/mood/puma-shoe.jpg" alt=""><span class="badge">69%</span></div>
+          <div class="dbody">
+            <div class="dmeta"><span class="type">Loot</span><span>Amazon · 29 min ago</span></div>
+            <div class="dtitle">Puma Men's Comfortcush Lite running shoe</div>
+            <div class="caption" style="font-size:13px">Lowest ever</div>
+            <div class="dprice">₹2,014</div>
+            <div class="dsub"><span class="was" style="font-size:14px">MRP ₹6,499</span><span class="savepill"><svg><use href="#i-down"/></svg>You save ₹4,485 (69%)</span></div>
+            <div class="code"><span class="lbl">Code</span>SAVE20<button class="copy" data-copy="SAVE20"><svg><use href="#i-copy"/></svg><span>Copy</span></button></div>
+            <div class="disc">Opens Amazon in a new tab. We may earn a commission.</div>
+            <div class="share"><button class="btn btn-quiet"><svg><use href="#i-wa"/></svg>WhatsApp</button><button class="btn btn-quiet"><svg><use href="#i-tg"/></svg>Telegram</button><button class="btn btn-quiet"><svg><use href="#i-link"/></svg>Copy link</button></div>
+            <div class="steps"><h4>How to get it</h4><div class="step"><i>1</i>Open the deal page and pick your size.</div><div class="step"><i>2</i>Apply code SAVE20 at checkout.</div></div>
+          </div>
+          <div class="sticky"><span class="mini-code"><svg><use href="#i-copy"/></svg>SAVE20</span><span class="price">₹2,014</span><button class="btn btn-buy btn-lg">Buy at Amazon</button></div>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Desktop</h2>
+    <div class="deskwrap"><div class="desk" id="desk">
+      <div class="dhead"><span class="plate"><img src="assets/mood/logo.png" alt="OfferTag"></span><div class="dsearch"><svg><use href="#i-search"/></svg>Search deals, stores, categories…</div><div class="dnav"><span>Blog<span class="new">New</span></span><span class="ic"><svg><use href="#i-bell"/></svg></span><span class="ic"><svg><use href="#i-user"/></svg></span></div></div>
+      <div class="dtabs"><a class="is-on">Fresh</a><a>Top picks</a><a>Loot</a><a>New</a><a>Pantry</a><span class="rl"><span class="dot"></span>Posted today · updated 3 min ago</span></div>
+      <div class="dmain">
+        <div class="facets">
+          <div class="facet"><h5>Category <span style="color:var(--ink-3);font-weight:500">Show all 50</span></h5><div class="frow"><span class="bx on"><svg><use href="#i-check"/></svg></span>Footwear<span class="c">84</span></div><div class="frow"><span class="bx"></span>Electronics<span class="c">61</span></div><div class="frow"><span class="bx"></span>Grocery<span class="c">40</span></div><div class="frow"><span class="bx"></span>Beauty<span class="c">22</span></div><div class="frow"><span class="bx"></span>Clothing<span class="c">19</span></div></div>
+          <div class="facet"><h5>Store</h5><div class="frow"><span class="bx on"><svg><use href="#i-check"/></svg></span>Amazon<span class="c">120</span></div><div class="frow"><span class="bx"></span>Flipkart<span class="c">96</span></div><div class="frow"><span class="bx"></span>BigBasket<span class="c">31</span></div></div>
+          <div class="facet"><h5>Discount</h5><div class="frow"><span class="bx" style="border-radius:50%"></span>50 % or more<span class="c">640</span></div><div class="frow"><span class="bx on" style="border-radius:50%"></span>70 % or more<span class="c">212</span></div><div class="frow"><span class="bx" style="border-radius:50%"></span>90 % or more<span class="c">31</span></div></div>
+        </div>
+        <div>
+          <div class="listhead"><span class="achip">Footwear <svg><use href="#i-x"/></svg></span><span class="achip">Amazon <svg><use href="#i-x"/></svg></span><span>Clear all</span><span style="margin-left:6px"><b style="color:var(--ink)">1,284 deals</b></span><span class="sort"><svg width="14" height="14"><use href="#i-sort"/></svg>Sort: Recommended</span></div>
+          <div class="grid">
+            <div class="ccard"><div class="well"><img src="assets/mood/reebok-shoe.jpg" alt=""><span class="badge">58%</span></div><div class="meta">Amazon · 1 h</div><div class="title">Reebok Men's Rout 2 running shoe</div><div class="priceline" style="gap:6px"><span class="price">₹1,385</span><span class="was">₹3,299</span></div><div class="save"><svg><use href="#i-down"/></svg>Save ₹1,914</div><button class="btn btn-buy">Buy at Amazon</button></div>
+            <div class="ccard"><div class="well"><img src="assets/mood/puffer-jacket.jpg" alt=""><span class="badge">81%</span></div><div class="meta">Amazon · 21 min</div><div class="title">The Indian Garage Co slim-fit puffer jacket</div><div class="priceline" style="gap:6px"><span class="price">₹990</span><span class="was">₹5,099</span></div><div class="save"><svg><use href="#i-down"/></svg>Save ₹4,109</div><button class="btn btn-buy">Buy at Amazon</button></div>
+            <div class="ccard"><div class="well"><img src="assets/mood/lakme-sunscreen.jpg" alt=""><span class="badge">65%</span></div><div class="meta">Amazon · 53 min</div><div class="title">Lakme Fluid SPF 50 PA++++ sunscreen</div><div class="priceline" style="gap:6px"><span class="price">₹104</span><span class="was">₹299</span></div><div class="save"><svg><use href="#i-down"/></svg>Save ₹195</div><button class="btn btn-buy">Buy at Amazon</button></div>
+            <div class="ccard"><div class="well"><img src="assets/mood/flower-pot.jpg" alt=""><span class="badge">90%</span></div><div class="meta">Amazon · 23 min</div><div class="title">TrustBasket Ambiance large flower pot</div><div class="priceline" style="gap:6px"><span class="price">₹292</span><span class="was">₹2,999</span></div><div class="save"><svg><use href="#i-down"/></svg>Save ₹2,707</div><button class="btn btn-buy">Buy at Amazon</button></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section>
+    <h2>What changed, and what it costs</h2>
+    <div class="notes">
+      <div><b>Three colours, three jobs.</b> Midnight navy is structure and trust (band, ink, type label). Marigold is desire: only the Buy button and the % badge. Green is reward: only the saving. Nothing else gets colour, so each one lands.</div>
+      <div><b>Photos carry the page.</b> 44 % of the card, on a lit stone tile with the photo's white background blended away. The detail hero is 5:4. Today's originals are 200 px, so Q-020 (store larger images) becomes a must.</div>
+      <div><b>Type with a voice.</b> Jost at 26 / 38 / 44 for prices, Plus Jakarta Sans for everything else. Inter is gone.</div>
+      <div><b>Motion, cheap.</b> Cards rise in with a 60 ms stagger, badges pop, the live dot breathes, buttons squash on press. CSS transform and opacity only. Sticky bar is the one glass surface.</div>
+      <div><b>To log if approved:</b> brand.md colours and type (reopens D-037, D-038), tokens v0.2, client checkpoint for Adil.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  // scale the desktop slice to its container
+  var desk = document.getElementById('desk'), wrap = desk.parentNode;
+  function fit() { var s = Math.min(1, wrap.clientWidth / 1180); desk.style.transform = 'scale(' + s + ')'; wrap.style.height = (desk.offsetHeight * s) + 'px'; }
+  fit(); window.addEventListener('resize', fit); setTimeout(fit, 300); setTimeout(fit, 1200);
+  // count-up
+  var el = document.getElementById('count');
+  function countUp() { var t0 = performance.now(), dur = 900; (function step(t) { var p = Math.min(1, (t - t0) / dur); p = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(312 * p); if (p < 1) requestAnimationFrame(step); })(t0); }
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) countUp();
+  // replay
+  document.getElementById('replay').addEventListener('click', function () {
+    document.querySelectorAll('.card, .ccard, .badge').forEach(function (b) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; });
+    countUp();
+  });
+  // copy
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var done = function () { btn.classList.add('is-done'); btn.querySelector('span').textContent = 'Copied'; btn.querySelector('use').setAttribute('href', '#i-check'); setTimeout(function () { btn.classList.remove('is-done'); btn.querySelector('span').textContent = 'Copy'; btn.querySelector('use').setAttribute('href', '#i-copy'); }, 2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(btn.dataset.copy).then(done, done); } else { done(); }
+    });
+  });
+  // tabs
+  document.querySelectorAll('.tabs').forEach(function (row) { row.querySelectorAll('.tab').forEach(function (c) { c.addEventListener('click', function () { row.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('is-on'); }); c.classList.add('is-on'); }); }); });
+})();
+</script>
+</body>
+</html>

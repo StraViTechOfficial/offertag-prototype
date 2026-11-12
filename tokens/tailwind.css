@@ -1,0 +1,37 @@
+/* Tailwind 4 bridge — import after tokens.css. Exposes roles as utilities (bg-surface, text-muted, rounded-md…).
+   Breakpoints here must match --bp-* in tokens.css. */
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+  --color-bg: var(--bg); --color-surface: var(--surface); --color-surface-2: var(--surface-2); --color-surface-3: var(--surface-3);
+  --color-text: var(--text); --color-muted: var(--text-muted); --color-subtle: var(--text-subtle); --color-inverse: var(--text-inverse);
+  --color-border: var(--border); --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary); --color-primary-hover: var(--primary-hover); --color-primary-active: var(--primary-active);
+  --color-on-primary: var(--on-primary); --color-primary-text: var(--primary-text); --color-primary-tint: var(--primary-tint);
+  --color-link: var(--link); --color-link-hover: var(--link-hover); --color-focus: var(--focus);
+  --color-accent: var(--accent); --color-accent-text: var(--accent-text); --color-accent-tint: var(--accent-tint);
+  --color-badge: var(--badge-bg); --color-badge-fg: var(--badge-fg); --color-save: var(--save); --color-label: var(--label); --color-rule: var(--rule);
+  --color-price: var(--price); --color-price-was: var(--price-was);
+  --color-ok: var(--ok); --color-ok-bg: var(--ok-bg); --color-warn: var(--warn); --color-warn-bg: var(--warn-bg); --color-err: var(--err); --color-err-bg: var(--err-bg);
+  --color-img-well: var(--img-well); --color-skeleton: var(--skeleton); --color-scrim: var(--scrim);
+  --color-whatsapp: var(--brand-whatsapp);
+
+  --font-display: var(--font-display); --font-body: var(--font-body);
+  --text-xs: var(--text-xs); --text-xs--line-height: var(--leading-xs);
+  --text-sm: var(--text-sm); --text-sm--line-height: var(--leading-sm);
+  --text-base: var(--text-base); --text-base--line-height: var(--leading-base);
+  --text-md: var(--text-md); --text-md--line-height: var(--leading-md);
+  --text-lg: var(--text-lg); --text-lg--line-height: var(--leading-lg);
+  --text-xl: var(--text-xl); --text-xl--line-height: var(--leading-xl);
+  --text-2xl: var(--text-2xl); --text-2xl--line-height: var(--leading-2xl);
+  --text-3xl: var(--text-3xl); --text-3xl--line-height: var(--leading-3xl);
+  --text-4xl: var(--text-4xl); --text-4xl--line-height: var(--leading-4xl);
+
+  --radius-xs: var(--radius-xs); --radius-sm: var(--radius-sm); --radius-md: var(--radius-md); --radius-lg: var(--radius-lg); --radius-xl: var(--radius-xl); --radius-pill: var(--radius-pill);
+  --shadow-1: var(--shadow-1); --shadow-2: var(--shadow-2); --shadow-3: var(--shadow-3);
+  --ease-standard: var(--ease-standard); --ease-out: var(--ease-out); --ease-in: var(--ease-in);
+
+  --breakpoint-sm: 600px; --breakpoint-md: 900px; --breakpoint-lg: 1280px;
+  --breakpoint-xl: initial; --breakpoint-2xl: initial;
+}

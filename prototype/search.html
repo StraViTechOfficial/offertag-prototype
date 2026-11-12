@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Search — OfferTag</title>
+<meta name="description" content="Deals, stores and categories. Live prices from Amazon, Flipkart and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body data-page="listing" data-kind="search" data-default-sort="newest">
+
+<header class="site-header">
+  <div class="container">
+    <div class="header-row">
+      <button class="btn btn-ghost btn-icon" id="menu-open" aria-label="Open menu" aria-controls="menu-sheet"><i data-lucide="menu"></i></button>
+      <a class="logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
+      <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
+      <nav class="hnav" aria-label="Deal types">
+        <a href="index.html">Home</a><a href="fresh.html">Fresh</a><a href="top-picks.html">Top picks</a><a href="loot.html">Loot</a><a href="new.html">New</a><a href="pantry.html">Pantry</a>
+        <a href="blog.html" class="hnav-blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden>New</span><span class="blog-tip" role="tooltip"><small>New on the blog</small>Lunch boxes and tiffins worth packing this week</span></a>
+      </nav>
+      <form class="header-search" data-search role="search">
+        <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" aria-controls="search-pop" aria-expanded="false"></label>
+        <div class="popover search-pop" id="search-pop" hidden data-state="closed" role="listbox" aria-label="Suggestions"></div>
+      </form>
+      <div class="header-actions">
+        <a class="btn btn-link nav-blog" href="blog.html" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden>New</span></a>
+        <div class="dropdown alerts-menu">
+          <button class="btn alerts-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Deal alerts"><i data-lucide="bell"></i><span class="lbl">Deal alerts</span><i data-lucide="chevron-down" class="chev"></i></button>
+          <div class="menu alerts-pop" role="menu" hidden data-state="closed">
+            <div class="menu-label">Get every deal the minute it’s posted</div>
+            <a role="menuitem" class="mi-wa" href="#wa" target="_blank" rel="noopener"><span class="mi-ico"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></span><span><b>WhatsApp community</b><small>Free, no account</small></span></a>
+            <a role="menuitem" class="mi-tg" href="#tg" target="_blank" rel="noopener"><span class="mi-ico"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></span><span><b>Telegram channel</b><small>Free, no account</small></span></a>
+            <button type="button" role="menuitem" class="mi-br" data-browser-alerts><span class="mi-ico"><i data-lucide="bell-ring"></i></span><span><b>Browser alerts</b><small>On this device</small></span></button>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
+        <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>Sign in</a>
+        <div class="dropdown account-menu" data-when-user hidden>
+          <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
+          <div class="menu" role="menu" hidden data-state="closed">
+            <div class="menu-label" data-user-name></div>
+            <div class="separator"></div>
+            <a role="menuitem" href="account.html"><i data-lucide="user"></i>Account</a>
+            <button type="button" role="menuitem" data-signout><i data-lucide="log-out"></i>Sign out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form class="header-search-mobile" data-search role="search">
+      <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" data-search-sheet-trigger></label>
+    </form>
+  </div>
+</header>
+<nav class="typenav" aria-label="Deal types"><div class="container"><ul><li><a href="index.html">Home</a></li><li><a href="fresh.html">Fresh</a></li><li><a href="top-picks.html">Top picks</a></li><li><a href="loot.html">Loot</a></li><li><a href="new.html">New</a></li><li><a href="pantry.html">Pantry</a></li></ul></div></nav>
+
+<main>
+  <div class="container">
+    <div class="crumbs"><a href="index.html">Home</a><i data-lucide="chevron-right"></i><span>Search</span></div>
+    <div class="page-head"><h1 id="page-title">Search</h1><p id="page-rule">Deals, stores and categories</p></div>
+
+    <div class="listing">
+      <div class="community" data-community aria-label="Join the OfferTag community"><span class="cm-text"><span class="cm-long">Get every deal on WhatsApp or Telegram the minute it’s posted. Free, no account.</span><span class="cm-short">Get deal alerts, free</span></span><span class="cm-acts"><a class="cm-btn cm-wa" href="#wa" target="_blank" rel="noopener"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>WhatsApp</a><a class="cm-btn cm-tg" href="#tg" target="_blank" rel="noopener"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>Telegram</a></span></div>
+      <aside class="filters" id="filters" aria-label="Filters">
+        <div class="fhead"><span>Filters</span><button class="btn btn-link" id="clear-all" type="button">Clear all</button></div>
+        <form id="filter-form">
+          <!-- Shown once the BRD coupon field exists (D-075). Hidden in this prototype: no coupon data yet. -->
+          <label class="opt coupon-toggle" hidden><input type="checkbox" name="coupon" value="1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Has a coupon</span><span class="cnt" data-cnt="coupon:1"></span></label>
+          <details class="fgroup" open data-group-name="cat" ><summary>Category <i data-lucide="chevron-down"></i></summary>
+            <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a category" data-find="cat" aria-label="Find a category"></label>
+            <div class="opts scroll" data-group="cat"><label class="opt"><input type="checkbox" name="cat" value="Kitchen"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Kitchen</span><span class="cnt">13</span></label><label class="opt"><input type="checkbox" name="cat" value="Grocery"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Grocery</span><span class="cnt">7</span></label><label class="opt"><input type="checkbox" name="cat" value="Clothing"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Clothing</span><span class="cnt">4</span></label><label class="opt"><input type="checkbox" name="cat" value="Footwear"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Footwear</span><span class="cnt">4</span></label><label class="opt"><input type="checkbox" name="cat" value="Beauty"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Beauty</span><span class="cnt">4</span></label><label class="opt"><input type="checkbox" name="cat" value="Bags"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Bags</span><span class="cnt">3</span></label><label class="opt"><input type="checkbox" name="cat" value="Others"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Others</span><span class="cnt">2</span></label><label class="opt"><input type="checkbox" name="cat" value="Home &amp; Decore"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Home &amp; Decore</span><span class="cnt">1</span></label><label class="opt"><input type="checkbox" name="cat" value="Electronics"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Electronics</span><span class="cnt">1</span></label><label class="opt"><input type="checkbox" name="cat" value="Mobile"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Mobile</span><span class="cnt">1</span></label><label class="opt"><input type="checkbox" name="cat" value="Baby"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Baby</span><span class="cnt">1</span></label><label class="opt"><input type="checkbox" name="cat" value="Accessories"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Accessories</span><span class="cnt">1</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Recharge"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Recharge</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Movies"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Movies</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Food &amp; Beverage"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Food &amp; Beverage</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Amazon Pantry"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Amazon Pantry</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Luggage"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Luggage</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Watch"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Watch</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Cab"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Cab</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="TV &amp; Appliances"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">TV &amp; Appliances</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Washing Machine"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Washing Machine</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="AC"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">AC</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Personal Care"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Personal Care</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Earphones &amp; Headphones"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Earphones &amp; Headphones</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Computers &amp; Laptops"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Computers &amp; Laptops</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Deodrants &amp; Perfumes"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Deodrants &amp; Perfumes</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Speaker"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Speaker</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Health"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Health</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Automotive"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Automotive</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Books"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Books</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="cat" value="Cashback"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Cashback</span><span class="cnt">0</span></label></div>
+          </details>
+          <details class="fgroup" open data-group-name="store" ><summary>Store <i data-lucide="chevron-down"></i></summary>
+            <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a store" data-find="store" aria-label="Find a store"></label>
+            <div class="opts scroll" data-group="store"><label class="opt"><input type="checkbox" name="store" value="Amazon"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Amazon</span><span class="cnt">42</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Flipkart"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Flipkart</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Myntra"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Myntra</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Jiomart"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Jiomart</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Ajio"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Ajio</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Bigbasket"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Bigbasket</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Blinkit"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Blinkit</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Zepto"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Zepto</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Swiggy"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Swiggy</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Paytm"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Paytm</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Shopsy"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Shopsy</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Meesho"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Meesho</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Others"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Others</span><span class="cnt">0</span></label><label class="opt is-zero"><input type="checkbox" name="store" value="Bookmyshow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Bookmyshow</span><span class="cnt">0</span></label></div>
+          </details>
+          <details class="fgroup" open data-group-name="disc"><summary>Discount <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="disc">
+              <label class="opt"><input type="radio" name="disc" value="0" checked><span class="box radio"></span><span class="txt">Any</span></label>
+              <label class="opt"><input type="radio" name="disc" value="50"><span class="box radio"></span><span class="txt">50% or more</span><span class="cnt" data-cnt="disc:50"></span></label>
+              <label class="opt"><input type="radio" name="disc" value="70"><span class="box radio"></span><span class="txt">70% or more</span><span class="cnt" data-cnt="disc:70"></span></label>
+              <label class="opt"><input type="radio" name="disc" value="90"><span class="box radio"></span><span class="txt">90% or more</span><span class="cnt" data-cnt="disc:90"></span></label>
+            </div>
+          </details>
+          <details class="fgroup" open data-group-name="price"><summary>Price <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="price">
+              <label class="opt"><input type="radio" name="price" value="" checked><span class="box radio"></span><span class="txt">Any</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-499"><span class="box radio"></span><span class="txt">Under ₹499</span><span class="cnt" data-cnt="price:0-499"></span></label>
+              <label class="opt"><input type="radio" name="price" value="0-999"><span class="box radio"></span><span class="txt">Under ₹999</span><span class="cnt" data-cnt="price:0-999"></span></label>
+              <label class="opt"><input type="radio" name="price" value="0-2499"><span class="box radio"></span><span class="txt">Under ₹2,499</span><span class="cnt" data-cnt="price:0-2499"></span></label>
+              <label class="opt"><input type="radio" name="price" value="0-4999"><span class="box radio"></span><span class="txt">Under ₹4,999</span><span class="cnt" data-cnt="price:0-4999"></span></label>
+              <label class="opt"><input type="radio" name="price" value="5000-"><span class="box radio"></span><span class="txt">₹5,000 and above</span><span class="cnt" data-cnt="price:5000-"></span></label>
+            </div>
+            <div class="minmax"><label><span class="visually-hidden">Minimum price</span><input class="input" type="number" inputmode="numeric" placeholder="Min" name="pmin" min="0"></label><span>–</span><label><span class="visually-hidden">Maximum price</span><input class="input" type="number" inputmode="numeric" placeholder="Max" name="pmax" min="0"></label></div>
+          </details>
+          <!-- Deal type: hidden on type pages, shown on search / category / store pages (D-075) -->
+          <details class="fgroup" data-group-name="type" ><summary>Deal type <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="type"><label class="opt"><input type="checkbox" name="type" value="Fresh"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Fresh</span><span class="cnt">42</span></label><label class="opt"><input type="checkbox" name="type" value="Top"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Top picks</span><span class="cnt">42</span></label><label class="opt"><input type="checkbox" name="type" value="Loot"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Loot</span><span class="cnt">13</span></label><label class="opt is-zero"><input type="checkbox" name="type" value="New"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">New</span><span class="cnt">0</span></label><label class="opt"><input type="checkbox" name="type" value="Pantry"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Pantry</span><span class="cnt">20</span></label></div>
+          </details>
+          <details class="fgroup" data-group-name="posted"><summary>Posted <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="posted">
+              <label class="opt"><input type="radio" name="posted" value="" checked><span class="box radio"></span><span class="txt">Any time</span></label>
+              <label class="opt"><input type="radio" name="posted" value="1440"><span class="box radio"></span><span class="txt">Last 24 hours</span><span class="cnt" data-cnt="posted:1440"></span></label>
+              <label class="opt"><input type="radio" name="posted" value="10080"><span class="box radio"></span><span class="txt">Last 7 days</span><span class="cnt" data-cnt="posted:10080"></span></label>
+            </div>
+          </details>
+        </form>
+      </aside>
+
+      <section aria-label="Results">
+        <div class="toolbar">
+          <button class="btn btn-outline phone-only" id="open-filters" type="button"><i data-lucide="sliders-horizontal"></i>Filter <span class="badge badge-default" id="filter-count" hidden>0</span></button>
+          <button class="btn btn-outline phone-only" id="open-sort" type="button"><i data-lucide="arrow-up-down"></i><span id="sort-label-m">Sort</span></button>
+          <span class="count"><b id="count">42</b> deals</span>
+          <div class="chips locked" id="locked"></div>
+          <div class="chips" id="chips"></div>
+          <div class="right">
+            <div class="dropdown sort-desktop" id="sort-menu">
+              <button class="btn btn-outline" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><i data-lucide="arrow-up-down"></i><span id="sort-label">Sort</span><i data-lucide="chevron-down"></i></button>
+              <div class="menu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-sort="recommended">Recommended</button>
+                <button type="button" role="menuitemradio" data-sort="newest">Newest</button>
+                <button type="button" role="menuitemradio" data-sort="disc">Discount: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="saving">Biggest saving</button>
+                <button type="button" role="menuitemradio" data-sort="price-asc">Price: low to high</button>
+                <button type="button" role="menuitemradio" data-sort="price-desc">Price: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="views">Most viewed</button>
+              </div>
+            </div>
+            <div class="density" role="group" aria-label="Density"><button type="button" data-density="grid" aria-pressed="true" aria-label="Grid"><i data-lucide="layout-grid"></i></button><button type="button" data-density="list" aria-pressed="false" aria-label="List"><i data-lucide="list"></i></button></div>
+          </div>
+        </div>
+
+        <div class="deal-grid results" id="results"><article class="card deal" data-id="474150" data-page="deal-1794231756.html" data-q="about space bed - (84 x 74 inches) king size bed without storage home &amp; decore amazon" data-cat="Home &amp; Decore" data-store="Amazon" data-pct="74" data-price="9000" data-save="25999" data-age="10" data-views="17" data-types="Fresh,Top">
+  <a class="img" href="deal-1794231756.html" aria-label="ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage"><img src="assets/deals/lg/1794231756.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">74% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Home &amp; Decore · 10 min</div>
+    <a class="title" href="deal-1794231756.html">ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage</a>
+    <div class="priceline"><span class="price">₹9,000</span><span class="was">₹34,999</span></div>
+    <div class="save">Save ₹25,999</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GQBSVK7M?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474149" data-page="deal-1794231567.html" data-q="crompton dyna ray 9 watt led bulb cool day light kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="71" data-price="43" data-save="107" data-age="13" data-views="13" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794231567.html" aria-label="Crompton Dyna Ray 9 Watt LED Bulb Cool Day Light"><img src="assets/deals-hd/1794231567.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">71% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 13 min</div>
+    <a class="title" href="deal-1794231567.html">Crompton Dyna Ray 9 Watt LED Bulb Cool Day Light</a>
+    <div class="priceline"><span class="price">₹43</span><span class="was">₹150</span></div>
+    <div class="save">Save ₹107</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0B6FJNH97?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474148" data-page="deal-1794231088.html" data-q="the indian garage co men&#x27;s slim fit solid puffer jackets clothing amazon" data-cat="Clothing" data-store="Amazon" data-pct="81" data-price="990" data-save="4109" data-age="21" data-views="17" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794231088.html" aria-label="The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets"><img src="assets/deals/lg/1794231088.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">81% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Clothing · 21 min</div>
+    <a class="title" href="deal-1794231088.html">The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets</a>
+    <div class="priceline"><span class="price">₹990</span><span class="was">₹5,099</span></div>
+    <div class="save">Save ₹4,109</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0BNLLB2F5?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474147" data-page="deal-1794230968.html" data-q="trustbasket ambiance pot kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="90" data-price="292" data-save="2707" data-age="23" data-views="22" data-types="Fresh,Top,Loot,Pantry">
+  <a class="img" href="deal-1794230968.html" aria-label="TrustBasket Ambiance Pot"><img src="assets/deals/lg/1794230968.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">90% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 23 min</div>
+    <a class="title" href="deal-1794230968.html">TrustBasket Ambiance Pot</a>
+    <div class="priceline"><span class="price">₹292</span><span class="was">₹2,999</span></div>
+    <div class="save">Save ₹2,707</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GWRDLBF7?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474146" data-page="deal-1794230961.html" data-q="diy engineered wood computer table, compact study desk for home office, bedroom &amp; small spaces (75 x 80 x 45 cm) (coupon) kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="60" data-price="1588" data-save="2411" data-age="23" data-views="9" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794230961.html" aria-label="DIY Engineered Wood Computer Table, Compact Study Desk for Home Office, Bedroom &amp; Small Spaces (75 x 80 x 45 CM) (Coupon)"><img src="assets/deals-hd/1794230961.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">60% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 23 min</div>
+    <a class="title" href="deal-1794230961.html">DIY Engineered Wood Computer Table, Compact Study Desk for Home Office, Bedroom &amp; Small Spaces (75 x 80 x 45 CM) (Coupon)</a>
+    <div class="priceline"><span class="price">₹1,588</span><span class="was">₹3,999</span></div>
+    <div class="save">Save ₹2,411</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0H49SZKXF?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474145" data-page="deal-1794230597.html" data-q="puma mens comfortcush lite running shoe footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="69" data-price="2014" data-save="4485" data-age="29" data-views="13" data-types="Fresh,Top">
+  <a class="img" href="deal-1794230597.html" aria-label="Puma Mens Comfortcush Lite Running Shoe"><img src="assets/deals/lg/1794230597.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">69% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Footwear · 29 min</div>
+    <a class="title" href="deal-1794230597.html">Puma Mens Comfortcush Lite Running Shoe</a>
+    <div class="priceline"><span class="price">₹2,014</span><span class="was">₹6,499</span></div>
+    <div class="save">Save ₹4,485</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0FG1QFN87?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474144" data-page="deal-1794230591.html" data-q="puma unisex-adult runningroad running shoe footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="69" data-price="2324" data-save="5175" data-age="29" data-views="15" data-types="Fresh,Top">
+  <a class="img" href="deal-1794230591.html" aria-label="PUMA Unisex-Adult RunningRoad Running Shoe"><img src="assets/deals/lg/1794230591.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">69% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Footwear · 29 min</div>
+    <a class="title" href="deal-1794230591.html">PUMA Unisex-Adult RunningRoad Running Shoe</a>
+    <div class="priceline"><span class="price">₹2,324</span><span class="was">₹7,499</span></div>
+    <div class="save">Save ₹5,175</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0DJ99M1MP?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474143" data-page="deal-1794229870.html" data-q="samyang xp 35mm f1.2 lens for canon ef (bank offer) electronics amazon" data-pinned="1" data-cat="Electronics" data-store="Amazon" data-pct="76" data-price="23990" data-save="78000" data-age="41" data-views="13" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794229870.html" aria-label="Samyang XP 35mm F1.2 Lens for Canon EF (Bank Offer)"><img src="assets/deals-hd/1794229870.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">76% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Electronics · 41 min</div>
+    <a class="title" href="deal-1794229870.html">Samyang XP 35mm F1.2 Lens for Canon EF (Bank Offer)</a>
+    <div class="priceline"><span class="price">₹23,990</span><span class="was">₹1,01,990</span></div>
+    <div class="save">Save ₹78,000</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B07P12NRTK?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474142" data-page="deal-1794229537.html" data-q="amazon brand - symbol women cotton stretch padded wire free medium coverage t-shirt bra clothing amazon" data-pinned="1" data-cat="Clothing" data-store="Amazon" data-pct="88" data-price="409" data-save="3090" data-age="47" data-views="9" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794229537.html" aria-label="Amazon Brand - Symbol Women Cotton Stretch Padded Wire Free Medium Coverage T-Shirt Bra"><img src="assets/deals/lg/1794229537.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">88% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Clothing · 47 min</div>
+    <a class="title" href="deal-1794229537.html">Amazon Brand - Symbol Women Cotton Stretch Padded Wire Free Medium Coverage T-Shirt Bra</a>
+    <div class="priceline"><span class="price">₹409</span><span class="was">₹3,499</span></div>
+    <div class="save">Save ₹3,090</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0C7TZ9GV5?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474141" data-page="deal-1794229159.html" data-q="cello petal bathroom set kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="63" data-price="430" data-save="719" data-age="53" data-views="16" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794229159.html" aria-label="Cello Petal Bathroom Set"><img src="assets/deals/lg/1794229159.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">63% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 53 min</div>
+    <a class="title" href="deal-1794229159.html">Cello Petal Bathroom Set</a>
+    <div class="priceline"><span class="price">₹430</span><span class="was">₹1,149</span></div>
+    <div class="save">Save ₹719</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0CR7BLF1W?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474140" data-page="deal-1794229154.html" data-q="lakme fluid spf 50 pa++++ in-vivo tested sunscreen with 1% niacinamide &amp; ceramide,all skin type 30ml beauty amazon" data-cat="Beauty" data-store="Amazon" data-pct="65" data-price="104" data-save="195" data-age="53" data-views="7" data-types="Fresh,Top">
+  <a class="img" href="deal-1794229154.html" aria-label="Lakme Fluid SPF 50 PA++++ In-Vivo tested Sunscreen With 1% Niacinamide &amp; Ceramide,all skin type 30ml"><img src="assets/deals-hd/1794229154.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">65% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Beauty · 53 min</div>
+    <a class="title" href="deal-1794229154.html">Lakme Fluid SPF 50 PA++++ In-Vivo tested Sunscreen With 1% Niacinamide &amp; Ceramide,all skin type 30ml</a>
+    <div class="priceline"><span class="price">₹104</span><span class="was">₹299</span></div>
+    <div class="save">Save ₹195</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GLQ8WVD6?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474139" data-page="deal-1794229144.html" data-q="haldiram&#x27;s mithas ladoo - dry fruit panjeeri box,400 gram,indian sweets diwali gift pack,almond grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="50" data-price="175" data-save="175" data-age="53" data-views="15" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794229144.html" aria-label="Haldiram&#x27;s Mithas Ladoo - Dry Fruit Panjeeri Box,400 Gram,Indian Sweets Diwali Gift Pack,Almond"><img src="assets/deals-hd/1794229144.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">50% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 53 min</div>
+    <a class="title" href="deal-1794229144.html">Haldiram&#x27;s Mithas Ladoo - Dry Fruit Panjeeri Box,400 Gram,Indian Sweets Diwali Gift Pack,Almond</a>
+    <div class="priceline"><span class="price">₹175</span><span class="was">₹350</span></div>
+    <div class="save">Save ₹175</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B07PNBHX46?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474137" data-page="deal-1794228282.html" data-q="reebok mens rout 2 m running shoe footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="58" data-price="1385" data-save="1914" data-age="60" data-views="14" data-types="Fresh,Top">
+  <a class="img" href="deal-1794228282.html" aria-label="Reebok Mens Rout 2 M Running Shoe"><img src="assets/deals/lg/1794228282.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">58% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Footwear · 1 h</div>
+    <a class="title" href="deal-1794228282.html">Reebok Mens Rout 2 M Running Shoe</a>
+    <div class="priceline"><span class="price">₹1,385</span><span class="was">₹3,299</span></div>
+    <div class="save">Save ₹1,914</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0D96D2LJY?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474470" data-page="deal-1794325579.html" data-q="polycab wizzy neo 1200mm 5-star bldc, remote ceiling fan for living room kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="57" data-price="2799" data-save="3700" data-age="60" data-views="10" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794325579.html" aria-label="Polycab Wizzy Neo 1200mm 5-Star BLDC, Remote Ceiling fan for Living Room"><img src="assets/deals-hd/1794325579.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">57% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 1 h</div>
+    <a class="title" href="deal-1794325579.html">Polycab Wizzy Neo 1200mm 5-Star BLDC, Remote Ceiling fan for Living Room</a>
+    <div class="priceline"><span class="price">₹2,799</span><span class="was">₹6,499</span></div>
+    <div class="save">Save ₹3,700</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0D2L7N6DC?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474469" data-page="deal-1794325571.html" data-q="saffola products at steal prices + coupons grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="66" data-price="160" data-save="310" data-age="60" data-views="14" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794325571.html" aria-label="Saffola Products at Steal prices + Coupons"><img src="assets/deals/lg/1794325571.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">66% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 1 h</div>
+    <a class="title" href="deal-1794325571.html">Saffola Products at Steal prices + Coupons</a>
+    <div class="priceline"><span class="price">₹160</span><span class="was">₹470</span></div>
+    <div class="save">Save ₹310</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/s?hidden-keywords=B0GGHLBJL3+%7C+B09KV1R96H+%7C+B0H1JMCXHF+%7C+B0GGJ2TH8Z+%7C+B0HGQQL5S8&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474468" data-page="deal-1794325451.html" data-q="saffola wild forest organic honey, 500g, wild forest organic honey (coupon) grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="63" data-price="170" data-save="290" data-age="60" data-views="11" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794325451.html" aria-label="Saffola Wild Forest Organic Honey, 500g, Wild Forest Organic Honey (Coupon)"><img src="assets/deals-hd/1794325451.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">63% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 1 h</div>
+    <a class="title" href="deal-1794325451.html">Saffola Wild Forest Organic Honey, 500g, Wild Forest Organic Honey (Coupon)</a>
+    <div class="priceline"><span class="price">₹170</span><span class="was">₹460</span></div>
+    <div class="save">Save ₹290</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B09KV1R96H?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474467" data-page="deal-1794325244.html" data-q="sparkmate by crystal soap dispenser with scrub &amp; sponge pad beauty amazon" data-cat="Beauty" data-store="Amazon" data-pct="82" data-price="54" data-save="245" data-age="60" data-views="12" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794325244.html" aria-label="Sparkmate by Crystal Soap Dispenser with Scrub &amp; Sponge Pad"><img src="assets/deals-hd/1794325244.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">82% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Beauty · 1 h</div>
+    <a class="title" href="deal-1794325244.html">Sparkmate by Crystal Soap Dispenser with Scrub &amp; Sponge Pad</a>
+    <div class="priceline"><span class="price">₹54</span><span class="was">₹299</span></div>
+    <div class="save">Save ₹245</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0C597KQFN?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474466" data-page="deal-1794324431.html" data-q="vgr v-055 professional hair trimmer for men beauty amazon" data-cat="Beauty" data-store="Amazon" data-pct="71" data-price="729" data-save="1766" data-age="120" data-views="10" data-types="Fresh,Top">
+  <a class="img" href="deal-1794324431.html" aria-label="VGR V-055 Professional Hair Trimmer for Men"><img src="assets/deals-hd/1794324431.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">71% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Beauty · 2 h</div>
+    <a class="title" href="deal-1794324431.html">VGR V-055 Professional Hair Trimmer for Men</a>
+    <div class="priceline"><span class="price">₹729</span><span class="was">₹2,495</span></div>
+    <div class="save">Save ₹1,766</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B08JNP488Z?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474465" data-page="deal-1794324132.html" data-q="puma men down clothing amazon" data-pinned="1" data-cat="Clothing" data-store="Amazon" data-pct="70" data-price="4098" data-save="9597" data-age="120" data-views="8" data-types="Fresh,Top">
+  <a class="img" href="deal-1794324132.html" aria-label="PUMA Men Down"><img src="assets/deals/lg/1794324132.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">70% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Clothing · 2 h</div>
+    <a class="title" href="deal-1794324132.html">PUMA Men Down</a>
+    <div class="priceline"><span class="price">₹4,098</span><span class="was">₹13,695</span></div>
+    <div class="save">Save ₹9,597</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0FF2QFNCM?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474464" data-page="deal-1794323983.html" data-q="dynamotrade magic eraser cleaning sponge for walls, kitchen &amp; shoes (1 pcs) (coupon) kitchen amazon" data-pinned="1" data-cat="Kitchen" data-store="Amazon" data-pct="95" data-price="24" data-save="475" data-age="120" data-views="21" data-types="Fresh,Top,Loot,Pantry">
+  <a class="img" href="deal-1794323983.html" aria-label="DYNAMOTRADE Magic Eraser Cleaning Sponge for Walls, Kitchen &amp; Shoes (1 Pcs) (Coupon)"><img src="assets/deals/lg/1794323983.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">95% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 2 h</div>
+    <a class="title" href="deal-1794323983.html">DYNAMOTRADE Magic Eraser Cleaning Sponge for Walls, Kitchen &amp; Shoes (1 Pcs) (Coupon)</a>
+    <div class="priceline"><span class="price">₹24</span><span class="was">₹499</span></div>
+    <div class="save">Save ₹475</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0HR155RJS?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474463" data-page="deal-1794323223.html" data-q="rr signature raptor 1200mm bldc designer ceiling fan kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="58" data-price="2699" data-save="3800" data-age="120" data-views="8" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794323223.html" aria-label="RR Signature Raptor 1200mm BLDC Designer Ceiling Fan"><img src="assets/deals-hd/1794323223.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">58% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 2 h</div>
+    <a class="title" href="deal-1794323223.html">RR Signature Raptor 1200mm BLDC Designer Ceiling Fan</a>
+    <div class="priceline"><span class="price">₹2,699</span><span class="was">₹6,499</span></div>
+    <div class="save">Save ₹3,800</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0FC2N9K8S?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474462" data-page="deal-1794323174.html" data-q="sony mdr-zx110a on ear stereo wired headphones (white), without mic mobile amazon" data-cat="Mobile" data-store="Amazon" data-pct="61" data-price="549" data-save="841" data-age="120" data-views="10" data-types="Fresh,Top">
+  <a class="img" href="deal-1794323174.html" aria-label="Sony MDR-ZX110A On Ear Stereo Wired Headphones (White), Without Mic"><img src="assets/deals-hd/1794323174.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">61% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Mobile · 2 h</div>
+    <a class="title" href="deal-1794323174.html">Sony MDR-ZX110A On Ear Stereo Wired Headphones (White), Without Mic</a>
+    <div class="priceline"><span class="price">₹549</span><span class="was">₹1,390</span></div>
+    <div class="save">Save ₹841</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B00KGZZ824?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474461" data-page="deal-1794323091.html" data-q="himalaya total care super absorb baby pants diaper baby amazon" data-cat="Baby" data-store="Amazon" data-pct="49" data-price="611" data-save="588" data-age="120" data-views="5" data-types="Fresh,Top">
+  <a class="img" href="deal-1794323091.html" aria-label="Himalaya Total Care Super Absorb Baby Pants Diaper"><img src="assets/deals/lg/1794323091.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">49% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Baby · 2 h</div>
+    <a class="title" href="deal-1794323091.html">Himalaya Total Care Super Absorb Baby Pants Diaper</a>
+    <div class="priceline"><span class="price">₹611</span><span class="was">₹1,199</span></div>
+    <div class="save">Save ₹588</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0H6BJ2886?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474457" data-page="deal-1794318908.html" data-q="pasta at good discount grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="55" data-price="113" data-save="140" data-age="180" data-views="30" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794318908.html" aria-label="Pasta at Good discount"><img src="assets/deals/lg/1794318908.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">55% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 3 h</div>
+    <a class="title" href="deal-1794318908.html">Pasta at Good discount</a>
+    <div class="priceline"><span class="price">₹113</span><span class="was">₹253</span></div>
+    <div class="save">Save ₹140</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0B7RC52SP?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474460" data-page="deal-1794319774.html" data-q="dr batra pro+ hair fall protect serum 30 ml beauty amazon" data-cat="Beauty" data-store="Amazon" data-pct="37" data-price="440" data-save="259" data-age="180" data-views="9" data-types="Fresh,Top">
+  <a class="img" href="deal-1794319774.html" aria-label="Dr Batra PRO+ Hair Fall Protect Serum 30 ml"><img src="assets/deals/lg/1794319774.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">37% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Beauty · 3 h</div>
+    <a class="title" href="deal-1794319774.html">Dr Batra PRO+ Hair Fall Protect Serum 30 ml</a>
+    <div class="priceline"><span class="price">₹440</span><span class="was">₹699</span></div>
+    <div class="save">Save ₹259</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0DYK3B3RJ?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474459" data-page="deal-1794319700.html" data-q="reebok mens rmsora3777 sneaker footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="50" data-price="1250" data-save="1249" data-age="180" data-views="7" data-types="Fresh,Top">
+  <a class="img" href="deal-1794319700.html" aria-label="Reebok Mens Rmsora3777 Sneaker"><img src="assets/deals/lg/1794319700.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">50% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Footwear · 3 h</div>
+    <a class="title" href="deal-1794319700.html">Reebok Mens Rmsora3777 Sneaker</a>
+    <div class="priceline"><span class="price">₹1,250</span><span class="was">₹2,499</span></div>
+    <div class="save">Save ₹1,249</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0F9Y7WH1R?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474458" data-page="deal-1794319690.html" data-q="flat 70-80% off on jack &amp; jones clothing clothing amazon" data-cat="Clothing" data-store="Amazon" data-pct="80" data-price="400" data-save="1599" data-age="180" data-views="10" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794319690.html" aria-label="Flat 70-80% Off On Jack &amp; Jones Clothing"><img src="assets/deals/lg/1794319690.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">80% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Clothing · 3 h</div>
+    <a class="title" href="deal-1794319690.html">Flat 70-80% Off On Jack &amp; Jones Clothing</a>
+    <div class="priceline"><span class="price">₹400</span><span class="was">₹1,999</span></div>
+    <div class="save">Save ₹1,599</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/s?k=Jack+%26+Jones&amp;i=apparel&amp;rh=n%3A1571271031%2Cp_123%3A339433%2Cp_6%3AA1WYWER0W24N8S%2Cp_n_pct-off-with-tax%3A68-&amp;s=relevancerank&amp;dc=&amp;ds=v1%3AkzVcE4AxSbx8F%2BoXmUetvYiRJThP5McsweCWGgHo5Wg&amp;btn_ref=srctok-415fd0488f8d9582&amp;btn_type=ss&amp;crid=1K2D8TU7DLYWY&amp;qid=1782240262&amp;rnid=2665398031&amp;sprefix=%2Capparel%2C319&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474456" data-page="deal-1794318432.html" data-q="coconut bling typewriter inspired 2.4ghz retro wireless keyboard and mouse set with usb support, round 84 keycaps for pc &amp; laptop (green) others amazon" data-cat="Others" data-store="Amazon" data-pct="71" data-price="1293" data-save="3206" data-age="180" data-views="8" data-types="Fresh,Top">
+  <a class="img" href="deal-1794318432.html" aria-label="Coconut Bling Typewriter Inspired 2.4GHz Retro Wireless Keyboard and Mouse Set with USB Support, Round 84 Keycaps for PC &amp; Laptop (Green)"><img src="assets/deals/lg/1794318432.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">71% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Others · 3 h</div>
+    <a class="title" href="deal-1794318432.html">Coconut Bling Typewriter Inspired 2.4GHz Retro Wireless Keyboard and Mouse Set with USB Support, Round 84 Keycaps for PC &amp; Laptop (Green)</a>
+    <div class="priceline"><span class="price">₹1,293</span><span class="was">₹4,499</span></div>
+    <div class="save">Save ₹3,206</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0C3QSKBT4?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474454" data-page="deal-1794314038.html" data-q="milton steely prime insulated inner stainless steel small tiffin box, 400 ml, with inner container, 80 ml and spoon, purple kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="68" data-price="299" data-save="626" data-age="240" data-views="16" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794314038.html" aria-label="MILTON Steely Prime Insulated Inner Stainless Steel Small Tiffin Box, 400 ml, with Inner Container, 80 ml and Spoon, Purple"><img src="assets/deals/lg/1794314038.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">68% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 4 h</div>
+    <a class="title" href="deal-1794314038.html">MILTON Steely Prime Insulated Inner Stainless Steel Small Tiffin Box, 400 ml, with Inner Container, 80 ml and Spoon, Purple</a>
+    <div class="priceline"><span class="price">₹299</span><span class="was">₹925</span></div>
+    <div class="save">Save ₹626</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B09YDC1NXV?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474453" data-page="deal-1794313978.html" data-q="milton new meal combi lunch box with insulated fabric jacket, 3 microware safe plastic containers 280 ml each &amp; tumbler with lid 400 ml, leak-proof tiffin for office, college, picnic, black kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="65" data-price="199" data-save="376" data-age="240" data-views="22" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794313978.html" aria-label="MILTON New Meal Combi Lunch Box with Insulated Fabric Jacket, 3 Microware Safe Plastic Containers 280 ml Each &amp; Tumbler with lid 400 ml, Leak-Proof Tiffin for Office, College, Picnic, Black"><img src="assets/deals/lg/1794313978.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">65% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 4 h</div>
+    <a class="title" href="deal-1794313978.html">MILTON New Meal Combi Lunch Box with Insulated Fabric Jacket, 3 Microware Safe Plastic Containers 280 ml Each &amp; Tumbler with lid 400 ml, Leak-Proof Tiffin for Office, College, Picnic, Black</a>
+    <div class="priceline"><span class="price">₹199</span><span class="was">₹575</span></div>
+    <div class="save">Save ₹376</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B09H357C9M?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474452" data-page="deal-1794313902.html" data-q="milton decker lunch box with insulated fabric jacket, 2 inner stainless steel containers 450 ml each &amp; 1 oval stainless steel 450 ml, microwave safe, leak-proof tiffin for office, easy to carry, blue kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="82" data-price="299" data-save="1451" data-age="300" data-views="17" data-types="Fresh,Top,Loot,Pantry">
+  <a class="img" href="deal-1794313902.html" aria-label="MILTON Decker Lunch Box with Insulated Fabric Jacket, 2 Inner Stainless Steel Containers 450 ml Each &amp; 1 Oval Stainless Steel 450 ml, Microwave Safe, Leak-Proof Tiffin for Office, Easy to Carry, Blue"><img src="assets/deals/lg/1794313902.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">82% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 5 h</div>
+    <a class="title" href="deal-1794313902.html">MILTON Decker Lunch Box with Insulated Fabric Jacket, 2 Inner Stainless Steel Containers 450 ml Each &amp; 1 Oval Stainless Steel 450 ml, Microwave Safe, Leak-Proof Tiffin for Office, Easy to Carry, Blue</a>
+    <div class="priceline"><span class="price">₹299</span><span class="was">₹1,750</span></div>
+    <div class="save">Save ₹1,451</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0CZ9JYSV4?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474451" data-page="deal-1794313729.html" data-q="milton steel seal 750 airtight food grade modular plastic container kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="87" data-price="99" data-save="651" data-age="300" data-views="22" data-types="Fresh,Top,Loot,Pantry">
+  <a class="img" href="deal-1794313729.html" aria-label="MILTON Steel Seal 750 Airtight Food Grade Modular Plastic Container"><img src="assets/deals/lg/1794313729.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">87% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 5 h</div>
+    <a class="title" href="deal-1794313729.html">MILTON Steel Seal 750 Airtight Food Grade Modular Plastic Container</a>
+    <div class="priceline"><span class="price">₹99</span><span class="was">₹750</span></div>
+    <div class="save">Save ₹651</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0G34Z8ZP2?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474450" data-page="deal-1794313666.html" data-q="milton wondermeal small inner stainless steel tiffin box, 490 ml, purple kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="69" data-price="299" data-save="656" data-age="300" data-views="15" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794313666.html" aria-label="MILTON Wondermeal Small Inner Stainless Steel Tiffin Box, 490 ml, Purple"><img src="assets/deals/lg/1794313666.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">69% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 5 h</div>
+    <a class="title" href="deal-1794313666.html">MILTON Wondermeal Small Inner Stainless Steel Tiffin Box, 490 ml, Purple</a>
+    <div class="priceline"><span class="price">₹299</span><span class="was">₹955</span></div>
+    <div class="save">Save ₹656</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0D7MJ1YCM?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474449" data-page="deal-1794313647.html" data-q="treo by milton opalware neuma murel dinner set of 35 kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="50" data-price="1899" data-save="1896" data-age="300" data-views="8" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794313647.html" aria-label="Treo by Milton Opalware Neuma Murel Dinner Set of 35"><img src="assets/deals/lg/1794313647.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">50% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 5 h</div>
+    <a class="title" href="deal-1794313647.html">Treo by Milton Opalware Neuma Murel Dinner Set of 35</a>
+    <div class="priceline"><span class="price">₹1,899</span><span class="was">₹3,795</span></div>
+    <div class="save">Save ₹1,896</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0HF7K58B7?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474448" data-page="deal-1794313635.html" data-q="protecta prisma floral printed laptop backpacks for women and men fits 16inch macbooks water-repellent bag for office collage and travelling print padded sleeve lightweight durable design 18l bags amazon" data-cat="Bags" data-store="Amazon" data-pct="72" data-price="702" data-save="1797" data-age="300" data-views="6" data-types="Fresh,Top">
+  <a class="img" href="deal-1794313635.html" aria-label="Protecta Prisma Floral Printed Laptop Backpacks for Women and Men Fits 16Inch MacBooks Water-Repellent Bag for Office Collage and Travelling Print Padded Sleeve Lightweight Durable Design 18L"><img src="assets/deals-hd/1794313635.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">72% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Bags · 5 h</div>
+    <a class="title" href="deal-1794313635.html">Protecta Prisma Floral Printed Laptop Backpacks for Women and Men Fits 16Inch MacBooks Water-Repellent Bag for Office Collage and Travelling Print Padded Sleeve Lightweight Durable Design 18L</a>
+    <div class="priceline"><span class="price">₹702</span><span class="was">₹2,499</span></div>
+    <div class="save">Save ₹1,797</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0DPJ269GB?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474447" data-page="deal-1794313498.html" data-q="wonderchef french press coffee maker 350 ml grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="49" data-price="459" data-save="441" data-age="300" data-views="11" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794313498.html" aria-label="Wonderchef French Press Coffee Maker 350 ml"><img src="assets/deals/lg/1794313498.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">49% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 5 h</div>
+    <a class="title" href="deal-1794313498.html">Wonderchef French Press Coffee Maker 350 ml</a>
+    <div class="priceline"><span class="price">₹459</span><span class="was">₹900</span></div>
+    <div class="save">Save ₹441</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B07M5GT99K?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474446" data-page="deal-1794313377.html" data-q="ferrero rocher golden diya chocolate gift pack grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="58" data-price="624" data-save="875" data-age="300" data-views="16" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794313377.html" aria-label="Ferrero Rocher Golden Diya Chocolate Gift Pack"><img src="assets/deals/lg/1794313377.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">58% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 5 h</div>
+    <a class="title" href="deal-1794313377.html">Ferrero Rocher Golden Diya Chocolate Gift Pack</a>
+    <div class="priceline"><span class="price">₹624</span><span class="was">₹1,499</span></div>
+    <div class="save">Save ₹875</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0HK362P73?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474445" data-page="deal-1794313289.html" data-q="hoi polloi rayray 20l premium nylon &amp; pu laptop backpack for men &amp; women, fits up to 16 inch laptop, multipurpose water resistant office travel backpack, usb type-c port, obsidian black &amp; neon bags amazon" data-cat="Bags" data-store="Amazon" data-pct="82" data-price="964" data-save="4535" data-age="300" data-views="12" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794313289.html" aria-label="hoi polloi RAYRAY 20L Premium Nylon &amp; PU Laptop Backpack for Men &amp; Women, Fits Up to 16 Inch Laptop, Multipurpose Water Resistant Office Travel Backpack, USB Type-C Port, Obsidian Black &amp; Neon"><img src="assets/deals/lg/1794313289.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">82% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Bags · 5 h</div>
+    <a class="title" href="deal-1794313289.html">hoi polloi RAYRAY 20L Premium Nylon &amp; PU Laptop Backpack for Men &amp; Women, Fits Up to 16 Inch Laptop, Multipurpose Water Resistant Office Travel Backpack, USB Type-C Port, Obsidian Black &amp; Neon</a>
+    <div class="priceline"><span class="price">₹964</span><span class="was">₹5,499</span></div>
+    <div class="save">Save ₹4,535</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0FGJS7BVH?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474444" data-page="deal-1794313233.html" data-q="gits open &amp; eat soanpapdi ready to eat indian dessert, 400g (coupon) grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="45" data-price="82" data-save="68" data-age="300" data-views="4" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794313233.html" aria-label="Gits Open &amp; Eat Soanpapdi Ready to Eat Indian Dessert, 400g (Coupon)"><img src="assets/deals/lg/1794313233.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">45% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 5 h</div>
+    <a class="title" href="deal-1794313233.html">Gits Open &amp; Eat Soanpapdi Ready to Eat Indian Dessert, 400g (Coupon)</a>
+    <div class="priceline"><span class="price">₹82</span><span class="was">₹150</span></div>
+    <div class="save">Save ₹68</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0B93MKBK1?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474443" data-page="deal-1794313216.html" data-q="footloose by vip yin-yang 32l laptop backpack (15&quot;), 3 compartments, green bags amazon" data-cat="Bags" data-store="Amazon" data-pct="83" data-price="679" data-save="3316" data-age="300" data-views="8" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794313216.html" aria-label="FOOTLOOSE by VIP Yin-Yang 32L Laptop Backpack (15&quot;), 3 Compartments, Green"><img src="assets/deals-hd/1794313216.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">83% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Bags · 5 h</div>
+    <a class="title" href="deal-1794313216.html">FOOTLOOSE by VIP Yin-Yang 32L Laptop Backpack (15&quot;), 3 Compartments, Green</a>
+    <div class="priceline"><span class="price">₹679</span><span class="was">₹3,995</span></div>
+    <div class="save">Save ₹3,316</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0H5JD9JJV?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474442" data-page="deal-1794313073.html" data-q="trustbasket extra large barbecue skewers for bbq tandoor grill - set of 6 others amazon" data-cat="Others" data-store="Amazon" data-pct="91" data-price="89" data-save="920" data-age="300" data-views="17" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794313073.html" aria-label="TrustBasket Extra Large Barbecue Skewers for BBQ Tandoor Grill - Set of 6"><img src="assets/deals/lg/1794313073.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">91% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Others · 5 h</div>
+    <a class="title" href="deal-1794313073.html">TrustBasket Extra Large Barbecue Skewers for BBQ Tandoor Grill - Set of 6</a>
+    <div class="priceline"><span class="price">₹89</span><span class="was">₹1,009</span></div>
+    <div class="save">Save ₹920</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0855ZCWB1?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article><article class="card deal" data-id="474441" data-page="deal-1794313062.html" data-q="protecta high pedestal office laptop messenger bag briefcase for men &amp; women fits laptops uo to 15.6 inch and macbooks up to 16 inch - ideal for work &amp; office accessories amazon" data-cat="Accessories" data-store="Amazon" data-pct="84" data-price="461" data-save="2438" data-age="300" data-views="14" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794313062.html" aria-label="Protecta High Pedestal Office Laptop Messenger Bag Briefcase for Men &amp; Women Fits Laptops Uo To 15.6 Inch and MacBooks Up To 16 Inch - Ideal for Work &amp; Office"><img src="assets/deals/lg/1794313062.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">84% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Accessories · 5 h</div>
+    <a class="title" href="deal-1794313062.html">Protecta High Pedestal Office Laptop Messenger Bag Briefcase for Men &amp; Women Fits Laptops Uo To 15.6 Inch and MacBooks Up To 16 Inch - Ideal for Work &amp; Office</a>
+    <div class="priceline"><span class="price">₹461</span><span class="was">₹2,899</span></div>
+    <div class="save">Save ₹2,438</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0CVL1XJ3D?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article>
+          <div class="empty" id="empty" hidden><p id="empty-text">No deals match these filters.</p><button class="btn btn-outline" type="button" data-clear id="empty-clear">Clear all filters</button><p class="nearby">Try nearby: <a href="category-kitchen.html">Kitchen</a> · <a href="category-others.html">Others</a> · <a href="category-clothing.html">Clothing</a></p></div>
+        </div>
+
+        <div class="load-state" id="load-state" aria-live="polite"></div>
+        <section class="section deals empty-feed" id="empty-feed" hidden aria-labelledby="h-ef"><div class="section-head"><div><h2 id="h-ef">Fresh deals</h2><p>Posted today, newest first</p></div><a class="view-all" href="fresh.html">View all <i data-lucide="chevron-right"></i></a></div><div class="carousel">
+        <div class="carousel-viewport"><div class="carousel-container"><div class="carousel-item"><article class="card deal" data-id="474150" data-page="deal-1794231756.html" data-q="about space bed - (84 x 74 inches) king size bed without storage home &amp; decore amazon" data-cat="Home &amp; Decore" data-store="Amazon" data-pct="74" data-price="9000" data-save="25999" data-age="10" data-views="17" data-types="Fresh,Top">
+  <a class="img" href="deal-1794231756.html" aria-label="ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage"><img src="assets/deals/lg/1794231756.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">74% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Home &amp; Decore · 10 min</div>
+    <a class="title" href="deal-1794231756.html">ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage</a>
+    <div class="priceline"><span class="price">₹9,000</span><span class="was">₹34,999</span></div>
+    <div class="save">Save ₹25,999</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GQBSVK7M?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474149" data-page="deal-1794231567.html" data-q="crompton dyna ray 9 watt led bulb cool day light kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="71" data-price="43" data-save="107" data-age="13" data-views="13" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794231567.html" aria-label="Crompton Dyna Ray 9 Watt LED Bulb Cool Day Light"><img src="assets/deals-hd/1794231567.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">71% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 13 min</div>
+    <a class="title" href="deal-1794231567.html">Crompton Dyna Ray 9 Watt LED Bulb Cool Day Light</a>
+    <div class="priceline"><span class="price">₹43</span><span class="was">₹150</span></div>
+    <div class="save">Save ₹107</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0B6FJNH97?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474148" data-page="deal-1794231088.html" data-q="the indian garage co men&#x27;s slim fit solid puffer jackets clothing amazon" data-cat="Clothing" data-store="Amazon" data-pct="81" data-price="990" data-save="4109" data-age="21" data-views="17" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794231088.html" aria-label="The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets"><img src="assets/deals/lg/1794231088.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">81% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Clothing · 21 min</div>
+    <a class="title" href="deal-1794231088.html">The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets</a>
+    <div class="priceline"><span class="price">₹990</span><span class="was">₹5,099</span></div>
+    <div class="save">Save ₹4,109</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0BNLLB2F5?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474147" data-page="deal-1794230968.html" data-q="trustbasket ambiance pot kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="90" data-price="292" data-save="2707" data-age="23" data-views="22" data-types="Fresh,Top,Loot,Pantry">
+  <a class="img" href="deal-1794230968.html" aria-label="TrustBasket Ambiance Pot"><img src="assets/deals/lg/1794230968.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">90% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 23 min</div>
+    <a class="title" href="deal-1794230968.html">TrustBasket Ambiance Pot</a>
+    <div class="priceline"><span class="price">₹292</span><span class="was">₹2,999</span></div>
+    <div class="save">Save ₹2,707</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GWRDLBF7?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474146" data-page="deal-1794230961.html" data-q="diy engineered wood computer table, compact study desk for home office, bedroom &amp; small spaces (75 x 80 x 45 cm) (coupon) kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="60" data-price="1588" data-save="2411" data-age="23" data-views="9" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794230961.html" aria-label="DIY Engineered Wood Computer Table, Compact Study Desk for Home Office, Bedroom &amp; Small Spaces (75 x 80 x 45 CM) (Coupon)"><img src="assets/deals-hd/1794230961.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">60% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 23 min</div>
+    <a class="title" href="deal-1794230961.html">DIY Engineered Wood Computer Table, Compact Study Desk for Home Office, Bedroom &amp; Small Spaces (75 x 80 x 45 CM) (Coupon)</a>
+    <div class="priceline"><span class="price">₹1,588</span><span class="was">₹3,999</span></div>
+    <div class="save">Save ₹2,411</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0H49SZKXF?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474145" data-page="deal-1794230597.html" data-q="puma mens comfortcush lite running shoe footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="69" data-price="2014" data-save="4485" data-age="29" data-views="13" data-types="Fresh,Top">
+  <a class="img" href="deal-1794230597.html" aria-label="Puma Mens Comfortcush Lite Running Shoe"><img src="assets/deals/lg/1794230597.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">69% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Footwear · 29 min</div>
+    <a class="title" href="deal-1794230597.html">Puma Mens Comfortcush Lite Running Shoe</a>
+    <div class="priceline"><span class="price">₹2,014</span><span class="was">₹6,499</span></div>
+    <div class="save">Save ₹4,485</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0FG1QFN87?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474144" data-page="deal-1794230591.html" data-q="puma unisex-adult runningroad running shoe footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="69" data-price="2324" data-save="5175" data-age="29" data-views="15" data-types="Fresh,Top">
+  <a class="img" href="deal-1794230591.html" aria-label="PUMA Unisex-Adult RunningRoad Running Shoe"><img src="assets/deals/lg/1794230591.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">69% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Footwear · 29 min</div>
+    <a class="title" href="deal-1794230591.html">PUMA Unisex-Adult RunningRoad Running Shoe</a>
+    <div class="priceline"><span class="price">₹2,324</span><span class="was">₹7,499</span></div>
+    <div class="save">Save ₹5,175</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0DJ99M1MP?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474143" data-page="deal-1794229870.html" data-q="samyang xp 35mm f1.2 lens for canon ef (bank offer) electronics amazon" data-pinned="1" data-cat="Electronics" data-store="Amazon" data-pct="76" data-price="23990" data-save="78000" data-age="41" data-views="13" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794229870.html" aria-label="Samyang XP 35mm F1.2 Lens for Canon EF (Bank Offer)"><img src="assets/deals-hd/1794229870.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">76% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Electronics · 41 min</div>
+    <a class="title" href="deal-1794229870.html">Samyang XP 35mm F1.2 Lens for Canon EF (Bank Offer)</a>
+    <div class="priceline"><span class="price">₹23,990</span><span class="was">₹1,01,990</span></div>
+    <div class="save">Save ₹78,000</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B07P12NRTK?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474142" data-page="deal-1794229537.html" data-q="amazon brand - symbol women cotton stretch padded wire free medium coverage t-shirt bra clothing amazon" data-pinned="1" data-cat="Clothing" data-store="Amazon" data-pct="88" data-price="409" data-save="3090" data-age="47" data-views="9" data-types="Fresh,Top,Loot">
+  <a class="img" href="deal-1794229537.html" aria-label="Amazon Brand - Symbol Women Cotton Stretch Padded Wire Free Medium Coverage T-Shirt Bra"><img src="assets/deals/lg/1794229537.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">88% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Clothing · 47 min</div>
+    <a class="title" href="deal-1794229537.html">Amazon Brand - Symbol Women Cotton Stretch Padded Wire Free Medium Coverage T-Shirt Bra</a>
+    <div class="priceline"><span class="price">₹409</span><span class="was">₹3,499</span></div>
+    <div class="save">Save ₹3,090</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0C7TZ9GV5?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474141" data-page="deal-1794229159.html" data-q="cello petal bathroom set kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="63" data-price="430" data-save="719" data-age="53" data-views="16" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794229159.html" aria-label="Cello Petal Bathroom Set"><img src="assets/deals/lg/1794229159.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">63% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Kitchen · 53 min</div>
+    <a class="title" href="deal-1794229159.html">Cello Petal Bathroom Set</a>
+    <div class="priceline"><span class="price">₹430</span><span class="was">₹1,149</span></div>
+    <div class="save">Save ₹719</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0CR7BLF1W?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474140" data-page="deal-1794229154.html" data-q="lakme fluid spf 50 pa++++ in-vivo tested sunscreen with 1% niacinamide &amp; ceramide,all skin type 30ml beauty amazon" data-cat="Beauty" data-store="Amazon" data-pct="65" data-price="104" data-save="195" data-age="53" data-views="7" data-types="Fresh,Top">
+  <a class="img" href="deal-1794229154.html" aria-label="Lakme Fluid SPF 50 PA++++ In-Vivo tested Sunscreen With 1% Niacinamide &amp; Ceramide,all skin type 30ml"><img src="assets/deals-hd/1794229154.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">65% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Beauty · 53 min</div>
+    <a class="title" href="deal-1794229154.html">Lakme Fluid SPF 50 PA++++ In-Vivo tested Sunscreen With 1% Niacinamide &amp; Ceramide,all skin type 30ml</a>
+    <div class="priceline"><span class="price">₹104</span><span class="was">₹299</span></div>
+    <div class="save">Save ₹195</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GLQ8WVD6?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474139" data-page="deal-1794229144.html" data-q="haldiram&#x27;s mithas ladoo - dry fruit panjeeri box,400 gram,indian sweets diwali gift pack,almond grocery amazon" data-cat="Grocery" data-store="Amazon" data-pct="50" data-price="175" data-save="175" data-age="53" data-views="15" data-types="Fresh,Top,Pantry">
+  <a class="img" href="deal-1794229144.html" aria-label="Haldiram&#x27;s Mithas Ladoo - Dry Fruit Panjeeri Box,400 Gram,Indian Sweets Diwali Gift Pack,Almond"><img src="assets/deals-hd/1794229144.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">50% off</span></a>
+  <div class="body">
+    <div class="meta">Amazon · Grocery · 53 min</div>
+    <a class="title" href="deal-1794229144.html">Haldiram&#x27;s Mithas Ladoo - Dry Fruit Panjeeri Box,400 Gram,Indian Sweets Diwali Gift Pack,Almond</a>
+    <div class="priceline"><span class="price">₹175</span><span class="was">₹350</span></div>
+    <div class="save">Save ₹175</div>
+    <div class="acts"><a class="btn btn-outline btn-sm btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B07PNBHX46?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at Amazon"><span>Buy on</span><img class="buy-logo" src="assets/stores/amazon.svg" alt="Amazon"></a><button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+  </div></article></div></div></div>
+        <button class="carousel-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="carousel-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div></section>
+
+        <!-- Alerts opt-in card (B23, D-055): moved after the 16th card by listing.js on the second visit; ?visit=2 forces it -->
+        <div class="card alerts-card" id="alerts-card" hidden role="region" aria-label="Deal alerts">
+          <i data-lucide="bell"></i>
+          <div class="t"><b>Get loot alerts in your browser</b><p>Free, no account. Only the big ones, never more than a few a day.</p></div>
+          <button class="btn btn-default btn-sm" type="button" id="alerts-card-on">Turn on</button>
+          <button class="btn btn-ghost btn-icon btn-sm" type="button" id="alerts-card-x" aria-label="Dismiss for 30 days"><i data-lucide="x"></i></button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="ft-top">
+      <div class="ft-about">
+        <a class="ft-logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
+        <h3>What is OfferTag?</h3>
+        <p>OfferTag finds the best online deals, loot offers and price drops from Amazon, Flipkart, Myntra, Ajio, JioMart and other Indian stores, and posts them all day. Every deal shows the price, the MRP and how much you save, with a direct link to the store. Free to use, no account needed.</p>
+        <div class="ft-follow">
+          <span>Follow us on</span>
+          <div class="ft-social">
+            <a href="#wa" target="_blank" rel="noopener" aria-label="WhatsApp"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
+            <a href="#tg" target="_blank" rel="noopener" aria-label="Telegram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
+            <a href="#fb" target="_blank" rel="noopener" aria-label="Facebook"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a>
+            <a href="#x" target="_blank" rel="noopener" aria-label="X"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+            <a href="#ig" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+            <a href="#li" target="_blank" rel="noopener" aria-label="LinkedIn"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="ft-app">
+        <span class="ft-app-ico"><i data-lucide="smartphone"></i></span>
+        <div>
+          <b>Deals on your phone</b>
+          <p>Get an alert the moment a loot deal is posted. Download the OfferTag app.</p>
+          <div class="ft-app-acts">
+            <a class="ft-play" href="#app" target="_blank" rel="noopener"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><span><small>Get it on</small>Google Play</span></a>
+            <a class="ft-alerts" href="#alerts"><i data-lucide="bell"></i>Browser alerts</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ft-disclaimer"><b>Disclaimer:</b> OfferTag does not sell any products. Links on this site are affiliate links: when you buy through them, the store pays us a small commission at no extra cost to you. That keeps OfferTag free. Prices and stock change fast, so check the store before you buy. <a href="disclaimer.html">Read more</a></p>
+
+    <div class="ft-cols">
+      <div><h4>Deals</h4><ul><li><a href="fresh.html">Fresh deals</a></li><li><a href="top-picks.html">Top picks</a></li><li><a href="loot.html">Loot deals</a></li><li><a href="new.html">New deals</a></li><li><a href="pantry.html">Pantry</a></li><li><a href="categories.html">All categories</a></li></ul></div>
+      <div class="ft-stores"><h4>Top stores</h4><ul><li><a href="store-amazon.html">Amazon</a></li><li><a href="store-flipkart.html">Flipkart</a></li><li><a href="store-myntra.html">Myntra</a></li><li><a href="store-ajio.html">Ajio</a></li><li><a href="store-jiomart.html">JioMart</a></li><li><a href="store-bigbasket.html">BigBasket</a></li><li><a href="store-blinkit.html">Blinkit</a></li><li><a href="store-meesho.html">Meesho</a></li><li><a href="store-swiggy.html">Swiggy</a></li><li><a href="stores.html">All stores</a></li></ul></div>
+      <div><h4>Need help?</h4><ul><li><a href="faq.html">FAQs</a></li><li><a href="contact.html">Contact us</a></li><li><a href="#chat">Chat with us</a></li><li><a href="contact.html">Send feedback</a></li><li><a href="delete-account.html">Delete account</a></li></ul></div>
+      <div><h4>Privacy &amp; you</h4><ul><li><a href="privacy.html">Privacy policy</a></li><li><a href="terms.html">Terms of use</a></li><li><a href="disclaimer.html">Disclaimer</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    </div>
+
+    <div class="footer-bottom">
+      <details><summary>About OfferTag deals</summary><p>OfferTag lists hand-picked online deals, coupons and loot offers from Amazon, Flipkart, Myntra, Ajio, BigBasket and other Indian stores, updated through the day. Every deal shows the current price, the MRP and how much you save, with a direct link to the store.</p></details>
+      <span>© 2026 OfferTag · Bachat har shopping par</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Desktop slide-over (D-050, D-065): the deal page in a 480 px panel, URL moves to the deal, Esc / ✕ / backdrop / Back close -->
+<div class="slideover-overlay" id="slideover-overlay" hidden data-state="closed"></div>
+<aside class="slideover" id="slideover" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Deal">
+  <div class="so-head"><button class="btn btn-ghost btn-icon" type="button" id="so-close" aria-label="Close"><i data-lucide="x"></i></button><span class="so-title" id="so-title"></span><a class="btn btn-outline btn-sm" id="so-full" href="#">Open full page <i data-lucide="external-link"></i></a></div>
+  <iframe id="so-frame" title="Deal" loading="eager"></iframe>
+</aside>
+
+<button class="btn btn-outline btn-icon to-top" id="to-top" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
+
+<!-- Phone sheets -->
+<div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
+<aside class="sheet" id="menu-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet-header"><div class="sheet-title" id="sheet-title">Menu</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <nav class="sheet-nav">
+    <a href="login.html" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in with Google or email</a>
+    <a href="account.html" data-when-user hidden><i data-lucide="user"></i><span data-user-name></span></a>
+    <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
+    <div class="separator" style="margin:8px 0"></div>
+    <div class="sheet-section">Deals</div>
+    <a href="fresh.html"><i data-lucide="clock"></i>Fresh</a>
+    <a href="top-picks.html"><i data-lucide="star"></i>Top picks</a>
+    <a href="loot.html"><i data-lucide="tag"></i>Loot</a>
+    <a href="new.html"><i data-lucide="sparkles"></i>New</a>
+    <a href="pantry.html"><i data-lucide="shopping-basket"></i>Pantry</a>
+    <div class="sheet-section">Browse</div>
+    <a href="categories.html"><i data-lucide="layout-grid"></i>Categories</a>
+    <a href="stores.html"><i data-lucide="store"></i>Stores</a>
+    <a href="blog.html" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing"><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
+    <div class="sheet-section">More</div>
+    <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
+    <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
+    <a href="faq.html"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
+    <a href="contact.html"><i data-lucide="mail"></i>Feedback</a>
+  </nav>
+</aside>
+<!-- Search sheet (phone, full screen; D-064): recent · stores · categories, suggestions while typing; site.js renders the body -->
+<aside class="sheet sheet-full" id="search-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Search">
+  <form class="ss-head" data-search role="search">
+    <button class="btn btn-ghost btn-icon" type="button" data-sheet-close aria-label="Back"><i data-lucide="chevron-left"></i></button>
+    <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" name="q" id="ss-q" placeholder="Search deals, stores, categories…" autocomplete="off" enterkeyhint="search"></label>
+    <button class="btn btn-ghost btn-icon" type="button" id="ss-clear" aria-label="Clear" hidden><i data-lucide="x"></i></button>
+  </form>
+  <div class="sheet-body ss-body" id="ss-body"></div>
+</aside>
+<!-- Sign in: bottom sheet on phone, centred pop-up on desktop (D-091) -->
+<aside class="sheet sheet-bottom dialog-md" id="signin-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="signin-title">
+  <div class="handle"></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body"><div class="signin" data-signin>
+  <div class="signin-head"><div class="sheet-title" id="signin-title" data-signin-title>Sign in</div><p class="signin-sub" data-signin-sub>New here? Signing in creates your account.</p></div>
+  <div class="signin-step" data-step="start">
+    <button class="btn btn-outline signin-google" type="button" data-google><svg class="g-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.5 5.5 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>Continue with Google</button>
+    <div class="signin-or"><span>or</span></div>
+    <form class="signin-form" data-email-form novalidate>
+      <label class="field-label">Email<input class="input" type="email" name="email" inputmode="email" autocomplete="email" maxlength="255" placeholder="you@example.com"></label>
+      <p class="form-error" data-email-error role="alert" hidden></p>
+      <label class="turnstile" data-turnstile hidden><input type="checkbox" data-turnstile-box><span>Verify you are human</span><small>Cloudflare Turnstile</small></label>
+      <button class="btn btn-default" type="submit">Send code</button>
+    </form>
+    <p class="signin-legal">By continuing you agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy policy</a>.</p>
+  </div>
+  <div class="signin-step" data-step="code" hidden>
+    <div class="otp" role="group" aria-label="6-digit code"><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 1" autocomplete=one-time-code><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 2" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 3" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 4" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 5" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 6" autocomplete=off></div>
+    <p class="form-error" data-code-error role="alert" hidden></p>
+    <p class="signin-help">Valid for 10 minutes</p>
+    <button class="btn btn-link signin-resend" type="button" data-resend disabled>Resend code in 0:30</button>
+  </div>
+</div></div>
+</aside>
+<aside class="sheet sheet-bottom" id="filter-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="filter-sheet-title">
+  <div class="handle"></div>
+  <div class="sheet-header"><div class="sheet-title" id="filter-sheet-title">Filters</div><div style="font-size:13px;color:hsl(var(--muted-foreground))"><b id="sheet-count" style="color:hsl(var(--foreground))">42</b> deals match</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body" id="filter-sheet-body"></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" type="button" data-clear>Clear all</button><button class="btn btn-default btn-lg" type="button" data-sheet-close id="apply-filters">Show deals</button></div>
+</aside>
+<aside class="sheet sheet-bottom" id="sort-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="sort-sheet-title">
+  <div class="handle"></div>
+  <div class="sheet-header"><div class="sheet-title" id="sort-sheet-title">Sort by</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body opts" id="sort-opts">
+    <label class="opt"><input type="radio" name="sortm" value="recommended"><span class="box radio"></span><span class="txt">Recommended<div style="font-size:12px;color:hsl(var(--muted-foreground))">Pinned first, then fresh and big discounts, mixed across categories.</div></span></label>
+    <label class="opt"><input type="radio" name="sortm" value="newest"><span class="box radio"></span><span class="txt">Newest</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="disc"><span class="box radio"></span><span class="txt">Discount: high to low</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="saving"><span class="box radio"></span><span class="txt">Biggest saving</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="price-asc"><span class="box radio"></span><span class="txt">Price: low to high</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="price-desc"><span class="box radio"></span><span class="txt">Price: high to low</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="views"><span class="box radio"></span><span class="txt">Most viewed</span></label>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.3.0/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="js/deals-index.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/site.js"></script>
+<script src="js/listing.js"></script>
+</body>
+</html>

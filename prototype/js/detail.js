@@ -1,0 +1,101 @@
+/* detail.js — deal detail page: review states, coupon + link copy, share, likes, replies, composer, report sheet, zoom, alerts */
+(function () {
+  var OT = window.OT, q = new URLSearchParams(location.search), body = document.body;
+
+  // ---- review states (prototype only): ?state=withdrawn · ?user=1 | admin · ?coupon=1
+  if (q.get('state') === 'withdrawn') {
+    body.classList.add('is-withdrawn'); var b = document.getElementById('withdrawn-banner'); if (b) b.hidden = false;
+    document.querySelectorAll('.buy').forEach(function (a) { a.querySelector('.buy-label').textContent = 'See similar deals'; a.href = '#related'; a.removeAttribute('target'); a.removeAttribute('rel'); var ic = a.querySelector('.lucide, i'); if (ic) ic.remove(); });
+  }
+  var user = q.get('user') || (OT.user() ? '1' : null);
+  function showSignedIn() { body.classList.add('is-signed-in'); var o = document.getElementById('composer-out'), i = document.getElementById('composer-in'); if (o) o.hidden = true; if (i) i.hidden = false; return i; }
+  if (user) { showSignedIn(); if (user === 'admin') body.classList.add('is-admin'); }
+  // signed in from the pop-up / sheet: stay on the deal, back to the composer if that was the origin (D-061, D-091)
+  document.addEventListener('ot:signin', function (e) { var i = showSignedIn(); if (e.detail && e.detail.fromComposer && i) setTimeout(function () { var f = i.querySelector('textarea'); if (f) f.focus(); }, 360); });
+  if (q.get('coupon') === '1') document.querySelectorAll('.coupon[hidden]').forEach(function (c) { c.hidden = false; });
+
+  // ---- coupon copy (B05): copies, label flips to "Copied" for 2 s, toast; failure → select-all fallback inside OT.copy
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var code = btn.dataset.copy, lbl = btn.querySelector('span') || btn, old = lbl.textContent;
+      OT.copy(code).then(function () { lbl.textContent = 'Copied'; btn.classList.add('is-done'); OT.toast('Code ' + code + ' copied', 'check'); setTimeout(function () { lbl.textContent = old; btn.classList.remove('is-done'); }, 2000); }, function () { OT.toast('Could not copy. Long-press the code to select it.', 'circle-alert'); });
+    });
+  });
+
+  // ---- share: copy link (fixed template, D-058) · native share on phone
+  var copyLink = document.getElementById('copy-link');
+  if (copyLink) copyLink.addEventListener('click', function () { OT.copy(copyLink.dataset.share).then(function () { OT.toast('Link copied', 'check'); }, function () { OT.toast('Could not copy', 'circle-alert'); }); });
+  var native = document.getElementById('share-native');
+  if (native) native.addEventListener('click', function () {
+    var text = copyLink ? copyLink.dataset.share : document.title;
+    if (navigator.share) navigator.share({ title: document.title, text: text }).catch(function () {}); else copyLink && copyLink.click();
+  });
+
+  // ---- alerts opt-in trigger (D-055): prototype toggles the label only
+  var alerts = document.getElementById('alerts-toggle');
+  if (alerts) alerts.addEventListener('click', function () { var on = alerts.getAttribute('aria-pressed') !== 'true'; alerts.setAttribute('aria-pressed', on); alerts.querySelector('span').textContent = on ? 'Alerts on' : 'Browser alerts'; OT.toast(on ? 'Browser alerts on for new loot' : 'Browser alerts off', on ? 'bell-ring' : 'bell-off'); });
+
+  // ---- image zoom
+  var lb = document.getElementById('lightbox'), zoom = document.getElementById('zoom-open');
+  function openLb() { lb.hidden = false; requestAnimationFrame(function () { requestAnimationFrame(function () { lb.dataset.state = 'open'; }); }); body.style.overflow = 'hidden'; }
+  function closeLb() { lb.dataset.state = 'closed'; body.style.overflow = ''; setTimeout(function () { lb.hidden = true; zoom.focus(); }, 150); }
+  if (zoom && lb) { zoom.addEventListener('click', openLb); lb.addEventListener('click', closeLb); document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) closeLb(); }); }
+
+  // ---- comments
+  var list = document.getElementById('comment-list'), countEls = [document.getElementById('comment-count')], empty = document.getElementById('comments-empty'), more = document.getElementById('comments-more');
+  var linkCount = document.querySelector('.comment-link'); var total = list ? list.querySelectorAll(':scope > .comment').length : 0;
+  function setCount() { countEls[0].textContent = '(' + total + ')'; if (linkCount) linkCount.childNodes[1].textContent = total + ' comments'; if (empty) empty.hidden = total > 0; }
+  function rel(name, admin) { return '<div class="avatar' + (admin ? ' is-admin' : '') + '" aria-hidden="true">' + name.charAt(0).toUpperCase() + '</div><div class="who"><b></b>' + (admin ? '<span class="badge badge-secondary">OfferTag</span>' : '') + '<time>Just now</time></div>'; }
+  function esc(s) { return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fmt(s) { // bold **x** and [text](url) only (brief v2 §10)
+    return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="nofollow noopener">$1</a>');
+  }
+  function makeComment(text, name, admin, reply) {
+    var li = document.createElement('li'); li.className = 'comment'; li.innerHTML = rel(name, admin) + '<p class="text">' + fmt(text) + '</p><div class="c-acts"><button class="btn btn-ghost like" type="button" aria-pressed="false"><i data-lucide="heart"></i><span>0</span></button>' + (reply ? '' : '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>' + (reply ? '' : '<ol class="replies"></ol>');
+    li.querySelector('.who b').textContent = name; return li;
+  }
+  function wire(root) {
+    root.querySelectorAll('.like').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () {
+      if (!body.classList.contains('is-signed-in')) { OT.toast('Sign in to like', 'log-in'); return; }
+      var on = b.getAttribute('aria-pressed') !== 'true', n = b.querySelector('span'); b.setAttribute('aria-pressed', on); n.textContent = (+n.textContent || 0) + (on ? 1 : -1); }); });
+    root.querySelectorAll('.reply-btn').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { openReply(b.closest('.comment')); }); });
+    root.querySelectorAll('.c-del').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { var li = b.closest('.comment'); var isTop = li.parentNode === list; li.remove(); if (isTop) { total--; setCount(); } OT.toast('Comment deleted', 'trash-2'); }); });
+    root.querySelectorAll('.more-replies').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { b.closest('.comment').querySelectorAll('.replies > [hidden]').forEach(function (r) { r.hidden = false; }); b.remove(); }); });
+    OT.icons();
+  }
+  var openForm = null;
+  function openReply(li) {
+    if (!body.classList.contains('is-signed-in')) { OT.toast('Sign in to reply', 'log-in'); document.getElementById('composer').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    if (openForm) openForm.remove();
+    var f = document.createElement('form'); f.className = 'reply-form'; f.innerHTML = '<textarea class="textarea" rows="1" placeholder="Write a reply…" maxlength="191" aria-label="Write a reply"></textarea><div class="acts"><button class="btn btn-default btn-sm" type="submit">Post</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancel</button></div>';
+    li.querySelector('.replies').before(f); openForm = f; f.querySelector('textarea').focus();
+    f.querySelector('[data-cancel]').addEventListener('click', function () { f.remove(); openForm = null; });
+    f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; var r = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin'), true); li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
+  }
+  if (list) { wire(list); setCount(); }
+  if (more) more.querySelector('button').addEventListener('click', function () { var hid = list.querySelectorAll(':scope > .comment[hidden]'); Array.prototype.slice.call(hid, 0, 10).forEach(function (c) { c.hidden = false; }); if (list.querySelectorAll(':scope > .comment[hidden]').length === 0) more.hidden = true; });
+
+  // composer (signed in): bold / link wrap, counter, post
+  var cin = document.getElementById('composer-in'), ta = document.getElementById('comment-text'), chars = document.getElementById('chars'), err = document.getElementById('comment-error');
+  if (cin) {
+    ta.addEventListener('input', function () { chars.textContent = ta.value.length + '/191'; });
+    cin.querySelectorAll('[data-wrap]').forEach(function (b) { b.addEventListener('click', function () {
+      var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e) || 'text', w = b.dataset.wrap === 'link' ? '[' + sel + '](https://)' : '**' + sel + '**';
+      ta.setRangeText(w, s, e, 'end'); ta.focus(); ta.dispatchEvent(new Event('input'));
+    }); });
+    cin.addEventListener('submit', function (e) {
+      e.preventDefault(); var t = ta.value.trim(); if (!t) { ta.focus(); return; }
+      if (q.get('fail') === '1') { err.hidden = false; return; } err.hidden = true;
+      var li = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin')); list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/191'; OT.toast('Comment posted', 'check');
+    });
+  }
+
+  // ---- report a problem (DEV-013): bottom sheet on phone, dialog on desktop; feeds the feedback table as type 2 (Issue)
+  var rs = document.getElementById('report-sheet'), rf = document.getElementById('report-form'), rd = document.getElementById('report-done'), ro = document.getElementById('report-open');
+  if (rs) {
+    ro.addEventListener('click', function () { OT.openSheet(rs); });
+    if (q.get('report') === '1') setTimeout(function () { OT.openSheet(rs); }, 50);
+    rf.addEventListener('submit', function (e) { e.preventDefault(); rf.hidden = true; rs.querySelector('.sheet-footer').hidden = true; rd.hidden = false; OT.icons(); });
+    rs.addEventListener('sheet:close', function () { rf.reset(); rf.hidden = false; rs.querySelector('.sheet-footer').hidden = false; rd.hidden = true; });
+  }
+})();

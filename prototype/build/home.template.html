@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OfferTag — Today's best deals, coupons and loot</title>
+<meta name="description" content="Fresh deals from Amazon, Flipkart and more, posted all day. Bachat har shopping par.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <div class="header-row">
+      <button class="btn btn-ghost btn-icon" id="menu-open" aria-label="Open menu" aria-controls="menu-sheet"><i data-lucide="menu"></i></button>
+      <a class="logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
+      <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
+      <nav class="hnav" aria-label="Deal types">
+        <a href="index.html">Home</a><a href="fresh.html">Fresh</a><a href="top-picks.html">Top picks</a><a href="loot.html">Loot</a><a href="new.html">New</a><a href="pantry.html">Pantry</a>
+        <a href="blog.html" class="hnav-blog" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span><span class="blog-tip" role="tooltip"><small>New on the blog</small>{{BLOG_LATEST_TITLE}}</span></a>
+      </nav>
+      <form class="header-search" data-search role="search">
+        <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" aria-controls="search-pop" aria-expanded="false"></label>
+        <div class="popover search-pop" id="search-pop" hidden data-state="closed" role="listbox" aria-label="Suggestions"></div>
+      </form>
+      <div class="header-actions">
+        <a class="btn btn-link nav-blog" href="blog.html" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span></a>
+        <div class="dropdown alerts-menu">
+          <button class="btn alerts-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Deal alerts"><i data-lucide="bell"></i><span class="lbl">Deal alerts</span><i data-lucide="chevron-down" class="chev"></i></button>
+          <div class="menu alerts-pop" role="menu" hidden data-state="closed">
+            <div class="menu-label">Get every deal the minute it’s posted</div>
+            <a role="menuitem" class="mi-wa" href="#wa" target="_blank" rel="noopener"><span class="mi-ico">{{ICON:whatsapp}}</span><span><b>WhatsApp community</b><small>Free, no account</small></span></a>
+            <a role="menuitem" class="mi-tg" href="#tg" target="_blank" rel="noopener"><span class="mi-ico">{{ICON:telegram}}</span><span><b>Telegram channel</b><small>Free, no account</small></span></a>
+            <button type="button" role="menuitem" class="mi-br" data-browser-alerts><span class="mi-ico"><i data-lucide="bell-ring"></i></span><span><b>Browser alerts</b><small>On this device</small></span></button>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
+        <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>Sign in</a>
+        <div class="dropdown account-menu" data-when-user hidden>
+          <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
+          <div class="menu" role="menu" hidden data-state="closed">
+            <div class="menu-label" data-user-name></div>
+            <div class="separator"></div>
+            <a role="menuitem" href="account.html"><i data-lucide="user"></i>Account</a>
+            <button type="button" role="menuitem" data-signout><i data-lucide="log-out"></i>Sign out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form class="header-search-mobile" data-search role="search">
+      <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" data-search-sheet-trigger></label>
+    </form>
+  </div>
+</header>
+
+{{NAV}}
+{{COMMUNITY}}
+
+<main>
+  {{SINCE}}
+  <!-- Sale posters (S16, D-096 · DEV-019): uploaded by admin; arrows and dots, no autoplay (D-072). Prototype posters are SAMPLE artwork. Pinned deals move to a later spot. -->
+  <section class="section promo" id="hero" aria-label="Sales and offers">
+    <div class="container">
+      {{PROMO}}
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="section cats" aria-labelledby="h-cats">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-cats">Shop by category</h2></div><a class="view-all" href="categories.html">All categories <i data-lucide="chevron-right"></i></a></div>
+      {{CATS}}
+    </div>
+  </section>
+
+  <!-- Fresh -->
+  <section class="section deals" aria-labelledby="h-fresh" id="fresh">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-fresh">Fresh deals</h2><p>Posted today, newest first</p></div><a class="view-all" href="fresh.html">View all <i data-lucide="chevron-right"></i></a></div>
+      {{FRESH}}
+    </div>
+  </section>
+
+  <!-- Top picks -->
+  <section class="section deals" aria-labelledby="h-top" id="top">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-top">Top picks</h2><p>Our picks, ranked</p></div><a class="view-all" href="top-picks.html">View all <i data-lucide="chevron-right"></i></a></div>
+      {{TOP}}
+    </div>
+  </section>
+
+  <!-- Stores -->
+  <section class="section" aria-labelledby="h-stores">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-stores">Shop by store</h2><p>Deals listed all time</p></div><a class="view-all" href="stores.html">All stores <i data-lucide="chevron-right"></i></a></div>
+      <div class="stores-grid">{{STORES}}</div>
+    </div>
+  </section>
+
+  <!-- Loot -->
+  <section class="section deals" aria-labelledby="h-loot" id="loot">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-loot">Loot deals</h2><p>70% off or more</p></div><a class="view-all" href="loot.html">View all <i data-lucide="chevron-right"></i></a></div>
+      {{LOOT}}
+    </div>
+  </section>
+
+  <!-- Join -->
+  <section class="section" aria-labelledby="h-join">
+    <div class="container">
+      <div class="card join">
+        <div class="t"><b id="h-join">Never miss a loot</b><p>Get every deal the moment it is posted, on WhatsApp or Telegram. Free, no account.</p></div>
+        <div class="acts"><a class="btn btn-outline" href="#wa"><i data-lucide="message-circle"></i>WhatsApp</a><a class="btn btn-outline" href="#tg"><i data-lucide="send"></i>Telegram</a><button class="btn btn-default"><i data-lucide="bell"></i>Browser alerts</button></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{{FOOTER_BLOCK}}
+
+<button class="btn btn-outline btn-icon to-top" id="to-top" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
+
+<!-- Menu sheet -->
+<div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
+<aside class="sheet" id="menu-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet-header"><div class="sheet-title" id="sheet-title">Menu</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <nav class="sheet-nav">
+    <a href="login.html" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in with Google or email</a>
+    <a href="account.html" data-when-user hidden><i data-lucide="user"></i><span data-user-name></span></a>
+    <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
+    <div class="separator" style="margin:8px 0"></div>
+    <div class="sheet-section">Deals</div>
+    <a href="fresh.html"><i data-lucide="clock"></i>Fresh</a>
+    <a href="top-picks.html"><i data-lucide="star"></i>Top picks</a>
+    <a href="loot.html"><i data-lucide="tag"></i>Loot</a>
+    <a href="new.html"><i data-lucide="sparkles"></i>New</a>
+    <a href="pantry.html"><i data-lucide="shopping-basket"></i>Pantry</a>
+    <div class="sheet-section">Browse</div>
+    <a href="categories.html"><i data-lucide="layout-grid"></i>Categories</a>
+    <a href="stores.html"><i data-lucide="store"></i>Stores</a>
+    <a href="blog.html" data-blog-link><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
+    <div class="sheet-section">More</div>
+    <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
+    <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
+    <a href="faq.html"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
+    <a href="contact.html"><i data-lucide="mail"></i>Feedback</a>
+  </nav>
+</aside>
+{{SEARCH_SHEET}}
+
+<script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.3.0/embla-carousel.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="js/deals-index.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

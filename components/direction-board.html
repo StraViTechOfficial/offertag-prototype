@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>OfferTag Direction Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Jost:wght@600;700&display=swap">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<style>
+/* ============================================================
+   OfferTag direction board · P5 · D-068 (direction), D-069 (light only),
+   D-070 (gold Buy). Same composed slice in three flavours. Light only by
+   decision; every flavour is a retune of role tokens, built on the
+   primitives in ../tokens/tokens.css. Layout: 3 columns ≥1100px, one
+   flavour at a time with a switcher below that.
+   ============================================================ */
+:root { color-scheme: light; }
+html, body { background: #fff; color: var(--n-900); }
+body { font: 400 16px/24px var(--font-body); }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 80px; max-width: 1320px; margin: 0 auto; }
+.head { padding-block: 20px 12px; display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; }
+.head h1 { font: 700 22px/28px var(--font-display); letter-spacing: -0.01em; margin: 0; color: var(--navy-800); }
+.head p { margin: 0; color: var(--n-600); font-size: 14px; line-height: 20px; max-width: 70ch; }
+.switcher { display: none; gap: 2px; background: var(--n-100); border-radius: 999px; padding: 3px; margin: 8px 0 16px; }
+.switcher button { flex: 1; height: 36px; border: 0; border-radius: 999px; background: transparent; font: 500 14px/20px var(--font-body); color: var(--n-600); cursor: pointer; }
+.switcher button.is-on { background: #fff; color: var(--navy-900); box-shadow: 0 1px 2px rgba(8,36,84,.08); }
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; align-items: start; }
+@media (max-width: 1100px) { .board { grid-template-columns: 1fr; } .flavour:not(.is-active) { display: none; } .switcher { display: flex; } }
+.flavour { display: grid; gap: 16px; min-width: 0; }
+.fhead { display: grid; gap: 4px; padding: 0 2px; }
+.fhead .letter { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--navy-800); color: #fff; font: 700 14px/1 var(--font-display); }
+.fhead h2 { margin: 0; font: 700 20px/26px var(--font-display); letter-spacing: -0.01em; color: var(--navy-900); display: flex; gap: 10px; align-items: center; }
+.fhead p { margin: 0; color: var(--n-600); font-size: 13px; line-height: 18px; }
+.fhead .warn { color: var(--warn-700); }
+.cap { font: 600 11px/16px var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: var(--n-500); padding: 0 2px; }
+
+/* ---- flavour tokens (roles) ---- */
+.flavour { --page: #fff; --card: #fff; --card-edge: var(--n-100); --tile: var(--n-50); --ink: var(--n-900); --ink-2: var(--n-600); --ink-3: var(--n-500);
+  --hero: var(--navy-800); --on-hero: #fff; --bar: #fff; --bar-ink: var(--navy-900); --chip-on: var(--navy-800); --chip-on-ink: #fff; --chip-edge: var(--n-200);
+  --gold: var(--gold-500); --gold-ink: var(--navy-950); --gold-text: var(--gold-800); --gold-tint: var(--gold-100);
+  --r-card: 16px; --r-btn: 10px; --r-chip: 999px; --r-img: 12px; --r-badge: 6px;
+  --shadow-card: 0 1px 2px rgba(8,36,84,.05), 0 6px 20px -8px rgba(8,36,84,.14); --shadow-float: 0 -6px 24px -8px rgba(8,36,84,.18); }
+.flavour-b { --page: #FBF8F1; --card: #fff; --card-edge: #EFE8D8; --tile: #F6F1E6; --chip-edge: #E6DCC4; --r-card: 20px; --r-btn: 999px; --r-img: 14px; --r-badge: 6px; --shadow-card: 0 1px 2px rgba(110,83,22,.05), 0 8px 24px -10px rgba(110,83,22,.18); }
+.flavour-c { --bar: var(--navy-800); --bar-ink: #fff; --chip-on: #fff; --chip-on-ink: var(--navy-900); }
+
+/* ---- phone frame ---- */
+.phone { background: var(--page); border: 1px solid var(--n-200); border-radius: 28px; overflow: hidden; position: relative; box-shadow: 0 1px 2px rgba(8,36,84,.06); }
+.phone .screen { position: relative; }
+.topbar { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: var(--bar); color: var(--bar-ink); }
+.topbar .ic { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; }
+.wordmark { font: 700 18px/1 var(--font-display); letter-spacing: -0.02em; display: inline-flex; align-items: center; gap: 6px; }
+.wordmark svg { width: 18px; height: 18px; }
+.flavour-c .topbar { padding-bottom: 0; }
+.tabsrow { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 10px 12px 0; background: var(--bar); }
+.tabsrow::-webkit-scrollbar { display: none; }
+.flavour-a .tabsrow, .flavour-b .tabsrow { background: var(--page); }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: var(--r-chip); border: 1px solid var(--chip-edge); background: var(--card); color: var(--ink); font: 500 14px/20px var(--font-body); cursor: pointer; white-space: nowrap; transition: transform .1s var(--ease-standard), background-color .15s; }
+.chip:active { transform: scale(.96); }
+.chip.is-on { background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); font-weight: 600; }
+.flavour-c .tabsrow .chip { background: transparent; color: rgba(255,255,255,.85); border-color: rgba(255,255,255,.25); }
+.flavour-c .tabsrow .chip.is-on { background: #fff; color: var(--navy-900); border-color: #fff; }
+.chip .ico { width: 14px; height: 14px; }
+.chip-trigger { background: var(--tile); border-color: transparent; color: var(--ink); }
+.flavour-c .quick .chip-trigger { background: var(--n-100); }
+.rule { padding: 8px 14px 0; font: 400 13px/18px var(--font-body); color: var(--ink-3); background: var(--bar); }
+.flavour-a .rule, .flavour-b .rule { background: var(--page); }
+.flavour-c .rule { color: rgba(255,255,255,.75); padding-bottom: 12px; border-radius: 0 0 20px 20px; }
+.quick { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 10px 12px 2px; }
+.quick::-webkit-scrollbar { display: none; }
+.cnt { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--hero); color: var(--on-hero); font: 600 11px/18px var(--font-body); }
+.countline { padding: 10px 14px 6px; font: 400 13px/18px var(--font-body); color: var(--ink-2); }
+.countline b { color: var(--ink); font-weight: 600; }
+.feed { display: grid; gap: 12px; padding: 0 12px 14px; }
+
+/* ---- card ---- */
+.card { position: relative; display: grid; grid-template-columns: 44% 1fr; gap: 12px; padding: 12px; background: var(--card); border: 1px solid var(--card-edge); border-radius: var(--r-card); box-shadow: var(--shadow-card); transition: transform .12s var(--ease-standard), box-shadow .15s; cursor: pointer; }
+.card:active { transform: scale(.985); }
+.well { position: relative; aspect-ratio: 1; background: #fff; border-radius: var(--r-img); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(8,36,84,.06); overflow: hidden; }
+.flavour-b .well { background: var(--tile); box-shadow: none; }
+.well svg { width: 78%; height: 78%; }
+.badge { position: absolute; left: 8px; bottom: 8px; background: var(--gold); color: var(--gold-ink); font: 600 13px/16px var(--font-body); padding: 3px 7px; border-radius: var(--r-badge); font-variant-numeric: tabular-nums; animation: pop .45s var(--ease-out) both; }
+.flavour-b .badge { padding: 3px 8px 3px 14px; border-radius: 6px 8px 8px 6px; clip-path: polygon(0 50%, 9px 0, 100% 0, 100% 100%, 9px 100%); }
+.flavour-b .badge::before { content: ""; position: absolute; left: 8px; top: 50%; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%; background: rgba(255,255,255,.85); }
+@keyframes pop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+.card .body { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.meta { font: 400 12px/16px var(--font-body); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.title { font: 500 15px/20px var(--font-body); color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.labels { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.caption { color: var(--gold-text); font: 500 12px/16px var(--font-body); }
+.coupon { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--chip-edge); color: var(--ink-2); font: 500 11px/14px var(--font-body); padding: 1px 6px; border-radius: 5px; }
+.coupon svg { width: 11px; height: 11px; }
+.priceline { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
+.price { font: 700 22px/26px var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.was { font: 400 13px/18px var(--font-body); color: var(--ink-3); text-decoration: line-through; }
+.save { font: 600 13px/18px var(--font-body); color: var(--gold-text); }
+.acts { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
+.btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: var(--r-btn); border: 1px solid transparent; font: 600 15px/20px var(--font-body); cursor: pointer; white-space: nowrap; transition: transform .1s var(--ease-standard), background-color .15s, box-shadow .15s; -webkit-tap-highlight-color: transparent; }
+.btn::after { content: ""; position: absolute; inset: -4px; }
+.btn:active { transform: scale(.97); }
+.btn-buy { flex: 1; background: var(--gold); color: var(--gold-ink); box-shadow: 0 1px 0 rgba(110,83,22,.25), 0 6px 14px -8px rgba(196,154,60,.8); }
+.btn-buy:hover { filter: brightness(1.04); }
+.btn-quiet { background: var(--card); color: var(--ink); border-color: var(--chip-edge); }
+.btn-ink { background: var(--hero); color: var(--on-hero); }
+.btn-ghost { background: transparent; color: var(--ink-2); }
+.btn-lg { height: 48px; font-size: 16px; }
+.icbtn { width: 40px; height: 40px; padding: 0; display: inline-grid; place-items: center; border-radius: var(--r-btn); border: 1px solid var(--chip-edge); background: var(--card); color: var(--ink-2); cursor: pointer; transition: transform .1s; flex: none; }
+.icbtn:active { transform: scale(.94); }
+.icbtn svg, .btn svg { width: 18px; height: 18px; }
+
+/* ---- community line + strip ---- */
+.join { margin: 0 12px; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: var(--tile); font: 400 13px/18px var(--font-body); color: var(--ink-2); }
+.join b { color: var(--ink); font-weight: 600; }
+.join .x { margin-left: auto; color: var(--ink-3); }
+
+/* ---- detail slice ---- */
+.detail { padding: 0 0 72px; position: relative; }
+.hero { margin: 0 12px; aspect-ratio: 4 / 3; background: #fff; border-radius: var(--r-img); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(8,36,84,.06); position: relative; overflow: hidden; }
+.flavour-b .hero { background: var(--tile); box-shadow: none; }
+.hero svg { width: 62%; height: 62%; }
+.hero .badge { left: auto; right: 12px; bottom: 12px; font-size: 14px; padding: 4px 9px; }
+.flavour-b .hero .badge { padding: 4px 10px 4px 16px; }
+.dbody { padding: 14px 14px 0; display: grid; gap: 6px; }
+.dtitle { font: 700 20px/26px var(--font-display); letter-spacing: -0.01em; color: var(--ink); }
+.dprice { font: 700 30px/34px var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.015em; }
+.dsub { display: flex; gap: 10px; align-items: baseline; }
+.code { display: flex; align-items: center; gap: 10px; margin-top: 6px; padding: 8px 10px 8px 12px; border: 1.5px dashed var(--chip-edge); border-radius: 10px; background: var(--tile); font: 600 14px/20px var(--font-body); color: var(--ink); letter-spacing: .04em; }
+.code .lbl { font-weight: 400; color: var(--ink-3); letter-spacing: 0; }
+.code .copy { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--chip-edge); background: var(--card); color: var(--navy-700); font: 600 13px/18px var(--font-body); letter-spacing: 0; cursor: pointer; transition: transform .1s; }
+.code .copy:active { transform: scale(.95); }
+.code .copy svg { width: 14px; height: 14px; }
+.code .copy.is-done { color: var(--ok-800); border-color: var(--ok-300); }
+.disc { font: 400 12px/16px var(--font-body); color: var(--ink-3); margin-top: 4px; }
+.share { display: flex; gap: 8px; margin-top: 8px; }
+.share .btn { height: 36px; font-size: 13px; padding: 0 12px; flex: 1; }
+.sticky { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--card); border-top: 1px solid var(--card-edge); box-shadow: var(--shadow-float); }
+.flavour-b .sticky { border-radius: 20px 20px 0 0; border-top: 0; }
+.sticky .price { font-size: 20px; }
+.sticky .mini-code { display: inline-flex; align-items: center; gap: 4px; font: 600 12px/16px var(--font-body); color: var(--ink-2); border: 1px dashed var(--chip-edge); border-radius: 6px; padding: 3px 7px; letter-spacing: .03em; }
+.sticky .mini-code svg { width: 12px; height: 12px; }
+.sticky .btn-buy { flex: 1; }
+
+/* ---- glass compact bar (D-068 §8) ---- */
+.compact { position: absolute; left: 0; right: 0; top: 0; display: flex; gap: 8px; align-items: center; padding: 8px 12px; height: 52px; background: rgba(255,255,255,.72); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); border-bottom: 1px solid rgba(8,36,84,.08); }
+.flavour-b .compact { background: rgba(251,248,241,.74); }
+.flavour-c .compact { background: rgba(8,36,84,.78); border-bottom-color: rgba(255,255,255,.1); }
+.compact .search { flex: 1; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 999px; background: rgba(8,36,84,.06); color: var(--ink-3); font: 400 14px/20px var(--font-body); }
+.flavour-c .compact .search { background: rgba(255,255,255,.14); color: rgba(255,255,255,.8); }
+.compact .search svg { width: 16px; height: 16px; }
+.flavour-c .compact .chip-trigger { background: rgba(255,255,255,.14); color: #fff; }
+
+/* ---- desktop compact cards ---- */
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 14px; background: var(--page); border: 1px solid var(--n-200); border-radius: 16px; }
+.ccard { display: grid; gap: 4px; cursor: pointer; min-width: 0; }
+.ccard .well { border-radius: var(--r-img); }
+.flavour-a .ccard .well { box-shadow: none; background: var(--tile); }
+.ccard .title { font-size: 13px; line-height: 18px; }
+.ccard .price { font-size: 17px; line-height: 22px; }
+.ccard .was { font-size: 12px; }
+.ccard .save { font-size: 12px; }
+.ccard .btn { height: 34px; font-size: 13px; width: 100%; margin-top: 4px; }
+
+.legend { display: grid; gap: 6px; padding: 12px 14px; background: var(--n-50); border-radius: 12px; font: 400 13px/18px var(--font-body); color: var(--n-600); }
+.legend b { color: var(--n-900); font-weight: 600; }
+.replay { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--n-200); background: #fff; font: 500 13px/18px var(--font-body); color: var(--navy-800); cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .badge { animation: none; } .btn, .chip, .card, .icbtn { transition: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="p-earbuds" viewBox="0 0 120 120">
+      <rect x="18" y="34" width="84" height="60" rx="18" fill="#1B2640"/>
+      <rect x="18" y="34" width="84" height="22" rx="11" fill="#2B3752"/>
+      <ellipse cx="46" cy="70" rx="11" ry="15" fill="#F5F7FB"/>
+      <ellipse cx="74" cy="70" rx="11" ry="15" fill="#F5F7FB"/>
+      <circle cx="46" cy="64" r="4" fill="#8A96AE"/><circle cx="74" cy="64" r="4" fill="#8A96AE"/>
+      <rect x="54" y="42" width="12" height="4" rx="2" fill="#4A78CC"/>
+    </symbol>
+    <symbol id="p-oil" viewBox="0 0 120 120">
+      <path d="M48 16h24v14l10 12v56a8 8 0 0 1-8 8H46a8 8 0 0 1-8-8V42l10-12z" fill="#F5B84A"/>
+      <path d="M48 16h24v14H48z" fill="#D6B35E"/>
+      <rect x="46" y="12" width="28" height="8" rx="3" fill="#2B3752"/>
+      <rect x="42" y="54" width="36" height="34" rx="4" fill="#fff" opacity=".9"/>
+      <rect x="48" y="62" width="24" height="4" rx="2" fill="#166A41"/><rect x="48" y="70" width="16" height="3" rx="1.5" fill="#8A96AE"/>
+    </symbol>
+    <symbol id="p-kettle" viewBox="0 0 120 120">
+      <path d="M30 44h56l-6 50H36z" fill="#E9EDF4"/>
+      <path d="M30 44h56l-2 14H32z" fill="#D6DCE8"/>
+      <rect x="40" y="30" width="36" height="14" rx="6" fill="#2B3752"/>
+      <path d="M86 52l16 6-4 20-12-4" fill="#D6DCE8"/>
+      <rect x="20" y="52" width="10" height="30" rx="5" fill="#2B3752"/>
+      <rect x="30" y="94" width="56" height="8" rx="3" fill="#1B2640"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="6" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><circle cx="18" cy="19" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4" stroke="currentColor" stroke-width="1.75"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.6 2.6 21 11a2 2 0 0 1 0 2.8l-7.2 7.2a2 2 0 0 1-2.8 0L2.6 12.6V4a1.4 1.4 0 0 1 1.4-1.4h8.6z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.75"/><path d="M5 15V5a2 2 0 0 1 2-2h10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M10 17h4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="m7 4 0 16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l1 12H5z" fill="currentColor"/><path d="M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.75"/></symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/><path d="M9 9.5c.3 2.6 2.9 5.2 5.5 5.5l1-1.4-1.8-.9-.9.8c-1-.4-1.9-1.3-2.3-2.3l.8-.9-.9-1.8z" fill="currentColor"/></symbol>
+    <symbol id="i-tg" viewBox="0 0 24 24"><path d="m3 11 17-7-3 16-5-4-3 3v-4l8-7-10 6z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <div class="head">
+    <h1>Direction board</h1>
+    <p>Same slice three ways, light only: phone feed, detail price block with sticky bar, the scroll-up compact bar, and three desktop grid cells. Smaller scale (D-068), gold Buy (D-070). Press anything to feel the motion. Pick a letter.</p>
+    <button class="replay" id="replay">Replay badge pop</button>
+  </div>
+  <div class="switcher" role="group" aria-label="Flavour">
+    <button data-f="a" class="is-on">A · Premium white</button><button data-f="b">B · Warm + tag</button><button data-f="c">C · Navy band</button>
+  </div>
+
+  <div class="board" id="board">
+  <!-- ============ A ============ -->
+  <div class="flavour flavour-a is-active" data-flavour="a">
+    <div class="fhead"><h2><span class="letter">A</span>Premium white</h2><p>White stage, navy as ink and one hero element (the active tab), gold only for badge, saving and Buy. Square corners softened to 16 / 10.</p></div>
+    <span class="cap">Phone · Fresh</span>
+    <!--FEED-->
+    <!-- ============ B ============ -->
+  </div>
+  <div class="flavour flavour-b" data-flavour="b">
+    <div class="fhead"><h2><span class="letter">B</span>Warm white + tag</h2><p>Same ink and gold rules on a faintly warm page; photos on soft tiles; pill buttons, 20 px cards; the discount badge is a price tag, the logo's own shape.</p></div>
+    <span class="cap">Phone · Fresh</span>
+    <!--FEED-->
+  </div>
+  <div class="flavour flavour-c" data-flavour="c">
+    <div class="fhead"><h2><span class="letter">C</span>Navy band</h2><p>Navy top bar carries the tabs, white body below, A's cards. <span class="warn">Research note: this is the Dealsmagnet pattern and the one that read dated.</span></p></div>
+    <span class="cap">Phone · Fresh</span>
+    <!--FEED-->
+  </div>
+  </div>
+</div>
+
+<template id="tpl-slice">
+  <div class="phone"><div class="screen">
+    <div class="topbar"><span class="ic"><svg width="22" height="22"><use href="#i-menu"/></svg></span><span class="wordmark"><svg><use href="#i-bag"/></svg>Offertag</span><span class="ic"><svg width="22" height="22"><use href="#i-search"/></svg></span></div>
+    <div class="tabsrow"><button class="chip is-on">Fresh</button><button class="chip">Top picks</button><button class="chip">Loot</button><button class="chip">New</button><button class="chip">Pantry</button></div>
+    <div class="rule">Posted today</div>
+    <div class="quick"><button class="chip chip-trigger"><svg class="ico"><use href="#i-filter"/></svg>Filter <span class="cnt">2</span></button><button class="chip chip-trigger"><svg class="ico"><use href="#i-sort"/></svg>Sort</button><button class="chip">Store <svg class="ico"><use href="#i-chev"/></svg></button><button class="chip">Category <svg class="ico"><use href="#i-chev"/></svg></button><button class="chip">Discount <svg class="ico"><use href="#i-chev"/></svg></button></div>
+    <div class="join" style="margin-top:10px"><svg width="16" height="16" style="color:var(--ink-2)"><use href="#i-wa"/></svg><span>Join OfferTag on <b>WhatsApp</b> · <b>Telegram</b></span><svg class="x" width="16" height="16"><use href="#i-x"/></svg></div>
+    <div class="countline"><b>312 deals</b> · updated 3 min ago</div>
+    <div class="feed">
+      <div class="card">
+        <div class="well"><svg><use href="#p-earbuds"/></svg><span class="badge">75%</span></div>
+        <div class="body">
+          <div class="meta">Amazon · Electronics · 2 h</div>
+          <div class="title">boAt Airdopes 141 TWS Earbuds, 42H playback</div>
+          <div class="labels"><span class="caption">Lowest ever</span><span class="coupon"><svg><use href="#i-tag"/></svg>Coupon</span></div>
+          <div class="priceline"><span class="price">₹1,099</span><span class="was">₹4,490</span></div>
+          <div class="save">Save ₹3,391</div>
+        </div>
+        <div class="acts"><button class="btn btn-buy">Buy at Amazon</button><button class="icbtn" aria-label="Share"><svg><use href="#i-share"/></svg></button></div>
+      </div>
+      <div class="card">
+        <div class="well"><svg><use href="#p-oil"/></svg><span class="badge">28%</span></div>
+        <div class="body">
+          <div class="meta">BigBasket · Grocery · 3 h</div>
+          <div class="title">Fortune Sunflower Oil 5 L, pack of 1</div>
+          <div class="priceline"><span class="price">₹649</span><span class="was">₹899</span></div>
+          <div class="save">Save ₹250</div>
+        </div>
+        <div class="acts"><button class="btn btn-buy">Buy at BigBasket</button><button class="icbtn" aria-label="Share"><svg><use href="#i-share"/></svg></button></div>
+      </div>
+    </div>
+  </div></div>
+
+  <span class="cap">Phone · scroll-up compact bar (the one glass moment)</span>
+  <div class="phone"><div class="screen" style="height:150px;overflow:hidden">
+    <div class="feed" style="padding-top:8px;filter:saturate(1)"><div class="card" style="transform:translateY(-22px)"><div class="well"><svg><use href="#p-kettle"/></svg><span class="badge" style="animation:none">52%</span></div><div class="body"><div class="meta">Amazon · Home · 1 d</div><div class="title">Pigeon 1.5 L electric kettle, auto cut-off</div><div class="priceline"><span class="price">₹599</span><span class="was">₹1,245</span></div><div class="save">Save ₹646</div></div></div></div>
+    <div class="compact"><div class="search"><svg><use href="#i-search"/></svg>Search deals…</div><button class="chip chip-trigger"><svg class="ico"><use href="#i-filter"/></svg>Filter <span class="cnt">2</span></button><button class="chip chip-trigger"><svg class="ico"><use href="#i-sort"/></svg>Sort</button></div>
+  </div></div>
+
+  <span class="cap">Phone · deal detail, price block + sticky bar</span>
+  <div class="phone"><div class="screen detail">
+    <div class="topbar"><span class="ic"><svg width="22" height="22"><use href="#i-back"/></svg></span><span class="wordmark"><svg><use href="#i-bag"/></svg>Offertag</span><span class="ic"><svg width="22" height="22"><use href="#i-share"/></svg></span></div>
+    <div class="hero" style="margin-top:8px"><svg><use href="#p-earbuds"/></svg><span class="badge">75%</span></div>
+    <div class="dbody">
+      <div class="meta" style="font-size:13px">Loot · Amazon · 2 h ago</div>
+      <div class="dtitle">boAt Airdopes 141 TWS Earbuds with 42H Playback</div>
+      <div class="caption" style="font-size:13px">Lowest ever</div>
+      <div class="dprice">₹1,099</div>
+      <div class="dsub"><span class="was">MRP ₹4,490</span><span class="save">Save ₹3,391 (75%)</span></div>
+      <div class="code"><span class="lbl">Code</span>SAVE20<button class="copy" data-copy="SAVE20"><svg><use href="#i-copy"/></svg><span>Copy</span></button></div>
+      <div class="disc">Opens Amazon in a new tab. We may earn a commission.</div>
+      <div class="share"><button class="btn btn-quiet"><svg><use href="#i-wa"/></svg>WhatsApp</button><button class="btn btn-quiet"><svg><use href="#i-tg"/></svg>Telegram</button><button class="btn btn-quiet"><svg><use href="#i-link"/></svg>Copy link</button></div>
+    </div>
+    <div class="sticky"><span class="mini-code"><svg><use href="#i-copy"/></svg>SAVE20</span><span class="price">₹1,099</span><button class="btn btn-buy btn-lg">Buy at Amazon</button></div>
+  </div></div>
+
+  <span class="cap">Desktop · compact grid cells</span>
+  <div class="grid3">
+    <div class="ccard"><div class="well"><svg><use href="#p-earbuds"/></svg><span class="badge" style="left:auto;right:8px">75%</span></div><div class="meta">Amazon · 2 h</div><div class="title">boAt Airdopes 141 TWS, 42H</div><div class="priceline" style="gap:6px"><span class="price">₹1,099</span><span class="was">₹4,490</span></div><div class="save">Save ₹3,391 · <svg width="11" height="11" style="vertical-align:-1px"><use href="#i-tag"/></svg></div><button class="btn btn-buy">Buy at Amazon</button></div>
+    <div class="ccard"><div class="well"><svg><use href="#p-oil"/></svg><span class="badge" style="left:auto;right:8px">28%</span></div><div class="meta">BigBasket · 3 h</div><div class="title">Fortune Sunflower Oil 5 L</div><div class="priceline" style="gap:6px"><span class="price">₹649</span><span class="was">₹899</span></div><div class="save">Save ₹250</div><button class="btn btn-buy">Buy at BigBasket</button></div>
+    <div class="ccard"><div class="well"><svg><use href="#p-kettle"/></svg><span class="badge" style="left:auto;right:8px">52%</span></div><div class="meta">Amazon · 1 d</div><div class="title">Pigeon 1.5 L electric kettle</div><div class="priceline" style="gap:6px"><span class="price">₹599</span><span class="was">₹1,245</span></div><div class="save">Save ₹646</div><button class="btn btn-buy">Buy at Amazon</button></div>
+  </div>
+</template>
+
+<div class="wrap" style="padding-top:24px">
+  <div class="legend">
+    <div><b>Shared by all three:</b> button 40 (sticky 48), chip 32, card 16+, image 44 % of the card, UI text 14, price Jost 22 / 30, gold Buy as the only filled action, press squash on tap, badge pop on load, one glass bar.</div>
+    <div><b>A vs B vs C:</b> A keeps square-ish corners and a pure white page. B warms the page, rounds everything to pills and 20 px, puts photos on soft tiles and cuts the badge as a tag. C moves the tabs into a navy band; everything else is A.</div>
+    <div><b>Not shown on purpose:</b> dark mode (public site is light only, D-069), countdowns, votes, store logos inside cards.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var tpl = document.getElementById('tpl-slice');
+  document.querySelectorAll('.flavour').forEach(function (f) { f.appendChild(tpl.content.cloneNode(true)); });
+  // flavour switcher (narrow screens)
+  var KEY = 'ot-board-flavour';
+  function setF(k) {
+    document.querySelectorAll('.flavour').forEach(function (f) { f.classList.toggle('is-active', f.dataset.flavour === k); });
+    document.querySelectorAll('.switcher button').forEach(function (b) { b.classList.toggle('is-on', b.dataset.f === k); });
+    try { localStorage.setItem(KEY, k); } catch (e) {}
+  }
+  document.querySelectorAll('.switcher button').forEach(function (b) { b.addEventListener('click', function () { setF(b.dataset.f); }); });
+  var saved = null; try { saved = localStorage.getItem(KEY); } catch (e) {}
+  if (saved === 'a' || saved === 'b' || saved === 'c') setF(saved);
+  // replay badge pop
+  document.getElementById('replay').addEventListener('click', function () {
+    document.querySelectorAll('.badge').forEach(function (b) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; });
+  });
+  // copy buttons
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var done = function () { btn.classList.add('is-done'); btn.querySelector('span').textContent = 'Copied'; btn.querySelector('use').setAttribute('href', '#i-check'); setTimeout(function () { btn.classList.remove('is-done'); btn.querySelector('span').textContent = 'Copy'; btn.querySelector('use').setAttribute('href', '#i-copy'); }, 2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(btn.dataset.copy).then(done, done); } else { done(); }
+    });
+  });
+  // chips toggle visually within their row
+  document.querySelectorAll('.tabsrow').forEach(function (row) {
+    row.querySelectorAll('.chip').forEach(function (c) { c.addEventListener('click', function () { row.querySelectorAll('.chip').forEach(function (x) { x.classList.remove('is-on'); }); c.classList.add('is-on'); }); });
+  });
+})();
+</script>
+</body>
+</html>

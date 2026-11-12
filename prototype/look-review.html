@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour and motion review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap">
+<style>
+:root { --ink:#101B36; --muted:#5A6479; --line:#E3E7EF; --page:#F4F6FA; --navy:#082454; --sky:#E6EEFC; --mint:#E2F4EA; --peach:#FDEBDF; --save:#0B7A45; --gold:#F5B000; --loot:#C8323A; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.55 Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 32px 16px 80px; }
+h1 { font-size: 30px; line-height: 1.15; letter-spacing: -.02em; margin: 0 0 8px; }
+h2 { font-size: 21px; letter-spacing: -.015em; margin: 44px 0 12px; }
+h3 { font-size: 16px; margin: 0 0 6px; }
+p { margin: 0 0 10px; }
+.lead { color: var(--muted); max-width: 70ch; }
+a { color: var(--navy); font-weight: 600; text-underline-offset: 3px; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.grid { display: grid; gap: 14px; }
+@media (min-width: 760px) { .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } }
+.tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--sky); color: var(--navy); margin-right: 6px; }
+.tag.rec { background: var(--mint); color: var(--save); }
+.sw { display: inline-flex; gap: 6px; margin: 8px 0 10px; flex-wrap: wrap; }
+.sw i { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(0,0,0,.08); display: inline-block; }
+ul { margin: 6px 0 0; padding-left: 18px; } li { margin: 3px 0; }
+.small { font-size: 13px; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { background: #F8FAFD; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.tbl { overflow-x: auto; border-radius: 14px; }
+.links a { display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border-radius: 10px; background: var(--navy); color: #fff; text-decoration: none; margin: 4px 6px 4px 0; }
+.links a.alt { background: #fff; color: var(--navy); border: 1px solid var(--line); }
+.q { border-left: 4px solid var(--gold); }
+.q b.r { color: var(--save); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="small">OfferTag redesign · S16 visual pass · Home · 12 Nov 2026 · for review, nothing approved yet</p>
+  <h1>Colour, motion and card review: Home</h1>
+  <p class="lead">The layout stays as approved. This round only changes colour, the hero posters, the section headers and the animations. Open Home, switch between the looks with the black bar at the bottom of the page, and tell me what is right and what is wrong.</p>
+
+  <div class="links">
+    <a href="index.html">Open Home (look B chosen, now on every page · D-095)</a>
+  </div>
+  <p class="small">Check each one twice: full browser width, then phone width (narrow the window, or open it on your phone over the same Wi-Fi). Scroll slowly so you see the cards rise in.</p>
+
+  <h2>1 · What your four sites do</h2>
+  <p class="lead">I opened each homepage at phone and desktop width and measured the real colours, fonts, card sizes and animations from the live page. These are lessons, not templates (Law 1).</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3>IndiaDesire <span class="tag">closest to what you want</span></h3>
+      <div class="sw"><i style="background:#F5F7F6"></i><i style="background:#fff"></i><i style="background:#0F2E27"></i><i style="background:#BFEBD6"></i><i style="background:#FDE7DA"></i><i style="background:#C2410C"></i></div>
+      <ul>
+        <li>Pale grey-green page, white cards with 16 px corners, one deep green hero band.</li>
+        <li>Soft mint "Get Deal" buttons and a peach discount chip. Colour sits only on actions and money.</li>
+        <li>A small store-logo chip sits on the corner of every product photo.</li>
+        <li>Bold, round headline font (Outfit 800) on a plain body font (DM Sans). Headings feel friendly.</li>
+        <li>Motion: photos fade in as they load, cards lift on hover (0.15–0.2 s), a pulsing "live" dot, shimmer while loading.</li>
+        <li>Weak spot: the hero is a generated 3D festive illustration. That is the "AI look" you rejected, and it needs new artwork for every sale.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>DesiDime</h3>
+      <div class="sw"><i style="background:#F6F8FC"></i><i style="background:#fff"></i><i style="background:#FE6301"></i><i style="background:#1A1A1A"></i></div>
+      <ul>
+        <li>Cool grey page, white cards, thin borders, no shadows.</li>
+        <li>One orange does all the work: Buy button, heat score, active tab. That single colour is why it feels alive.</li>
+        <li>Dense list rows (image 80 px). Good for regulars, cramped for first-time visitors.</li>
+        <li>Almost no motion: colour fades of 0.15 s, one marquee.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>GrabOn</h3>
+      <div class="sw"><i style="background:#F7F7F8"></i><i style="background:#191F2E"></i><i style="background:#2F6FD0"></i><i style="background:#E3EDFC"></i><i style="background:#D1DE31"></i></div>
+      <ul>
+        <li>Big editorial banners made by a design team (Hostinger, Amazon), with a store-name strip under each.</li>
+        <li>Near-black ink, one blue accent, a pale blue tint on panels.</li>
+        <li>The most motion of the four: cards slide in from the right (0.5 s), a tilt-in, soft spring easing on hover.</li>
+        <li>The banners only work with artwork for every offer. Our BRD removed the banner slider (pinned deals replace it).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>DealsMagnet</h3>
+      <div class="sw"><i style="background:#2E5D8B"></i><i style="background:#fff"></i><i style="background:#FFEFEF"></i><i style="background:#E74C3C"></i></div>
+      <ul>
+        <li>Steel-blue header and buttons, a pink tint on featured rows, a red circle for the % off.</li>
+        <li>The store logo (amazon.in) on every card makes it quick to scan.</li>
+        <li>Tiny type (8–13 px) and many shadows make it feel dated and crowded. This is what to avoid.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small" style="margin-top:10px">The wider scan (Flipkart, Myntra, CashKaro, Klarna, CRED, Blinkit) agrees: one brand colour for the frame, green always means "you save", a cool grey page rather than cream, and a gradient only between two shades of one colour. The rejected marigold set used a cream page and several strong colours at once, which is what read as AI-made.</p>
+
+  <h2>2 · What changes on Home</h2>
+  <div class="tbl"><table>
+    <tr><th>Part</th><th>Today</th><th>In the looks</th><th>Why</th></tr>
+    <tr><td>Page and cards</td><td>White on white, grey borders</td><td>Cool grey-blue page (#F4F6FA), white cards with a faint navy shadow, rounder corners (14 px)</td><td>The cards lift off the page. Every strong site uses a cool grey page, not white or cream.</td></tr>
+    <tr><td>Hero (pinned deals)</td><td>Three small white cards, 132 px photo, black button</td><td>Posters: tinted panel, photo on a white inset (200 px), price 34 px, gold "Buy at Amazon". Two per screen on desktop.</td><td>The first thing you see is a big product and a big price. It is built from the pinned deal, so the admin makes no artwork (inside the BRD).</td></tr>
+    <tr><td>Discount badge</td><td>Black pill</td><td>Green text on a mint chip</td><td>Green = saving, read instantly. Black looked like a warning.</td></tr>
+    <tr><td>"Save ₹…" line</td><td>Grey</td><td>Green, semi-bold</td><td>The saving is the reason people come; it should be the second thing the eye finds.</td></tr>
+    <tr><td>Buy on cards</td><td>Grey outline</td><td>Navy outline that fills navy on hover. Gold stays for the hero and deal page only (D-070).</td><td>One gold action per screen keeps gold special.</td></tr>
+    <tr><td>Category tiles</td><td>Grey squares</td><td>B: sky, mint and peach in turn. A: all sky. C: white.</td><td>Colour without noise: three tints at the same lightness never fight.</td></tr>
+    <tr><td>Section headers</td><td>Plain text</td><td>Small tinted icon chip, bolder heading. Loot gets a red "70%+ OFF" label.</td><td>Sections are easier to tell apart while scrolling.</td></tr>
+    <tr><td>Loot section</td><td>Same as the rest</td><td>B: sits on one peach band</td><td>One band per page breaks the long scroll. Loot is the section people hunt for.</td></tr>
+    <tr><td>Stores</td><td>Name and count</td><td>Letter mark on a tint (placeholder)</td><td>Real logos replace the letters when the client sends them.</td></tr>
+    <tr><td>Join row</td><td>Grey outline card</td><td>Navy band, white text, gold browser-alerts button</td><td>The one dark element on the page, like IndiaDesire's green band, but on our navy.</td></tr>
+    <tr><td>Live dot</td><td>Static black dot</td><td>Green dot with a soft pulse</td><td>Says "this site is updating now" without words.</td></tr>
+  </table></div>
+
+  <h2>3 · The three looks</h2>
+  <div class="grid g3">
+    <div class="card"><h3>A · Navy calm</h3><div class="sw"><i style="background:#F4F6FA"></i><i style="background:#fff"></i><i style="background:#082454"></i><i style="background:#E6EEFC"></i><i style="background:#0B7A45"></i><i style="background:#F5B000"></i></div><p>Navy and one pale blue only. Small hero cards as today. The safest choice, but the team may still call it plain.</p><a href="look-home.html?look=a">Open look A</a></div>
+    <div class="card" style="border-color:#BFE3CD"><h3>B · Soft notes <span class="tag rec">recommended</span></h3><div class="sw"><i style="background:#F4F6FA"></i><i style="background:#E6EEFC"></i><i style="background:#E2F4EA"></i><i style="background:#FDEBDF"></i><i style="background:#082454"></i><i style="background:#F5B000"></i></div><p>Navy plus three pale tints (sky, mint, peach) at the same lightness, big hero posters, a peach Loot band and a navy join band. Joyful, still clean, no gradients or glow.</p><a href="look-home.html?look=b">Open look B</a></div>
+    <div class="card"><h3>C · Store colour</h3><div class="sw"><i style="background:#FFF1E0"></i><i style="background:#E8F0FE"></i><i style="background:#FDE8EE"></i><i style="background:#ECEFF3"></i></div><p>Each card and poster takes a pale tint from its store (Amazon peach, Flipkart blue, Myntra pink). It can look varied, but our deals are almost all Amazon today, so in practice it is mostly peach, and photos with their own backgrounds sit as boxes on the tint.</p><a href="look-home.html?look=c">Open look C</a></div>
+  </div>
+
+  <h2>4 · Animations switched on in the looks</h2>
+  <div class="card"><ul>
+    <li><b>Cards rise in</b> as each row scrolls into view: 12 px up with a fade, 0.45 s, each card 45 ms after the one before. Once only, never again on the same row.</li>
+    <li><b>Discount badge pops</b> right after its card arrives (0.3 s, slight overshoot).</li>
+    <li><b>Hover</b> (desktop): card lifts 3 px with a soft navy shadow and the photo grows 4 %. Store and category tiles lift 2 px.</li>
+    <li><b>Press</b> (phone): card and tile squash slightly, so a tap feels answered.</li>
+    <li><b>Live dot</b> pulses green next to "deals posted today".</li>
+    <li>All of it moves only position and fade, which cheap Android phones handle smoothly. All of it switches off for people who turn motion off on their phone.</li>
+    <li>Not added: autoplay on the hero (D-072 says swipe only), parallax, confetti, looping animations on cards.</li>
+  </ul></div>
+
+  <h2>5 · Card size</h2>
+  <div class="card">
+    <p>Measured: IndiaDesire's desktop card is 192 px wide, DesiDime's photo is 80 px and GrabOn's is 126 px. Ours is already about 255 px at full desktop width and 180 px on a phone, so the deal cards are the biggest of the five. What felt small was the hero, so that is where the size went: the photo goes from 132 to 200 px, the price from 26 to 34 px, and two posters show per screen instead of three. On phones the hero photo goes from 104 to 120 px. Cards stay two across on phones.</p>
+  </div>
+
+  <h2>6 · Your calls</h2>
+  <div class="grid">
+    <div class="card q"><h3>1. Which look?</h3><p><b class="r">Recommend B.</b> Industry: the strong sites (Flipkart, Myntra, Klarna) use one brand colour plus a few pale tints, each with a job. For OfferTag: it adds the colour and joy the owner asked for while keeping the clean shapes you like, and it avoids both rejected directions: not plain like A, not loud like marigold.</p></div>
+    <div class="card q"><h3>2. Store logo on every deal photo?</h3><p><b class="r">Recommend yes:</b> a small white chip in the photo's corner, as IndiaDesire and DealsMagnet do. Industry: people recognise a logo faster than they read a store name. For OfferTag: it shows at a glance which deals are Amazon and which are Flipkart. It needs the store logos from the client (already on the waiting list); until then I can show letter marks.</p></div>
+    <div class="card q"><h3>3. A bolder headline font?</h3><p><b class="r">Recommend bringing Jost back</b> for headings and prices; the brand already chose it (D-037), and the prototype has been running on Geist only. Industry: IndiaDesire's bold headline font is a big part of why it feels friendly. For OfferTag: Jost is our brand font, so this adds no new font. I will show it in the next round if you agree.</p></div>
+    <div class="card q"><h3>4. Posters: built from deals, or uploaded banners?</h3><p><b class="r">Recommend built from deals,</b> as in look B. Industry: big sites use designed banners, but that needs a designer for every sale. For OfferTag: the BRD removed the banner slider, the admin makes nothing extra, and it never looks "AI-made". Uploaded sale banners (as on GrabOn and IndiaDesire) are possible, but they go to the owner as a BRD change.</p></div>
+  </div>
+
+  <h2>7 · After Home</h2>
+  <p>Once Home is approved, the chosen look goes into the shared styles and reaches all 19 screens. Then we go page by page: the Loot deals page next, then the other listings, deal detail, search, sign-in, account, contact, errors, blog, legal pages, email and share card. Each page gets its own link and your notes. Send your list of things that are not in the BRD whenever it is ready; each one goes into the BRD-changes file for approval.</p>
+  <p class="small">Sample-data notes: pinned deals are a stand-in set (the scrape has no pinned flag). Store letter marks are placeholders for the client's logos.</p>
+</div>
+</body>
+</html>

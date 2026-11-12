@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OfferTag tokens preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Jost:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+.wrap{max-width:var(--container-max);margin:0 auto;padding:var(--space-4) var(--gutter-phone)}
+.grid{display:grid;gap:var(--space-4);grid-template-columns:1fr}
+@media (min-width:900px){.grid{grid-template-columns:1fr 1fr}.wrap{padding:var(--space-6) var(--gutter-desktop)}}
+.panel{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-4)}
+h2{font:var(--weight-semibold) var(--text-sm)/var(--leading-sm) var(--font-body);letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--text-subtle);margin:var(--space-5) 0 var(--space-2)}
+h2:first-child{margin-top:0}
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--space-2)}
+.role{border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+.role i{display:block;height:36px}
+.role b{display:block;font:var(--weight-medium) var(--text-xs)/var(--leading-xs) var(--font-body);padding:6px 8px;color:var(--text-muted)}
+.type p{margin:0 0 var(--space-2)}
+.d{font-family:var(--font-display);font-weight:var(--weight-bold);letter-spacing:var(--tracking-tight)}
+.sp{display:flex;align-items:flex-end;gap:var(--space-2)}.sp i{display:block;background:var(--primary);width:var(--space-4)}
+.rad{display:flex;gap:var(--space-2)}.rad i{display:block;width:40px;height:40px;background:var(--surface-2);border:1px solid var(--border-strong)}
+.sh{display:flex;gap:var(--space-4)}.sh i{display:block;width:72px;height:48px;background:var(--surface);border-radius:var(--radius-md)}
+table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}td{padding:4px;border-bottom:1px solid var(--border)}
+.g{font-weight:600}.pass{color:var(--ok)}.fail{color:var(--err)}
+.btn{font:var(--weight-semibold) 14px/1 var(--font-body);min-height:var(--control-h);padding:0 var(--space-4);border-radius:var(--radius-md);border:var(--border-width-strong) solid transparent;background:var(--primary);color:var(--on-primary);cursor:pointer}
+.btn:hover{background:var(--primary-hover)}.btn:active{background:var(--primary-active)}
+.badge{display:inline-block;background:var(--badge-bg);color:var(--badge-fg);font:700 12px/1 var(--font-body);padding:6px 8px;border-radius:var(--radius-sm)}
+.save{color:var(--save);font:600 13px/1 var(--font-body)}
+.price{font:700 var(--text-lg)/1 var(--font-display);color:var(--price);font-variant-numeric:tabular-nums}
+.was{color:var(--price-was);text-decoration:line-through;font-size:var(--text-sm)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p style="margin:0 0 var(--space-3);color:var(--text-muted)">tokens.css v0.1 · Royal · Jost + Inter. Left: light. Right: dark. Contrast computed live from the role variables.</p>
+  <div class="grid" id="grid"></div>
+</div>
+<template id="t">
+  <div class="panel">
+    <h2>Mode</h2><div class="mode" style="font-weight:600"></div>
+    <h2>Roles</h2><div class="roles"></div>
+    <h2>Type</h2>
+    <div class="type">
+      <p class="d" style="font-size:var(--text-4xl);line-height:var(--leading-4xl)">Today's best deals</p>
+      <p class="d" style="font-size:var(--text-2xl);line-height:var(--leading-2xl)">H2 Jost 28</p>
+      <p class="d" style="font-size:var(--text-lg);line-height:var(--leading-lg)">H4 Jost 20</p>
+      <p style="font-size:var(--text-md);line-height:var(--leading-md)">Lead Inter 18. Verified offers from 19 shops.</p>
+      <p>Body Inter 16. Tap a deal to open it on the shop.</p>
+      <p style="font-size:var(--text-sm);line-height:var(--leading-sm);color:var(--text-subtle)">Meta Inter 13 · Posted 2h ago</p>
+      <p><span class="price">₹1,299</span> <span class="was">MRP ₹3,990</span> <span class="save">Save ₹2,691</span> <span class="badge">67% off</span></p>
+      <p><button class="btn">Buy at Amazon</button></p>
+    </div>
+    <h2>Spacing</h2><div class="sp"></div>
+    <h2>Radius</h2><div class="rad"></div>
+    <h2>Elevation</h2><div class="sh"></div>
+    <h2>Contrast</h2><table><tbody class="ct"></tbody></table>
+  </div>
+</template>
+<script>
+(function(){
+  const ROLES=['bg','surface','surface-2','surface-3','text','text-muted','text-subtle','border','border-strong','primary','primary-hover','on-primary','primary-text','link','focus','accent','accent-text','accent-tint','badge-bg','badge-fg','save','label','rule','price','price-was','ok','ok-bg','warn','warn-bg','err','err-bg','img-well','skeleton','expired-badge-bg','expired-badge-fg'];
+  const PAIRS=[['text','surface',4.5],['text-muted','surface',4.5],['text-subtle','surface',4.5],['link','surface',4.5],['on-primary','primary',4.5],['on-primary','primary-hover',4.5],['primary-text','surface',4.5],['badge-fg','badge-bg',4.5],['save','surface',4.5],['label','surface',4.5],['accent-text','accent-tint',4.5],['price','surface',4.5],['price-was','surface',4.5],['ok','ok-bg',4.5],['warn','warn-bg',4.5],['err','err-bg',4.5],['err','surface',4.5],['expired-badge-fg','expired-badge-bg',4.5],['border-strong','surface',3],['focus','bg',3],['text','surface-2',4.5]];
+  const SP=[1,2,3,4,5,6,8,10,12,16]; const RAD=['xs','sm','md','lg','xl','pill']; const SH=[1,2,3];
+  const grid=document.getElementById('grid'), tpl=document.getElementById('t');
+  function lum(hex){const h=hex.replace('#','');const c=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+  function toHex(c){const m=c.match(/\d+/g);if(!m)return c;return '#'+m.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join('');}
+  function val(el,name){let v=getComputedStyle(el).getPropertyValue('--'+name).trim();if(v.startsWith('rgb'))v=toHex(v);return v;}
+  function ratio(a,b){const la=lum(a),lb=lum(b);return (Math.max(la,lb)+.05)/(Math.min(la,lb)+.05);}
+  ['light','dark'].forEach(mode=>{
+    const p=tpl.content.firstElementChild.cloneNode(true); p.dataset.theme=mode; grid.appendChild(p);
+    p.querySelector('.mode').textContent=mode;
+    const r=p.querySelector('.roles'); ROLES.forEach(n=>{const d=document.createElement('div');d.className='role';d.innerHTML=`<i style="background:var(--${n})"></i><b>--${n}<br>${val(p,n)}</b>`;r.appendChild(d);});
+    const sp=p.querySelector('.sp'); SP.forEach(n=>{const i=document.createElement('i');i.style.height=`var(--space-${n})`;i.title=`--space-${n}`;sp.appendChild(i);});
+    const rad=p.querySelector('.rad'); RAD.forEach(n=>{const i=document.createElement('i');i.style.borderRadius=`var(--radius-${n})`;i.title=`--radius-${n}`;rad.appendChild(i);});
+    const sh=p.querySelector('.sh'); SH.forEach(n=>{const i=document.createElement('i');i.style.boxShadow=`var(--shadow-${n})`;i.title=`--shadow-${n}`;sh.appendChild(i);});
+    const ct=p.querySelector('.ct'); PAIRS.forEach(([f,b,min])=>{const fv=val(p,f),bv=val(p,b);if(!/^#/.test(fv)||!/^#/.test(bv))return;const x=ratio(fv,bv);const ok=x>=min;const tr=document.createElement('tr');tr.innerHTML=`<td>--${f} on --${b}</td><td>${x.toFixed(2)}:1</td><td class="g ${ok?'pass':'fail'}">${ok?(x>=7?'AAA':'AA'):'FAIL'}${min===3?' (UI)':''}</td>`;ct.appendChild(tr);});
+  });
+})();
+</script>
+</body>
+</html>
