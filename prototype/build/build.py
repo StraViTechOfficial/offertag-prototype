@@ -75,15 +75,18 @@ def buy_btn(d, cls='btn btn-outline btn-sm btn-buy'):
     lg = store_logo(d['store'])
     inner = f'<span>Buy on</span><img class="buy-logo" src="{lg}" alt="{E(d["store"])}">' if lg else f'Buy at {E(d["store"])}'
     return f'<a class="{cls}" href="{E(d["link"])}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy at {E(d["store"])}">{inner}</a>'
-def card(d, wrap=True):
+def card(d, wrap=True):  # S16 fix round (D-099): store logo sits on the Save line; full-width bigger Buy; share on the photo corner
+    lg = store_logo(d['store'])
+    chip = f'<img class="store-chip" src="{lg}" alt="{E(d["store"])}" loading="lazy">' if lg else f'<span class="store-chip is-text">{E(d["store"])}</span>'
     inner = f'''<article class="card deal" data-id="{d['id']}" data-page="{d['page']}" data-q="{E((d['t'] + ' ' + d['cat'] + ' ' + d['store']).lower())}"{' data-pinned="1"' if d.get('pinned') else ''} data-cat="{E(d['cat'])}" data-store="{E(d['store'])}" data-pct="{d['pct']}" data-price="{d['p']}" data-save="{d['save']}" data-age="{d['agemin']}" data-views="{d.get('views') or 0}" data-types="{E(','.join(d['types']))}">
   <a class="img" href="{d['page']}" aria-label="{E(d['t'])}"><img src="{dimg(d)}" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">{d['pct']}% off</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
   <div class="body">
-    <div class="meta">{E(d['store'])} · {E(CN(d['cat']))} · {E(d['agetxt'])}</div>
+    <div class="meta">{E(CN(d['cat']))} · {E(d['agetxt'])}</div>
     <a class="title" href="{d['page']}">{E(d['t'])}</a>
     <div class="priceline"><span class="price">{inr(d['p'])}</span><span class="was">{inr(d['m'])}</span></div>
-    <div class="save">Save {inr(d['save'])}</div>
-    <div class="acts">{buy_btn(d)}<button class="btn btn-ghost btn-sm btn-icon" aria-label="Share"><i data-lucide="share-2"></i></button></div>
+    <div class="saveline"><span class="save">Save {inr(d['save'])}</span>{chip}</div>
+    <div class="acts"><a class="btn btn-outline btn-buy" href="{E(d["link"])}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="arrow-right"></i></a></div>
   </div></article>'''
     return f'<div class="carousel-item">{inner}</div>' if wrap else inner
 def hero(d, label):
@@ -810,3 +813,4 @@ def build_static():
     write('share-card.html', 'Share card — OfferTag', 'share-card', f'<main class="og-page"><h1>Share card</h1><p>1200 × 630, generated per deal.</p>{cards}</main>', chrome=False)
     print('S15 pages: contact, 4 errors, 3 legal, blog +', len(POSTS), 'posts, email-otp, share-card')
 build_static()
+exec(open(os.path.join(HERE, 'admin.py')).read())  # admin pages (S16 batch A, D-098) — builder session owns build/admin.py

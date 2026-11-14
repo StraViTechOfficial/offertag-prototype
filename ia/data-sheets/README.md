@@ -11,5 +11,9 @@ Lists come from the catalogue as stored (active rows, `order_no`, slugs, spellin
 |---|---|---|
 | `search-category-store-index.md` | search results + sheet, category / store / store+category feeds, categories and stores index, desktop slide-over, Home add-ons; retro-audit of Home, listings, detail | S13 |
 | `auth-account.md` | sign in (page + pop-up / sheet), forced re-login, account, public delete request, signed-in header and menu | S14 |
+| `admin-batch-a.md` | admin shell, Overview, Incoming deals, All deals | S16 |
+| `admin-batch-b.md` | Post / edit deal, Pinned board, Alerts, Sale posters | S16 |
+| `admin-batch-c.md` | Social sharing, Affiliate tags, Inbox, Site & app + Roles, Users, Catalogue | S16 |
+| `admin-batch-d.md` | Blog posts list, Blog editor, admin phone pass | S16 |
 
 Old code moved on 2026-11-11 to `offer-tag/` in this repo; it has no `schema.sql`, so columns come from `offer-tag/database/migrations/`.

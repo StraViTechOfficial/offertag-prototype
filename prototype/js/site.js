@@ -215,7 +215,17 @@
     }
   }
 
-  // Deal alerts menu → browser alerts (prototype: the real site asks the browser for permission first)
+  // Floating join stack (D-099): back-to-top joins the top of the stack; the stack rides up above the footer
+  var fstack = document.querySelector('[data-fstack]');
+  if (fstack) {
+    var tt = document.getElementById('to-top'); if (tt) fstack.insertBefore(tt, fstack.firstChild);
+    document.body.appendChild(fstack);  // out of the footer so position: fixed is never clipped
+    var foot = document.querySelector('.site-footer'), ticking = false;
+    var dock = function () { ticking = false; if (!foot) return; var over = window.innerHeight - foot.getBoundingClientRect().top; fstack.style.setProperty('--dock', Math.max(0, over) + 'px'); };
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(dock); } }, { passive: true });
+    window.addEventListener('resize', dock); dock();
+  }
+  // Browser alerts (prototype: the real site asks the browser for permission first)
   document.querySelectorAll('[data-browser-alerts]').forEach(function (b) { b.addEventListener('click', function () { set(LS, 'ot-alerts', '1'); OT.toast('Browser alerts on for this device', 'check'); }); });
 
   // hero = the BRD hottest-deals carousel (B02); admin off → ?hero=0 (Q-038)
@@ -225,14 +235,14 @@
   if (document.documentElement.classList.contains('is-embed')) { var base = document.createElement('base'); base.target = '_top'; document.head.appendChild(base); }
 })();
 
-/* ---- S14: sign in (page + sheet / pop-up), signed-in header and menu, account, public delete request. Prototype: no backend. Review states: ?step=code · ?error=send|code|locked · ?turnstile=1 · ?user=1 ---- */
+/* ---- S14: sign in (page + sheet / pop-up), signed-in header and menu, account, public delete request. Prototype: no backend. Review states: ?step=code · ?error=send|code|locked · ?turnstile=1 · ?user=1 · ?user=admin|sub (staff: Admin panel link, D-055) ---- */
 (function () {
   var OT = window.OT, q = new URLSearchParams(location.search), KEY = 'ot-user', FLASH = 'ot-flash', page = document.body.dataset.page;
   var SAMPLE = { name: 'Asha Verma', email: 'asha@example.com', mobile: '' }; // declared SAMPLE, data sheet auth-account.md
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, TRIES = 5, RESEND = 30;
   function all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function stored() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
-  function user() { return stored() || (q.get('user') ? SAMPLE : null); }
+  function user() { var r = q.get('user'); return stored() || (r ? Object.assign({}, SAMPLE, r === 'admin' || r === 'sub' ? { role: r } : {}) : null); }
   function save(u) { try { if (u) localStorage.setItem(KEY, JSON.stringify(u)); else localStorage.removeItem(KEY); } catch (e) {} }
   function flash(msg) { try { sessionStorage.setItem(FLASH, msg); } catch (e) {} }
   function show(el, msg) { if (!el) return; el.textContent = msg || ''; el.hidden = !msg; }
@@ -242,6 +252,8 @@
     var u = user();
     all('[data-when-user]').forEach(function (el) { el.hidden = !u; });
     all('[data-when-guest]').forEach(function (el) { el.hidden = !!u; });
+    var staff = !!(u && (u.role === 'admin' || u.role === 'sub'));  // roles 1 and 3 only (D-055, W02)
+    all('[data-when-staff]').forEach(function (el) { el.hidden = !staff; if (staff) el.href = u.role === 'sub' ? 'admin-deals.html?role=sub' : 'admin.html'; });
     if (!u) return;
     all('[data-user-name]').forEach(function (el) { el.textContent = u.name; });
     all('[data-user-initial]').forEach(function (el) { el.textContent = (u.name || u.email).charAt(0).toUpperCase(); });

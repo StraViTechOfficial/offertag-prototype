@@ -58,3 +58,8 @@ Law 15. Old code: `offer-tag/` in this repo (read-only, moved from `/mnt/d/PC-Do
 
 ## SAMPLE
 Member name "Asha Verma" and `asha@example.com` stand in for a signed-in member. `users` holds real people's personal data, which is never copied into the prototype. Declared here as the one exception to the SAMPLE rule.
+
+## Staff link (S16 BRD audit, D-102)
+| Element | Source | Note |
+|---|---|---|
+| "Admin panel" in the account menu and phone menu, roles 1 (admin) and 3 (sub-admin) only | `users.role_id`, `AdminAuthorization.php:20`; W02; D-055 | Review states `?user=admin`, `?user=sub`; sub-admins open All deals |

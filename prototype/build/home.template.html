@@ -29,15 +29,6 @@
       </form>
       <div class="header-actions">
         <a class="btn btn-link nav-blog" href="blog.html" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span></a>
-        <div class="dropdown alerts-menu">
-          <button class="btn alerts-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Deal alerts"><i data-lucide="bell"></i><span class="lbl">Deal alerts</span><i data-lucide="chevron-down" class="chev"></i></button>
-          <div class="menu alerts-pop" role="menu" hidden data-state="closed">
-            <div class="menu-label">Get every deal the minute it’s posted</div>
-            <a role="menuitem" class="mi-wa" href="#wa" target="_blank" rel="noopener"><span class="mi-ico">{{ICON:whatsapp}}</span><span><b>WhatsApp community</b><small>Free, no account</small></span></a>
-            <a role="menuitem" class="mi-tg" href="#tg" target="_blank" rel="noopener"><span class="mi-ico">{{ICON:telegram}}</span><span><b>Telegram channel</b><small>Free, no account</small></span></a>
-            <button type="button" role="menuitem" class="mi-br" data-browser-alerts><span class="mi-ico"><i data-lucide="bell-ring"></i></span><span><b>Browser alerts</b><small>On this device</small></span></button>
-          </div>
-        </div>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
         <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>Sign in</a>
         <div class="dropdown account-menu" data-when-user hidden>
@@ -46,6 +37,7 @@
             <div class="menu-label" data-user-name></div>
             <div class="separator"></div>
             <a role="menuitem" href="account.html"><i data-lucide="user"></i>Account</a>
+            <a role="menuitem" href="admin.html" data-when-staff hidden><i data-lucide="layout-dashboard"></i>Admin panel</a>
             <button type="button" role="menuitem" data-signout><i data-lucide="log-out"></i>Sign out</button>
           </div>
         </div>
@@ -109,16 +101,6 @@
     </div>
   </section>
 
-  <!-- Join -->
-  <section class="section" aria-labelledby="h-join">
-    <div class="container">
-      <div class="card join">
-        <div class="t"><b id="h-join">Never miss a loot</b><p>Get every deal the moment it is posted, on WhatsApp or Telegram. Free, no account.</p></div>
-        <div class="acts"><a class="btn btn-outline" href="#wa"><i data-lucide="message-circle"></i>WhatsApp</a><a class="btn btn-outline" href="#tg"><i data-lucide="send"></i>Telegram</a><button class="btn btn-default"><i data-lucide="bell"></i>Browser alerts</button></div>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 {{FOOTER_BLOCK}}
@@ -133,6 +115,7 @@
   <nav class="sheet-nav">
     <a href="login.html" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in with Google or email</a>
     <a href="account.html" data-when-user hidden><i data-lucide="user"></i><span data-user-name></span></a>
+    <a href="admin.html" data-when-staff hidden><i data-lucide="layout-dashboard"></i>Admin panel</a>
     <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
     <div class="separator" style="margin:8px 0"></div>
     <div class="sheet-section">Deals</div>
