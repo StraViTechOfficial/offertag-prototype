@@ -6,8 +6,8 @@ import datetime as _dt
 TODAY = _dt.date(2026, 11, 13)
 A_INCOMING_COUNT = 5   # SAMPLE incoming rows below (data sheet § Incoming)
 A_INBOX_COUNT = 5      # SAMPLE (data sheet § Shell)
-PIN_SLOTS = [3, 6, 9, 13]  # D-053
-A_PIN = {d['file']: PIN_SLOTS[i] for i, d in enumerate(pinned)}  # the 4 SAMPLE pinned deals the public site uses
+# D-104: pinned slots are an open list (slot 1, 2, 3…); on Fresh, slot k sits at card k × PIN_EVERY (build.py, admin sets N)
+A_PIN = {d['file']: i + 1 for i, d in enumerate(pinned)}  # the 8 SAMPLE pinned deals the public site uses, in slot order
 
 def soon(label): return 'admin-soon.html?s=' + label.replace(' ', '+')
 
@@ -130,7 +130,7 @@ def build_overview():
         ('Incoming', A_INCOMING_COUNT, 'admin-incoming.html', 'Review'),
         ('Alerts sent today', 2, 'admin-alerts.html', 'Alerts'),
         ('Inbox unhandled', A_INBOX_COUNT, 'admin-inbox.html', 'Open inbox'),
-        ('Pinned slots', f'{len(A_PIN)} of 4', 'admin-pinned.html', 'Pinned board'),
+        ('Pinned on Fresh', len(A_PIN), 'admin-pinned.html', 'Pinned board'),
     ]
     k = ''.join(f'<a class="kpi" href="{h}"><span class="kpi-l">{l}</span><b class="kpi-n"{" data-count=incoming" if l == "Incoming" else ""}>{v}</b><span class="kpi-a">{a} <i data-lucide="arrow-right"></i></span></a>' for l, v, h, a in kpis)
     rows = ''.join(f'<li><span class="t-time">{d["agetxt"]}</span><img src="{dimg(d)}" alt="" loading="lazy"><a class="t-title" href="{d["page"]}" target="_blank" rel="noopener">{E(d["t"])}</a><span class="t-meta">{E(d["store"])}</span>{types_html(d["types"][:1] if d["types"][0] != "Fresh" else d["types"][1:2])}<span class="pill pill-live">Live</span></li>' for d in latest)
@@ -420,7 +420,7 @@ def build_post():
           <div class="sec">
             <div class="grid3">
               <label class="fld"><span class="lab">Shows on</span>{_sel('name="display"', '<option value="1">Web + App</option><option value="2">Web only</option><option value="3">App only</option>')}</label>
-              <div class="fld"><span class="lab">Pinned</span><div class="pinrow">{ck('name="pin"', 'Pin')}{_sel('name="slot" aria-label="Slot"', ''.join(f'<option value="{x}">Slot {x}</option>' for x in PIN_SLOTS))}</div></div>
+              <div class="fld"><span class="lab">Pinned</span><div class="pinrow">{ck('name="pin"', 'Pin')}{_sel('name="slot" aria-label="Slot"', ''.join(f'<option value="{x}">Slot {x}{" (next free)" if x == len(A_PIN) + 1 else ""}</option>' for x in range(1, len(A_PIN) + 2)))}</div></div>
               <div class="fld"><span class="lab">Push alert</span>{ck('name="notify"', 'Send push <small data-notify-hint>auto at 90% off</small>')}</div>
             </div>
             <div class="fld"><span class="lab">Publish</span>
@@ -484,21 +484,24 @@ def build_post():
 # ---------- Pinned board (admin-pinned-blog §1) ----------
 def build_pinned():
     pins = sorted([r for r in ADM_ROWS if r['pin']], key=lambda r: r['pin'])
-    ages = ['2 h', '1 d', '3 d', '5 d']
-    data = [dict(slot=r['pin'], id=r['id'], age=ages[i]) for i, r in enumerate(pins)]
-    wait = [r for r in ADM_ROWS if not r['pin'] and r['status'] == 'live'][7]   # SAMPLE waiting row (data sheet B)
+    ages = ['2 h', '5 h', '1 d', '1 d', '2 d', '3 d', '4 d', '5 d']   # SAMPLE (data sheet B)
+    data = [dict(id=r['id'], age=ages[i % len(ages)]) for i, r in enumerate(pins)]
+    gaps = ''.join(f'<option value="{n}"{" selected" if n == PIN_EVERY else ""}>{n}</option>' for n in range(2, 11))
     body = f'''      <div class="page-h">
-        <div><h1>Pinned board</h1><p>Pinned deals sit in fixed slots in the deal lists: positions {", ".join(map(str, PIN_SLOTS[:-1]))} and {PIN_SLOTS[-1]}. <span class="desk-only">Drag a card to move it; dropping on a filled slot swaps the two.</span><span class="phone-only">Move a deal with the slot menu on its card; picking a filled slot swaps the two.</span> Empty slots are filled by the normal feed.</p></div>
-        <div class="page-h-acts"><a class="btn btn-outline" href="fresh.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>Preview on site</a></div>
+        <div><h1>Pinned board</h1><p>Pinned deals show on the Fresh page only, in a repeating slot every few cards, all the way down the feed. Slot 1 is the first pinned spot, slot 2 the next, and so on. <span class="desk-only">Drag a card to change the order; dropping on another card swaps the two.</span><span class="phone-only">Change the order with the slot menu on each card; picking a filled slot swaps the two.</span> When pinned deals run out, the rest of the slots show normal fresh deals.</p></div>
+        <div class="page-h-acts"><a class="btn btn-outline" href="fresh.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>Preview on Fresh</a></div>
       </div>
+      <section class="panel pin-gap">
+        <label class="pin-gap-f"><span>Show a pinned deal every</span><span class="select"><select data-pin-every aria-label="Cards between pinned deals">{gaps}</select><i data-lucide="chevron-down"></i></span><span>cards on Fresh</span></label>
+        <p class="pin-gap-h" data-pin-gap-h></p>
+      </section>
       <div class="slots" data-slots role="list"></div>
-      <p class="foot-note"><i data-lucide="keyboard"></i>Keyboard: focus a card, press Space to pick it up, arrow keys to move, Space to drop. On a phone, use the slot menu on each card. Slot positions come from site config and can’t be changed here.</p>
-      <section class="panel waiting"><div class="panel-h"><h2>Waiting <small>pinned, no free slot</small></h2><span class="tag-sample">Sample</span></div><ul class="tlist" data-waiting></ul></section>
+      <p class="foot-note"><i data-lucide="keyboard"></i>Keyboard: focus a card, press Space to pick it up, arrow keys to move, Space to drop. On a phone, use the slot menu on each card.</p>
       <div class="popover pick-pop" id="pick-pop" hidden data-state="closed" role="dialog" aria-label="Pin a deal">
         <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Search title or paste link" data-pick-q aria-label="Search deals"></label>
         <ul class="pick-list" data-pick-list role="listbox"></ul>
       </div>'''
-    shell('admin-pinned.html', 'Pinned board', 'pinned', body, scripts=f'<script>window.ADM_DEALS = {adm_data()}; window.ADM_PINS = {json.dumps(dict(slots=PIN_SLOTS, pins=data, waiting=[dict(id=wait["id"], age="5 d")]))};</script>\n')
+    shell('admin-pinned.html', 'Pinned board', 'pinned', body, scripts=f'<script>window.ADM_DEALS = {adm_data()}; window.ADM_PINS = {json.dumps(dict(every=PIN_EVERY, pins=data))};</script>\n')
 
 # ---------- Alerts (admin-tools §1) ----------
 def build_alerts():

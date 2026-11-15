@@ -57,9 +57,27 @@
   function chip(label, onX) { var el = document.createElement('span'); el.className = 'chip-x'; el.textContent = label; var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Remove ' + label); b.innerHTML = '<i data-lucide="x"></i>'; b.addEventListener('click', onX); el.appendChild(b); return el; }
   function inr(v) { return '₹' + v.toLocaleString('en-IN'); }
 
+  // D-104: on Fresh only, pinned deals fill every Nth card (N set by the admin on the Pinned board, default 3) down the whole feed,
+  // in pinned-slot order; slots with no pinned deal left take the next normal deal. Applies to the default view; a sort or filter shows plain order.
+  var PIN_EVERY = +(document.body.dataset.pinEvery || 0), PIN_IDS = (document.body.dataset.pins || '').split(',').filter(Boolean);
+  if (PIN_EVERY) { try { var ae = +localStorage.getItem('adm-pin-every'); if (ae >= 2) PIN_EVERY = ae; var ap = JSON.parse(localStorage.getItem('adm-pins') || 'null'); if (ap && ap.length) PIN_IDS = ap.map(String); } catch (e) {} }
+  function placePins(vis, s) {
+    var plain = s.cat.length + s.store.length + s.type.length + s.disc + (s.price ? 1 : 0) + (s.posted ? 1 : 0) + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0) === 0;
+    cards.forEach(function (c) { delete c.dataset.slot; });
+    if (!PIN_EVERY || !plain || QL || sortMode !== (document.body.dataset.defaultSort || 'recommended')) return vis;
+    var byId = {}; vis.forEach(function (c) { byId[c.dataset.id] = c; });
+    var pins = PIN_IDS.map(function (id) { return byId[id]; }).filter(Boolean), rest = vis.filter(function (c) { return pins.indexOf(c) < 0; }), out = [], n = 0;
+    while (rest.length || pins.length) {
+      if ((out.length + 1) % PIN_EVERY === 0 && pins.length) { var p = pins.shift(); p.dataset.slot = ++n; out.push(p); }
+      else if (rest.length) out.push(rest.shift());
+      else { var q = pins.shift(); q.dataset.slot = ++n; out.push(q); }
+    }
+    return out;
+  }
+
   function apply() {
     var s = state();
-    var vis = sortCards(cards.filter(function (c) { return match(c, s); }), sortMode);
+    var vis = placePins(sortCards(cards.filter(function (c) { return match(c, s); }), sortMode), s);
     cards.forEach(function (c) { c.hidden = true; });
     vis.forEach(function (c, i) { results.insertBefore(c, empty); c.hidden = i >= limit; });
     countEl.textContent = vis.length; if (sheetCount) sheetCount.textContent = vis.length;

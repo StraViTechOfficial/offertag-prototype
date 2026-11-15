@@ -31,7 +31,7 @@ Review state: `?role=sub` shows the sub-admin shell on every admin page; on Over
 | Incoming pending | Incoming SAMPLE rows | Live: `deals.deal_status = pending` |
 | Alerts sent today | `notifications` rows created today | SAMPLE 2: the table exists but the prototype has no copy of its rows |
 | Inbox unhandled | as the sidebar badge | SAMPLE 5 |
-| Pinned slots filled | `deals.is_pinned`, `pinned_order` | The 4 SAMPLE pinned deals the public site already uses (build.py `pinned`) |
+| Pinned on Fresh (count) | `deals.is_pinned`, `pinned_order` | The 8 SAMPLE pinned deals the public site uses (build.py `pinned`); D-104 |
 | Latest live deals (5) | Snapshot, newest first | Title, type, store, posted |
 | Recent shares (5) | `share history` (new, B15) | SAMPLE: sharing is new, no rows exist |
 | Quick actions Post a deal · Review incoming | brief v2 | |
@@ -59,7 +59,7 @@ Approved today / Rejected tabs show the counts the user acts on in the session (
 | Columns: image, title, store, price / MRP / %, type, status, pin, posted, views | `image_name`, `title`, `shop_id`, `discount_amount`, `actual_amount`, `discount_percent`, `deal_type`, `deal_status`, `pinned_order`, `updated_at`, `view_counter` | Views are admin only (D-058 hides them on the public site) |
 | Status pill Live · Scheduled · Pending · Rejected · Withdrawn | `deal_status` enum (pending, approved, rejected) + `publish_at` + contract field 24 (withdrawn) | Live = approved and `publish_at` past |
 | SAMPLE statuses | one Scheduled, one Withdrawn | Snapshot has only live deals |
-| Pin slot 3 · 6 · 9 · 13 | D-053, `pinned_order` | The 4 SAMPLE pinned deals |
+| Pin slot 1, 2, 3… (open-ended; Pin takes the next slot) | D-104, `pinned_order` | The 8 SAMPLE pinned deals |
 | Filters: search, status, type, store, category, pinned, posted | brief Deals list | Store and category lists from the catalogue as stored (Law 15) |
 | Display target filter | `deal_display_type` 1 Web + Mobile App · 2 Web · 3 Mobile App | `deal-form.blade.php:163` |
 | Sort: posted, price, %, views, status | brief | |

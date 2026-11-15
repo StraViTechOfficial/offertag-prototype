@@ -25,7 +25,7 @@ Field order, limits and rules are the contract §1 (fields 1–22); this sheet n
 | Description editor: bold, italic, lists, link | contract §2 | |
 | Steps: store default + exceptions | D-080, `shops.shop_steps` | Default list = what the live site shows today (build.py `SHOP_STEPS`) |
 | Display Web + App · Web · App | `deal_display_type` 1/2/3, `deal-form.blade.php:163` | |
-| Pin + slot 3 / 6 / 9 / 13 | `is_pinned`, `pinned_order`, `PINNED_DEALS_ORDER` (`config/app.php`) | |
+| Pin + slot 1 … N+1 ("next free" last) | `is_pinned`, `pinned_order` (D-104) | |
 | Publish now / Schedule | `publish_at` | |
 | Notify push, ticked at ≥ 90 % | contract field 22 | |
 | "Last edited by Adil, 2 h ago" | `updater_id`, `updated_at` (brief: audit line) | Name from the agreed ASCII |
@@ -37,10 +37,10 @@ Field order, limits and rules are the contract §1 (fields 1–22); this sheet n
 ## Pinned board
 | Element | Source | Note |
 |---|---|---|
-| Slots 3, 6, 9, 13, shown not editable | `PINNED_DEALS_ORDER` default `3,6,9,13` (`config/app.php`), D-053 | |
-| Deals in the slots | the 4 SAMPLE pinned deals (build.py `pinned`), same as All deals and Overview | |
+| "Show a pinned deal every N cards on Fresh", 2–10, default 3 | D-104; replaces `PINNED_DEALS_ORDER` (`config/app.php`, `3,6,9,13`) with one site setting | New setting (DEV-024) |
+| Slots 1, 2, 3… open-ended, "card k × N" on each, one empty "+ Pin a deal" tile last | D-104, `pinned_order` | Unpin moves later slots up one |
+| Deals in the slots | the 8 SAMPLE pinned deals (build.py `pinned`), same as All deals, Overview and Fresh | |
 | "pinned 2 h" ages | SAMPLE | No pinned-at column; live would use `updated_at` |
-| Waiting list (pinned, no slot) | `is_pinned = 1`, `pinned_order` null | SAMPLE 1 row |
 | "+ Pin a deal" search | snapshot deals, title or link | |
 | Drag, swap on occupied slot, keyboard Space + arrows, phone Slot ▾ | D-066 | |
 | Where pinned deals show on the public site | open (D-098 §4) | Board copy says "fixed slots in the lists" per D-053 until the user decides |

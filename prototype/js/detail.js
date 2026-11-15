@@ -67,7 +67,7 @@
   function openReply(li) {
     if (!body.classList.contains('is-signed-in')) { OT.toast('Sign in to reply', 'log-in'); document.getElementById('composer').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
     if (openForm) openForm.remove();
-    var f = document.createElement('form'); f.className = 'reply-form'; f.innerHTML = '<textarea class="textarea" rows="1" placeholder="Write a reply…" maxlength="191" aria-label="Write a reply"></textarea><div class="acts"><button class="btn btn-default btn-sm" type="submit">Post</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancel</button></div>';
+    var f = document.createElement('form'); f.className = 'reply-form'; f.innerHTML = '<textarea class="textarea" rows="1" placeholder="Write a reply…" maxlength="300" aria-label="Write a reply"></textarea><div class="acts"><button class="btn btn-default btn-sm" type="submit">Post</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancel</button></div>';
     li.querySelector('.replies').before(f); openForm = f; f.querySelector('textarea').focus();
     f.querySelector('[data-cancel]').addEventListener('click', function () { f.remove(); openForm = null; });
     f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; var r = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin'), true); li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
@@ -78,7 +78,7 @@
   // composer (signed in): bold / link wrap, counter, post
   var cin = document.getElementById('composer-in'), ta = document.getElementById('comment-text'), chars = document.getElementById('chars'), err = document.getElementById('comment-error');
   if (cin) {
-    ta.addEventListener('input', function () { chars.textContent = ta.value.length + '/191'; });
+    ta.addEventListener('input', function () { chars.textContent = ta.value.length + '/300'; });
     cin.querySelectorAll('[data-wrap]').forEach(function (b) { b.addEventListener('click', function () {
       var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e) || 'text', w = b.dataset.wrap === 'link' ? '[' + sel + '](https://)' : '**' + sel + '**';
       ta.setRangeText(w, s, e, 'end'); ta.focus(); ta.dispatchEvent(new Event('input'));
@@ -86,7 +86,7 @@
     cin.addEventListener('submit', function (e) {
       e.preventDefault(); var t = ta.value.trim(); if (!t) { ta.focus(); return; }
       if (q.get('fail') === '1') { err.hidden = false; return; } err.hidden = true;
-      var li = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin')); list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/191'; OT.toast('Comment posted', 'check');
+      var li = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin')); list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/300'; OT.toast('Comment posted', 'check');
     });
   }
 

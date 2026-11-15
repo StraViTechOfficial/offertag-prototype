@@ -492,8 +492,13 @@ html.admin .input:focus-visible, html.admin .textarea:focus-visible { box-shadow
 .slot-add { display: grid; place-items: center; gap: 6px; align-content: center; height: 100%; min-height: 240px; border-radius: 8px; color: hsl(var(--muted-foreground)); font-size: 13.5px; }
 .slot-add:hover { color: hsl(var(--foreground)); background: hsl(var(--accent) / .5); }
 .slot-sel select { height: 32px; font-size: 13px; }
-.waiting { margin-top: 20px; }
-.waiting .panel-h h2 small { font-weight: 400; color: hsl(var(--muted-foreground)); font-size: 12.5px; margin-left: 6px; }
+/* D-104: pinned gap setting */
+.pin-gap { padding: 14px 16px; margin-bottom: 16px; display: grid; gap: 6px; }
+.pin-gap-f { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 14px; font-weight: 500; }
+.pin-gap-f .select { width: 76px; }
+.pin-gap-f select { height: 36px; }
+.pin-gap-h { font-size: 13px; color: hsl(var(--muted-foreground)); margin: 0; }
+.slot-h small { font-weight: 500; letter-spacing: 0; text-transform: none; }
 .tlist li.none, .pick-list .none { color: hsl(var(--muted-foreground)); justify-content: center; font-size: 13px; }
 .pick-pop { width: 320px; max-width: calc(100% - 24px); }
 .pick-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 2px; max-height: 300px; overflow: auto; }
@@ -575,7 +580,6 @@ html.admin .input:focus-visible, html.admin .textarea:focus-visible { box-shadow
   .slot-acts .slot-sel { display: inline-flex; }
   .slot-h .lucide { display: none; }
   .slot-add { min-height: 72px; grid-column: 1 / -1; }
-  .waiting .tlist li { flex-wrap: wrap; }
   .poster-row { flex-wrap: wrap; gap: 10px 12px; }
   .p-img { width: 96px; }
   .p-main { flex-basis: calc(100% - 140px); }

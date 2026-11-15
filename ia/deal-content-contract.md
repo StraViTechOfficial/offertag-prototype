@@ -102,6 +102,6 @@ Withdrawn (D-040): banner, price block muted, Buy → "See similar deals", coupo
 
 ## 8. Dev notes
 - One sanitiser, one splitter, shared by API intake, admin save and a one-off migration of the 52k rows (store the cleaned result; keep the raw HTML in `description_raw` for a rollback window).
-- Escape all user and machine text at render; comments remain `varchar(191)` with the same escaping (W28).
+- Escape all user and machine text at render; comments and replies allow 300 characters, so `comments.comment` widens from `varchar(191)` to `varchar(300)` (DEV-023, D-103); same escaping (W28).
 - Search indexes title, highlights, description text, specs values.
 - The prototype's `build.py` runs §4–§6 on the 42 live pages plus three multi-link pages; compare its output with the live page to validate a port.

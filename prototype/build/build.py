@@ -111,7 +111,8 @@ def carousel(items, free=False):
 
 by_pct = sorted(deals, key=lambda d: -int(d['pct']))
 by_save = sorted(deals, key=lambda d: -d['save'])
-pinned = list({d['file']: d for d in [by_save[0], by_pct[0], by_save[2], by_pct[3]]}.values())[:4]  # SAMPLE: the scrape has no is_pinned; four picks stand in for the pinned set (README)
+pinned = list({d['file']: d for d in [by_save[0], by_pct[0], by_save[2], by_pct[3], by_save[5], by_pct[6], by_save[8], by_pct[9]]}.values())[:8]  # SAMPLE: the scrape has no is_pinned; eight picks stand in for the pinned set (README). Order = pinned slot 1, 2, 3…
+PIN_EVERY = 3  # D-104: pinned deals fill every Nth card on Fresh only; admin sets N on the Pinned board (default 3)
 for d in pinned: d['pinned'] = True
 PAGES = {
     'fresh':     dict(title='Fresh deals', rule='Posted today, newest first', sort='newest', items=sorted(deals, key=lambda d: d['agemin'])),
@@ -274,6 +275,8 @@ def build_listings():
                    NEARBY=nearby_links(nearby_exclude), FRESH_RAIL=fresh_rail, CARDS=''.join(card(d, wrap=False) for d in items))
         if seo_title: out = out.replace('<title>' + E(title) + ' — OfferTag</title>', '<title>' + E(seo_title) + '</title>', 1)
         if seo_desc: out = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + E(seo_desc) + '">', out, count=1)
+        if fname == 'fresh.html':  # D-104: pinned slots repeat every PIN_EVERY cards on Fresh only; listing.js places them
+            out = out.replace('<body data-page=', f'<body data-pin-every="{PIN_EVERY}" data-pins="{",".join(str(d["id"]) for d in pinned)}" data-page=', 1)
         open(os.path.join(ROOT, fname), 'w').write(out)
         return len(items)
 

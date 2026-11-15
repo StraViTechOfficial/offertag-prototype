@@ -178,7 +178,6 @@
     if (params.get('posted') === 'today') S.f.posted = 'today';
     var LABEL = { status: { live: 'Live', scheduled: 'Scheduled', pending: 'Pending', rejected: 'Rejected', withdrawn: 'Withdrawn' }, type: { Top: 'Top pick', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }, pin: { yes: 'Pinned', no: 'Not pinned' }, display: { '1': 'Web + App', '2': 'Web only', '3': 'App only' }, posted: { today: 'Posted today', week: 'Last 7 days' } };
     var ST_ORDER = { scheduled: 0, live: 1, pending: 2, withdrawn: 3, rejected: 4 };
-    var SLOTS = [3, 6, 9, 13];
     var byId = function (id) { return model.filter(function (d) { return d.id === id; })[0]; };
     var qIn = $('[data-f="q"]'); qIn.value = S.q;
     $$('select[data-f]').forEach(function (s) { if (S.f[s.dataset.f]) s.value = S.f[s.dataset.f]; });
@@ -262,9 +261,9 @@
       pin: function (ds) {
         var d = ds[0], u = snapshot();
         if (d.pin) { var s = d.pin; d.pin = null; done('Unpinned from slot ' + s, u); return; }
-        var used = model.map(function (x) { return x.pin; }), free = SLOTS.filter(function (s) { return used.indexOf(s) < 0; })[0];
-        if (!free) { toast('All 4 pinned slots are full. Free one on the Pinned board.', { icon: 'info', action: 'Pinned board', href: 'admin-soon.html?s=Pinned+board' }); return; }
-        d.pin = free; done('Pinned to slot ' + free, u);
+        if (d.status !== 'live') { toast('Only live deals can be pinned.', { icon: 'info' }); return; }
+        var free = model.reduce(function (m, x) { return Math.max(m, x.pin || 0); }, 0) + 1;  // D-104: slots are open-ended; a new pin takes the next slot
+        d.pin = free; done('Pinned to slot ' + free + ' on Fresh', u);
       },
       push: function (ds) { confirmBox('Send a push alert?', 'An alert for “' + ds[0].t.slice(0, 60) + '…” goes to every web and app subscriber now. It can’t be taken back.', 'Send alert', function () { toast('Push alert sent'); }); },
       del: function (ds) {
@@ -573,47 +572,55 @@
 
   /* =================== Pinned board =================== */
   if ($('[data-slots]')) (function () {
-    var P = window.ADM_PINS, slots = {}, waiting = P.waiting.slice(), lifted = null, dragFrom = null;
-    P.slots.forEach(function (s) { slots[s] = null; }); P.pins.forEach(function (x) { slots[x.slot] = { id: x.id, age: x.age }; });
-    function snap() { var s = JSON.stringify(slots), w = JSON.stringify(waiting); return function () { slots = JSON.parse(s); waiting = JSON.parse(w); render(); }; }
-    function saved(msg, u) { render(); toast(msg || 'Slot order saved', { action: 'Undo', onAction: u }); }
-    function slotSel(cur) { return '<label class="select slot-sel"><span class="visually-hidden">Move to slot</span><select data-move>' + P.slots.map(function (s) { return '<option value="' + s + '"' + (s === cur ? ' selected' : '') + '>Slot ' + s + '</option>'; }).join('') + '</select><i data-lucide="chevron-down"></i></label>'; }
+    // D-104: open-ended slot list. Slot k shows on Fresh at card k × N (N = "every" setting). Last tile is always an empty "+ Pin a deal".
+    var P = window.ADM_PINS, order = P.pins.slice(), every = P.every, lifted = null, dragFrom = null;
+    try { var se = +localStorage.getItem('adm-pin-every'); if (se >= 2) every = se; var sp = JSON.parse(localStorage.getItem('adm-pins-full') || 'null'); if (sp && sp.length) order = sp; } catch (e) {}
+    var gapSel = $('[data-pin-every]'); gapSel.value = String(every);
+    function persist() { try { localStorage.setItem('adm-pin-every', String(every)); localStorage.setItem('adm-pins', JSON.stringify(order.map(function (x) { return x.id; }))); localStorage.setItem('adm-pins-full', JSON.stringify(order)); } catch (e) {} }
+    function snap() { var o = JSON.stringify(order), ev = every; return function () { order = JSON.parse(o); every = ev; gapSel.value = String(every); persist(); render(); }; }
+    function saved(msg, u) { persist(); render(); toast(msg || 'Slot order saved', { action: 'Undo', onAction: u }); }
+    function card(k) { return k * every; }
+    function slotSel(cur) { var o = ''; for (var k = 1; k <= order.length; k++) o += '<option value="' + k + '"' + (k === cur ? ' selected' : '') + '>Slot ' + k + '</option>'; return '<label class="select slot-sel"><span class="visually-hidden">Move to slot</span><select data-move>' + o + '</select><i data-lucide="chevron-down"></i></label>'; }
     function render() {
-      $('[data-slots]').innerHTML = P.slots.map(function (s) {
-        var x = slots[s], d = x && dealById(x.id);
-        if (!d) return '<div class="slot empty" role="listitem" data-slot="' + s + '"><div class="slot-h">Slot ' + s + '</div><button type="button" class="slot-add" data-pin-add="' + s + '"><i data-lucide="plus"></i>Pin a deal</button></div>';
-        return '<div class="slot" role="listitem" data-slot="' + s + '" draggable="true" tabindex="0" aria-roledescription="Pinned deal" aria-label="Slot ' + s + ': ' + esc(d.t) + '. Press Space to move."' + (lifted === s ? ' data-lifted' : '') + '>' +
-          '<div class="slot-h">Slot ' + s + '<i data-lucide="grip-vertical"></i></div><img src="' + d.img + '" alt=""><div class="slot-t">' + esc(d.t) + '</div>' +
+      var html = order.map(function (x, i) {
+        var s = i + 1, d = dealById(x.id); if (!d) return '';
+        return '<div class="slot" role="listitem" data-slot="' + s + '" draggable="true" tabindex="0" aria-roledescription="Pinned deal" aria-label="Slot ' + s + ', card ' + card(s) + ' on Fresh: ' + esc(d.t) + '. Press Space to move."' + (lifted === s ? ' data-lifted' : '') + '>' +
+          '<div class="slot-h"><span>Slot ' + s + ' <small>· card ' + card(s) + '</small></span><i data-lucide="grip-vertical"></i></div><img src="' + d.img + '" alt=""><div class="slot-t">' + esc(d.t) + '</div>' +
           '<div class="slot-p"><b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span></div><div class="slot-age">pinned ' + x.age + ' ago</div>' +
           '<div class="slot-acts"><a href="' + withRole('admin-post.html?id=' + d.id) + '">Edit</a><button type="button" data-unpin="' + s + '">Unpin</button>' + slotSel(s) + '</div></div>';
       }).join('');
-      $('[data-waiting]').innerHTML = waiting.length ? waiting.map(function (w, i) { var d = dealById(w.id); return '<li><img src="' + d.img + '" alt=""><span class="t-title">' + esc(d.t) + '</span><span class="t-meta">' + rs(d.p) + ' · pinned ' + w.age + ' ago</span><label class="select slot-sel"><span class="visually-hidden">Put in slot</span><select data-wait-move="' + i + '"><option value="">Slot…</option>' + P.slots.map(function (s) { return '<option value="' + s + '">Slot ' + s + '</option>'; }).join('') + '</select><i data-lucide="chevron-down"></i></label><button type="button" class="btn btn-ghost btn-sm" data-wait-unpin="' + i + '">Unpin</button></li>'; }).join('') : '<li class="none">No deals waiting.</li>';
+      var n = order.length + 1;
+      html += '<div class="slot empty" role="listitem" data-slot="' + n + '"><div class="slot-h"><span>Slot ' + n + ' <small>· card ' + card(n) + '</small></span></div><button type="button" class="slot-add" data-pin-add="' + n + '"><i data-lucide="plus"></i>Pin a deal</button></div>';
+      $('[data-slots]').innerHTML = html;
+      var pos = []; for (var k = 1; k <= Math.min(order.length, 4); k++) pos.push(card(k));
+      $('[data-pin-gap-h]').innerHTML = order.length
+        ? order.length + ' pinned deal' + (order.length === 1 ? '' : 's') + ' at cards ' + pos.join(', ') + (order.length > 4 ? ' … ' + card(order.length) : '') + '. Once they run out, those spots show normal fresh deals.'
+        : 'No pinned deals. Fresh shows normal deals only.';
       icons();
       if (lifted) { var c = $('[data-slot="' + lifted + '"]'); if (c) c.focus(); }
     }
-    function swap(a, b) { var t = slots[a]; slots[a] = slots[b]; slots[b] = t; }
+    function swap(a, b) { var t = order[a - 1]; order[a - 1] = order[b - 1]; order[b - 1] = t; }
+    gapSel.addEventListener('change', function () { var u = snap(); every = +gapSel.value; saved('A pinned deal now shows every ' + every + ' cards on Fresh', u); });
     var box = $('[data-slots]');
     box.addEventListener('dragstart', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c) return; dragFrom = +c.dataset.slot; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragFrom); c.classList.add('is-drag'); });
     box.addEventListener('dragend', function () { $$('.slot').forEach(function (x) { x.classList.remove('is-drag', 'is-over'); }); });
-    box.addEventListener('dragover', function (e) { var c = e.target.closest('.slot'); if (!c || dragFrom === null) return; e.preventDefault(); $$('.slot').forEach(function (x) { x.classList.toggle('is-over', x === c); }); });
-    box.addEventListener('drop', function (e) { var c = e.target.closest('.slot'); if (!c || dragFrom === null) return; e.preventDefault(); var to = +c.dataset.slot, from = dragFrom; dragFrom = null; if (to === from) { render(); return; } var u = snap(); swap(from, to); saved('Moved to slot ' + to, u); });
+    box.addEventListener('dragover', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c || dragFrom === null) return; e.preventDefault(); $$('.slot').forEach(function (x) { x.classList.toggle('is-over', x === c); }); });
+    box.addEventListener('drop', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c || dragFrom === null) return; e.preventDefault(); var to = +c.dataset.slot, from = dragFrom; dragFrom = null; if (to === from) { render(); return; } var u = snap(); swap(from, to); saved('Moved to slot ' + to, u); });
     box.addEventListener('keydown', function (e) {
-      var c = e.target.closest('.slot[data-slot]'); if (!c || e.target !== c) return; var s = +c.dataset.slot, i = P.slots.indexOf(s);
-      if (e.key === ' ') { e.preventDefault(); if (lifted) { lifted = null; render(); toast('Slot order saved'); } else { lifted = s; render(); } return; }
-      if (lifted && (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); var j = i + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1); if (j < 0 || j >= P.slots.length) return; swap(s, P.slots[j]); lifted = P.slots[j]; render(); }
+      var c = e.target.closest('.slot[draggable]'); if (!c || e.target !== c) return; var s = +c.dataset.slot;
+      if (e.key === ' ') { e.preventDefault(); if (lifted) { lifted = null; persist(); render(); toast('Slot order saved'); } else { lifted = s; render(); } return; }
+      if (lifted && (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); var j = s + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1); if (j < 1 || j > order.length) return; swap(s, j); lifted = j; render(); }
       if (e.key === 'Escape' && lifted) { lifted = null; render(); }
     });
     box.addEventListener('change', function (e) { var sel = e.target.closest('[data-move]'); if (!sel) return; var from = +sel.closest('.slot').dataset.slot, to = +sel.value; if (from === to) return; var u = snap(); swap(from, to); saved('Moved to slot ' + to, u); });
     box.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-unpin]'); if (b) { var s = +b.dataset.unpin, u = snap(); slots[s] = null; saved('Unpinned. Slot ' + s + ' is free', u); return; }
-      b = e.target.closest('[data-pin-add]'); if (b) { e.stopPropagation(); openPick(b, +b.dataset.pinAdd); }
+      var b = e.target.closest('[data-unpin]'); if (b) { var s = +b.dataset.unpin, u = snap(); order.splice(s - 1, 1); saved('Unpinned. Later slots moved up one', u); return; }
+      b = e.target.closest('[data-pin-add]'); if (b) { e.stopPropagation(); openPick(b); }
     });
-    $('[data-waiting]').addEventListener('change', function (e) { var sel = e.target.closest('[data-wait-move]'); if (!sel || !sel.value) return; var i = +sel.dataset.waitMove, to = +sel.value, u = snap(), w = waiting.splice(i, 1)[0]; if (slots[to]) waiting.push(slots[to]); slots[to] = w; saved('Moved into slot ' + to, u); });
-    $('[data-waiting]').addEventListener('click', function (e) { var b = e.target.closest('[data-wait-unpin]'); if (!b) return; var u = snap(); waiting.splice(+b.dataset.waitUnpin, 1); saved('Unpinned', u); });
-    // + Pin a deal
-    var pop = $('#pick-pop'), pickSlot = null;
-    var draw = picker($('[data-pick-q]'), $('[data-pick-list]'), { filter: function (d) { return d.status === 'live' && !Object.keys(slots).some(function (k) { return slots[k] && slots[k].id === d.id; }); }, onPick: function (d) { var u = snap(); slots[pickSlot] = { id: d.id, age: '0 min' }; closePick(); saved('Pinned to slot ' + pickSlot, u); } });
-    function openPick(btn, s) { pickSlot = s; var r = btn.getBoundingClientRect(); pop.style.position = 'fixed'; pop.style.top = Math.min(r.bottom + 6, innerHeight - 380) + 'px'; pop.style.left = Math.max(12, Math.min(r.left, innerWidth - 332)) + 'px'; pop.hidden = false; requestAnimationFrame(function () { pop.dataset.state = 'open'; }); $('[data-pick-q]').value = ''; draw(); $('[data-pick-q]').focus(); }
+    // + Pin a deal (always the next slot)
+    var pop = $('#pick-pop');
+    var draw = picker($('[data-pick-q]'), $('[data-pick-list]'), { filter: function (d) { return d.status === 'live' && !order.some(function (x) { return x.id === d.id; }); }, onPick: function (d) { var u = snap(); order.push({ id: d.id, age: '0 min' }); closePick(); saved('Pinned to slot ' + order.length + ' (card ' + card(order.length) + ' on Fresh)', u); } });
+    function openPick(btn) { var r = btn.getBoundingClientRect(); pop.style.position = 'fixed'; pop.style.top = Math.min(r.bottom + 6, innerHeight - 380) + 'px'; pop.style.left = Math.max(12, Math.min(r.left, innerWidth - 332)) + 'px'; pop.hidden = false; requestAnimationFrame(function () { pop.dataset.state = 'open'; }); $('[data-pick-q]').value = ''; draw(); $('[data-pick-q]').focus(); }
     function closePick() { pop.dataset.state = 'closed'; pop.hidden = true; }
     document.addEventListener('click', function (e) { if (!pop.hidden && !pop.contains(e.target)) closePick(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) closePick(); });
