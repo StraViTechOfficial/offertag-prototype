@@ -762,11 +762,15 @@ def build_static():
     def row(p):
         cover = f'<a class="post-cover" href="{p["file"]}" aria-hidden="true" tabindex="-1"><img src="assets/deals/lg/{p["cover_file"]}" alt="" loading="lazy" width="300" height="300"></a>' if p['cover_file'] else ''
         return f'<article class="post-row">{cover}<div class="post-txt"><h2><a href="{p["file"]}">{E(p["title"])}</a></h2><p>{E(p["summary"])}</p><div class="post-meta">{p["meta"]}</div></div></article>'
+    def post_card(p):
+        # D-109: index shows posts as 2-up cards; the whole card is the link (stretched title link)
+        pic = f'<img src="assets/deals/lg/{p["cover_file"]}" alt="" loading="lazy" width="300" height="300">' if p['cover_file'] else '<span class="pc-ph"><i data-lucide="book-open"></i><b>OfferTag</b></span>'
+        return f'<article class="post-card"><div class="pc-img{"" if p["cover_file"] else " is-ph"}">{pic}</div><div class="pc-body"><h2><a href="{p["file"]}">{E(p["title"])}</a></h2><p>{E(p["summary"])}</p><div class="pc-foot"><span class="post-meta">{p["meta"]}</span><span class="pc-read" aria-hidden="true">Read<i data-lucide="arrow-right"></i></span></div></div></article>'
     pager = f'<nav class="pager" id="blog-pager" aria-label="Pages" hidden><a href="#" aria-label="Previous page"><i data-lucide="chevron-left"></i></a><a href="#" aria-current="page">1</a><a href="#">2</a><a href="#">3</a><a href="#" aria-label="Next page"><i data-lucide="chevron-right"></i></a></nav>'
     index = f'''<main><div class="container narrow blog-wrap">
   {crumbs(HOME, (None, 'Blog'))}
   <div class="page-head"><h1>Blog</h1></div>
-  <div id="blog-list"><div class="card post-list">{''.join(row(p) for p in POSTS)}</div>{pager}</div>
+  <div id="blog-list"><div class="post-cards">{''.join(post_card(p) for p in POSTS)}</div>{pager}</div>
   <div id="blog-empty" hidden><p class="blog-empty">First posts coming soon</p>{fresh_section}</div>
 </div></main>'''
     write('blog.html', 'Blog — OfferTag', 'blog', index, 'Guides and round-ups from OfferTag, with live prices.')
