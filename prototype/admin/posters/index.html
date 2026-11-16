@@ -20,6 +20,7 @@
 <a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
 <div class="adm-group"><div class="adm-group-h"><i data-lucide="tag"></i><span>Deals</span></div><div class="adm-sub"><a href="/admin/deal">All deals</a><a href="/admin/incoming">Incoming<span class="adm-count" data-count="incoming">5</span></a><a href="/admin/deal/create">Post a deal</a><a href="/admin/pinned" data-role="admin">Pinned board</a></div></div>
 <a class="adm-link" href="/admin/posters" data-role="admin" aria-current="page"><i data-lucide="gallery-horizontal"></i><span>Sale posters</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/social" data-role="admin"><i data-lucide="share-2"></i><span>Social sharing</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
@@ -56,24 +57,9 @@
     </header>
     <main class="adm-content" id="main">
       <div class="page-h">
-        <div><h1>Sale posters</h1><p>Posters show at the top of Home, one at a time, in this order. Visitors move between them with arrows and dots; they never slide on their own. A poster shows only between its start and end dates and while it is on.</p></div>
+        <div><h1>Sale posters</h1><p>Posters show at the top of Home in this order: the current one large, the next one beside it (D-107). Visitors move between them with arrows and dots; they never slide on their own. A poster shows only between its start and end dates and while it is on.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-poster-new><i data-lucide="plus"></i>Add poster</button></div>
       </div>
-      <section class="panel promo-msg" data-promo aria-labelledby="pm-h">
-        <div class="panel-h"><h2 id="pm-h">Promo message <small>one line above the posters on Home</small></h2><span class="tag-sample">Sample</span></div>
-        <form class="pm-form" novalidate>
-          <div class="pm-prev" aria-hidden="true"><span class="pm-tag" data-pm-out="tag"></span><span class="pm-text" data-pm-out="text"></span><span class="pm-cta"><span data-pm-out="cta"></span> →</span></div>
-          <div class="pm-grid">
-            <label class="fld"><span class="lab">Tag <small>short, e.g. Christmas Sale</small></span><input class="input" name="tag" maxlength="24" value="Christmas Sale"></label>
-            <label class="fld pm-wide"><span class="lab">Message *</span><input class="input" name="text" maxlength="90" value="Extra 10% off on Amazon fashion with HDFC cards, till 25 Dec"><span class="cnt"><span data-pm-n>0</span>/90</span><span class="err" hidden>Write the message.</span></label>
-            <label class="fld"><span class="lab">Button</span><input class="input" name="cta" maxlength="16" value="Shop now"></label>
-            <label class="fld"><span class="lab">Opens *</span><input class="input" name="href" value="/shops/amazon" placeholder="A store, category or deal page, or a full link"><span class="err" hidden>Add where it opens.</span></label>
-            <label class="fld"><span class="lab">Start</span><input class="input" type="date" name="start" value="2026-11-13"></label>
-            <label class="fld"><span class="lab">End</span><input class="input" type="date" name="end" value="2026-12-25"><span class="err" hidden>End must be after start.</span></label>
-          </div>
-          <div class="pm-acts"><label class="ckl"><span class="ck"><input type="checkbox" name="on" checked><span class="box"><i data-lucide="check"></i></span></span><span>Show on Home</span></label><button class="btn btn-default" type="submit">Save message</button></div>
-        </form>
-      </section>
       <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-ptab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-pcount="cur"></span></button><button class="tabs-trigger" role="tab" data-ptab="past" aria-selected="false">Ended <span class="adm-count muted" data-pcount="past"></span></button></div>
       <ol class="posters" data-posters></ol>
       <p class="foot-note"><i data-lucide="info"></i>Desktop image 1600 × 700 px. Phone image 800 × 800 px; if you skip it, the desktop image is cropped to fit. The title is read out by screen readers, so write what the poster says.</p>

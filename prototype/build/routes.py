@@ -25,7 +25,7 @@ ROUTE = {
     # admin (routes/web.php admin group; new screens logged in DEV-025)
     'admin-login.html': '/admin/login',
     'admin.html': '/admin', 'admin-incoming.html': '/admin/incoming', 'admin-deals.html': '/admin/deal', 'admin-post.html': '/admin/deal/create',
-    'admin-pinned.html': '/admin/pinned', 'admin-alerts.html': '/admin/admin-notifications', 'admin-posters.html': '/admin/posters',
+    'admin-pinned.html': '/admin/pinned', 'admin-alerts.html': '/admin/admin-notifications', 'admin-posters.html': '/admin/posters', 'admin-sponsored.html': '/admin/sponsored',
     'admin-social.html': '/admin/social', 'admin-tags.html': '/admin/settings/tags', 'admin-inbox.html': '/admin/feedback',
     'admin-site.html': '/admin/settings/site', 'admin-roles.html': '/admin/role', 'admin-users.html': '/admin/users',
     'admin-catalogue.html': '/admin/shop', 'admin-blog.html': '/admin/blog', 'admin-blog-edit.html': '/admin/blog/create', 'admin-soon.html': '/admin/soon',

@@ -39,6 +39,7 @@ Preview: `python3 design-system/prototype/build/serve.py`, then `http://localhos
 | `/admin/pinned` | `admin-pinned.html` | new |
 | `/admin/admin-notifications` | `admin-alerts.html` | live, unchanged |
 | `/admin/posters` | `admin-posters.html` | new |
+| `/admin/sponsored` | `admin-sponsored.html` | new (D-108) |
 | `/admin/social` | `admin-social.html` | new |
 | `/admin/settings/tags` | `admin-tags.html` | new |
 | `/admin/feedback` | `admin-inbox.html` | live, unchanged |

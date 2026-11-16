@@ -45,17 +45,17 @@
       <span>© 2026 OfferTag · Bachat har shopping par</span>
     </div>
   </div>
-  <!-- Corner join button (M-04, D-106): one small button; opens an arc with WhatsApp, Telegram, browser alerts, chat (desktop); retracts on scroll, outside click or Esc. Docks above the footer (site.js). Replaces the community strip and the four-button stack. -->
-  <div class="fstack" data-fstack aria-label="Join and alerts">
-    <div class="farc" data-farc>
-      <span class="farc-bg" aria-hidden="true"></span>
-      <div class="farc-items" id="farc-items" data-farc-items>
-        <a class="fs-btn fs-wa" href="#wa" target="_blank" rel="noopener" aria-label="Join on WhatsApp" tabindex="-1">{{ICON:whatsapp}}<span class="fs-tip">WhatsApp</span></a>
-        <a class="fs-btn fs-tg" href="#tg" target="_blank" rel="noopener" aria-label="Join on Telegram" tabindex="-1">{{ICON:telegram}}<span class="fs-tip">Telegram</span></a>
-        <button class="fs-btn fs-al" type="button" data-browser-alerts aria-label="Turn on browser alerts" tabindex="-1"><i data-lucide="bell-ring"></i><span class="fs-tip">Browser alerts</span></button>
-        <a class="fs-btn fs-ch" href="#chat" aria-label="Chat with us" tabindex="-1"><i data-lucide="message-circle"></i><span class="fs-tip">Chat with us</span></a>
-      </div>
-      <button class="farc-toggle" type="button" data-farc-toggle aria-expanded="false" aria-controls="farc-items" aria-label="Get deals on WhatsApp or Telegram"><i data-lucide="megaphone" class="farc-ico-open"></i><i data-lucide="x" class="farc-ico-close"></i></button>
+  <!-- Back-to-top dock (site.js moves #to-top in; rides above the footer) -->
+  <div class="fstack" data-fstack aria-label="Back to top"></div>
+  <!-- Edge join tab (D-107, replaces the D-106 corner button): a half-circle tab on the left edge, halfway down; hover (tap on touch) opens a half-circle fan: WhatsApp, Telegram, Get the app, Chat (desktop). Closes when the pointer leaves, on outside tap or Esc. -->
+  <div class="fjoin" data-fjoin>
+    <span class="fjoin-disc" aria-hidden="true"></span>
+    <button class="fjoin-tab" type="button" data-fjoin-tab aria-expanded="false" aria-controls="fjoin-items" aria-label="Get deals on WhatsApp, Telegram or the app"><i data-lucide="megaphone"></i></button>
+    <div class="fjoin-items" id="fjoin-items">
+      <a class="fs-btn fs-wa" href="#wa" target="_blank" rel="noopener" aria-label="Join on WhatsApp">{{ICON:whatsapp}}<span class="fs-tip">WhatsApp</span></a>
+      <a class="fs-btn fs-tg" href="#tg" target="_blank" rel="noopener" aria-label="Join on Telegram">{{ICON:telegram}}<span class="fs-tip">Telegram</span></a>
+      <a class="fs-btn fs-app" href="#app" target="_blank" rel="noopener" aria-label="Download the OfferTag app">{{ICON:googleplay}}<span class="fs-tip">Get the app</span></a>
+      <a class="fs-btn fs-ch" href="#chat" aria-label="Chat with us"><i data-lucide="message-circle"></i><span class="fs-tip">Chat with us</span></a>
     </div>
   </div>
 </footer>

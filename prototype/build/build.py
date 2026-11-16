@@ -208,7 +208,7 @@ SINCE = (f'<div class="container since" data-since data-today="{len(deals)}" dat
          f'<span class="since-meta">Last deal posted {min(deals, key=lambda d: d["agemin"])["agetxt"]} ago</span></div>')
 home = home.replace('{{SINCE}}', SINCE)
 home = home.replace('{{NAV}}', nav('index.html')).replace('{{COMMUNITY}}', community(True)).replace('{{SEARCH_SHEET}}', SEARCH_SHEET)
-# Sale posters (S16, D-096, DEV-019): SAMPLE artwork; the owner supplies real posters. One per view, arrows + dots, no autoplay (D-072).
+# Sale posters (S16, D-096, DEV-019): SAMPLE artwork; the owner supplies real posters. Desktop: current poster 2/3, next poster 1/3 (D-107); phone: one per view. Arrows + dots, no autoplay (D-072).
 POSTERS = [
     dict(store='Amazon', cls='p-amazon', img='electronics', kicker='Great Indian Festival', title='Up to 80% off on electronics', sub='Phones, laptops and headphones at their lowest prices. Extra 10% off with SBI cards.', cta='Shop Amazon deals', href=store_page('Amazon'), when='Ends Sunday'),
     dict(store='Flipkart', cls='p-flipkart', img='home', kicker='Big Billion Days', title='Home and kitchen from ₹199', sub='Appliances, cookware and furniture up to 75% off. No-cost EMI on top brands.', cta='Shop Flipkart deals', href=store_page('Flipkart'), when='Live now'),
@@ -224,7 +224,7 @@ def poster(x, i):
   <span class="poster-copy">{brand}<span class="poster-kicker">{E(x['kicker'])}</span><span class="poster-title">{E(x['title'])}</span><span class="poster-sub">{E(x['sub'])}</span><span class="poster-cta">{E(x['cta'])}<i data-lucide="arrow-right"></i></span></span>
   {ph}<span class="poster-when">{E(x['when'])}</span><span class="poster-sample">Sample poster {i + 1}/{len(POSTERS)}</span>
 </a></div>'''
-home = home.replace('{{PROMO}}', carousel(''.join(poster(x, i) for i, x in enumerate(POSTERS))).replace('<div class="carousel"', '<div class="carousel" data-dots="true"', 1))
+home = home.replace('{{PROMO}}', carousel(''.join(poster(x, i) for i, x in enumerate(POSTERS))).replace('<div class="carousel"', '<div class="carousel" data-dots="true" data-duo="true"', 1))
 def cat_tile(c):  # S16: real photo per category (SAMPLE stock photos, assets/cats); falls back to a deal photo, then an icon
     slug = cat_by_name[c]['slug']; ph = f'assets/cats/{slug}.jpg'
     if os.path.exists(os.path.join(ROOT, ph)): inner, cls = f'<img src="{ph}" alt="" loading="lazy">', ' has-photo'
@@ -241,21 +241,32 @@ def store_tile(name, total):  # S16: the store's logo fills the tile; hover turn
     return f'<a class="card store has-logo" href="{store_page(name)}" aria-label="{E(name)}, {total:,} deals">{mark}<span class="store-count">{total:,} deals</span></a>'
 home = home.replace('{{STORES}}', ''.join(store_tile(s_, c_) for s_, c_ in stores))
 home = home.replace('{{COUNT}}', str(len(deals)))
-# M-10 side panel: top categories and stores by live total (same rows as the strips and the index pages)
+# M-10 side panel (right side, D-107): top categories and stores by live total (same rows as the strips and the index pages)
 def side_panel():
     top_c = sorted(CATS, key=lambda c: -c['total'])[:10]
     cl = ''.join(f'<li><a href="{c["page"]}"><i data-lucide="{caticon.get(c["name"], "tag")}"></i><span>{E(CN(c["name"]))}</span><small>{c["total"]:,}</small></a></li>' for c in top_c)
-    sl = ''
-    for name, total in sorted(stores, key=lambda s: -s[1])[:8]:
-        lg = store_logo(name)
-        mark = f'<span class="hs-logo"><img src="{lg}" alt=""></span>' if lg else f'<span class="hs-logo hs-word">{E(name[:1])}</span>'
-        sl += f'<li><a href="{store_page(name)}">{mark}<span>{E(name)}</span><small>{total:,}</small></a></li>'
+    sl = ''.join(store_tile(n_, t_) for n_, t_ in sorted(stores, key=lambda s: -s[1])[:8])  # D-107: the Home store tiles (logo, navy hover, count), 2 per row
     return (f'<nav class="hs-box" aria-labelledby="hs-cats"><h2 id="hs-cats">Shop by category</h2><ul>{cl}</ul><a class="hs-all" href="categories.html">All categories <i data-lucide="chevron-right"></i></a></nav>'
-            f'<nav class="hs-box" aria-labelledby="hs-stores"><h2 id="hs-stores">Shop by store</h2><ul>{sl}</ul><a class="hs-all" href="stores.html">All stores <i data-lucide="chevron-right"></i></a></nav>')
-home = home.replace('{{SIDE}}', side_panel())
-# M-03 promo strip: one admin-edited line above the posters (Sale posters → Promo message); SAMPLE text
-PROMO_MSG = dict(on=True, tag='Christmas Sale', text='Extra 10% off on Amazon fashion with HDFC cards, till 25 Dec', cta='Shop now', href='/shops/amazon')
-home = home.replace('{{PROMO_STRIP}}', (f'<div class="container"><a class="promo-strip" href="{PROMO_MSG["href"]}"><span class="ps-tag">{E(PROMO_MSG["tag"])}</span><span class="ps-text">{E(PROMO_MSG["text"])}</span><span class="ps-cta">{E(PROMO_MSG["cta"])}<i data-lucide="arrow-right"></i></span><span class="ps-sample">Sample</span></a></div>') if PROMO_MSG['on'] else '')
+            f'<nav class="hs-box" aria-labelledby="hs-stores"><h2 id="hs-stores">Shop by store</h2><div class="hs-stores">{sl}</div><a class="hs-all" href="stores.html">All stores <i data-lucide="chevron-right"></i></a></nav>')
+# DEV-030 / D-108: paid sponsored slots. SAMPLE advertisers (fictional); the owner sells the space and adds ads in Admin → Sponsored.
+# One ad shows per page view; with more than one live, site.js picks one at random (rotation). Links are rel="sponsored nofollow" (ASCI label).
+SPONSORS = [
+    dict(id=1, adv='Sharma Electronics, Andheri', img='electronics', title='Sharma Electronics: up to 40% off headphones', line='Walk-in store deals this week. Free delivery across Mumbai.', cta='Visit store', href='#sponsored-1', start='2026-11-10', end='2026-11-30', on=True, views=18420, clicks=402),
+    dict(id=2, adv='HomeNest Interiors', img='home', title='HomeNest: modular kitchens from ₹89,000', line='Free design visit and 10-year warranty. Book this month.', cta='Book a visit', href='#sponsored-2', start='2026-11-12', end='2026-12-14', on=True, views=6210, clicks=97),
+]
+def sponsor_card(x, where):
+    return (f'<a class="sp-card sp-{where}" href="{x["href"]}" target="_blank" rel="sponsored nofollow noopener" data-sp="{x["id"]}" aria-label="Sponsored: {E(x["title"])}">'
+            f'<span class="sp-img" style="background-image:url(assets/posters/{x["img"]}.jpg)"></span>'
+            f'<span class="sp-body"><span class="sp-tag">Sponsored<span class="sp-sample"> · Sample</span></span><b class="sp-title">{E(x["title"])}</b><span class="sp-line">{E(x["line"])}</span>'
+            f'<span class="sp-cta">{E(x["cta"])}<i data-lucide="arrow-right"></i></span></span></a>')
+def sponsor_slot(where):
+    today = '2026-11-13'  # prototype date, same as admin TODAY
+    live = [x for x in SPONSORS if x['on'] and x['start'] <= today <= x['end']]  # only live ads reach Home (same rule as the admin status)
+    if not live: return ''
+    return f'<div class="sp-slot sp-slot-{where}" data-sp-slot>' + ''.join(sponsor_card(x, where) for x in live) + '</div>'
+home = home.replace('{{SIDE}}', sponsor_slot('side') + side_panel())
+home = home.replace('{{SPONSOR_INLINE}}', f'<section class="section sp-inline" aria-label="Sponsored"><div class="container">{sponsor_slot("inline")}</div></section>')
+home = home.replace('{{PROMO_STRIP}}', '')  # D-107: promo strip withdrawn (DEV-027); Sale posters carry promotions (meeting §1.3)
 open(os.path.join(ROOT, 'index.html'), 'w').write(home)
 print('index.html', len(deals), 'deals')
 

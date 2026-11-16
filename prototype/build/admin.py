@@ -21,6 +21,7 @@ NAV = [
         ('pinned', 'Pinned board', 'admin-pinned.html', 'admin', None),
     ]),
     ('posters', 'Sale posters', 'gallery-horizontal', 'admin-posters.html', 'admin', None, None),
+    ('sponsored', 'Sponsored', 'megaphone', 'admin-sponsored.html', 'admin', None, None),  # DEV-030, D-108
     ('alerts', 'Alerts', 'bell', 'admin-alerts.html', 'admin', None, None),
     ('social', 'Social sharing', 'share-2', 'admin-social.html', 'admin', None, None),
     ('blog', 'Blog', 'newspaper', 'admin-blog.html', 'admin', None, None),
@@ -577,24 +578,9 @@ def build_posters():
     ps.append(dict(id=5, title='Republic Day sale: up to 70% off', img='assets/posters/festive.jpg', link='Loot deals', start='2026-01-20', end='2026-01-26', on=True))
     ps.append(dict(id=6, title='Black Friday week: global brands', img='assets/posters/fashion.jpg', link='Fresh deals', start='2026-11-24', end='2026-11-30', on=True))
     body = f'''      <div class="page-h">
-        <div><h1>Sale posters</h1><p>Posters show at the top of Home, one at a time, in this order. Visitors move between them with arrows and dots; they never slide on their own. A poster shows only between its start and end dates and while it is on.</p></div>
+        <div><h1>Sale posters</h1><p>Posters show at the top of Home in this order: the current one large, the next one beside it (D-107). Visitors move between them with arrows and dots; they never slide on their own. A poster shows only between its start and end dates and while it is on.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-poster-new><i data-lucide="plus"></i>Add poster</button></div>
       </div>
-      <section class="panel promo-msg" data-promo aria-labelledby="pm-h">
-        <div class="panel-h"><h2 id="pm-h">Promo message <small>one line above the posters on Home</small></h2><span class="tag-sample">Sample</span></div>
-        <form class="pm-form" novalidate>
-          <div class="pm-prev" aria-hidden="true"><span class="pm-tag" data-pm-out="tag"></span><span class="pm-text" data-pm-out="text"></span><span class="pm-cta"><span data-pm-out="cta"></span> →</span></div>
-          <div class="pm-grid">
-            <label class="fld"><span class="lab">Tag <small>short, e.g. Christmas Sale</small></span><input class="input" name="tag" maxlength="24" value="Christmas Sale"></label>
-            <label class="fld pm-wide"><span class="lab">Message *</span><input class="input" name="text" maxlength="90" value="Extra 10% off on Amazon fashion with HDFC cards, till 25 Dec"><span class="cnt"><span data-pm-n>0</span>/90</span><span class="err" hidden>Write the message.</span></label>
-            <label class="fld"><span class="lab">Button</span><input class="input" name="cta" maxlength="16" value="Shop now"></label>
-            <label class="fld"><span class="lab">Opens *</span><input class="input" name="href" value="/shops/amazon" placeholder="A store, category or deal page, or a full link"><span class="err" hidden>Add where it opens.</span></label>
-            <label class="fld"><span class="lab">Start</span><input class="input" type="date" name="start" value="2026-11-13"></label>
-            <label class="fld"><span class="lab">End</span><input class="input" type="date" name="end" value="2026-12-25"><span class="err" hidden>End must be after start.</span></label>
-          </div>
-          <div class="pm-acts">{ck('name="on" checked', 'Show on Home')}<button class="btn btn-default" type="submit">Save message</button></div>
-        </form>
-      </section>
       <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-ptab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-pcount="cur"></span></button><button class="tabs-trigger" role="tab" data-ptab="past" aria-selected="false">Ended <span class="adm-count muted" data-pcount="past"></span></button></div>
       <ol class="posters" data-posters></ol>
       <p class="foot-note"><i data-lucide="info"></i>Desktop image 1600 × 700 px. Phone image 800 × 800 px; if you skip it, the desktop image is cropped to fit. The title is read out by screen readers, so write what the poster says.</p>
@@ -619,8 +605,44 @@ def build_posters():
     shell('admin-posters.html', 'Sale posters', 'posters', body, scripts=f'<script>window.ADM_POSTERS = {json.dumps(ps, ensure_ascii=False)}; window.ADM_TODAY = "{TODAY.isoformat()}";</script>\n')
 
 build_overview(); build_incoming(); build_deals(); build_soon()
-build_post(); build_pinned(); build_alerts(); build_posters()
+# ---------- Sponsored (DEV-030, D-108): paid ad cards on Home; views and clicks per ad for the advertiser's report ----------
+def build_sponsored():
+    # SAMPLE: advertisers are fictional; views/clicks stand in for the counts the build phase records (dev-requirements)
+    sp = [dict(id=x['id'], adv=x['adv'], title=x['title'], line=x['line'], cta=x['cta'], link=x['href'].replace('#sponsored-', 'https://example.com/ad-'), img=f'assets/posters/{x["img"]}.jpg',
+               start=x['start'], end=x['end'], on=x['on'], views=x['views'], clicks=x['clicks']) for x in SPONSORS]  # same records Home uses
+    sp.append(dict(id=3, adv='FitZone Gym, Powai', title='FitZone: 3 months for the price of 2', line='Opening offer at our Powai branch.', cta='Join now', link='https://example.com/ad-3', img='assets/posters/festive.jpg', start='2026-10-01', end='2026-10-31', on=True, views=24980, clicks=511))
+    body = f'''      <div class="page-h">
+        <div><h1>Sponsored</h1><p>Paid ad cards from businesses. Desktop shows one at the top of Home's right panel; phones and tablets show it between Top picks and Loot deals. With more than one live, each visit shows one at random. Every card is labelled "Sponsored".</p></div>
+        <div class="page-h-acts"><a class="btn btn-outline" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-sp-new><i data-lucide="plus"></i>Add sponsored ad</button></div>
+      </div>
+      <div class="sp-stats" data-sp-stats></div>
+      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-stab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-scount="cur"></span></button><button class="tabs-trigger" role="tab" data-stab="past" aria-selected="false">Ended <span class="adm-count muted" data-scount="past"></span></button></div>
+      <ol class="posters sp-list" data-sp-list></ol>
+      <p class="foot-note"><i data-lucide="info"></i>Ad image 600 × 500 px. Phone image 1200 × 400 px, optional; if you skip it, the ad image is cropped to fit. Views count each time the card is on screen; clicks count each visit to the advertiser's link. Sample numbers.</p>
+      <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
+      <aside class="sheet sheet-right" id="sp-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="se-title">
+        <div class="sheet-header"><div class="sheet-title" id="se-title">Add sponsored ad</div><p class="sheet-desc">Shows on Home between the dates you set, labelled "Sponsored".</p></div>
+        <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
+        <form class="sheet-body pe" data-se novalidate>
+          <label class="fld"><span class="lab">Advertiser *</span><input class="input" type="text" name="adv" maxlength="60" placeholder="Business name, e.g. Sharma Electronics"><span class="err" hidden>Add the advertiser.</span></label>
+          <div class="fld"><span class="lab">Ad image * <small>600 × 500</small></span><label class="drop sq" data-drop="d"><img alt="" hidden><span><i data-lucide="upload"></i>Choose image</span><input type="file" accept="image/*" hidden></label><span class="err" hidden>Add the ad image.</span></div>
+          <div class="fld"><span class="lab">Phone image <small>1200 × 400, optional</small></span><label class="drop wide" data-drop="m"><img alt="" hidden><span><i data-lucide="upload"></i>Choose image</span><input type="file" accept="image/*" hidden></label></div>
+          <label class="fld"><span class="lab">Title *</span><input class="input" type="text" name="title" maxlength="60" placeholder="e.g. Sharma Electronics: up to 40% off headphones"><span class="err" hidden>Add a title.</span></label>
+          <label class="fld"><span class="lab">One line <small>optional</small></span><input class="input" type="text" name="line" maxlength="90" placeholder="e.g. Free delivery across Mumbai"></label>
+          <div class="grid2"><label class="fld"><span class="lab">Button *</span><input class="input" type="text" name="cta" maxlength="16" value="Visit"><span class="err" hidden>Add button text.</span></label><label class="fld"><span class="lab">Opens *</span><input class="input" type="url" name="link" placeholder="https://"><span class="err" hidden>Add a full link starting with https://</span></label></div>
+          <div class="grid2"><label class="fld"><span class="lab">Start *</span><input class="input" type="date" name="start"></label><label class="fld"><span class="lab">End *</span><input class="input" type="date" name="end"><span class="err" hidden>End must be on or after the start.</span></label></div>
+          {ck('name="on" checked', 'On')}
+        </form>
+        <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-se-save>Save ad</button></div>
+      </aside>
+      <aside class="sheet dialog" id="confirm" hidden data-state="closed" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-desc">
+        <div class="sheet-header"><div class="sheet-title" id="cf-title"></div><p class="sheet-desc" id="cf-desc"></p></div>
+        <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-confirm-go></button></div>
+      </aside>'''
+    shell('admin-sponsored.html', 'Sponsored', 'sponsored', body, scripts=f'<script>window.ADM_SPONSORED = {json.dumps(sp, ensure_ascii=False)}; window.ADM_TODAY = "{TODAY.isoformat()}";</script>\n')
+
+build_post(); build_pinned(); build_alerts(); build_posters(); build_sponsored()
 exec(open(os.path.join(HERE, 'admin_c.py')).read())
 exec(open(os.path.join(HERE, 'admin_d.py')).read())
 exec(open(os.path.join(HERE, 'admin_login.py')).read())
-print('Admin: batch A (admin, admin-incoming, admin-deals) + batch B (admin-post, admin-pinned, admin-alerts, admin-posters) + admin-soon')
+print('Admin: batch A (admin, admin-incoming, admin-deals) + batch B (admin-post, admin-pinned, admin-alerts, admin-posters, admin-sponsored) + admin-soon')

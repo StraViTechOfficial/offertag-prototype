@@ -16,9 +16,18 @@
   if (window.EmblaCarousel) {
     document.querySelectorAll('.carousel').forEach(function (root) {
       var viewport = root.querySelector('.carousel-viewport');
+      if (root.dataset.duo === 'true') { duo(root); return; }
       var embla = EmblaCarousel(viewport, { align: 'start', containScroll: 'trimSnaps', dragFree: root.dataset.free === 'true', slidesToScroll: 'auto' });
       var prev = root.querySelector('.carousel-prev'), next = root.querySelector('.carousel-next');
-      function sync() { if (prev) prev.disabled = !embla.canScrollPrev(); if (next) next.disabled = !embla.canScrollNext(); }
+      // D-107: deal rows carry their arrows in the section header (beside View all), never on top of the cards
+      var sec = root.closest('.deals'), head = sec && sec.querySelector('.section-head'), nav = null;
+      if (head && prev && next && !root.closest('.hero') && !root.closest('.promo')) {
+        var end = document.createElement('div'); end.className = 'sh-end';
+        var va = head.querySelector(':scope > .view-all'); if (va) end.appendChild(va);
+        nav = document.createElement('div'); nav.className = 'sh-nav'; nav.setAttribute('role', 'group'); nav.setAttribute('aria-label', 'Scroll this row');
+        nav.appendChild(prev); nav.appendChild(next); end.appendChild(nav); head.appendChild(end); root.classList.add('has-head-nav');
+      }
+      function sync() { if (prev) prev.disabled = !embla.canScrollPrev(); if (next) next.disabled = !embla.canScrollNext(); if (nav) nav.hidden = !embla.canScrollPrev() && !embla.canScrollNext(); }
       if (prev) prev.addEventListener('click', function () { embla.scrollPrev(); });
       if (next) next.addEventListener('click', function () { embla.scrollNext(); });
       embla.on('select', sync); embla.on('reInit', sync); sync();
@@ -33,6 +42,37 @@
         embla.on('select', paintDots); embla.on('reInit', paintDots); paintDots();
       }
     });
+  }
+
+  // Sale posters (D-107): desktop shows the current poster at 2/3 and the next at 1/3; next → the small one grows into the big
+  // place and the one after it slides in; wraps round; no autoplay (D-072). Phones (< 768 px): one poster per view, swipe (Embla).
+  function duo(root) {
+    var viewport = root.querySelector('.carousel-viewport'), items = [].slice.call(root.querySelectorAll('.carousel-item')), n = items.length, i = 0;
+    var prev = root.querySelector('.carousel-prev'), next = root.querySelector('.carousel-next'), mq = window.matchMedia('(min-width: 768px)'), embla = null, timer;
+    var dots = document.createElement('div'); dots.className = 'carousel-dots'; dots.setAttribute('role', 'group'); dots.setAttribute('aria-label', 'Choose poster');
+    items.forEach(function (_, k) { var d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', 'Poster ' + (k + 1)); d.addEventListener('click', function () { go(k); }); dots.appendChild(d); });
+    root.appendChild(dots);
+    function paint() {
+      items.forEach(function (it, k) {
+        var d = (k - i + n) % n, role = d === 0 ? 'is-main' : d === 1 ? 'is-next' : d === n - 1 ? 'is-prev' : 'is-off';
+        it.classList.remove('is-main', 'is-next', 'is-prev', 'is-off'); if (mq.matches) it.classList.add(role);
+        var a = it.querySelector('a'); if (a) { a.tabIndex = (!mq.matches || d === 0) ? 0 : -1; if (mq.matches && d !== 0) a.setAttribute('aria-hidden', 'true'); else a.removeAttribute('aria-hidden'); }
+      });
+      [].forEach.call(dots.children, function (d, k) { d.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+    }
+    function go(k) {
+      if (!mq.matches) { if (embla) embla.scrollTo(k); return; }
+      i = (k + n) % n; root.classList.add('is-anim'); clearTimeout(timer); timer = setTimeout(function () { root.classList.remove('is-anim'); }, 420); paint();
+    }
+    function mode() {
+      if (mq.matches) { if (embla) { embla.destroy(); embla = null; } root.classList.add('is-duo'); prev.disabled = next.disabled = false; }
+      else { root.classList.remove('is-duo'); if (!embla) { embla = EmblaCarousel(viewport, { align: 'start', startIndex: i }); embla.on('select', function () { i = embla.selectedScrollSnap(); paint(); }); } }
+      paint();
+    }
+    prev.addEventListener('click', function () { if (mq.matches) go(i - 1); else if (embla) embla.scrollPrev(); });
+    next.addEventListener('click', function () { if (mq.matches) go(i + 1); else if (embla) embla.scrollNext(); });
+    items.forEach(function (it, k) { it.addEventListener('click', function (e) { if (mq.matches && it.classList.contains('is-next')) { e.preventDefault(); go(k); } }); });
+    (mq.addEventListener ? mq.addEventListener('change', mode) : mq.addListener(mode)); mode();
   }
 
   // sheet / dialog (generic): any element with [data-sheet-open="id"] opens that sheet; shared overlay #sheet-overlay
@@ -215,38 +255,33 @@
     }
   }
 
-  // Floating join stack (D-099): back-to-top joins the top of the stack; the stack rides up above the footer
+  // Sponsored slots (DEV-030, D-108): one ad per page view; with several live, pick one at random and use the same one in both slots
+  var spSlots = document.querySelectorAll('[data-sp-slot]');
+  if (spSlots.length) {
+    var spIds = [].map.call(spSlots[0].querySelectorAll('[data-sp]'), function (a) { return a.dataset.sp; });
+    var spPick = spIds[Math.floor(Math.random() * spIds.length)];
+    spSlots.forEach(function (sl) { sl.querySelectorAll('[data-sp]').forEach(function (a) { a.hidden = a.dataset.sp !== spPick; }); });
+  }
+  // Back-to-top dock: #to-top lives in .fstack, which rides up above the footer
   var fstack = document.querySelector('[data-fstack]');
   if (fstack) {
-    var tt = document.getElementById('to-top'); if (tt) fstack.insertBefore(tt, fstack.firstChild);
+    var tt = document.getElementById('to-top'); if (tt) fstack.appendChild(tt);
     document.body.appendChild(fstack);  // out of the footer so position: fixed is never clipped
     var foot = document.querySelector('.site-footer'), ticking = false;
     var dock = function () { ticking = false; if (!foot) return; var over = window.innerHeight - foot.getBoundingClientRect().top; fstack.style.setProperty('--dock', Math.max(0, over) + 'px'); };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(dock); } }, { passive: true });
     window.addEventListener('resize', dock); dock();
-    // Corner join arc (M-04, D-106): opens a quarter arc up and left of the button; closes on scroll, outside click, Esc or after a choice
-    var farc = fstack.querySelector('[data-farc]'), tog = fstack.querySelector('[data-farc-toggle]');
-    if (farc && tog) {
-      var openAt = 0;
-      var place = function () {
-        var items = [].filter.call(farc.querySelectorAll('.fs-btn'), function (b) { return getComputedStyle(b).display !== 'none'; });
-        var n = items.length, R = n > 3 ? 104 : 92;
-        farc.style.setProperty('--bgr', (R + 44) / 16 + 'rem');
-        items.forEach(function (b, i) { var t = Math.PI + (n > 1 ? i * (Math.PI / 2) / (n - 1) : 0); b.style.setProperty('--x', Math.round(R * Math.cos(t)) + 'px'); b.style.setProperty('--y', Math.round(R * Math.sin(t)) + 'px'); b.style.setProperty('--d', i); });
-      };
-      var setOpen = function (on) {
-        farc.classList.toggle('is-open', on); fstack.classList.toggle('is-open', on); tog.setAttribute('aria-expanded', on ? 'true' : 'false');
-        tog.setAttribute('aria-label', on ? 'Close' : 'Get deals on WhatsApp or Telegram');
-        farc.querySelectorAll('.fs-btn').forEach(function (b) { b.tabIndex = on ? 0 : -1; });
-        if (on) { place(); openAt = window.scrollY; }
-      };
-      tog.addEventListener('click', function (e) { e.stopPropagation(); setOpen(!farc.classList.contains('is-open')); });
-      farc.querySelectorAll('.fs-btn').forEach(function (b) { b.addEventListener('click', function () { setTimeout(function () { setOpen(false); }, 150); }); });
-      document.addEventListener('click', function (e) { if (farc.classList.contains('is-open') && !farc.contains(e.target)) setOpen(false); });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && farc.classList.contains('is-open')) { setOpen(false); tog.focus(); } });
-      window.addEventListener('scroll', function () { if (farc.classList.contains('is-open') && Math.abs(window.scrollY - openAt) > 120) setOpen(false); }, { passive: true });
-      window.addEventListener('resize', function () { if (farc.classList.contains('is-open')) place(); });
-    }
+  }
+  // Edge join tab (D-107): opens on hover (CSS); on touch the tab toggles it; outside tap or Esc closes
+  var fjoin = document.querySelector('[data-fjoin]');
+  if (fjoin) {
+    document.body.appendChild(fjoin);
+    var ftab = fjoin.querySelector('[data-fjoin-tab]');
+    var fset = function (on) { fjoin.classList.toggle('is-open', on); ftab.setAttribute('aria-expanded', on ? 'true' : 'false'); };
+    ftab.addEventListener('click', function (e) { e.stopPropagation(); fset(!fjoin.classList.contains('is-open')); });
+    fjoin.addEventListener('mouseleave', function () { fset(false); ftab.blur(); });
+    document.addEventListener('click', function (e) { if (fjoin.classList.contains('is-open') && !fjoin.contains(e.target)) fset(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && fjoin.classList.contains('is-open')) { fset(false); ftab.focus(); } });
   }
   // Browser alerts (prototype: the real site asks the browser for permission first)
   document.querySelectorAll('[data-browser-alerts]').forEach(function (b) { b.addEventListener('click', function () { set(LS, 'ot-alerts', '1'); OT.toast('Browser alerts on for this device', 'check'); }); });

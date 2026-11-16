@@ -62,7 +62,7 @@
     </div>
   </section>
 
-  <!-- M-10 / D-106: desktop (1200 px up) puts Shop by category / store in a side panel so the deal rows get the width; smaller screens keep the strips -->
+  <!-- M-10 / D-106, D-107: desktop (1200 px up) puts Shop by category / store in a side panel on the right so the deal rows get the width; smaller screens keep the strips -->
   <div class="container home-body">
   <aside class="home-side" aria-label="Shop by category and store">{{SIDE}}</aside>
   <div class="home-main">
@@ -89,6 +89,9 @@
       {{TOP}}
     </div>
   </section>
+
+  <!-- Sponsored (DEV-030, D-108): phone and tablet only; desktop shows it at the top of the right panel -->
+  {{SPONSOR_INLINE}}
 
   <!-- Stores -->
   <section class="section home-stores" aria-labelledby="h-stores">
