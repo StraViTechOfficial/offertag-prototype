@@ -672,3 +672,10 @@ body[data-page="detail"] .header-search-mobile { display: none; }
 .og-price span { font-weight: 600; color: #0a0a0a; }
 .post-main .deals .carousel-item { flex-basis: 50%; }
 @media (min-width: 640px) { .post-main .deals .carousel-item { flex-basis: 33.3333%; } }
+
+/* M-24 / D-106: returning-user note on the sign-in page (forced re-login retired) */
+.auth-returning { display: flex; gap: 0.5rem; align-items: flex-start; margin: 1.25rem 0 0; padding: 0.75rem 0.875rem; border-radius: var(--radius); background: hsl(var(--muted)); font-size: 0.8125rem; line-height: 1.25rem; color: hsl(var(--muted-foreground)); }
+.auth-returning .lucide { flex: none; width: 1rem; height: 1rem; margin-top: 0.125rem; }
+
+/* empty category / store feeds: the Fresh rail inside the empty state must not widen the results column (phone sideways scroll, S18) */
+.listing > * { min-width: 0; }

@@ -19,3 +19,4 @@ Lists come from the catalogue as stored (active rows, `order_no`, slugs, spellin
 
 Old code moved on 2026-11-11 to `offer-tag/` in this repo; it has no `schema.sql`, so columns come from `offer-tag/database/migrations/`.
 | `admin-login.md` | 37 Admin sign-in | S18 |
+| `meeting-2026-11-16.md` | Meeting changes: corner join, promo message, Home side panel, views, Overview attention, featured rules | S18 |

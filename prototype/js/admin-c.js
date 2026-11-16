@@ -191,7 +191,7 @@
       var v = i.value.trim();
       if (i.type === 'email') return fieldErr(i, !v ? 'Add a support email.' : /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(v) ? '' : 'Check the email address.');
       if (v && !/^https:\/\/[^\s.]+\.[^\s]+$/i.test(v)) return fieldErr(i, 'Use a full link starting with https://');
-      if ((i.name === 'wa' || i.name === 'tg') && E.strip.checked && !E.wa.value.trim() && !E.tg.value.trim()) return fieldErr(i, 'The community strip needs a WhatsApp or Telegram link.');
+      if ((i.name === 'wa' || i.name === 'tg') && E.strip.checked && !E.wa.value.trim() && !E.tg.value.trim()) return fieldErr(i, 'The join button needs a WhatsApp or Telegram link.');
       if (i.name === 'play' && !v) return fieldErr(i, 'The app links need the Play Store address.');
       return fieldErr(i, '');
     }

@@ -671,6 +671,28 @@
     });
   })();
 
+  /* =================== Promo message (M-03, D-106): one admin-edited line above the posters =================== */
+  if ($('[data-promo]')) (function () {
+    var F = $('[data-promo] form');
+    function out() {
+      ['tag', 'text', 'cta'].forEach(function (k) { var o = $('[data-pm-out="' + k + '"]'); o.textContent = F[k].value.trim() || (k === 'cta' ? 'Open' : ''); });
+      $('[data-pm-out="tag"]').hidden = !F.tag.value.trim(); $('[data-pm-n]').textContent = F.text.value.length;
+      $('.pm-prev').classList.toggle('is-off', !F.on.checked);
+    }
+    function err(i, m) { var e = i.closest('.fld').querySelector('.err'); if (e) { e.hidden = !m; if (m) e.textContent = m; } i.setAttribute('aria-invalid', m ? 'true' : 'false'); return !m; }
+    F.addEventListener('input', function (e) { if (e.target.name) err(e.target, ''); out(); });
+    F.addEventListener('change', out);
+    F.addEventListener('submit', function (e) {
+      e.preventDefault(); var ok = true;
+      if (!F.text.value.trim()) ok = err(F.text, 'Write the message.') && ok;
+      if (!F.href.value.trim()) ok = err(F.href, 'Add where it opens.') && ok;
+      if (F.start.value && F.end.value && F.end.value < F.start.value) ok = err(F.end, 'End must be after start.') && ok;
+      if (!ok) { var b = $('[aria-invalid="true"]', F); if (b) b.focus(); return; }
+      toast(F.on.checked ? 'Promo message saved. It shows on Home' + (F.start.value ? ' from ' + F.start.value : '') + '.' : 'Promo message saved and hidden from Home.');
+    });
+    out();
+  })();
+
   /* =================== Sale posters =================== */
   if ($('[data-posters]')) (function () {
     var list = window.ADM_POSTERS.slice(), T = window.ADM_TODAY, tab = 'cur', editing = null, imgs = {};

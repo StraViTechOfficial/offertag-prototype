@@ -224,6 +224,29 @@
     var dock = function () { ticking = false; if (!foot) return; var over = window.innerHeight - foot.getBoundingClientRect().top; fstack.style.setProperty('--dock', Math.max(0, over) + 'px'); };
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(dock); } }, { passive: true });
     window.addEventListener('resize', dock); dock();
+    // Corner join arc (M-04, D-106): opens a quarter arc up and left of the button; closes on scroll, outside click, Esc or after a choice
+    var farc = fstack.querySelector('[data-farc]'), tog = fstack.querySelector('[data-farc-toggle]');
+    if (farc && tog) {
+      var openAt = 0;
+      var place = function () {
+        var items = [].filter.call(farc.querySelectorAll('.fs-btn'), function (b) { return getComputedStyle(b).display !== 'none'; });
+        var n = items.length, R = n > 3 ? 104 : 92;
+        farc.style.setProperty('--bgr', (R + 44) / 16 + 'rem');
+        items.forEach(function (b, i) { var t = Math.PI + (n > 1 ? i * (Math.PI / 2) / (n - 1) : 0); b.style.setProperty('--x', Math.round(R * Math.cos(t)) + 'px'); b.style.setProperty('--y', Math.round(R * Math.sin(t)) + 'px'); b.style.setProperty('--d', i); });
+      };
+      var setOpen = function (on) {
+        farc.classList.toggle('is-open', on); fstack.classList.toggle('is-open', on); tog.setAttribute('aria-expanded', on ? 'true' : 'false');
+        tog.setAttribute('aria-label', on ? 'Close' : 'Get deals on WhatsApp or Telegram');
+        farc.querySelectorAll('.fs-btn').forEach(function (b) { b.tabIndex = on ? 0 : -1; });
+        if (on) { place(); openAt = window.scrollY; }
+      };
+      tog.addEventListener('click', function (e) { e.stopPropagation(); setOpen(!farc.classList.contains('is-open')); });
+      farc.querySelectorAll('.fs-btn').forEach(function (b) { b.addEventListener('click', function () { setTimeout(function () { setOpen(false); }, 150); }); });
+      document.addEventListener('click', function (e) { if (farc.classList.contains('is-open') && !farc.contains(e.target)) setOpen(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && farc.classList.contains('is-open')) { setOpen(false); tog.focus(); } });
+      window.addEventListener('scroll', function () { if (farc.classList.contains('is-open') && Math.abs(window.scrollY - openAt) > 120) setOpen(false); }, { passive: true });
+      window.addEventListener('resize', function () { if (farc.classList.contains('is-open')) place(); });
+    }
   }
   // Browser alerts (prototype: the real site asks the browser for permission first)
   document.querySelectorAll('[data-browser-alerts]').forEach(function (b) { b.addEventListener('click', function () { set(LS, 'ot-alerts', '1'); OT.toast('Browser alerts on for this device', 'check'); }); });
@@ -335,7 +358,13 @@
 
   // full page
   if (page === 'login') {
-    var w = wire(document.querySelector('[data-signin]'), function (addr) { save(member(addr)); flash('Signed in'); location.href = returnUrl(); });
+    // M-14 (D-106): staff who sign in here go to the admin; everyone else returns to where they were. Prototype: @offertag.in = staff, "sub…" = sub-admin (SAMPLE)
+    var w = wire(document.querySelector('[data-signin]'), function (addr) {
+      var u = member(addr), staff = /@offertag\.in$/i.test(addr), back = returnUrl();
+      if (staff) u.role = /^sub/i.test(addr) ? 'sub' : 'admin';
+      save(u); flash('Signed in');
+      location.href = !staff ? back : /^\/admin(\/|$|\?)/.test(back) ? back : u.role === 'sub' ? '/admin/deal?role=sub' : '/admin';
+    });
     if (q.get('turnstile') === '1') w.turnstile();
     var step = q.get('step'), err = q.get('error');
     if (err === 'send') w.sendError();

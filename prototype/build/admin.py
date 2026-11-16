@@ -122,6 +122,31 @@ def shell(fname, title, active, body, scripts='', after=''):
 def types_html(ts): return ''.join(f'<span class="tchip t-{t.lower()}">{"Top pick" if t == "Top" else t}</span>' for t in ts if t != 'Fresh')
 
 # ---------- Overview (admin-tools §8) ----------
+INBOX_UNHANDLED = dict(feedback=2, reports=2, deletion=1)   # matches build_inbox() SAMPLE rows (admin_c.py); total = A_INBOX_COUNT
+
+def fresh_now(n=10):  # Fresh as visitors see it: newest first, pinned deal every PIN_EVERY cards (D-104; listing.js placePins)
+    pins = [d for d in pinned]; rest = [d for d in PAGES['fresh']['items'] if d not in pins]; out = []
+    while len(out) < n and (rest or pins):
+        if (len(out) + 1) % PIN_EVERY == 0 and pins: out.append((pins.pop(0), True))
+        elif rest: out.append((rest.pop(0), False))
+        else: out.append((pins.pop(0), True))
+    return out
+
+def attention_html():  # M-15 / M-17 (D-106): one place for everything waiting, plus what Fresh and the pins look like right now
+    items = [('inbox', 'Incoming deals to review', A_INCOMING_COUNT, 'admin-incoming.html', 'Telegram bot and held deals'),
+             ('mail', 'Contact messages', INBOX_UNHANDLED['feedback'], 'admin-inbox.html?tab=feedback', 'From the Contact form, not handled'),
+             ('flag', 'Problems reported on deals', INBOX_UNHANDLED['reports'], 'admin-inbox.html?tab=reports', 'Link, price or stock reports'),
+             ('user-x', 'Account deletion requests', INBOX_UNHANDLED['deletion'], 'admin-inbox.html?tab=deletion', 'From the app and the site; 7-day promise')]
+    rows = ''.join(f'<a class="att-row{" is-clear" if n == 0 else ""}" href="{h}"><i data-lucide="{ic}"></i><span class="att-t"><b>{E(t)}</b><small>{E(sub)}</small></span><span class="att-n">{n if n else "All clear"}</span><i data-lucide="chevron-right" class="att-go"></i></a>' for ic, t, n, h, sub in items)
+    fr = ''.join(f'<li><span class="fn-pos">{i + 1}</span><img src="{dimg(d)}" alt="" loading="lazy"><span class="t-title">{E(d["t"])}</span>{"<span class=fn-pin><i data-lucide=pin></i>Pinned</span>" if pin else f"<span class=t-meta>{d[chr(97)+chr(103)+chr(101)+chr(116)+chr(120)+chr(116)]}</span>"}</li>' for i, (d, pin) in enumerate(fresh_now()))
+    return f'''<section class="panel attention"><div class="panel-h"><h2>Needs attention</h2><span class="tag-sample">Sample</span></div><div class="att-list">{rows}</div></section>
+        <div class="two-col">
+          <section class="panel"><div class="panel-h"><h2>On Fresh now <small>first {len(fresh_now())} cards</small></h2><a href="fresh.html" target="_blank" rel="noopener">Open Fresh <i data-lucide="external-link"></i></a></div><ol class="tlist fresh-now">{fr}</ol></section>
+          <section class="panel"><div class="panel-h"><h2>Pinned on Fresh</h2><a href="admin-pinned.html">Pinned board <i data-lucide="chevron-right"></i></a></div>
+            <p class="pin-sum"><b>{len(pinned)}</b> pinned deals, one every <b>{PIN_EVERY}</b> cards: cards {", ".join(str(PIN_EVERY * (i + 1)) for i in range(min(4, len(pinned))))}{" … " + str(PIN_EVERY * len(pinned)) if len(pinned) > 4 else ""}.</p>
+            <ul class="tlist">{"".join(f'<li><span class="fn-pos">{i + 1}</span><img src="{dimg(d)}" alt="" loading="lazy"><span class="t-title">{E(d["t"])}</span><span class="t-meta">card {PIN_EVERY * (i + 1)}</span></li>' for i, d in enumerate(pinned[:5]))}</ul></section>
+        </div>'''
+
 def build_overview():
     today = [d for d in deals if d['agemin'] <= 1440]
     latest = sorted(deals, key=lambda d: d['agemin'])[:5]
@@ -143,6 +168,7 @@ def build_overview():
       <div class="sub-note" data-role="sub"><i data-lucide="info"></i><p>Sub-admins don't see Overview. They start on <a href="admin-deals.html?role=sub">All deals</a>.</p></div>
       <div data-role="admin">
         <div class="kpis">{k}</div>
+        {attention_html()}
         <div class="two-col">
           <section class="panel"><div class="panel-h"><h2>Latest live deals</h2><a href="admin-deals.html">All deals <i data-lucide="chevron-right"></i></a></div><ul class="tlist">{rows}</ul></section>
           <section class="panel"><div class="panel-h"><h2>Recent shares</h2><span class="tag-sample">Sample</span></div><ul class="tlist">{srows}</ul></section>
@@ -158,6 +184,7 @@ INC = [  # (deal index in snapshot, source, received, hold, overrides)
     (33, 'telegram', '38 min ago', 'missing', {'cat': None}),
     (8, 'form', '1 h ago', 'mrp', {'m': 'low'}),
 ]
+FEATURED = dict(price=10000, pct=70, cap=5)  # M-07 (D-106): Site & app → Featured deals; price = the meeting's ₹10,000 example, discount = the Loot line (70%)
 SRC = {'telegram': ('Telegram', 'send'), 'scraper': ('Scraper', 'bot'), 'form': ('Quick post', 'mouse-pointer-click')}
 HOLD = {'similar': 'Similar deal posted today', 'mrp': 'Check MRP', 'missing': 'Category missing'}
 
@@ -171,6 +198,8 @@ def build_incoming():
         ts = d['types'] if pct is not None else ['New']
         sl, si = SRC[src]
         flag = f'<span class="hold"><i data-lucide="triangle-alert"></i>{HOLD[hold]}' + (f' · <a href="{d["page"]}" target="_blank" rel="noopener">view</a>' if hold == 'similar' else '') + '</span>' if hold else ''
+        why = [f'{inr(FEATURED["price"])}+' for _ in [0] if p >= FEATURED['price']] + [f'{FEATURED["pct"]}%+ off' for _ in [0] if pct is not None and pct >= FEATURED['pct']]
+        flag += f'<span class="feat" title="Matches the featured-deal rules in Site &amp; app"><i data-lucide="sparkles"></i>Featured · {" · ".join(why)}</span>' if why else ''
         mrp = f'MRP {inr(m)}' if m else '<span class="miss">MRP —</span>'
         pct_h = f'<b class="pct">{pct}% off</b>' if pct is not None else '<span class="miss">—%</span>'
         cat_h = E(cat) if cat else '<span class="miss">Category?</span>'
@@ -551,6 +580,21 @@ def build_posters():
         <div><h1>Sale posters</h1><p>Posters show at the top of Home, one at a time, in this order. Visitors move between them with arrows and dots; they never slide on their own. A poster shows only between its start and end dates and while it is on.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-poster-new><i data-lucide="plus"></i>Add poster</button></div>
       </div>
+      <section class="panel promo-msg" data-promo aria-labelledby="pm-h">
+        <div class="panel-h"><h2 id="pm-h">Promo message <small>one line above the posters on Home</small></h2><span class="tag-sample">Sample</span></div>
+        <form class="pm-form" novalidate>
+          <div class="pm-prev" aria-hidden="true"><span class="pm-tag" data-pm-out="tag"></span><span class="pm-text" data-pm-out="text"></span><span class="pm-cta"><span data-pm-out="cta"></span> →</span></div>
+          <div class="pm-grid">
+            <label class="fld"><span class="lab">Tag <small>short, e.g. Christmas Sale</small></span><input class="input" name="tag" maxlength="24" value="Christmas Sale"></label>
+            <label class="fld pm-wide"><span class="lab">Message *</span><input class="input" name="text" maxlength="90" value="Extra 10% off on Amazon fashion with HDFC cards, till 25 Dec"><span class="cnt"><span data-pm-n>0</span>/90</span><span class="err" hidden>Write the message.</span></label>
+            <label class="fld"><span class="lab">Button</span><input class="input" name="cta" maxlength="16" value="Shop now"></label>
+            <label class="fld"><span class="lab">Opens *</span><input class="input" name="href" value="/shops/amazon" placeholder="A store, category or deal page, or a full link"><span class="err" hidden>Add where it opens.</span></label>
+            <label class="fld"><span class="lab">Start</span><input class="input" type="date" name="start" value="2026-11-13"></label>
+            <label class="fld"><span class="lab">End</span><input class="input" type="date" name="end" value="2026-12-25"><span class="err" hidden>End must be after start.</span></label>
+          </div>
+          <div class="pm-acts">{ck('name="on" checked', 'Show on Home')}<button class="btn btn-default" type="submit">Save message</button></div>
+        </form>
+      </section>
       <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-ptab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-pcount="cur"></span></button><button class="tabs-trigger" role="tab" data-ptab="past" aria-selected="false">Ended <span class="adm-count muted" data-pcount="past"></span></button></div>
       <ol class="posters" data-posters></ol>
       <p class="foot-note"><i data-lucide="info"></i>Desktop image 1600 × 700 px. Phone image 800 × 800 px; if you skip it, the desktop image is cropped to fit. The title is read out by screen readers, so write what the poster says.</p>

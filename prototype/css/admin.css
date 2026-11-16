@@ -926,3 +926,46 @@ html.admin .q-input:not(:focus):not([aria-invalid]) { border-color: transparent;
 .alog-foot a { display: inline-flex; align-items: center; gap: 6px; color: hsl(var(--muted-foreground)); }
 .alog-foot a:hover { color: hsl(var(--foreground)); }
 .alog-foot .lucide { width: 15px; height: 15px; }
+
+/* ---- Overview: Needs attention, On Fresh now, Pinned on Fresh (M-15, M-17, D-106) ---- */
+.attention { margin-bottom: 16px; }
+.att-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.att-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 12px; border: 1px solid hsl(var(--border)); border-radius: 10px; color: hsl(var(--foreground)); }
+.att-row:hover { border-color: hsl(var(--link) / .6); background: hsl(var(--accent) / .4); }
+.att-row > .lucide:first-child { width: 18px; height: 18px; color: hsl(var(--link)); }
+.att-t { display: grid; gap: 2px; min-width: 0; } .att-t b { font-size: 13.5px; font-weight: 600; } .att-t small { font-size: 12px; color: hsl(var(--muted-foreground)); }
+.att-n { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.att-row.is-clear .att-n { font-size: 12.5px; font-weight: 500; color: hsl(var(--muted-foreground)); }
+.att-go { width: 16px; height: 16px; color: hsl(var(--muted-foreground)); }
+.fresh-now li, .attention + .two-col .tlist li { align-items: center; }
+.fn-pos { flex: none; width: 22px; text-align: right; font-size: 12px; color: hsl(var(--muted-foreground)); font-variant-numeric: tabular-nums; }
+.fn-pin { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: hsl(var(--link)); white-space: nowrap; }
+.fn-pin .lucide { width: 13px; height: 13px; }
+.pin-sum { font-size: 13px; color: hsl(var(--muted-foreground)); margin: 0 0 8px; } .pin-sum b { color: hsl(var(--foreground)); }
+.panel-h h2 small { font-weight: 400; font-size: 12.5px; color: hsl(var(--muted-foreground)); margin-left: 6px; }
+@media (max-width: 1199px) { .att-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 599px) { .att-list { grid-template-columns: minmax(0, 1fr); } }
+.att-list { padding: 12px; }
+.pin-sum { padding: 12px 16px 0; }
+.attention + .two-col { margin-bottom: 16px; }
+
+/* ---- Promo message (M-03, D-106) ---- */
+.promo-msg { margin-bottom: 16px; }
+.pm-form { padding: 14px 16px 16px; display: grid; gap: 14px; }
+.pm-prev { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; background: #082454; color: #fff; font-size: 13.5px; min-width: 0; transition: opacity .15s; }
+.pm-prev.is-off { opacity: .4; }
+.pm-tag { flex: none; padding: 2px 8px; border-radius: 999px; background: #F5B000; color: #101B36; font-size: 12px; font-weight: 700; }
+.pm-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pm-cta { flex: none; font-weight: 600; }
+.pm-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 14px; }
+.pm-wide { grid-column: span 3; }
+.pm-acts { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 899px) { .pm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pm-wide { grid-column: 1 / -1; } }
+@media (max-width: 499px) { .pm-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- Featured-deal rules (M-07, D-106) ---- */
+.feat { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #F5B000; background: hsl(43 100% 48% / .12); border: 1px solid hsl(43 100% 48% / .35); }
+.feat .lucide { width: 13px; height: 13px; }
+.input-wrap.pre, .input-wrap.post { display: inline-flex; align-items: center; gap: 6px; }
+.input-wrap.pre > span, .input-wrap.post > span { color: hsl(var(--muted-foreground)); font-size: 13.5px; }
+.input-wrap.pre .input, .input-wrap.post .input, .feat-cap { width: 120px; }

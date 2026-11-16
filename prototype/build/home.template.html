@@ -54,6 +54,7 @@
 
 <main>
   {{SINCE}}
+  {{PROMO_STRIP}}
   <!-- Sale posters (S16, D-096 · DEV-019): uploaded by admin; arrows and dots, no autoplay (D-072). Prototype posters are SAMPLE artwork. Pinned deals show on Fresh only, every Nth card (D-104). -->
   <section class="section promo" id="hero" aria-label="Sales and offers">
     <div class="container">
@@ -61,6 +62,10 @@
     </div>
   </section>
 
+  <!-- M-10 / D-106: desktop (1200 px up) puts Shop by category / store in a side panel so the deal rows get the width; smaller screens keep the strips -->
+  <div class="container home-body">
+  <aside class="home-side" aria-label="Shop by category and store">{{SIDE}}</aside>
+  <div class="home-main">
   <!-- Categories -->
   <section class="section cats" aria-labelledby="h-cats">
     <div class="container">
@@ -86,7 +91,7 @@
   </section>
 
   <!-- Stores -->
-  <section class="section" aria-labelledby="h-stores">
+  <section class="section home-stores" aria-labelledby="h-stores">
     <div class="container">
       <div class="section-head"><div><h2 id="h-stores">Shop by store</h2><p>Deals listed all time</p></div><a class="view-all" href="stores.html">All stores <i data-lucide="chevron-right"></i></a></div>
       <div class="stores-grid">{{STORES}}</div>
@@ -100,6 +105,8 @@
       {{LOOT}}
     </div>
   </section>
+  </div>
+  </div>
 
 </main>
 

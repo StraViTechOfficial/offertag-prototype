@@ -15,7 +15,7 @@ ROUTE = {
     'fresh.html': '/fresh-deals', 'top-picks.html': '/top-deals', 'loot.html': '/loot-deals', 'new.html': '/new-deals', 'pantry.html': '/pantry-deals',
     'search.html': '/deals/search',
     'categories.html': '/categories', 'stores.html': '/stores',               # new (DEV-025)
-    'login.html': '/login', 'relogin.html': '/relogin',                       # relogin: new, dev decides (sitemap)
+    'login.html': '/login',   # forced re-login retired (D-106): no /relogin
     'account.html': '/user/profile', 'delete-account.html': '/delete-account',
     'contact.html': '/contact', 'privacy.html': '/privacy', 'disclaimer.html': '/disclaimer',
     'terms.html': '/terms', 'faq.html': '/faq',                               # new (DEV-020, DEV-025)

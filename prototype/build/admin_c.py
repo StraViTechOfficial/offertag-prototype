@@ -172,7 +172,13 @@ def build_site():
       <form class="set" data-site novalidate>
         <section class="panel"><div class="panel-h"><h2>Home</h2></div>
           {row('Sale posters', 'The poster slider at the top of Home. <a href="admin-posters.html">Manage posters</a>', sw('name="posters"', True, 'Sale posters'))}
-          {row('Community strip', 'The “Get every deal on WhatsApp or Telegram” strip under the header. Uses the links below.', sw('name="strip"', True, 'Community strip'))}
+          {row('Join button', 'The small WhatsApp / Telegram button in the bottom corner of every public page. Opens when tapped, closes on scroll. Uses the links below.', sw('name="strip"', True, 'Join button'))}
+        </section>
+        <section class="panel"><div class="panel-h"><h2>Featured deals</h2><span class="tag-sample">Sample</span></div>
+          {row('Price at or above', 'Deals at this price or higher get a “Featured” flag in Incoming, so they are reviewed first.', f'<label class="input-wrap pre"><span>₹</span><input class="input mono" type="number" name="feat_price" min="0" step="500" value="{FEATURED["price"]}" aria-label="Featured price threshold"></label>')}
+          {row('Or discount at or above', 'Flag big discounts too. Leave empty to use price only.', f'<label class="input-wrap post"><input class="input mono" type="number" name="feat_pct" min="0" max="99" value="{FEATURED["pct"]}" aria-label="Featured discount threshold"><span>%</span></label>')}
+          {row('At most per day', 'After this many, matching deals come in without the flag, so highlights stay special.', f'<input class="input mono feat-cap" type="number" name="feat_cap" min="1" max="50" value="{FEATURED["cap"]}" aria-label="Featured deals per day">')}
+          {row('What the flag does', 'Nothing is published or promoted on its own. An admin always decides.', _sel('name="feat_do" aria-label="What the flag does"', '<option>Flag in Incoming for review</option><option>Flag and suggest Top pick</option><option>Flag and suggest a push alert</option>'))}
         </section>
         <section class="panel"><div class="panel-h"><h2>Header</h2></div>
           {row('Blog “New” pill', 'Shows next to Blog until a visitor opens the newest post.', sw('name="blognew"', True, 'Blog New pill'))}

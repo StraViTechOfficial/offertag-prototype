@@ -195,6 +195,7 @@ def community(wrap):  # BRD B09 · D-055, reworked S16 (D-097): always shown, sa
              f'<span class="cm-short">Get deal alerts, free</span></span>'
              f'<span class="cm-acts"><a class="cm-btn cm-wa" href="#wa" target="_blank" rel="noopener">{wa}WhatsApp</a>'
              f'<a class="cm-btn cm-tg" href="#tg" target="_blank" rel="noopener">{tg}Telegram</a></span>')
+    return ''  # M-04 / D-106: the strip under the header is replaced by the corner join button (footer.html)
     return f'<div class="community" data-community aria-label="Join the OfferTag community">{"<div class=\"container\">" + inner + "</div>" if wrap else inner}</div>'
 def fill(tpl, **kw):
     for k, v in kw.items(): tpl = tpl.replace('{{' + k + '}}', str(v))
@@ -240,6 +241,21 @@ def store_tile(name, total):  # S16: the store's logo fills the tile; hover turn
     return f'<a class="card store has-logo" href="{store_page(name)}" aria-label="{E(name)}, {total:,} deals">{mark}<span class="store-count">{total:,} deals</span></a>'
 home = home.replace('{{STORES}}', ''.join(store_tile(s_, c_) for s_, c_ in stores))
 home = home.replace('{{COUNT}}', str(len(deals)))
+# M-10 side panel: top categories and stores by live total (same rows as the strips and the index pages)
+def side_panel():
+    top_c = sorted(CATS, key=lambda c: -c['total'])[:10]
+    cl = ''.join(f'<li><a href="{c["page"]}"><i data-lucide="{caticon.get(c["name"], "tag")}"></i><span>{E(CN(c["name"]))}</span><small>{c["total"]:,}</small></a></li>' for c in top_c)
+    sl = ''
+    for name, total in sorted(stores, key=lambda s: -s[1])[:8]:
+        lg = store_logo(name)
+        mark = f'<span class="hs-logo"><img src="{lg}" alt=""></span>' if lg else f'<span class="hs-logo hs-word">{E(name[:1])}</span>'
+        sl += f'<li><a href="{store_page(name)}">{mark}<span>{E(name)}</span><small>{total:,}</small></a></li>'
+    return (f'<nav class="hs-box" aria-labelledby="hs-cats"><h2 id="hs-cats">Shop by category</h2><ul>{cl}</ul><a class="hs-all" href="categories.html">All categories <i data-lucide="chevron-right"></i></a></nav>'
+            f'<nav class="hs-box" aria-labelledby="hs-stores"><h2 id="hs-stores">Shop by store</h2><ul>{sl}</ul><a class="hs-all" href="stores.html">All stores <i data-lucide="chevron-right"></i></a></nav>')
+home = home.replace('{{SIDE}}', side_panel())
+# M-03 promo strip: one admin-edited line above the posters (Sale posters → Promo message); SAMPLE text
+PROMO_MSG = dict(on=True, tag='Christmas Sale', text='Extra 10% off on Amazon fashion with HDFC cards, till 25 Dec', cta='Shop now', href='/shops/amazon')
+home = home.replace('{{PROMO_STRIP}}', (f'<div class="container"><a class="promo-strip" href="{PROMO_MSG["href"]}"><span class="ps-tag">{E(PROMO_MSG["tag"])}</span><span class="ps-text">{E(PROMO_MSG["text"])}</span><span class="ps-cta">{E(PROMO_MSG["cta"])}<i data-lucide="arrow-right"></i></span><span class="ps-sample">Sample</span></a></div>') if PROMO_MSG['on'] else '')
 open(os.path.join(ROOT, 'index.html'), 'w').write(home)
 print('index.html', len(deals), 'deals')
 
@@ -555,7 +571,7 @@ for idx, d in enumerate(deals + extras):
                      CAPTION=caption, COUPON=coupon, COUPON_BAR=coupon_bar, OFFERS=offers, NOTE=note, HIGHLIGHTS=highlights, LINKS=links, DESCRIPTION=description, SPECS=specs, STEPS=steps,
                      WA='https://wa.me/?text=' + quote(share_text), TG='https://t.me/share/url?url=' + quote(f"https://www.offertag.in/d/{d['id']}") + '&text=' + quote(share_text), SHARE_TEXT=E(share_text),
                      AMZ_SEARCH='https://www.amazon.in/s?k=' + quote(d['t']) + '&tag=offertag-21', FK_SEARCH='https://www.flipkart.com/search?q=' + quote(d['t']) + '&affid=offertag',
-                     RELATED=carousel(''.join(card(x) for x in related)), COMMENTS=comments_html(idx), COMMENT_COUNT=str(ncom), COMMENTS_EMPTY_HIDDEN='' if ncom == 0 else 'hidden', COMMENTS_MORE_HIDDEN='' if ncom > 10 else 'hidden',
+                     RELATED=carousel(''.join(card(x) for x in related)), COMMENTS=comments_html(idx), COMMENT_COUNT=str(ncom), VIEWS=f"{int(d.get('views') or 0):,}", COMMENTS_EMPTY_HIDDEN='' if ncom == 0 else 'hidden', COMMENTS_MORE_HIDDEN='' if ncom > 10 else 'hidden',
                      CAT_PAGE=cat_page(d['cat']), STORE_PAGE=store_page(d['store']), HEADER=HEADER_DETAIL, FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET).items():
         out = out.replace('{{' + k + '}}', str(v))
     open(os.path.join(ROOT, d['page']), 'w').write(out)
@@ -576,6 +592,7 @@ def build_auth():
   <a class="btn btn-ghost btn-icon auth-back" href="index.html" data-back aria-label="Back"><i data-lucide="chevron-left"></i></a>
   {logo}
   {signin_block('<h1 class="auth-title" data-signin-title>Sign in</h1>')}
+  <p class="auth-returning"><i data-lucide="info"></i>Used OfferTag before? Sign in once more with Google or an email code. Your account and comments are safe.</p>
 </div></main>'''
     relogin = f'''<main class="auth-main"><div class="auth-card auth-card-center">
   {logo}
@@ -622,7 +639,7 @@ def build_auth():
   </form>
   <div class="card form-sec form-done" id="delete-done" role="status" hidden><i data-lucide="circle-check"></i><b>Request received.</b><p>We delete accounts within 7 days and email you when done.</p><a class="btn btn-outline" href="index.html">Back to deals</a></div>
 </div></div></main>'''
-    pages = [('login.html', 'Sign in', 'login', 'is-focus', login, False), ('relogin.html', 'Please sign in again', 'relogin', 'is-focus', relogin, False), ('account.html', 'Account', 'account', '', account, True), ('delete-account.html', 'Delete account', 'delete-account', '', delete, True)]
+    pages = [('login.html', 'Sign in', 'login', 'is-focus', login, False), ('account.html', 'Account', 'account', '', account, True), ('delete-account.html', 'Delete account', 'delete-account', '', delete, True)]
     for fname, title, page, cls, body, chrome in pages:
         open(os.path.join(ROOT, fname), 'w').write(fill(tpl, TITLE=title, PAGE=page, BODY_CLASS=cls, BODY=body, HEADER=HEADER if chrome else '', FOOTER=FOOTER if chrome else '', SHEETS=sheets if chrome else ''))
 build_auth()
