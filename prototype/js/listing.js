@@ -133,7 +133,7 @@
     if (total === 0) return;
     if (left === 0) {
       var end = document.createElement('div'); end.className = 'end';
-      end.innerHTML = '<span>That\'s all for now.</span><a class="btn btn-outline btn-sm" href="top-picks.html">See Top picks</a><a class="btn btn-ghost btn-sm" href="#top">Back to top</a>';
+      end.innerHTML = '<span>That\'s all for now.</span><a class="btn btn-outline btn-sm" href="/top-deals">See Top picks</a><a class="btn btn-ghost btn-sm" href="#top">Back to top</a>';
       loadState.appendChild(end); return;
     }
     if (batch % (AUTO + 1) === 0) {

@@ -5,6 +5,7 @@ One file per screen group, written before the group is built. Every element the 
 - `BRD …` — a line in `docs/brd/brd.txt`
 - `D-xxx` — a decision that derives the value (types from discount %, etc.)
 - `SAMPLE` — the real store is empty today; the README names it; never for counts, names, prices or lists that exist live
+Prototype file names in older sheets are now addresses: see `../routes.md` (D-105).
 Lists come from the catalogue as stored (active rows, `order_no`, slugs, spelling). Counts say whether they are live totals or the prototype snapshot.
 
 | Sheet | Screens | Session |
@@ -17,3 +18,4 @@ Lists come from the catalogue as stored (active rows, `order_no`, slugs, spellin
 | `admin-batch-d.md` | Blog posts list, Blog editor, admin phone pass | S16 |
 
 Old code moved on 2026-11-11 to `offer-tag/` in this repo; it has no `schema.sql`, so columns come from `offer-tag/database/migrations/`.
+| `admin-login.md` | 37 Admin sign-in | S18 |

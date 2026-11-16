@@ -5,6 +5,18 @@
   function icons() { if (window.lucide && lucide.createIcons) lucide.createIcons(); }
   var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
   var params = new URLSearchParams(location.search);
+  // D-105: pages live at their real addresses; edit / clone / blog-post / tab routes carry their key in the path
+  (function () {
+    var p = location.pathname, m;
+    if ((m = p.match(/^\/admin\/deal\/(\d+)\/(edit|clone)\/?$/))) params.set(m[2] === 'edit' ? 'id' : 'clone', m[1]);
+    if ((m = p.match(/^\/admin\/blog\/([^\/]+)\/edit\/?$/))) params.set('post', decodeURIComponent(m[1]));
+    if (window.ADM_TAB && !params.get('tab')) params.set('tab', window.ADM_TAB);
+  })();
+  var ROUTES = {
+    edit: function (id) { return '/admin/deal/' + id + '/edit'; }, clone: function (id) { return '/admin/deal/' + id + '/clone'; },
+    post: '/admin/deal/create', blogEdit: function (n) { return '/admin/blog/' + encodeURIComponent(n) + '/edit'; }, blogNew: '/admin/blog/create',
+    alerts: function (id) { return '/admin/admin-notifications?deal=' + id; }
+  };
   var INR = new Intl.NumberFormat('en-IN');
   function rs(v) { return '₹' + INR.format(v); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -125,7 +137,7 @@
     }
     function approve(rows) {
       var ok = rows.filter(function (r) { return !r.dataset.missing; }), held = rows.length - ok.length;
-      if (!ok.length) { toast('Add a category before this deal can go live.', { icon: 'triangle-alert', action: 'Edit', href: 'admin-soon.html?s=Post+a+deal' + (SUB ? '&role=sub' : '') }); return; }
+      if (!ok.length) { toast('Add a category before this deal can go live.', { icon: 'triangle-alert', action: 'Edit', href: '/admin/soon?s=Post+a+deal' + (SUB ? '&role=sub' : '') }); return; }
       var push = ok.filter(function (r) { return +r.dataset.pct >= 90; }).length;
       var undo = moveRows(ok, appr, 'Live now');
       var msg = (ok.length === 1 ? 'Deal approved, live now' : ok.length + ' deals approved, live now') + (push ? ' · push alert sent' : '') + (held ? ' · ' + held + ' needs a category' : '');
@@ -298,8 +310,8 @@
       closeDD(); menuId = btn.closest('tr').dataset.id; menuBtn = btn; var d = byId(menuId);
       $('[data-pin-label]').textContent = d.pin ? 'Unpin (slot ' + d.pin + ')' : 'Pin';
       $('[data-act="open"]').href = d.page;
-      $('[data-act="edit"]').href = withRole('admin-post.html?id=' + d.id); $('[data-act="clone"]').href = withRole('admin-post.html?clone=' + d.id);
-      $('[data-act="share"]').href = withRole('admin-post.html?id=' + d.id) + '#share'; $('[data-act="push"]').href = withRole('admin-alerts.html?deal=' + d.id);
+      $('[data-act="edit"]').href = withRole(ROUTES.edit(d.id)); $('[data-act="clone"]').href = withRole(ROUTES.clone(d.id));
+      $('[data-act="share"]').href = withRole(ROUTES.edit(d.id)) + '#share'; $('[data-act="push"]').href = withRole(ROUTES.alerts(d.id));
       $$('[data-act^="st-"]').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.act === 'st-' + d.status); });
       rowMenu.hidden = false; var r = btn.getBoundingClientRect(), h = rowMenu.offsetHeight, w = rowMenu.offsetWidth;
       rowMenu.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
@@ -337,7 +349,7 @@
       var NAMES = { fb: 'Facebook Page', pin: 'Pinterest', th: 'Threads' }, chs = $$('[data-bs-ch]').filter(function (c) { return c.checked && !c.disabled; }).map(function (c) { return NAMES[c.dataset.bsCh]; });
       if (!chs.length) { toast('Tick at least one place to share.', { icon: 'info' }); return; }
       var n = selDeals().filter(function (d) { return d.status === 'live'; }).length; closeSheet();
-      toast('Sharing ' + n + (n === 1 ? ' deal' : ' deals') + ' to ' + chs.join(' and ') + '. Results show in Social sharing → History.', { action: 'View', href: withRole('admin-social.html?tab=history'), ms: 6000 });
+      toast('Sharing ' + n + (n === 1 ? ' deal' : ' deals') + ' to ' + chs.join(' and ') + '. Results show in Social sharing → History.', { action: 'View', href: withRole('/admin/social/history'), ms: 6000 });
     });
     // bulk edit drawer
     $$('[data-be]').forEach(function (c) { c.addEventListener('change', function () { c.closest('.be-row').classList.toggle('is-on', c.checked); }); });
@@ -526,7 +538,7 @@
       $('[data-form-title]').textContent = 'Edit deal'; $('[data-form-sub]').textContent = 'Last edited by Adil, 2 h ago · ' + (src.status === 'live' ? 'Live' : src.status[0].toUpperCase() + src.status.slice(1));
       document.title = 'Edit deal · OfferTag Admin'; $$('[data-edit-only]').forEach(function (x) { x.hidden = false; }); $('[data-open-page]').href = src.page;
       $('[data-saved]').hidden = true; $$('.adm-sub a[aria-current]').forEach(function (a) { a.removeAttribute('aria-current'); });
-      var all = $('.adm-sub a[href^="admin-deals.html"]'); if (all) all.setAttribute('aria-current', 'page');
+      var all = $('.adm-sub a[href="/admin/deal"], .adm-sub a[href^="/admin/deal?"]'); if (all) all.setAttribute('aria-current', 'page');
     } else if (src) {
       fill(src, true); $('[data-form-title]').textContent = 'Clone deal'; $('[data-form-sub]').textContent = 'Copied from “' + src.t.slice(0, 60) + '…”. Add the new link and image.';
     } else {
@@ -559,15 +571,15 @@
       $('[data-done-title]').textContent = later ? 'Deal scheduled' : 'Deal is live';
       $('[data-done-sub]').textContent = later ? 'It goes live on ' + new Date(el('at').value).toLocaleString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + '.' : 'It’s at the top of Fresh and in its type lists' + (el('notify').checked ? ', and the push alert is on its way.' : '.');
       $('[data-done-page]').value = 'offertag.in/deal/' + el('title').value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
-      $('[data-done-open]').href = state.matched ? state.matched.page : 'fresh.html';
-      $('[data-done-short]').value = shortUrl; $('[data-done-share]').href = withRole('admin-post.html?id=' + m.id) + '#share'; $('[data-another]').href = withRole('admin-post.html');
+      $('[data-done-open]').href = state.matched ? state.matched.page : '/fresh-deals';
+      $('[data-done-short]').value = shortUrl; $('[data-done-share]').href = withRole(ROUTES.edit(m.id)) + '#share'; $('[data-another]').href = withRole(ROUTES.post);
       $('[data-post]').hidden = true; $('[data-sticky]').hidden = true; $('.page-h').hidden = true; var d = $('[data-done]'); d.hidden = false; d.focus(); window.scrollTo(0, 0);
     });
     $('[data-submit-proxy]').addEventListener('click', function () { F.requestSubmit ? F.requestSubmit() : F.dispatchEvent(new Event('submit')); });
     $('[data-copy-short]').addEventListener('click', function () { copy('https://' + shortUrl).then(function () { toast('Short link copied'); }); });
     $('[data-copy-wa]').addEventListener('click', function () { copy(shareText('fb')).then(function () { toast('Copied for WhatsApp'); }); });
     $('[data-bump]').addEventListener('click', function () { toast('Bumped to the top of the feed', { action: 'Undo', onAction: function () {} }); });
-    $('[data-del]').addEventListener('click', function () { confirmBox('Delete this deal?', 'It leaves the site and its image files are removed. You can undo for 10 seconds on All deals.', 'Delete deal', function () { toast('Deal deleted'); setTimeout(function () { location.href = withRole('admin-deals.html'); }, 900); }, true); });
+    $('[data-del]').addEventListener('click', function () { confirmBox('Delete this deal?', 'It leaves the site and its image files are removed. You can undo for 10 seconds on All deals.', 'Delete deal', function () { toast('Deal deleted'); setTimeout(function () { location.href = withRole('/admin/deal'); }, 900); }, true); });
   })();
 
   /* =================== Pinned board =================== */
@@ -587,7 +599,7 @@
         return '<div class="slot" role="listitem" data-slot="' + s + '" draggable="true" tabindex="0" aria-roledescription="Pinned deal" aria-label="Slot ' + s + ', card ' + card(s) + ' on Fresh: ' + esc(d.t) + '. Press Space to move."' + (lifted === s ? ' data-lifted' : '') + '>' +
           '<div class="slot-h"><span>Slot ' + s + ' <small>· card ' + card(s) + '</small></span><i data-lucide="grip-vertical"></i></div><img src="' + d.img + '" alt=""><div class="slot-t">' + esc(d.t) + '</div>' +
           '<div class="slot-p"><b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span></div><div class="slot-age">pinned ' + x.age + ' ago</div>' +
-          '<div class="slot-acts"><a href="' + withRole('admin-post.html?id=' + d.id) + '">Edit</a><button type="button" data-unpin="' + s + '">Unpin</button>' + slotSel(s) + '</div></div>';
+          '<div class="slot-acts"><a href="' + withRole(ROUTES.edit(d.id)) + '">Edit</a><button type="button" data-unpin="' + s + '">Unpin</button>' + slotSel(s) + '</div></div>';
       }).join('');
       var n = order.length + 1;
       html += '<div class="slot empty" role="listitem" data-slot="' + n + '"><div class="slot-h"><span>Slot ' + n + ' <small>· card ' + card(n) + '</small></span></div><button type="button" class="slot-add" data-pin-add="' + n + '"><i data-lucide="plus"></i>Pin a deal</button></div>';
@@ -726,7 +738,7 @@
   if (matchMedia('(max-width: 899px)').matches) $$('[data-fold-phone]').forEach(function (d) { d.open = false; });
 
   /* shared helpers for admin-c.js (batch C pages) */
-  window.ADM = { $: $, $$: $$, icons: icons, store: store, params: params, rs: rs, INR: INR, esc: esc, withRole: withRole, toast: toast, copy: copy, openSheet: openSheet, closeSheet: closeSheet, confirmBox: confirmBox, setCount: setCount, SUB: SUB };
+  window.ADM = { routes: ROUTES, $: $, $$: $$, icons: icons, store: store, params: params, rs: rs, INR: INR, esc: esc, withRole: withRole, toast: toast, copy: copy, openSheet: openSheet, closeSheet: closeSheet, confirmBox: confirmBox, setCount: setCount, SUB: SUB };
 
   icons();
 })();

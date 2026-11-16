@@ -19,7 +19,7 @@
   function today() { var n = new Date(); return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2); }
   function dealCount(p) { if (p.html != null) return (p.html.match(/data-deal="/g) || []).length; return (p.body || []).filter(function (b) { return b.deal; }).length; }
   function pill(s) { return s === 'published' ? '<span class="pill pill-live">Published</span>' : s === 'scheduled' ? '<span class="pill pill-scheduled">Scheduled</span>' : '<span class="pill">Draft</span>'; }
-  function publicHref(p) { return PUBLIC[p.name] && p.status === 'published' ? 'blog-' + p.name + '.html' : ''; }
+  function publicHref(p) { return PUBLIC[p.name] && p.status === 'published' ? '/blog/' + p.name : ''; }
 
   /* =================== Blog posts list =================== */
   if ($('[data-brows]')) (function () {
@@ -29,19 +29,19 @@
       var s = q.value.trim().toLowerCase(), rows = posts.filter(function (p) { return (tab === 'all' || p.status === tab) && (!s || p.title.toLowerCase().indexOf(s) > -1); });
       $('[data-brows]').innerHTML = rows.map(function (p) {
         var when = p.status === 'draft' ? '<span class="d-when">edited ' + esc(p.edited || 'just now') + '</span>' : '<span class="d-when">' + fmtDate(p.date, p.status === 'scheduled' ? p.time : '') + '</span>';
-        return '<tr data-p="' + esc(p.name) + '"><td class="c-title"><a class="b-title" href="' + A.withRole('admin-blog-edit.html?post=' + encodeURIComponent(p.name)) + '">' + esc(p.title || 'Untitled draft') + '</a>' + (p.summary ? '<small class="b-sum">' + esc(p.summary) + '</small>' : '') + '</td>'
+        return '<tr data-p="' + esc(p.name) + '"><td class="c-title"><a class="b-title" href="' + A.withRole(A.routes.blogEdit(p.name)) + '">' + esc(p.title || 'Untitled draft') + '</a>' + (p.summary ? '<small class="b-sum">' + esc(p.summary) + '</small>' : '') + '</td>'
           + '<td data-l="Status">' + pill(p.status) + '</td><td data-l="Date">' + when + '</td><td class="num" data-l="Deals">' + dealCount(p) + '</td>'
           + '<td class="c-act"><button class="btn btn-ghost btn-icon btn-sm" type="button" data-bmenu aria-haspopup="menu" aria-label="Actions for ' + esc(p.title || 'draft') + '"><i data-lucide="ellipsis"></i></button></td></tr>';
       }).join('');
       var em = $('[data-bempty]'); em.hidden = rows.length > 0;
-      em.innerHTML = s ? 'No posts match. <button class="btn-link" type="button" data-bclear>Clear search</button>' : tab === 'draft' ? 'No drafts.' : tab === 'scheduled' ? 'Nothing scheduled.' : 'No posts yet. <a class="btn-link" href="admin-blog-edit.html">Write the first one</a>';
+      em.innerHTML = s ? 'No posts match. <button class="btn-link" type="button" data-bclear>Clear search</button>' : tab === 'draft' ? 'No drafts.' : tab === 'scheduled' ? 'Nothing scheduled.' : 'No posts yet. <a class="btn-link" href="/admin/blog/create">Write the first one</a>';
       counts(); A.icons();
     }
     function closeMenu(refocus) { if (menu.hidden) return; menu.dataset.state = 'closed'; setTimeout(function () { menu.hidden = true; }, 120); if (refocus && mbtn) mbtn.focus(); mbtn = null; }
     function openMenu(btn, ev) {
       if (mbtn === btn) { closeMenu(); return; }
       cur = posts.filter(function (p) { return p.name === btn.closest('tr').dataset.p; })[0]; mbtn = btn;
-      $('[data-bm="edit"]').href = A.withRole('admin-blog-edit.html?post=' + encodeURIComponent(cur.name));
+      $('[data-bm="edit"]').href = A.withRole(A.routes.blogEdit(cur.name));
       var v = $('[data-bm="view"]'), ph = publicHref(cur); v.hidden = !ph; v.href = ph || '#';
       $('[data-bm="pub"]').hidden = cur.status === 'published'; $('[data-bm="unpub"]').hidden = cur.status !== 'published';
       menu.hidden = false; var r = btn.getBoundingClientRect(), h = menu.offsetHeight, w = menu.offsetWidth;
@@ -59,9 +59,9 @@
       if (a === 'dup') {
         var base = p.name.replace(/-copy(-\d+)?$/, '') + '-copy', name = base, i = 2; while (posts.some(function (x) { return x.name === name; })) name = base + '-' + i++;
         var c = Object.assign({}, p, { name: name, title: 'Copy of ' + p.title, status: 'draft', date: '', time: '', edited: 'just now' }); posts.unshift(c); persist(c); render();
-        toast('Copy saved as a draft', { action: 'Edit', href: A.withRole('admin-blog-edit.html?post=' + encodeURIComponent(name)) });
+        toast('Copy saved as a draft', { action: 'Edit', href: A.withRole(A.routes.blogEdit(name)) });
       } else if (a === 'pub') {
-        if (!p.title || !p.summary || !dealCount(p) && !(p.body || []).length) { toast('Add a title and summary before publishing.', { icon: 'info', action: 'Edit', href: A.withRole('admin-blog-edit.html?post=' + encodeURIComponent(p.name)) }); return; }
+        if (!p.title || !p.summary || !dealCount(p) && !(p.body || []).length) { toast('Add a title and summary before publishing.', { icon: 'info', action: 'Edit', href: A.withRole(A.routes.blogEdit(p.name)) }); return; }
         A.confirmBox('Publish “' + p.title + '” now?', 'It goes live at offertag.in/blog/' + p.name + ' and shows first on the blog.', 'Publish now', function () {
           var prev = { status: p.status, date: p.date, time: p.time }; p.status = 'published'; p.date = today(); p.time = ''; persist(p); render();
           toast('Published', { action: 'Undo', onAction: function () { Object.assign(p, prev); persist(p); render(); } });
@@ -138,7 +138,7 @@
 
     // autosave every 10 s (§3)
     function save(quiet) {
-      if (!post.name) { var s = F.slug.value.trim() || slugify(F.title.value) || 'draft-' + Date.now().toString(36); post.name = s; F.slug.value = s; try { var u = new URL(location.href); u.searchParams.set('post', s); history.replaceState(null, '', u); } catch (e) {} }
+      if (!post.name) { var s = F.slug.value.trim() || slugify(F.title.value) || 'draft-' + Date.now().toString(36); post.name = s; F.slug.value = s; try { history.replaceState(null, '', A.withRole(A.routes.blogEdit(s))); } catch (e) {} }
       post.title = F.title.value.trim(); post.summary = F.summary.value.trim(); post.seo = F.seo.value.trim(); post.meta = F.meta.value.trim(); post.cat = F.cat.value; post.cover = coverImg; post.html = serial(); post.edited = 'just now';
       persist(post); dirty = false; savedAt = Date.now(); tick();
     }
@@ -241,7 +241,7 @@
       if (bad.length) { if (bad.some(function (b) { return b === F.slug; }) && innerWidth < 900) openSide(); bad[0].focus(); bad[0].scrollIntoView({ block: 'center' }); }
       return !bad.length;
     }
-    function rename() { var sl = F.slug.value.trim(); if (post.name && sl !== post.name && post.status !== 'published') { drop(post.name); post.name = sl; try { var u = new URL(location.href); u.searchParams.set('post', sl); history.replaceState(null, '', u); } catch (e) {} } }
+    function rename() { var sl = F.slug.value.trim(); if (post.name && sl !== post.name && post.status !== 'published') { drop(post.name); post.name = sl; try { history.replaceState(null, '', A.withRole(A.routes.blogEdit(sl))); } catch (e) {} } }
     $('[data-bpublish]').addEventListener('click', function () {
       if (!check()) return;
       if (post.status === 'published') { save(); toast('Post updated on the blog', publicHref(post) ? { action: 'View', href: publicHref(post) } : {}); return; }

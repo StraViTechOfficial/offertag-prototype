@@ -111,7 +111,7 @@
   function like(hay, q) { return hay.toLowerCase().indexOf(q) >= 0; }
   // the old site's rule: LIKE %q% on title, category name, store name (applySearchFilters); pinned dropped when q is present (W14)
   function matches(q) { q = q.toLowerCase(); return DEALS.filter(function (d) { return !d.pinned && (like(d.t, q) || like(d.cat, q) || like(d.store, q)); }); }
-  function target(q) { return 'search.html?q=' + encodeURIComponent(q); }
+  function target(q) { return '/deals/search?q=' + encodeURIComponent(q); }
 
   // suggestion list renderer, shared by the phone sheet and the desktop popover
   function render(q) {
@@ -134,7 +134,7 @@
       h += '<div class="ss-sec"><span>Deals</span></div>' + hits.slice(0, 3).map(function (d) { return '<a class="ss-deal" href="' + d.page + '"><img src="assets/deals/' + d.file + '" alt="" width="40" height="40" loading="lazy"><span class="t">' + esc(d.t) + '</span><b>' + inr(d.p) + '</b></a>'; }).join('');
       h += '<a class="ss-row ss-all" href="' + target(q) + '" data-q="' + esc(q) + '"><span>See all ' + hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for “' + esc(q) + '”</span><i data-lucide="chevron-right"></i></a>';
     } else {
-      h += '<p class="ss-none">No deals for “' + esc(q) + '”. Try a store or category above, or <a href="fresh.html">today\'s Fresh deals</a>.</p>';
+      h += '<p class="ss-none">No deals for “' + esc(q) + '”. Try a store or category above, or <a href="/fresh-deals">today\'s Fresh deals</a>.</p>';
     }
     return h;
   }
@@ -175,14 +175,14 @@
   document.querySelectorAll('form[data-search]').forEach(function (f) { if (f !== hf && !(sheet && sheet.contains(f))) f.addEventListener('submit', function (e) { e.preventDefault(); submit(f); }); });
 
   // ---- S16 header (D-097) ----
-  var qs = new URLSearchParams(location.search), file = location.pathname.split('/').pop() || 'index.html';
+  var qs = new URLSearchParams(location.search), path = location.pathname.replace(/\/(index\.html)?$/, '') || '/';  // D-105: pages live at their real address
   function store(kind) { try { return window[kind]; } catch (e) { return null; } }
   var LS = store('localStorage'), SS = store('sessionStorage');
   function get(s, k) { try { return s ? s.getItem(k) : null; } catch (e) { return null; } }
   function set(s, k, v) { try { if (s) s.setItem(k, v); } catch (e) {} }
 
   // header type links: mark the current page (Blog for the index and every post)
-  var cur = /^blog(-|\.html)/.test(file) ? 'blog.html' : file;
+  var cur = /^\/blog(\/|$)/.test(path) ? '/blog' : path;
   document.querySelectorAll('.hnav a').forEach(function (a) { if (a.getAttribute('href') === cur) a.setAttribute('aria-current', 'page'); });
 
   // Blog "New" pill: shown until this visitor opens the blog after the newest post went up.
@@ -191,7 +191,7 @@
   if (blogLink) {
     var latest = blogLink.dataset.latest, SEEN = 'ot-blog-seen';
     if (qs.get('blog') === 'new') set(LS, SEEN, ''); if (qs.get('blog') === 'seen') set(LS, SEEN, latest);
-    if (cur === 'blog.html') set(LS, SEEN, latest);
+    if (cur === '/blog') set(LS, SEEN, latest);
     if (get(LS, SEEN) !== latest) {
       var pulse = !get(SS, 'ot-blog-pulsed'); set(SS, 'ot-blog-pulsed', '1');
       document.querySelectorAll('[data-blog-new]').forEach(function (p) { p.hidden = false; if (pulse) p.classList.add('is-pulsing'); });
@@ -253,7 +253,7 @@
     all('[data-when-user]').forEach(function (el) { el.hidden = !u; });
     all('[data-when-guest]').forEach(function (el) { el.hidden = !!u; });
     var staff = !!(u && (u.role === 'admin' || u.role === 'sub'));  // roles 1 and 3 only (D-055, W02)
-    all('[data-when-staff]').forEach(function (el) { el.hidden = !staff; if (staff) el.href = u.role === 'sub' ? 'admin-deals.html?role=sub' : 'admin.html'; });
+    all('[data-when-staff]').forEach(function (el) { el.hidden = !staff; if (staff) el.href = u.role === 'sub' ? '/admin/deal?role=sub' : '/admin'; });
     if (!u) return;
     all('[data-user-name]').forEach(function (el) { el.textContent = u.name; });
     all('[data-user-initial]').forEach(function (el) { el.textContent = (u.name || u.email).charAt(0).toUpperCase(); });
@@ -264,13 +264,13 @@
   try { var m = sessionStorage.getItem(FLASH); if (m) { sessionStorage.removeItem(FLASH); OT.toast(m, 'check'); } } catch (e) {}
   document.addEventListener('click', function (e) {
     if (!e.target.closest('[data-signout]')) return;
-    save(null); flash('Signed out'); location.href = page === 'account' ? 'index.html' : location.pathname;
+    save(null); flash('Signed out'); location.href = page === 'account' ? '/' : location.pathname;
   });
 
   function returnUrl() {
-    var u = q.get('url'); if (u && /^[\w-]+\.html([?#].*)?$/.test(u)) return u;
-    try { var r = new URL(document.referrer); if (r.origin === location.origin && !/(login|relogin)\.html/.test(r.pathname)) return r.pathname.slice(1) + r.search; } catch (e) {}
-    return 'index.html';
+    var u = q.get('url'); if (u && /^\/(?!\/)[\w\-\/]*([?#].*)?$/.test(u)) return u;  // local paths only
+    try { var r = new URL(document.referrer); if (r.origin === location.origin && !/^\/(login|relogin)(\/|$)/.test(r.pathname)) return r.pathname + r.search; } catch (e) {}
+    return '/';
   }
 
   // one sign-in block; used by login.html and the shared sheet / pop-up
@@ -347,13 +347,13 @@
   }
   if (page === 'relogin') {
     var target = returnUrl(), s = document.querySelector('[data-relogin-signin]'), c = document.querySelector('[data-relogin-skip]');
-    s.href = 'login.html?url=' + encodeURIComponent(target); c.href = target;
+    s.href = '/login?url=' + encodeURIComponent(target); c.href = target;
   }
 
   // account
   if (page === 'account') {
     var u = user();
-    if (!u) { location.replace('login.html?url=account.html'); return; }
+    if (!u) { location.replace('/login?url=' + encodeURIComponent('/user/profile')); return; }
     var af = document.getElementById('account-form'), nm = af.elements.name, mob = af.elements.mobile, sw = document.getElementById('alerts-switch');
     nm.value = u.name; mob.value = u.mobile || '';
     function ferr(name, msg) { show(document.querySelector('[data-err="' + name + '"]'), msg); }
@@ -370,7 +370,7 @@
     var open = document.getElementById('delete-open'), panel = document.getElementById('delete-confirm');
     open.addEventListener('click', function () { panel.hidden = false; open.hidden = true; document.getElementById('delete-no').focus(); });
     document.getElementById('delete-no').addEventListener('click', function () { panel.hidden = true; open.hidden = false; open.focus(); });
-    document.getElementById('delete-yes').addEventListener('click', function () { save(null); flash('Your account has been deleted.'); location.href = 'index.html'; });
+    document.getElementById('delete-yes').addEventListener('click', function () { save(null); flash('Your account has been deleted.'); location.href = '/'; });
   }
 
   // public delete request (B31): same success for unknown or repeat emails, membership is never revealed (D-061)

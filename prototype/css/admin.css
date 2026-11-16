@@ -901,3 +901,28 @@ html.admin .q-input:not(:focus):not([aria-invalid]) { border-color: transparent;
 .bs .ckl small a { color: hsl(var(--link)); text-decoration: underline; text-underline-offset: 3px; }
 .bs .ckl:has(input:disabled) { opacity: .6; cursor: default; }
 .bs .hint-line { margin-top: 8px; }
+
+/* ---- Screen 37: Admin sign-in (D-105) ---- */
+.alog-body { min-height: 100vh; background: hsl(var(--background)); }
+.alog { min-height: 100vh; display: grid; align-content: center; justify-items: center; gap: 20px; padding: 32px 16px; }
+.alog-brand { display: flex; align-items: center; gap: 10px; }
+.alog-brand img { height: 36px; width: auto; background: #fff; border-radius: 6px; padding: 4px 8px; }
+.alog-brand span { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; border: 1px solid hsl(var(--border)); border-radius: 6px; padding: 3px 7px; color: hsl(var(--muted-foreground)); }
+.alog-card { width: 100%; max-width: 400px; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 14px; padding: 28px 24px; display: grid; gap: 16px; }
+.alog-card h1 { font-size: 22px; line-height: 28px; font-weight: 600; margin: 0 0 6px; }
+.alog-sub { font-size: 14px; line-height: 21px; color: hsl(var(--muted-foreground)); margin: 0 0 18px; }
+.alog-sub b { color: hsl(var(--foreground)); font-weight: 500; word-break: break-all; }
+.alog-google, .alog-go { width: 100%; height: 44px; gap: 10px; }
+.alog-or { display: flex; align-items: center; gap: 12px; margin: 16px 0; font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+.alog-or::before, .alog-or::after { content: ""; flex: 1; height: 1px; background: hsl(var(--border)); }
+.alog form { display: grid; gap: 14px; }
+.alog-otp { letter-spacing: .5em; font-size: 20px; text-align: center; height: 48px; }
+.alog-resend { margin-top: 12px; font-size: 13.5px; }
+.alog-resend:disabled { color: hsl(var(--muted-foreground)); text-decoration: none; cursor: default; }
+.alog-acts { display: flex; flex-wrap: wrap; gap: 10px; }
+.alog-note { display: flex; align-items: center; gap: 8px; font-size: 13.5px; margin: 0; padding: 10px 12px; border-radius: 8px; background: hsl(var(--save, 151 83% 26%) / .14); }
+.alog-note .lucide { width: 16px; height: 16px; }
+.alog-foot { margin: 0; font-size: 13.5px; }
+.alog-foot a { display: inline-flex; align-items: center; gap: 6px; color: hsl(var(--muted-foreground)); }
+.alog-foot a:hover { color: hsl(var(--foreground)); }
+.alog-foot .lucide { width: 15px; height: 15px; }

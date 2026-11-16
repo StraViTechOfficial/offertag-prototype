@@ -102,7 +102,7 @@ def shell(fname, title, active, body, scripts='', after=''):
           <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
           <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
           <div class="separator"></div>
-          <a role="menuitem" href="login.html"><i data-lucide="log-out"></i>Sign out</a>
+          <a role="menuitem" href="admin-login.html?state=out"><i data-lucide="log-out"></i>Sign out</a>
         </div>
       </div>
     </header>
@@ -578,4 +578,5 @@ build_overview(); build_incoming(); build_deals(); build_soon()
 build_post(); build_pinned(); build_alerts(); build_posters()
 exec(open(os.path.join(HERE, 'admin_c.py')).read())
 exec(open(os.path.join(HERE, 'admin_d.py')).read())
+exec(open(os.path.join(HERE, 'admin_login.py')).read())
 print('Admin: batch A (admin, admin-incoming, admin-deals) + batch B (admin-post, admin-pinned, admin-alerts, admin-posters) + admin-soon')

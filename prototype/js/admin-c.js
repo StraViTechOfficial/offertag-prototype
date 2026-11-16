@@ -10,11 +10,11 @@
   function tabbed(attr, initial, onSwitch) {
     var btns = $$('[' + attr + ']'); if (!btns.length) return null;
     var keys = btns.map(function (b) { return b.getAttribute(attr); });
-    var page = location.pathname.split('/').pop() || '';
+    var TR = window.ADM_TABS || null;  // D-105: each tab has its own address
     function set(k, write) {
       btns.forEach(function (b) { var on = b.getAttribute(attr) === k; b.dataset.state = on ? 'active' : ''; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
-      if (write) { try { var u = new URL(location.href); u.searchParams.set('tab', k); history.replaceState(null, '', u); } catch (e) {} }
-      $$('.adm-sub a').forEach(function (a) { var h = a.getAttribute('href') || ''; if (h.split('?')[0] !== page || h.indexOf('tab=') < 0) return; if (h.indexOf('tab=' + k) > -1) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+      if (write) { try { if (TR && TR[k]) history.replaceState(null, '', A.withRole(TR[k])); else { var u = new URL(location.href); u.searchParams.set('tab', k); history.replaceState(null, '', u); } } catch (e) {} }
+      if (TR) { var vals = Object.keys(TR).map(function (x) { return TR[x]; }); $$('.adm-sub a').forEach(function (a) { var h = (a.getAttribute('href') || '').split('?')[0]; if (vals.indexOf(h) < 0) return; if (h === TR[k]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
       onSwitch(k);
     }
     btns.forEach(function (b, i) {

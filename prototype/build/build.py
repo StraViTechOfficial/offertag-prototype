@@ -817,3 +817,4 @@ def build_static():
     print('S15 pages: contact, 4 errors, 3 legal, blog +', len(POSTS), 'posts, email-otp, share-card')
 build_static()
 exec(open(os.path.join(HERE, 'admin.py')).read())  # admin pages (S16 batch A, D-098) — builder session owns build/admin.py
+exec(open(os.path.join(HERE, 'routes.py')).read())  # S18 (D-105): every page to the folder of its real address; must run last
