@@ -86,7 +86,7 @@ def card(d, wrap=True):  # S16 fix round (D-099): store logo sits on the Save li
     <a class="title" href="{d['page']}">{E(d['t'])}</a>
     <div class="priceline"><span class="price">{inr(d['p'])}</span><span class="was">{inr(d['m'])}</span></div>
     <div class="saveline"><span class="save">Save {inr(d['save'])}</span>{chip}</div>
-    <div class="acts"><a class="btn btn-outline btn-buy" href="{E(d["link"])}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="arrow-right"></i></a></div>
+    <div class="acts"><a class="btn btn-outline btn-buy" href="{E(d["link"])}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="shopping-basket"></i></a></div>
   </div></article>'''
     return f'<div class="carousel-item">{inner}</div>' if wrap else inner
 def hero(d, label):
@@ -763,9 +763,10 @@ def build_static():
         cover = f'<a class="post-cover" href="{p["file"]}" aria-hidden="true" tabindex="-1"><img src="assets/deals/lg/{p["cover_file"]}" alt="" loading="lazy" width="300" height="300"></a>' if p['cover_file'] else ''
         return f'<article class="post-row">{cover}<div class="post-txt"><h2><a href="{p["file"]}">{E(p["title"])}</a></h2><p>{E(p["summary"])}</p><div class="post-meta">{p["meta"]}</div></div></article>'
     def post_card(p):
-        # D-109: index shows posts as 2-up cards; the whole card is the link (stretched title link)
-        pic = f'<img src="assets/deals/lg/{p["cover_file"]}" alt="" loading="lazy" width="300" height="300">' if p['cover_file'] else '<span class="pc-ph"><i data-lucide="book-open"></i><b>OfferTag</b></span>'
-        return f'<article class="post-card"><div class="pc-img{"" if p["cover_file"] else " is-ph"}">{pic}</div><div class="pc-body"><h2><a href="{p["file"]}">{E(p["title"])}</a></h2><p>{E(p["summary"])}</p><div class="pc-foot"><span class="post-meta">{p["meta"]}</span><span class="pc-read" aria-hidden="true">Read<i data-lucide="arrow-right"></i></span></div></div></article>'
+        # D-109 rev: earlier row size, each post its own card, 2 per row; no cover -> first linked deal's picture
+        f = p['cover_file'] or (p['deals'][0]['file'] if p['deals'] else None)
+        pic = f'<div class="post-cover"><img src="assets/deals/lg/{f}" alt="" loading="lazy" width="300" height="300"></div>' if f else ''
+        return f'<article class="post-card">{pic}<div class="post-txt"><h2><a href="{p["file"]}">{E(p["title"])}</a></h2><p>{E(p["summary"])}</p><div class="post-meta">{p["meta"]}</div><span class="btn btn-outline btn-view" aria-hidden="true">View blog<i data-lucide="arrow-right"></i></span></div></article>'
     pager = f'<nav class="pager" id="blog-pager" aria-label="Pages" hidden><a href="#" aria-label="Previous page"><i data-lucide="chevron-left"></i></a><a href="#" aria-current="page">1</a><a href="#">2</a><a href="#">3</a><a href="#" aria-label="Next page"><i data-lucide="chevron-right"></i></a></nav>'
     index = f'''<main><div class="container narrow blog-wrap">
   {crumbs(HOME, (None, 'Blog'))}
@@ -775,27 +776,42 @@ def build_static():
 </div></main>'''
     write('blog.html', 'Blog — OfferTag', 'blog', index, 'Guides and round-ups from OfferTag, with live prices.')
 
+    SH_WA, SH_TG = _icon(re.match(r'(\w+)', 'whatsapp')), _icon(re.match(r'(\w+)', 'telegram'))
     def buy(d): return tag_link(d['link']) if d['link'].startswith('http') else d['link']
     def price(d): return f'<span class="price">{inr(d["p"])}</span><span class="was">{inr(d["m"])}</span>'
-    def embed(d, cls=''):  # Compact card: image, title and Buy are the three hit areas (D-050)
-        return f'<article class="deal-embed {cls}"><a class="img" href="{d["page"]}" aria-label="{E(d["t"])}"><img src="assets/deals/{d["file"]}" alt="" loading="lazy" width="200" height="200"></a><div class="body"><div class="meta">{E(d["store"])} · {d["pct"]}% off</div><a class="title" href="{d["page"]}">{E(d["t"])}</a><div class="priceline">{price(d)}</div></div><a class="btn btn-outline btn-sm buy" href="{E(buy(d))}" target="_blank" rel="nofollow sponsored noopener">Buy at {E(d["store"])}</a></article>'
+    def embed(d, cls=''):  # D-110: picture left, info right; Buy now + basket, store logo beside it; image, title and Buy are the hit areas (D-050)
+        lg = store_logo(d['store'])
+        st = f'<img class="emb-store" src="{lg}" alt="{E(d["store"])}" loading="lazy">' if lg else f'<span class="emb-store is-text">{E(d["store"])}</span>'
+        return f'<article class="deal-embed {cls}"><a class="img" href="{d["page"]}" aria-label="{E(d["t"])}"><img src="assets/deals/lg/{d["file"]}" alt="" loading="lazy" width="300" height="300"></a><div class="body"><div class="meta">{E(d["store"])} · {d["pct"]}% off</div><a class="title" href="{d["page"]}">{E(d["t"])}</a><div class="priceline">{price(d)}</div><div class="emb-acts"><a class="btn btn-outline btn-buy" href="{E(buy(d))}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="shopping-basket"></i></a>{st}</div></div></article>'
     for p in POSTS:
         parts = []
-        for b in p['body']:
+        lead_i = next((i for i, b in enumerate(p['body']) if 'p' in b), None)
+        for i, b in enumerate(p['body']):
+            if i == lead_i: continue
             if 'p' in b: parts.append(f'<p>{E(b["p"])}</p>')
             elif 'h' in b: parts.append(f'<h2>{E(b["h"])}</h2>')
             elif 'deal' in b: parts.append(embed(deals[b['deal']]))
             elif 'img' in b: parts.append(f'<img class="post-img" src="assets/deals/lg/{deals[b["img"]]["file"]}" alt="{E(b["alt"])}" loading="lazy" width="300" height="300">')
         share_text = f"{p['title']}\n{p['url']}"
-        share = f'<div class="post-share"><span>Share</span><a class="btn btn-outline btn-sm" href="https://wa.me/?text={quote(share_text)}" target="_blank" rel="noopener">WhatsApp</a><a class="btn btn-outline btn-sm" href="https://t.me/share/url?url={quote(p["url"])}&text={quote(p["title"])}" target="_blank" rel="noopener">Telegram</a><button class="btn btn-outline btn-sm" type="button" data-copy-link="{E(p["url"])}">Copy link</button></div>'
-        mentions = ''.join(f'<li><a class="title" href="{d["page"]}">{E(d["t"])}</a><span class="priceline">{price(d)}</span><a class="btn btn-link buy" href="{E(buy(d))}" target="_blank" rel="nofollow sponsored noopener">Buy at {E(d["store"])}</a></li>' for d in p['deals'])
+        # D-111 (option C): one Share button; hover/focus (tap on phones) slides out WhatsApp, Telegram, Copy link
+        share = (f'<div class="post-share sh-exp" data-share><button class="sh-trig" type="button" aria-expanded="false" aria-controls="sh-items" data-share-trig><i data-lucide="share-2"></i>Share</button>'
+                 f'<span class="sh-items" id="sh-items">'
+                 f'<a class="sh-ic sh-wa" href="https://wa.me/?text={quote(share_text)}" target="_blank" rel="noopener" aria-label="Share on WhatsApp" data-tip="WhatsApp">{SH_WA}</a>'
+                 f'<a class="sh-ic sh-tg" href="https://t.me/share/url?url={quote(p["url"])}&text={quote(p["title"])}" target="_blank" rel="noopener" aria-label="Share on Telegram" data-tip="Telegram">{SH_TG}</a>'
+                 f'<button class="sh-ic sh-copy" type="button" aria-label="Copy link" data-tip="Copy link" data-copy-link="{E(p["url"])}"><i data-lucide="link"></i></button></span></div>')
         count = {}
         for d in p['deals']: count[d['cat']] = count.get(d['cat'], 0) + 1
         top_cat = max(count, key=count.get)
         more = [d for d in fresh if d['cat'] == top_cat and d not in p['deals']][:8]
-        more_html = f'<section class="section deals" aria-labelledby="h-more"><div class="section-head"><h2 id="h-more">More in {E(top_cat)}</h2><a class="view-all" href="{cat_page(top_cat)}">See all{CH}</a></div>{carousel("".join(card(d) for d in more))}</section>' if more else ''
-        related = ''.join(row(x) for x in POSTS if x is not p)
-        cover = f'<img class="post-hero" src="assets/deals/lg/{p["cover_file"]}" alt="" width="300" height="300">' if p['cover_file'] else ''
+        if len(more) >= 4: m_title, m_link = f'More in {E(top_cat)}', cat_page(top_cat)
+        else:  # D-110: too few in the category, top up from Fresh so the row never looks empty
+            more += [d for d in fresh if d not in more and d not in p['deals']][:8 - len(more)]
+            m_title, m_link = 'More deals', 'fresh.html'
+        more_html = f'<section class="section deals" aria-labelledby="h-more"><div class="section-head"><h2 id="h-more">{m_title}</h2><a class="view-all" href="{m_link}">See all{CH}</a></div>{carousel("".join(card(d) for d in more))}</section>' if more else ''
+        related = ''.join(post_card(x) for x in POSTS if x is not p)
+        cf = p['cover_file'] or (p['deals'][0]['file'] if p['deals'] else None)
+        cover = f'<div class="post-hero"><img src="assets/deals/lg/{cf}" alt="" width="300" height="300"></div>' if cf else ''
+        lead = f'<p class="post-lead">{E(p["body"][lead_i]["p"])}</p>' if lead_i is not None else ''
         rail = ''.join(embed(d, 'is-rail') for d in p['deals'])
         short = p['title'] if len(p['title']) <= 48 else p['title'][:47].rstrip() + '…'
         image = f"{SITE}/storage/deal/thumbnail/{p['cover_file'] or p['deals'][0]['file']}"
@@ -806,17 +822,13 @@ def build_static():
   <div class="post-grid">
     <div class="post-main">
       <article class="post">
-        <h1>{E(p['title'])}</h1>
-        <div class="post-meta">OfferTag · {p['meta']}</div>
-        {cover}
+        <header class="post-head{'' if cover else ' no-pic'}">{cover}<div class="post-head-txt"><h1>{E(p['title'])}</h1><div class="post-meta">OfferTag · {p['meta']}</div>{lead}{share}</div></header>
         <div class="post-body">{''.join(parts)}</div>
       </article>
-      <div class="post-share-inline">{share}</div>
-      <section class="section" aria-labelledby="h-mentioned"><div class="section-head"><h2 id="h-mentioned">Deals mentioned ({len(p['deals'])})</h2></div><ol class="mentions">{mentions}</ol></section>
       {more_html}
-      <section class="section" aria-labelledby="h-rel"><div class="section-head"><h2 id="h-rel">Related posts</h2></div><div class="card post-list is-small">{related}</div></section>
+      <section class="section" aria-labelledby="h-rel"><div class="section-head"><h2 id="h-rel">Related posts</h2></div><div class="post-cards">{related}</div></section>
     </div>
-    <aside class="post-rail" aria-labelledby="h-rail"><h2 id="h-rail">Deals in this post</h2><div class="rail-list">{rail}</div>{share}</aside>
+    <aside class="post-rail" aria-labelledby="h-rail"><h2 id="h-rail">Deals in this post</h2><div class="rail-list">{rail}</div></aside>
   </div>
 </div></main>'''
         write(p['file'], p['title'] + ' — OfferTag', 'blog-post', body, p['summary'], head)

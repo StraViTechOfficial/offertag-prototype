@@ -473,7 +473,19 @@
   all('[data-reload]').forEach(function (b) { b.addEventListener('click', function () { location.reload(); }); });
   // blog: copy link; review states ?empty=1 (no posts yet) and ?pager=1 (more than one page)
   all('[data-copy-link]').forEach(function (b) {
-    b.addEventListener('click', function () { OT.copy(b.dataset.copyLink).then(function () { OT.toast('Link copied', 'check'); }, function () { OT.toast('Could not copy the link'); }); });
+    b.addEventListener('click', function () { OT.copy(b.dataset.copyLink).then(function () {
+      OT.toast('Link copied', 'check');
+      if (b.classList.contains('sh-ic')) { b.classList.add('is-done'); b.dataset.tip = 'Link copied'; setTimeout(function () { b.classList.remove('is-done'); b.dataset.tip = 'Copy link'; }, 2000); }
+    }, function () { OT.toast('Could not copy the link'); }); });
+  });
+  // blog share (D-111): hover/focus opens on desktop; tap toggles on touch; outside tap and Esc close
+  all('[data-share]').forEach(function (s) {
+    var t = s.querySelector('[data-share-trig]');
+    function set(o) { s.classList.toggle('is-open', o); t.setAttribute('aria-expanded', o ? 'true' : 'false'); }
+    t.addEventListener('click', function () { set(!s.classList.contains('is-open')); });
+    s.addEventListener('mouseleave', function () { set(false); });
+    document.addEventListener('click', function (e) { if (!s.contains(e.target)) set(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && s.classList.contains('is-open')) { set(false); t.focus(); } });
   });
   if (page === 'blog') {
     if (q.get('empty') === '1') { document.getElementById('blog-list').hidden = true; document.getElementById('blog-empty').hidden = false; }
