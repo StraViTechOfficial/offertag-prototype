@@ -188,7 +188,7 @@
     var model = window.ADM_DEALS.map(function (d) { return Object.assign({}, d); });
     var S = { q: params.get('q') || '', f: {}, sort: 'age', dir: 1, page: 1, per: 25, sel: new Set() };
     if (params.get('posted') === 'today') S.f.posted = 'today';
-    var LABEL = { status: { live: 'Live', scheduled: 'Scheduled', pending: 'Pending', rejected: 'Rejected', withdrawn: 'Withdrawn' }, type: { Top: 'Top pick', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }, pin: { yes: 'Pinned', no: 'Not pinned' }, display: { '1': 'Web + App', '2': 'Web only', '3': 'App only' }, posted: { today: 'Posted today', week: 'Last 7 days' } };
+    var LABEL = { status: { live: 'Live', scheduled: 'Scheduled', pending: 'Pending', rejected: 'Rejected', withdrawn: 'Withdrawn' }, type: { Top: 'Top deal', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }, pin: { yes: 'Pinned', no: 'Not pinned' }, display: { '1': 'Web + App', '2': 'Web only', '3': 'App only' }, posted: { today: 'Posted today', week: 'Last 7 days' } };
     var ST_ORDER = { scheduled: 0, live: 1, pending: 2, withdrawn: 3, rejected: 4 };
     var byId = function (id) { return model.filter(function (d) { return d.id === id; })[0]; };
     var qIn = $('[data-f="q"]'); qIn.value = S.q;
@@ -376,7 +376,7 @@
   /* =================== Batch B helpers =================== */
   var DEALS = window.ADM_DEALS || [];
   function dealById(id) { return DEALS.filter(function (d) { return d.id === id; })[0]; }
-  function typesFor(pct, cat) { var t = [pct >= 25 ? 'Top' : 'New']; if (pct >= 75) t.push('Loot'); if (cat === 'Grocery' || cat === 'Kitchen') t.push('Pantry'); return t; }
+  function typesFor(pct, cat) { var t = []; if (pct > 25) t.push('Top'); if (pct > 80) t.push('Loot'); if (cat === 'Grocery' || cat === 'Kitchen') t.push('Pantry'); t.push('New'); return t; }  // D-117
   function num(v) { v = String(v || '').replace(/[^\d]/g, ''); return v === '' ? null : +v; }
   function readImg(file, cb) { if (!file) return; var r = new FileReader(); r.onload = function () { cb(r.result); }; r.readAsDataURL(file); }
   function picker(input, list, opt) {  // shared deal search list (pinned board, alerts)

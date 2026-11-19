@@ -120,7 +120,7 @@ def shell(fname, title, active, body, scripts='', after=''):
 '''
     open(os.path.join(ROOT, fname), 'w').write(page)
 
-def types_html(ts): return ''.join(f'<span class="tchip t-{t.lower()}">{"Top pick" if t == "Top" else t}</span>' for t in ts if t != 'Fresh')
+def types_html(ts): return ''.join(f'<span class="tchip t-{t.lower()}">{"Top deal" if t == "Top" else t}</span>' for t in ts if t != 'Fresh')
 
 # ---------- Overview (admin-tools §8) ----------
 INBOX_UNHANDLED = dict(feedback=2, reports=2, deletion=1)   # matches build_inbox() SAMPLE rows (admin_c.py); total = A_INBOX_COUNT
@@ -185,7 +185,7 @@ INC = [  # (deal index in snapshot, source, received, hold, overrides)
     (33, 'telegram', '38 min ago', 'missing', {'cat': None}),
     (8, 'form', '1 h ago', 'mrp', {'m': 'low'}),
 ]
-FEATURED = dict(price=10000, pct=70, cap=5)  # M-07 (D-106): Site & app → Featured deals; price = the meeting's ₹10,000 example, discount = the Loot line (70%)
+FEATURED = dict(price=10000, pct=70, cap=5)  # M-07 (D-106): Site & app → Featured deals; price = the meeting's ₹10,000 example, discount 70% (meeting example; separate from the Loot line, D-117)
 SRC = {'telegram': ('Telegram', 'send'), 'scraper': ('Scraper', 'bot'), 'form': ('Quick post', 'mouse-pointer-click')}
 HOLD = {'similar': 'Similar deal posted today', 'mrp': 'Check MRP', 'missing': 'Category missing'}
 
@@ -269,7 +269,7 @@ def build_deals():
     catsl = [c['name'] for c in CATS if any(r['cat'] == c['name'] for r in rows)]
     toolbar = ''.join([
         sel('status', 'Status', [('live', 'Live'), ('scheduled', 'Scheduled'), ('pending', 'Pending'), ('rejected', 'Rejected'), ('withdrawn', 'Withdrawn')]),
-        sel('type', 'Type', [('Top', 'Top pick'), ('Loot', 'Loot'), ('New', 'New'), ('Pantry', 'Pantry')]),
+        sel('type', 'Type', [('Top', 'Top deal'), ('Loot', 'Loot'), ('New', 'New'), ('Pantry', 'Pantry')]),
         sel('store', 'Store', [(s, s) for s in stores]),
         sel('cat', 'Category', [(c, c) for c in catsl]),
         sel('pin', 'Pinned', [('yes', 'Pinned'), ('no', 'Not pinned')]),
@@ -342,7 +342,7 @@ def build_deals():
         <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
         <div class="sheet-body be">
           <div class="be-row"><label class="ck"><input type="checkbox" data-be="status"><span class="box"><i data-lucide="check"></i></span></label><span>Status</span><label class="select"><select data-bev="status"><option value="live">Live</option><option value="withdrawn">Withdrawn</option><option value="rejected">Rejected</option></select><i data-lucide="chevron-down"></i></label></div>
-          <div class="be-row"><label class="ck"><input type="checkbox" data-be="types"><span class="box"><i data-lucide="check"></i></span></label><span>Deal types</span><div class="be-types" data-bev="types"><button type="button" aria-pressed="false" value="Top">Top pick</button><button type="button" aria-pressed="false" value="Loot">Loot</button><button type="button" aria-pressed="false" value="New">New</button><button type="button" aria-pressed="false" value="Pantry">Pantry</button></div></div>
+          <div class="be-row"><label class="ck"><input type="checkbox" data-be="types"><span class="box"><i data-lucide="check"></i></span></label><span>Deal types</span><div class="be-types" data-bev="types"><button type="button" aria-pressed="false" value="Top">Top deal</button><button type="button" aria-pressed="false" value="Loot">Loot</button><button type="button" aria-pressed="false" value="New">New</button><button type="button" aria-pressed="false" value="Pantry">Pantry</button></div></div>
           <div class="be-row"><label class="ck"><input type="checkbox" data-be="cat"><span class="box"><i data-lucide="check"></i></span></label><span>Category</span><label class="select"><select data-bev="cat">{cat_opts}</select><i data-lucide="chevron-down"></i></label></div>
           <div class="be-row"><label class="ck"><input type="checkbox" data-be="store"><span class="box"><i data-lucide="check"></i></span></label><span>Store</span><label class="select"><select data-bev="store">{store_opts}</select><i data-lucide="chevron-down"></i></label></div>
           <div class="be-row"><label class="ck"><input type="checkbox" data-be="display"><span class="box"><i data-lucide="check"></i></span></label><span>Shows on</span><label class="select"><select data-bev="display"><option value="1">Web + App</option><option value="2">Web only</option><option value="3">App only</option></select><i data-lucide="chevron-down"></i></label></div>
@@ -430,7 +430,7 @@ def build_post():
               <label class="fld"><span class="lab">Off</span><span class="input-suffix"><input class="input num" type="text" inputmode="numeric" name="pct" readonly tabindex="-1"><span>%</span></span></label>
             </div>
             <div class="fld"><span class="lab">Deal types <small>set from the discount, change if needed</small></span>
-              <div class="tpick" data-types><button type="button" value="Top" aria-pressed="false">Top pick</button><button type="button" value="Loot" aria-pressed="false">Loot</button><button type="button" value="New" aria-pressed="false">New</button><button type="button" value="Pantry" aria-pressed="false">Pantry</button></div></div>
+              <div class="tpick" data-types><button type="button" value="Top" aria-pressed="false">Top deal</button><button type="button" value="Loot" aria-pressed="false">Loot</button><button type="button" value="New" aria-pressed="false">New</button><button type="button" value="Pantry" aria-pressed="false">Pantry</button></div></div>
           </div>
           <div class="sec">
             <div class="grid3 g-cap">

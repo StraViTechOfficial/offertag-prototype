@@ -13,7 +13,7 @@ Principle: the scraper is the main author. Every field below can arrive from a m
 | 5 | image | `image_name` | yes | one image; 300 px original + 200 px thumb today; new: keep original up to 1200 px | scraper (external URL fetched) or upload | image well, card, OG card |
 | 6 | store | `shop_id` | yes | from catalogue; auto from link host when absent | scraper / host match | kicker, Buy label, steps default, related |
 | 7 | category | `category_id` | no (default "Others") | from catalogue | scraper / form | breadcrumb, related, filters |
-| 8 | types | `deal_type` rows | auto | Fresh (posted today) · Top ≥ 25 % · New < 25 % · Loot ≥ 75 % · Pantry by category (W44) | derived, editable | badges, list tabs |
+| 8 | types | `deal_type` rows | auto | Fresh (posted today) · New every deal · Top > 25 % · Loot > 80 % (also Top) · Pantry by category (D-117, was W44) | derived, editable | badges, list tabs |
 | 9 | caption | `deal_caption` | no | text ≤ 40 | form | label under title, card ribbon |
 | 10 | coupon | new `coupon_code` | no | text ≤ 20, upper-case | scraper (store page) · cleaner detection · form | chip with Copy, bar chip, card tag |
 | 11 | coupon_terms | new `coupon_terms` | no | text ≤ 80 | scraper / form | small line under chip |

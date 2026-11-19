@@ -44,11 +44,12 @@ for i, d in enumerate(deals + extras):
     d['cat'] = d['cat'] if d['cat'] in cat_by_name else 'Others'   # catalogue spelling as stored (Law 15, Q-037)
     d['store'] = shop_name(d['store'])
     d['order'] = i
-    # deal types exactly as the old direct-post rule assigns them (W44): <25% New, ≥25% Top, ≥75% +Loot, grocery/kitchen +Pantry; today's posts are Fresh
+    # D-117: every deal is New; more than 25% off is also Top; more than 80% off is also Loot; grocery/kitchen +Pantry; today's posts are Fresh (replaces the W44 rule <25 New, ≥25 Top, ≥75 Loot)
     pct = int(d['pct']); t = ['Fresh'] if d['agemin'] <= 1440 else []
-    t.append('Top' if pct >= 25 else 'New')
-    if pct >= 75: t.append('Loot')
+    if pct > 25: t.append('Top')
+    if pct > 80: t.append('Loot')
     if d['cat'] in ('Grocery', 'Kitchen'): t.append('Pantry')
+    t.append('New')
     d['types'] = t
     d['stem'] = d['file'].rsplit('.', 1)[0]; d['page'] = 'deal-' + d['stem'] + '.html'
     d['id'] = d['slug'].rsplit('-', 1)[-1]
@@ -116,9 +117,9 @@ PIN_EVERY = 3  # D-104, D-114: pinned deals fill every Nth card on Top deals onl
 for d in pinned: d['pinned'] = True
 PAGES = {
     # D-114: Fresh is renamed Top deals and served at /top-deals (the live site's address); the separate Top picks page is removed.
-    'fresh':     dict(title='Top deals', rule='Newest first', sort='newest', items=sorted(deals, key=lambda d: d['agemin'])),
-    'loot':      dict(title='Loot deals', rule='70% off or more', sort='recommended', items=[d for d in by_pct if int(d['pct']) >= 70]),
-    'new':       dict(title='New deals', rule='Posted in the last 7 days', sort='newest', items=sorted(deals, key=lambda d: d['agemin'])),
+    'fresh':     dict(title='Top deals', rule='More than 25% off, newest first', sort='newest', items=sorted([d for d in deals if 'Top' in d['types']], key=lambda d: d['agemin'])),
+    'loot':      dict(title='Loot deals', rule='More than 80% off', sort='recommended', items=[d for d in by_pct if 'Loot' in d['types']]),
+    'new':       dict(title='New deals', rule='Every deal, newest first', sort='newest', items=sorted(deals, key=lambda d: d['agemin'])),
     'pantry':    dict(title='Pantry', rule='Grocery and kitchen essentials', sort='recommended', items=[d for d in deals if d['cat'] in ('Grocery', 'Kitchen')]),
 }
 cats = [c['name'] for c in CATS]  # 31 active categories, catalogue order (order_no)
@@ -305,8 +306,11 @@ print('index.html', len(deals), 'deals')
 def build_listings():
     """Listing pages, search, category / store feeds, indexes, deal index. Runs after the detail section because about_block uses clean_html."""
     CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>'
-    def opt(name, value, label, n):
-        return f'<label class="opt{" is-zero" if n == 0 else ""}"><input type="checkbox" name="{name}" value="{E(value)}"><span class="box">{CHECK}</span><span class="txt">{E(label)}</span><span class="cnt">{n}</span></label>'
+    SLUG = {**{c['name']: c['slug'] for c in CATS}, **{'s:' + x['name']: x['slug'] for x in SHOPS}, 's:Others': 'others'}
+    def opt(name, value, label, n=None):  # D-118: no deal counts in the filters; data-s is the option's name in the page link
+        s = SLUG.get(('s:' if name == 'store' else '') + value) if name in ('cat', 'store') else value.lower().replace('fresh', 'today')
+        s = s or re.sub(r'[^a-z0-9]+', '-', value.lower()).strip('-')
+        return f'<label class="opt"><input type="checkbox" name="{name}" value="{E(value)}" data-s="{E(s)}"><span class="box">{CHECK}</span><span class="txt">{E(label)}</span></label>'
     nearby_cats = sorted(CATS, key=lambda c: -c['total'])
     def nearby_links(exclude=None):
         return ' · '.join(f'<a href="{c["page"]}">{E(c["name"])}</a>' for c in [c for c in nearby_cats if c['name'] != exclude][:3])
@@ -321,8 +325,8 @@ def build_listings():
         allcats = sorted(catcounts, key=lambda c: -catcounts[c]) + [c for c in cats if c not in catcounts]
         cat_opts = ''.join(opt('cat', c, CN(c), catcounts.get(c, 0)) for c in allcats)
         store_opts = ''.join(opt('store', x, x, storecounts.get(x, 0)) for x in [n for n, _ in stores])
-        types = ['Fresh', 'Loot', 'New', 'Pantry']  # D-114: no Top picks page; the Fresh type reads "Posted today"
-        type_opts = ''.join(opt('type', t, 'Posted today' if t == 'Fresh' else t, sum(1 for d in items if t in d['types'])) for t in types)
+        types = ['Fresh', 'Top', 'Loot', 'Pantry']  # D-117: every deal is New, so New is not a filter; the Fresh type reads "Posted today"
+        type_opts = ''.join(opt('type', t, TYPELABEL[t], sum(1 for d in items if t in d['types'])) for t in types)
         crumbs = crumbs or [('index.html', 'Home'), (None, title)]
         crumb_html = '<i data-lucide="chevron-right"></i>'.join(f'<a href="{h}">{E(t)}</a>' if h else f'<span>{E(t)}</span>' for h, t in crumbs)
         locked = ''.join(f'<span class="chip-x is-locked"><i data-lucide="lock"></i>{E(l)}</span>' for l in lock)
@@ -396,7 +400,7 @@ from urllib.parse import quote, urlsplit, urlunsplit, parse_qsl, urlencode
 from html.parser import HTMLParser
 tpl_detail = open(os.path.join(HERE, 'detail.template.html')).read()
 HEADER_DETAIL = HEADER.replace('<a class="logo"', '<a class="btn btn-ghost header-back" href="index.html"><i data-lucide="chevron-left"></i>Deals</a>\n      <a class="logo"', 1).replace('<a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>', '<button class="btn btn-ghost btn-icon share-native" id="share-native" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>\n        <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>', 1)
-TYPELABEL = {'Top': 'Top pick', 'Loot': 'Loot', 'New': 'New', 'Pantry': 'Pantry', 'Fresh': 'Posted today'}
+TYPELABEL = {'Top': 'Top deal', 'Loot': 'Loot', 'New': 'New', 'Pantry': 'Pantry', 'Fresh': 'Posted today'}
 STORE_TAG = {'amazon.in': ('tag', 'offertag-21'), 'flipkart.com': ('affid', 'offertag'), 'dl.flipkart.com': ('affid', 'offertag')}
 STRIP_PARAMS = {'tag', 'ascsubtag', 'affid', 'affExtParam1'}
 # store default steps (Catalogue → Shops, `shop_steps`): what the live site shows today, step 1 reworded per D-080
@@ -589,7 +593,7 @@ for idx, d in enumerate(deals + extras):
     desc = split_blocks(cleaned, d) if not any((d['highlights'], d['specs'], d['links'])) else cleaned
     default_steps, exceptions = steps_split(d)
     audit.append((d['file'], len(d['highlights']), len(d['specs']), len(d['links']), bool(d['note']), d['coupon'], len(text_of(desc))))
-    types = [TYPELABEL[t] for t in d['types'] if t != 'Fresh'] or ['Posted today']
+    types = [TYPELABEL[t] for t in d['types'] if t not in ('Fresh', 'New')] or ['New']
     sale = d['p'] <= 0
     share_text = f"{d['t']}\nhttps://www.offertag.in/d/{d['id']}\n" + (f"Up to {d['pct']}% off" if sale else f"MRP {inr(d['m'])} → {inr(d['p'])} ({d['pct']}% off)")
     link = tag_link(d['link']) if d['link'].startswith('http') else d['link']
@@ -730,7 +734,7 @@ def build_static():
             ('Does OfferTag sell products?', 'No. We only list deals. When you tap Buy, you go to the store’s own website, and the store handles payment, delivery, returns and warranty.'),
             ('Is OfferTag free?', 'Yes. Links on OfferTag are affiliate links: when you buy through them, the store pays us a small commission at no extra cost to you. <a href="disclaimer.html">How we earn</a>'),
             ('Why is the price different on the store?', 'Store prices and stock change fast, sometimes within minutes. Each deal shows when it was posted; always check the final price on the store before you pay.'),
-            ('What are Top deals and Loot deals?', 'Top deals is every deal we post, newest first, with a few deals our team picks placed along the way. Loot deals are 70% off or more.'),
+            ('What are Top deals and Loot deals?', 'New deals is every deal we post, newest first. Top deals are the ones more than 25% off, with a few deals our team picks placed along the way. Loot deals are more than 80% off.'),
             ('A deal has expired. How do I tell you?', 'Send us a message from the <a href="contact.html">Contact</a> page with the deal name, and we will remove or update it.'),
         ]),
         ('Alerts and app', [

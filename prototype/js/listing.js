@@ -91,22 +91,7 @@
     if (emptyFeed) emptyFeed.hidden = vis.length > 0 || KIND === 'type';
     placeAlerts(vis);
     renderLoadState(vis.length);
-    // facet counts: each option counted with every other group applied
-    form.querySelectorAll('[data-group="cat"] .opt, [data-group="store"] .opt').forEach(function (o) {
-      var inp = o.querySelector('input'), g = inp.name, n = cards.filter(function (c) { return match(c, s, g) && c.dataset[g] === inp.value; }).length;
-      o.querySelector('.cnt').textContent = n; o.classList.toggle('is-zero', n === 0);
-    });
-    form.querySelectorAll('[data-cnt]').forEach(function (el) {
-      var parts = el.dataset.cnt.split(':'), g = parts[0], v = parts[1];
-      el.textContent = cards.filter(function (c) {
-        if (!match(c, s, g)) return false; var d = c.dataset;
-        if (g === 'disc') return +d.pct >= +v;
-        if (g === 'posted') return +d.age <= +v;
-        if (g === 'price') { var r = v.split('-'), lo = r[0] === '' ? null : +r[0], hi = r[1] === '' ? null : +r[1]; return (lo === null || +d.price >= lo) && (hi === null || +d.price <= hi); }
-        if (g === 'coupon') return !!d.coupon;
-        return true;
-      }).length;
-    });
+    writeUrl(s, nFilters);
     // applied chips
     chips.innerHTML = ''; var n = 0;
     s.cat.forEach(function (v) { n++; chips.appendChild(chip(v, function () { form.querySelector('input[name="cat"][value="' + v + '"]').checked = false; reset(); })); });
@@ -115,7 +100,7 @@
     if (s.price) { n++; chips.appendChild(chip(s.price[1] === null ? inr(s.price[0]) + ' and above' : 'Under ' + inr(s.price[1]), function () { form.querySelector('input[name="price"][value=""]').checked = true; reset(); })); }
     if (s.pmin !== null || s.pmax !== null) { n++; chips.appendChild(chip((s.pmin !== null ? inr(s.pmin) : '₹0') + ' – ' + (s.pmax !== null ? inr(s.pmax) : 'any'), function () { form.querySelector('input[name="pmin"]').value = ''; form.querySelector('input[name="pmax"]').value = ''; reset(); })); }
     if (s.posted) { n++; chips.appendChild(chip(s.posted === 1440 ? 'Last 24 hours' : 'Last 7 days', function () { form.querySelector('input[name="posted"][value=""]').checked = true; reset(); })); }
-    s.type.forEach(function (v) { n++; chips.appendChild(chip(v, function () { form.querySelector('input[name="type"][value="' + v + '"]').checked = false; reset(); })); });
+    s.type.forEach(function (v) { n++; var tl = form.querySelector('input[name="type"][value="' + v + '"]'); chips.appendChild(chip(tl ? tl.closest('.opt').querySelector('.txt').textContent : v, function () { form.querySelector('input[name="type"][value="' + v + '"]').checked = false; reset(); })); });
     if (s.coupon) { n++; chips.appendChild(chip('Has a coupon', function () { form.querySelector('input[name="coupon"]').checked = false; reset(); })); }
     if (n) { var ca = document.createElement('button'); ca.type = 'button'; ca.className = 'btn btn-link btn-sm'; ca.textContent = 'Clear all'; ca.addEventListener('click', clearAll); chips.appendChild(ca); }
     filterCount.hidden = n === 0; filterCount.textContent = n;
@@ -144,7 +129,49 @@
       var sp = document.createElement('div'); sp.className = 'loader'; sp.setAttribute('role', 'status'); sp.setAttribute('aria-label', 'Loading more deals'); loadState.appendChild(sp);
     }
   }
-  function nextBatch() { limit += PAGE; batch += 1; try { history.replaceState(null, '', location.pathname + '?page=' + batch + location.hash); } catch (e) {} apply(); }
+  function nextBatch() { limit += PAGE; batch += 1; apply(); }
+
+  // D-118: the filters live in the page link. One key per group, fixed order, values sorted and comma-joined:
+  // ?q= · cat · store · type · disc · price · posted · coupon · sort · page. The path never changes; history is replaced, not pushed,
+  // so Back leaves the page. A filtered link points Google at the clean page (canonical) and is not indexed (noindex, follow).
+  var SORT_URL = { 'price-asc': 'price-low', 'price-desc': 'price-high' }, SORT_IN = { 'price-low': 'price-asc', 'price-high': 'price-desc' };
+  var POSTED_URL = { 1440: 'today', 10080: 'week' }, POSTED_IN = { today: '1440', week: '10080' };
+  function slugOf(name, v) { var i = form.querySelector('input[name="' + name + '"][value="' + v.replace(/"/g, '\\"') + '"]'); return i ? i.dataset.s : v; }
+  function head(sel, make) { var el = document.head.querySelector(sel); if (!el) { el = make(); document.head.appendChild(el); } return el; }
+  function writeUrl(s, nFilters) {
+    var p = [];
+    if (Q) p.push('q=' + encodeURIComponent(Q));
+    ['cat', 'store', 'type'].forEach(function (g) { if (s[g].length) p.push(g + '=' + s[g].map(function (v) { return encodeURIComponent(slugOf(g, v)); }).sort().join(',')); });
+    if (s.disc) p.push('disc=' + s.disc);
+    if (s.pmin !== null || s.pmax !== null) p.push('price=' + (s.pmin !== null ? s.pmin : '') + '-' + (s.pmax !== null ? s.pmax : ''));
+    else if (s.price) p.push('price=' + (s.price[0] !== null ? s.price[0] : '') + '-' + (s.price[1] !== null ? s.price[1] : ''));
+    if (s.posted) p.push('posted=' + (POSTED_URL[s.posted] || s.posted));
+    if (s.coupon) p.push('coupon=1');
+    if (sortMode !== (document.body.dataset.defaultSort || 'recommended')) p.push('sort=' + (SORT_URL[sortMode] || sortMode));
+    if (batch > 1) p.push('page=' + batch);
+    var url = location.pathname + (p.length ? '?' + p.join('&') : '') + location.hash;
+    if (url !== location.pathname + location.search + location.hash) { try { history.replaceState(history.state, '', url); } catch (e) {} }
+    head('link[rel="canonical"]', function () { var l = document.createElement('link'); l.rel = 'canonical'; return l; }).href = location.origin + location.pathname + (KIND === 'search' && Q ? '?q=' + encodeURIComponent(Q) : '');
+    var rb = head('meta[name="robots"]', function () { var m = document.createElement('meta'); m.name = 'robots'; return m; });
+    rb.content = nFilters || sortMode !== (document.body.dataset.defaultSort || 'recommended') || KIND === 'search' ? 'noindex, follow' : 'index, follow';
+  }
+  function readUrl() {
+    var u = new URLSearchParams(location.search);
+    ['cat', 'store', 'type'].forEach(function (g) {
+      (u.get(g) || '').split(',').filter(Boolean).forEach(function (sv) { var i = form.querySelector('input[name="' + g + '"][data-s="' + sv.replace(/"/g, '') + '"]'); if (i && !i.closest('[hidden]')) i.checked = true; });
+    });
+    var dv = form.querySelector('input[name="disc"][value="' + (+u.get('disc') || 0) + '"]'); if (dv) dv.checked = true;
+    var pr = u.get('price');
+    if (pr && /^\d*-\d*$/.test(pr)) {
+      var pv = form.querySelector('input[name="price"][value="' + pr + '"]');
+      if (pv) pv.checked = true; else { var r = pr.split('-'); form.querySelector('input[name="pmin"]').value = r[0]; form.querySelector('input[name="pmax"]').value = r[1]; }
+    }
+    var po = form.querySelector('input[name="posted"][value="' + (POSTED_IN[u.get('posted')] || '') + '"]'); if (po) po.checked = true;
+    var cp = form.querySelector('input[name="coupon"]'); if (cp && u.get('coupon') === '1') cp.checked = true;
+    var so = SORT_IN[u.get('sort')] || u.get('sort'); if (so && sortNames[so]) sortMode = so;
+    var pg = +u.get('page'); if (pg > 1) { batch = pg; limit = PAGE * pg; }
+  }
+  readUrl();
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (entries) {
       if (!entries[0].isIntersecting || loading || !loadState.querySelector('.loader')) return;

@@ -27,7 +27,7 @@
         <div class="fhead"><span>Filters</span><button class="btn btn-link" id="clear-all" type="button">Clear all</button></div>
         <form id="filter-form">
           <!-- Shown once the BRD coupon field exists (D-075). Hidden in this prototype: no coupon data yet. -->
-          <label class="opt coupon-toggle" hidden><input type="checkbox" name="coupon" value="1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Has a coupon</span><span class="cnt" data-cnt="coupon:1"></span></label>
+          <label class="opt coupon-toggle" hidden><input type="checkbox" name="coupon" value="1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Has a coupon</span></label>
           <details class="fgroup" open data-group-name="cat" {{CAT_HIDDEN}}><summary>Category <i data-lucide="chevron-down"></i></summary>
             <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a category" data-find="cat" aria-label="Find a category"></label>
             <div class="opts scroll" data-group="cat">{{CAT_OPTS}}</div>
@@ -39,19 +39,19 @@
           <details class="fgroup" open data-group-name="disc"><summary>Discount <i data-lucide="chevron-down"></i></summary>
             <div class="opts" data-group="disc">
               <label class="opt"><input type="radio" name="disc" value="0" checked><span class="box radio"></span><span class="txt">Any</span></label>
-              <label class="opt"><input type="radio" name="disc" value="50"><span class="box radio"></span><span class="txt">50% or more</span><span class="cnt" data-cnt="disc:50"></span></label>
-              <label class="opt"><input type="radio" name="disc" value="70"><span class="box radio"></span><span class="txt">70% or more</span><span class="cnt" data-cnt="disc:70"></span></label>
-              <label class="opt"><input type="radio" name="disc" value="90"><span class="box radio"></span><span class="txt">90% or more</span><span class="cnt" data-cnt="disc:90"></span></label>
+              <label class="opt"><input type="radio" name="disc" value="50"><span class="box radio"></span><span class="txt">50% or more</span></label>
+              <label class="opt"><input type="radio" name="disc" value="70"><span class="box radio"></span><span class="txt">70% or more</span></label>
+              <label class="opt"><input type="radio" name="disc" value="90"><span class="box radio"></span><span class="txt">90% or more</span></label>
             </div>
           </details>
           <details class="fgroup" open data-group-name="price"><summary>Price <i data-lucide="chevron-down"></i></summary>
             <div class="opts" data-group="price">
               <label class="opt"><input type="radio" name="price" value="" checked><span class="box radio"></span><span class="txt">Any</span></label>
-              <label class="opt"><input type="radio" name="price" value="0-499"><span class="box radio"></span><span class="txt">Under ₹499</span><span class="cnt" data-cnt="price:0-499"></span></label>
-              <label class="opt"><input type="radio" name="price" value="0-999"><span class="box radio"></span><span class="txt">Under ₹999</span><span class="cnt" data-cnt="price:0-999"></span></label>
-              <label class="opt"><input type="radio" name="price" value="0-2499"><span class="box radio"></span><span class="txt">Under ₹2,499</span><span class="cnt" data-cnt="price:0-2499"></span></label>
-              <label class="opt"><input type="radio" name="price" value="0-4999"><span class="box radio"></span><span class="txt">Under ₹4,999</span><span class="cnt" data-cnt="price:0-4999"></span></label>
-              <label class="opt"><input type="radio" name="price" value="5000-"><span class="box radio"></span><span class="txt">₹5,000 and above</span><span class="cnt" data-cnt="price:5000-"></span></label>
+              <label class="opt"><input type="radio" name="price" value="0-499"><span class="box radio"></span><span class="txt">Under ₹499</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-999"><span class="box radio"></span><span class="txt">Under ₹999</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-2499"><span class="box radio"></span><span class="txt">Under ₹2,499</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-4999"><span class="box radio"></span><span class="txt">Under ₹4,999</span></label>
+              <label class="opt"><input type="radio" name="price" value="5000-"><span class="box radio"></span><span class="txt">₹5,000 and above</span></label>
             </div>
             <div class="minmax"><label><span class="visually-hidden">Minimum price</span><input class="input" type="number" inputmode="numeric" placeholder="Min" name="pmin" min="0"></label><span>–</span><label><span class="visually-hidden">Maximum price</span><input class="input" type="number" inputmode="numeric" placeholder="Max" name="pmax" min="0"></label></div>
           </details>
@@ -62,8 +62,8 @@
           <details class="fgroup" data-group-name="posted"><summary>Posted <i data-lucide="chevron-down"></i></summary>
             <div class="opts" data-group="posted">
               <label class="opt"><input type="radio" name="posted" value="" checked><span class="box radio"></span><span class="txt">Any time</span></label>
-              <label class="opt"><input type="radio" name="posted" value="1440"><span class="box radio"></span><span class="txt">Last 24 hours</span><span class="cnt" data-cnt="posted:1440"></span></label>
-              <label class="opt"><input type="radio" name="posted" value="10080"><span class="box radio"></span><span class="txt">Last 7 days</span><span class="cnt" data-cnt="posted:10080"></span></label>
+              <label class="opt"><input type="radio" name="posted" value="1440"><span class="box radio"></span><span class="txt">Last 24 hours</span></label>
+              <label class="opt"><input type="radio" name="posted" value="10080"><span class="box radio"></span><span class="txt">Last 7 days</span></label>
             </div>
           </details>
         </form>

@@ -267,8 +267,8 @@ def build_catalogue():
                          title=c['title'], seo=c['description']))
     tcount = lambda t: sum(1 for d in deals if t in d['types'])
     dtypes = [dict(id=i + 1, name=n, rule=r, order=i + 1, n=tcount(k), on=True) for i, (n, k, r) in enumerate([
-        ('Top deals', 'Fresh', 'Everything we post, newest first'), ('Loot', 'Loot', '70% off or more'),
-        ('New', 'New', 'Just in'), ('Pantry', 'Pantry', 'Grocery and kitchen essentials')])]
+        ('Top deals', 'Top', 'More than 25% off'), ('Loot', 'Loot', 'More than 80% off'),
+        ('New', 'New', 'Every deal'), ('Pantry', 'Pantry', 'Grocery and kitchen essentials')])]
     for d in dtypes:
         if d['name'] == 'New': d['rule'] = PAGES['new']['rule'] if 'new' in PAGES else d['rule']
         if d['name'] == 'Loot': d['rule'] = PAGES['loot']['rule'] if 'loot' in PAGES else d['rule']
