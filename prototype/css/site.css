@@ -16,7 +16,7 @@
 .header-search-mobile { padding: 0 0 0.75rem; }
 @media (min-width: 768px) { .header-search { display: block; } .header-search-mobile { display: none; } .header-actions .btn-link { display: inline-flex; } }
 
-/* ---- Type nav (Home · Fresh · Top picks · Loot · New · Pantry) ---- */
+/* ---- Type nav (Home · Top deals · Loot · New · Pantry, D-114) ---- */
 .typenav { border-bottom: 1px solid hsl(var(--border)); background: hsl(var(--background)); }
 .typenav .container { display: flex; align-items: stretch; gap: 1rem; height: 3rem; }
 .typenav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; overflow-x: auto; scrollbar-width: none; margin-left: -12px; }

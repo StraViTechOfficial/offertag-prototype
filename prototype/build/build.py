@@ -112,11 +112,11 @@ def carousel(items, free=False):
 by_pct = sorted(deals, key=lambda d: -int(d['pct']))
 by_save = sorted(deals, key=lambda d: -d['save'])
 pinned = list({d['file']: d for d in [by_save[0], by_pct[0], by_save[2], by_pct[3], by_save[5], by_pct[6], by_save[8], by_pct[9]]}.values())[:8]  # SAMPLE: the scrape has no is_pinned; eight picks stand in for the pinned set (README). Order = pinned slot 1, 2, 3…
-PIN_EVERY = 3  # D-104: pinned deals fill every Nth card on Fresh only; admin sets N on the Pinned board (default 3)
+PIN_EVERY = 3  # D-104, D-114: pinned deals fill every Nth card on Top deals only; admin sets N on the Pinned board (default 3)
 for d in pinned: d['pinned'] = True
 PAGES = {
-    'fresh':     dict(title='Fresh deals', rule='Posted today, newest first', sort='newest', items=sorted(deals, key=lambda d: d['agemin'])),
-    'top-picks': dict(title='Top picks', rule='Our picks, ranked', sort='recommended', items=by_save),
+    # D-114: Fresh is renamed Top deals and served at /top-deals (the live site's address); the separate Top picks page is removed.
+    'fresh':     dict(title='Top deals', rule='Newest first', sort='newest', items=sorted(deals, key=lambda d: d['agemin'])),
     'loot':      dict(title='Loot deals', rule='70% off or more', sort='recommended', items=[d for d in by_pct if int(d['pct']) >= 70]),
     'new':       dict(title='New deals', rule='Posted in the last 7 days', sort='newest', items=sorted(deals, key=lambda d: d['agemin'])),
     'pantry':    dict(title='Pantry', rule='Grocery and kitchen essentials', sort='recommended', items=[d for d in deals if d['cat'] in ('Grocery', 'Kitchen')]),
@@ -129,7 +129,7 @@ def catimg(c):
 stores = [(x['name'], x['total']) for x in SHOPS]  # 14 active shops, catalogue order, live totals (catalogue.json)
 
 def nav(active):  # S16 (D-097): text only, no icons; on wide screens the same links sit in the header row (.hnav) and this row hides
-    items = [('index.html','Home'),('fresh.html','Fresh'),('top-picks.html','Top picks'),('loot.html','Loot'),('new.html','New'),('pantry.html','Pantry')]
+    items = [('index.html','Home'),('fresh.html','Top deals'),('loot.html','Loot'),('new.html','New'),('pantry.html','Pantry')]
     li = ''.join(f'<li><a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{t}</a></li>' for h, t in items)
     return f'<nav class="typenav" aria-label="Deal types"><div class="container"><ul>{li}</ul></div></nav>'
 
@@ -208,23 +208,56 @@ SINCE = (f'<div class="container since" data-since data-today="{len(deals)}" dat
          f'<span class="since-meta">Last deal posted {min(deals, key=lambda d: d["agemin"])["agetxt"]} ago</span></div>')
 home = home.replace('{{SINCE}}', SINCE)
 home = home.replace('{{NAV}}', nav('index.html')).replace('{{COMMUNITY}}', community(True)).replace('{{SEARCH_SHEET}}', SEARCH_SHEET)
-# Sale posters (S16, D-096, DEV-019): SAMPLE artwork; the owner supplies real posters. Desktop: current poster 2/3, next poster 1/3 (D-107); phone: one per view. Arrows + dots, no autoplay (D-072).
-POSTERS = [
-    dict(store='Amazon', cls='p-amazon', img='electronics', kicker='Great Indian Festival', title='Up to 80% off on electronics', sub='Phones, laptops and headphones at their lowest prices. Extra 10% off with SBI cards.', cta='Shop Amazon deals', href=store_page('Amazon'), when='Ends Sunday'),
-    dict(store='Flipkart', cls='p-flipkart', img='home', kicker='Big Billion Days', title='Home and kitchen from ₹199', sub='Appliances, cookware and furniture up to 75% off. No-cost EMI on top brands.', cta='Shop Flipkart deals', href=store_page('Flipkart'), when='Live now'),
-    dict(store='Myntra', cls='p-myntra', img='fashion', kicker='End of Reason Sale', title='50–90% off top fashion brands', sub='Over 6 lakh styles for men, women and kids. Extra 10% off your first order.', cta='Shop Myntra deals', href=store_page('Myntra'), when='3 days left'),
-    dict(store=None, cls='p-festive', img='festive', kicker='OfferTag festive loot week', title='This week’s biggest loot, in one place', sub='Every deal 70% off or more, checked by our team through the day.', cta='See loot deals', href='loot.html', when='New deals daily'),
-]
-def poster(x, i):
-    lg = store_logo(x['store']) if x['store'] else None
-    brand = f'<span class="poster-brand"><img src="{lg}" alt="{E(x["store"])}"></span>' if lg else '<span class="poster-brand"><img src="assets/logo-crop.png" alt="OfferTag"></span>'
-    photo = f'assets/posters/{x["img"]}.jpg'
-    ph = f'<span class="poster-photo" style="background-image:url({photo})"></span>' if os.path.exists(os.path.join(ROOT, photo)) else '<span class="poster-photo"></span>'
-    return f'''<div class="carousel-item"><a class="poster {x['cls']}" href="{x['href']}" aria-label="{E(x['kicker'])}: {E(x['title'])}">
-  <span class="poster-copy">{brand}<span class="poster-kicker">{E(x['kicker'])}</span><span class="poster-title">{E(x['title'])}</span><span class="poster-sub">{E(x['sub'])}</span><span class="poster-cta">{E(x['cta'])}<i data-lucide="arrow-right"></i></span></span>
-  {ph}<span class="poster-when">{E(x['when'])}</span><span class="poster-sample">Sample poster {i + 1}/{len(POSTERS)}</span>
-</a></div>'''
-home = home.replace('{{PROMO}}', carousel(''.join(poster(x, i) for i, x in enumerate(POSTERS))).replace('<div class="carousel"', '<div class="carousel" data-dots="true" data-duo="true"', 1))
+# Hot deals today (D-113, DEV-031; replaces the Sale poster duo of D-096 / D-107 (7)).
+# Order: owner posters first (Admin → Sale posters: a featured deal or a custom poster), then the 10 most-viewed deals of the last 24 h.
+# No rank and no view count on the cards. Card tint = soft store colour; View deal = the store's own button colour (text dark or white by contrast).
+# Photos come from assets/deals-trim/ (empty margins cut by build/trim_photos.py; fill.json lists room photos that fill the frame).
+TD_TINT = {  # store → (card, border)
+    'Amazon': ('#FFF1D6', '#EDCB86'), 'Flipkart': ('#E6EEFC', '#B3C6EE'), 'Myntra': ('#FFE7EC', '#F5B3C2'), 'Ajio': ('#ECEFF3', '#C6CFDA'),
+    'Meesho': ('#F6E7F3', '#DDB3D3'), 'Jiomart': ('#E4EEF3', '#B1CBD8'), 'Bigbasket': ('#EEF6E2', '#C6DEA0'), 'Blinkit': ('#FFF8D1', '#E6D57A'),
+    'Zepto': ('#EFE7F8', '#CDB6E8'), 'Swiggy': ('#FFE9DC', '#F2BC9B'), 'Paytm': ('#E1F5FC', '#A6DDF0'), 'Shopsy': ('#ECEBFB', '#C3C0EE'),
+    'Bookmyshow': ('#FDE9EC', '#F0B3BD')}
+TD_TINT_DEFAULT = ('#E6EEFC', '#B3C6EE')  # sky (default and Others)
+TD_BTN = {'Amazon': '#FFA41C', 'Flipkart': '#FFE11B', 'Myntra': '#D6285A', 'Ajio': '#D5A249', 'Meesho': '#9F2089', 'Jiomart': '#0078AD',
+          'Bigbasket': '#84C225', 'Blinkit': '#0C831F', 'Zepto': '#7B2CBF', 'Swiggy': '#FC8019', 'Paytm': '#002E6E', 'Shopsy': '#4D4AE8', 'Bookmyshow': '#DC354B'}
+def _lum(h):
+    c = [int(h.lstrip('#')[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+def _cr(a, b): la, lb = sorted((_lum(a), _lum(b)), reverse=True); return (la + 0.05) / (lb + 0.05)
+def td_btn(store):
+    bg = TD_BTN.get(store, '#082454')
+    return bg, ('#FFFFFF' if _cr(bg, '#FFFFFF') >= _cr(bg, '#101B36') else '#101B36')
+_fill = os.path.join(ROOT, 'assets', 'deals-trim', 'fill.json')
+TD_FILL = set(json.load(open(_fill))) if os.path.exists(_fill) else set()
+def td_img(d):
+    t = d['stem'] + '.jpg'
+    return (f'assets/deals-trim/{t}', t in TD_FILL) if os.path.exists(os.path.join(ROOT, 'assets', 'deals-trim', t)) else (dimg(d), False)
+TD_STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>'
+TD_UP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>'
+def td_card(store, photo, fill, title, priceline, href, featured=False, trending=False, alt='', ext=False):
+    bg, bd = TD_TINT.get(store, TD_TINT_DEFAULT); bb, bf = td_btn(store); lg = store_logo(store)
+    st = f'<img class="td-st" src="{lg}" alt="{E(store)}">' if lg else f'<span class="td-st-t">{E(store)}</span>'
+    chips = (f'<span class="td-feat">{TD_STAR}Featured</span>' if featured else '') + (f'<span class="td-trend">{TD_UP}Trending</span>' if trending else '')
+    tgt = ' target="_blank" rel="noopener"' if ext else ''
+    return (f'<div class="td-slide"><a class="td-card" style="--cb:{bg};--cbd:{bd};--bb:{bb};--bf:{bf}" href="{E(href)}"{tgt}>'
+            f'<span class="td-photo"><img{" class=\"fill\"" if fill else ""} src="{photo}" alt="{E(alt)}" loading="lazy">{chips}</span>'
+            f'<span class="td-txt"><span class="td-store">{st}</span><span class="td-title">{E(title)}</span><span class="td-price">{priceline}</span></span>'
+            f'<span class="td-view">View deal<i data-lucide="shopping-basket"></i></span></a></div>')
+def td_deal(d, **kw):
+    photo, fill = td_img(d)
+    pl = f'<b>{inr(d["p"])}</b><s>{inr(d["m"])}</s><em>{d["pct"]}% off</em>'
+    return td_card(d['store'], photo, fill, d['t'], pl, d['page'], **kw)
+# SAMPLE owner posters (Admin → Sale posters): one custom poster and one featured deal. The live site reads them from the poster manager.
+TD_CUSTOM = [dict(store='Flipkart', img='assets/posters/electronics.jpg', title='Big Billion Days: up to 80% off electronics', ends='Ends 8 Oct', href=store_page('Flipkart'))]
+by_views = sorted(deals, key=lambda d: (-(d.get('views') or 0), d['order']))
+TD_FEATURED = [by_views[12]]  # SAMPLE featured deal
+TD_TOP = [d for d in by_views if d not in TD_FEATURED][:10]  # stand-in for "most viewed, last 24 h": the snapshot has all-time views only
+TD_TRENDING = {0, 5}  # SAMPLE: live, Trending shows when views in the last 3 h ≥ 2 × the 3 h before and ≥ 50
+td_items = ''.join(td_card(x['store'], x['img'], True, x['title'], f'<b>Sale</b><em class="td-end">{E(x["ends"])}</em>', x['href'], featured=True, alt=x['title']) for x in TD_CUSTOM)
+td_items += ''.join(td_deal(d, featured=True) for d in TD_FEATURED)
+td_items += ''.join(td_deal(d, trending=i in TD_TRENDING) for i, d in enumerate(TD_TOP))
+home = home.replace('{{TOP_DEALS}}', td_items)
 def cat_tile(c):  # S16: real photo per category (SAMPLE stock photos, assets/cats); falls back to a deal photo, then an icon
     slug = cat_by_name[c]['slug']; ph = f'assets/cats/{slug}.jpg'
     if os.path.exists(os.path.join(ROOT, ph)): inner, cls = f'<img src="{ph}" alt="" loading="lazy">', ' has-photo'
@@ -233,7 +266,6 @@ def cat_tile(c):  # S16: real photo per category (SAMPLE stock photos, assets/ca
     return f'<div class="carousel-item"><a class="cat" href="{cat_page(c)}"><span class="tile{cls}">{inner}</span><span>{E(CN(c))}</span></a></div>'
 home = home.replace('{{CATS}}', carousel(''.join(cat_tile(c) for c in cats[:16]), free=True))
 home = home.replace('{{FRESH}}', carousel(''.join(card(d) for d in PAGES['fresh']['items'][:12])))
-home = home.replace('{{TOP}}', carousel(''.join(card(d) for d in PAGES['top-picks']['items'][:10])))
 home = home.replace('{{LOOT}}', carousel(''.join(card(d) for d in PAGES['loot']['items'][:10])))
 def store_tile(name, total):  # S16: the store's logo fills the tile; hover turns it navy and shows the count (phones always show the count)
     lg = store_logo(name)
@@ -289,8 +321,8 @@ def build_listings():
         allcats = sorted(catcounts, key=lambda c: -catcounts[c]) + [c for c in cats if c not in catcounts]
         cat_opts = ''.join(opt('cat', c, CN(c), catcounts.get(c, 0)) for c in allcats)
         store_opts = ''.join(opt('store', x, x, storecounts.get(x, 0)) for x in [n for n, _ in stores])
-        types = ['Fresh', 'Top', 'Loot', 'New', 'Pantry']
-        type_opts = ''.join(opt('type', t, 'Top picks' if t == 'Top' else t, sum(1 for d in items if t in d['types'])) for t in types)
+        types = ['Fresh', 'Loot', 'New', 'Pantry']  # D-114: no Top picks page; the Fresh type reads "Posted today"
+        type_opts = ''.join(opt('type', t, 'Posted today' if t == 'Fresh' else t, sum(1 for d in items if t in d['types'])) for t in types)
         crumbs = crumbs or [('index.html', 'Home'), (None, title)]
         crumb_html = '<i data-lucide="chevron-right"></i>'.join(f'<a href="{h}">{E(t)}</a>' if h else f'<span>{E(t)}</span>' for h, t in crumbs)
         locked = ''.join(f'<span class="chip-x is-locked"><i data-lucide="lock"></i>{E(l)}</span>' for l in lock)
@@ -364,7 +396,7 @@ from urllib.parse import quote, urlsplit, urlunsplit, parse_qsl, urlencode
 from html.parser import HTMLParser
 tpl_detail = open(os.path.join(HERE, 'detail.template.html')).read()
 HEADER_DETAIL = HEADER.replace('<a class="logo"', '<a class="btn btn-ghost header-back" href="index.html"><i data-lucide="chevron-left"></i>Deals</a>\n      <a class="logo"', 1).replace('<a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>', '<button class="btn btn-ghost btn-icon share-native" id="share-native" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>\n        <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>', 1)
-TYPELABEL = {'Top': 'Top pick', 'Loot': 'Loot', 'New': 'New', 'Pantry': 'Pantry', 'Fresh': 'Fresh'}
+TYPELABEL = {'Top': 'Top pick', 'Loot': 'Loot', 'New': 'New', 'Pantry': 'Pantry', 'Fresh': 'Posted today'}
 STORE_TAG = {'amazon.in': ('tag', 'offertag-21'), 'flipkart.com': ('affid', 'offertag'), 'dl.flipkart.com': ('affid', 'offertag')}
 STRIP_PARAMS = {'tag', 'ascsubtag', 'affid', 'affExtParam1'}
 # store default steps (Catalogue → Shops, `shop_steps`): what the live site shows today, step 1 reworded per D-080
@@ -557,7 +589,7 @@ for idx, d in enumerate(deals + extras):
     desc = split_blocks(cleaned, d) if not any((d['highlights'], d['specs'], d['links'])) else cleaned
     default_steps, exceptions = steps_split(d)
     audit.append((d['file'], len(d['highlights']), len(d['specs']), len(d['links']), bool(d['note']), d['coupon'], len(text_of(desc))))
-    types = [TYPELABEL[t] for t in d['types'] if t != 'Fresh'] or ['Fresh']
+    types = [TYPELABEL[t] for t in d['types'] if t != 'Fresh'] or ['Posted today']
     sale = d['p'] <= 0
     share_text = f"{d['t']}\nhttps://www.offertag.in/d/{d['id']}\n" + (f"Up to {d['pct']}% off" if sale else f"MRP {inr(d['m'])} → {inr(d['p'])} ({d['pct']}% off)")
     link = tag_link(d['link']) if d['link'].startswith('http') else d['link']
@@ -667,7 +699,7 @@ def build_static():
     def crumbs(*parts): return '<div class="crumbs">' + CH.join(f'<a href="{h}">{E(t)}</a>' if h else f'<span>{E(t)}</span>' for h, t in parts) + '</div>'
     HOME = ('index.html', 'Home')
     grid = '<div class="deal-grid">' + ''.join(card(d, wrap=False) for d in fresh[:12]) + '</div>'
-    fresh_section = f'<section class="section" aria-labelledby="h-fresh"><div class="section-head"><h2 id="h-fresh">Fresh deals</h2><a class="view-all" href="fresh.html">See all{CH}</a></div>{grid}</section>'
+    fresh_section = f'<section class="section" aria-labelledby="h-fresh"><div class="section-head"><h2 id="h-fresh">Top deals</h2><a class="view-all" href="fresh.html">See all{CH}</a></div>{grid}</section>'
 
     # Contact & feedback (B30, A16)
     seg = ''.join(f'<label><input class="visually-hidden" type="radio" name="feedback" value="{v}"{" checked" if v == 2 else ""}><span>{t}</span></label>' for v, t in ((2, 'Issue'), (1, 'Suggestion'), (3, 'Appreciation')))
@@ -698,7 +730,7 @@ def build_static():
             ('Does OfferTag sell products?', 'No. We only list deals. When you tap Buy, you go to the store’s own website, and the store handles payment, delivery, returns and warranty.'),
             ('Is OfferTag free?', 'Yes. Links on OfferTag are affiliate links: when you buy through them, the store pays us a small commission at no extra cost to you. <a href="disclaimer.html">How we earn</a>'),
             ('Why is the price different on the store?', 'Store prices and stock change fast, sometimes within minutes. Each deal shows when it was posted; always check the final price on the store before you pay.'),
-            ('What are Fresh, Top picks and Loot deals?', 'Fresh is everything posted today, newest first. Top picks are the deals our team ranks highest. Loot deals are 70% off or more.'),
+            ('What are Top deals and Loot deals?', 'Top deals is every deal we post, newest first, with a few deals our team picks placed along the way. Loot deals are 70% off or more.'),
             ('A deal has expired. How do I tell you?', 'Send us a message from the <a href="contact.html">Contact</a> page with the deal name, and we will remove or update it.'),
         ]),
         ('Alerts and app', [
@@ -724,7 +756,7 @@ def build_static():
     link = lambda href, t: f'<a class="btn btn-default" href="{href}">{t}</a>'
     retry = lambda t: f'<button class="btn btn-default" type="button" data-reload>{t}</button>'
     for fname, title, sentence, action, extra in (
-        ('404.html', 'Page not found', "We couldn't find that page.", link('fresh.html', 'Go to Fresh deals'), search),
+        ('404.html', 'Page not found', "We couldn't find that page.", link('fresh.html', 'Go to Top deals'), search),
         ('403.html', 'No access', "You don't have access to this.", link('index.html', 'Back to deals'), ''),
         ('500.html', 'Something broke', 'Something broke on our side.', retry('Try again'), ''),
         ('offline.html', 'Offline', "You're offline", retry('Retry'), '')):
@@ -804,7 +836,7 @@ def build_static():
         top_cat = max(count, key=count.get)
         more = [d for d in fresh if d['cat'] == top_cat and d not in p['deals']][:8]
         if len(more) >= 4: m_title, m_link = f'More in {E(top_cat)}', cat_page(top_cat)
-        else:  # D-110: too few in the category, top up from Fresh so the row never looks empty
+        else:  # D-110: too few in the category, top up from Top deals so the row never looks empty
             more += [d for d in fresh if d not in more and d not in p['deals']][:8 - len(more)]
             m_title, m_link = 'More deals', 'fresh.html'
         more_html = f'<section class="section deals" aria-labelledby="h-more"><div class="section-head"><h2 id="h-more">{m_title}</h2><a class="view-all" href="{m_link}">See all{CH}</a></div>{carousel("".join(card(d) for d in more))}</section>' if more else ''

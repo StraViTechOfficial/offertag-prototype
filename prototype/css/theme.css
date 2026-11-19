@@ -122,47 +122,9 @@ html.theme .site-header .logo img { height: 2.875rem; width: auto; }
 @media (max-width: 767px) { html.theme .header-row { height: 4rem; } html.theme .site-header .logo img { height: 2.375rem; } }
 /* Blog link + "New" pill: see the S16 header block (D-097) at the end of this file */
 
-/* sale posters: one per view, arrows + dots, no autoplay */
-html.theme .promo { padding-top: 1rem; }
-html.theme .promo .carousel-item { flex: 0 0 100%; min-width: 0; }
-@media (max-width: 639px) { html.theme .promo .carousel-item { flex-basis: 92%; } }
-html.theme .poster { --pc: var(--navy); --pt: 0 0% 100%; --pa: var(--gold); --pat: var(--ink); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); min-height: 18.75rem; border-radius: 1.25rem; overflow: hidden; background: hsl(var(--pc)); color: hsl(var(--pt)); isolation: isolate; }
-html.theme .poster-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 1.875rem 2.25rem; z-index: 1; }
-html.theme .poster-brand { display: inline-flex; align-items: center; height: 2.375rem; padding: 0.4375rem 0.75rem; border-radius: 0.625rem; background: #fff; box-shadow: 0 0.25rem 0.875rem -6px rgba(0,0,0,.3); }
-html.theme .poster-brand img { height: 100%; width: auto; max-width: 7.5rem; object-fit: contain; }
-html.theme .poster-kicker { margin-top: 0.375rem; font-size: 0.8125rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: hsl(var(--pa)); }
-html.theme .poster-title { font-size: 2.125rem; line-height: 1.12; font-weight: 800; letter-spacing: -0.025em; max-width: 15ch; }
-html.theme .poster-sub { font-size: 0.9375rem; line-height: 1.45; opacity: .86; max-width: 42ch; }
-html.theme .poster-cta { margin-top: auto; display: inline-flex; align-items: center; gap: 0.5rem; height: 2.625rem; padding: 0 1.125rem; border-radius: 0.625rem; background: hsl(var(--pa)); color: hsl(var(--pat)); font-weight: 700; font-size: 0.875rem; transition: transform .18s cubic-bezier(.2,0,0,1); }
-html.theme .poster-cta .lucide { width: 1rem; height: 1rem; transition: transform .18s; }
-html.theme .poster:hover .poster-cta .lucide { transform: translateX(0.1875rem); }
-html.theme .poster-photo { position: relative; background: hsl(var(--pa) / .25) center / cover no-repeat; clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%); transition: transform .6s cubic-bezier(.2,0,0,1); }
-html.theme .poster:hover .poster-photo { transform: scale(1.03); }
-html.theme .poster-when { position: absolute; top: 1.125rem; right: 1.125rem; z-index: 2; padding: 0.3125rem 0.6875rem; border-radius: 62.4375rem; background: #fff; color: hsl(var(--ink)); font-size: 0.75rem; font-weight: 700; box-shadow: 0 0.25rem 0.75rem -4px rgba(0,0,0,.3); }
-html.theme .poster-sample { position: absolute; right: 1.125rem; bottom: 0.875rem; z-index: 2; padding: 2px 0.5rem; border-radius: 0.375rem; background: rgba(0,0,0,.45); color: #fff; font-size: 0.625rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-/* poster colour sets (SAMPLE: the store's own sale colours) */
-html.theme .p-amazon { --pc: 213 22% 11%; --pa: 36 100% 50%; --pat: 213 22% 11%; }
-html.theme .p-flipkart { --pc: 217 87% 55%; --pa: 54 100% 55%; --pat: 0 0% 10%; }
-html.theme .p-myntra { --pc: 345 100% 96%; --pt: 345 40% 16%; --pa: 349 81% 53%; --pat: 0 0% 100%; }
-html.theme .p-festive { --pc: var(--navy); --pa: var(--gold); --pat: var(--ink); }
-@media (max-width: 1023px) { html.theme .poster-title { font-size: 1.75rem; } html.theme .poster-copy { padding: 1.5rem; } }
-@media (max-width: 639px) {
-  html.theme .poster { grid-template-columns: 1fr; grid-template-rows: 9.375rem auto; min-height: 0; border-radius: 1rem; }
-  html.theme .poster-photo { grid-row: 1; clip-path: none; }
-  html.theme .poster-copy { grid-row: 2; padding: 1rem 1.125rem 1.125rem; gap: 0.375rem; }
-  html.theme .poster-brand { position: absolute; top: 0.75rem; left: 0.75rem; height: 2rem; padding: 0.375rem 0.625rem; }
-  html.theme .poster-kicker { margin-top: 0; font-size: 0.6875rem; }
-  html.theme .poster-title { font-size: 1.375rem; max-width: none; }
-  html.theme .poster-sub { font-size: 0.8125rem; }
-  html.theme .poster-cta { margin-top: 0.375rem; height: 2.375rem; }
-  html.theme .poster-when { top: 0.75rem; right: 0.75rem; }
-  html.theme .poster-sample { bottom: auto; top: 7.375rem; right: 0.75rem; }
-}
 html.theme .carousel-dots { display: flex; justify-content: center; gap: 0.375rem; margin-top: 0.875rem; }
 html.theme .carousel-dots button { width: 0.5rem; height: 0.5rem; padding: 0; border-radius: 62.4375rem; background: hsl(var(--navy) / .2); transition: width .25s cubic-bezier(.2,0,0,1), background-color .25s; }
 html.theme .carousel-dots button[aria-current="true"] { width: 1.625rem; background: hsl(var(--navy)); }
-html.theme .promo .carousel-prev, html.theme .promo .carousel-next { top: calc(50% - 0.6875rem); }
-@media (max-width: 639px) { html.theme .promo .carousel-prev, html.theme .promo .carousel-next { display: none; } }
 
 /* category tiles: bigger, real photos that fill the tile */
 html.theme .cats .carousel-item { flex: 0 0 auto; }
@@ -255,7 +217,6 @@ html.theme .faq-a { padding: 0 1.125rem 1rem; line-height: 1.6; color: hsl(var(-
 html.theme .faq-a a { color: hsl(var(--navy)); text-decoration: underline; text-underline-offset: 0.1875rem; }
 html.theme .faq-more { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.875rem; margin-top: 1.5rem; background: hsl(var(--sky)); border: 0; }
 html.theme .faq-more p { margin: 2px 0 0; color: hsl(var(--muted-foreground)); }
-html.theme .promo .poster { height: 100%; }
 html.theme .store-logo img[src$=".png"] { max-height: 3.25rem; border-radius: 0.75rem; }
 
 /* ============ S16 header (D-097): one sticky row, text-only tabs, Blog "New" pill, alerts menu, community strip, since-line ============ */
@@ -562,32 +523,6 @@ html.theme .fjoin-items .fs-btn:focus-visible .fs-tip { opacity: 1; visibility: 
 html.theme.is-embed .fjoin { display: none; }
 @media (prefers-reduced-motion: reduce) { html.theme .fjoin-disc, html.theme .fjoin-items .fs-btn, html.theme .fjoin-tab { transition: none !important; } }
 
-/* 6. Sale posters (D-107): desktop = current poster 2/3 + next poster 1/3 (site.js duo); the small one shows picture, logo and title */
-@media (min-width: 768px) {
-  html.theme .promo .carousel.is-duo .carousel-container { position: relative; display: block; margin-left: 0; height: 19rem; }
-  html.theme .promo .carousel.is-duo .carousel-item { position: absolute; top: 0; height: 100%; padding-left: 0; transition: left .45s cubic-bezier(.2,0,0,1), width .45s cubic-bezier(.2,0,0,1), opacity .35s; }
-  html.theme .promo .is-duo .is-main { left: 0; width: calc(66.6667% - 0.5rem); z-index: 2; }
-  html.theme .promo .is-duo .is-next { left: calc(66.6667% + 0.5rem); width: calc(33.3333% - 0.5rem); z-index: 1; cursor: pointer; }
-  html.theme .promo .is-duo .is-prev { left: calc(-33.3333% - 1rem); width: calc(33.3333% - 0.5rem); opacity: 0; z-index: 0; }
-  html.theme .promo .is-duo .is-off { left: calc(100% + 1rem); width: calc(33.3333% - 0.5rem); opacity: 0; z-index: 0; }
-  html.theme .promo .is-duo .is-main .poster { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); }
-  html.theme .promo .is-duo .poster-title { font-size: 1.875rem; }
-  html.theme .promo .is-duo .poster-copy { padding: 1.625rem 1.875rem; transition: opacity .3s .15s; }
-  html.theme .promo .is-duo.is-anim .poster-copy { opacity: 0; transition: none; }
-  /* the small poster: picture on top, logo and title below, slightly dimmed */
-  html.theme .promo .is-duo :is(.is-next, .is-prev, .is-off) .poster { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; }
-  html.theme .promo .is-duo :is(.is-next, .is-prev, .is-off) .poster-photo { grid-row: 1; clip-path: none; }
-  html.theme .promo .is-duo :is(.is-next, .is-prev, .is-off) .poster-copy { grid-row: 2; padding: 0.875rem 1.125rem 1rem; gap: 0.25rem; }
-  html.theme .promo .is-duo :is(.is-next, .is-prev, .is-off) .poster-brand { position: absolute; top: 0.875rem; left: 0.875rem; height: 2rem; }
-  html.theme .promo .is-duo :is(.is-next, .is-prev, .is-off) .poster-kicker { margin-top: 0; font-size: 0.6875rem; }
-  html.theme .promo .is-duo :is(.is-next, .is-prev, .is-off) .poster-title { font-size: 1.25rem; max-width: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-  html.theme .promo .is-duo :is(.is-next, .is-prev, .is-off) :is(.poster-sub, .poster-cta, .poster-sample) { display: none; }
-  html.theme .promo .is-duo .is-next .poster::after { content: ""; position: absolute; inset: 0; z-index: 3; background: hsl(var(--navy) / .14); transition: background-color .2s; pointer-events: none; }
-  @media (hover: hover) { html.theme .promo .is-duo .is-next:hover .poster::after { background: hsl(var(--navy) / 0); } }
-  html.theme .promo .is-duo .carousel-prev { left: -1.25rem; } html.theme .promo .is-duo .carousel-next { right: -1.25rem; }
-}
-@media (min-width: 768px) and (max-width: 1023px) { html.theme .promo .carousel.is-duo .carousel-container { height: 17rem; } html.theme .promo .is-duo .is-main .poster-title { font-size: 1.5rem; } html.theme .promo .is-duo .is-main .poster-sub { display: none; } }
-@media (prefers-reduced-motion: reduce) { html.theme .promo .carousel.is-duo .carousel-item, html.theme .promo .is-duo .poster-copy { transition: none; } }
 
 /* 7. Buy now (D-107, style D "Shine" picked D-108): hovering anywhere on the card turns the button solid navy, a light sheen crosses it once, it lifts */
 html.theme .deal .acts .btn-buy { position: relative; isolation: isolate; overflow: hidden; transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
@@ -609,7 +544,7 @@ html.theme .deal .acts .btn-buy::after { content: ""; position: absolute; top: 0
 }
 @media (prefers-reduced-motion: reduce) { html.theme .deal:hover { transform: none; } }
 
-/* 8. Sponsored slots (DEV-030, D-108): desktop = first box of the right panel; phone and tablet = one card between Top picks and Loot */
+/* 8. Sponsored slots (DEV-030, D-108): desktop = first box of the right panel; phone and tablet = one card between Top deals and Shop by store */
 html.theme .sp-slot > .sp-card[hidden] { display: none; }
 html.theme .sp-card { position: relative; display: flex; background: #fff; border: 1px solid hsl(var(--line)); border-radius: 1rem; overflow: hidden; color: hsl(var(--ink)); transition: box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
 html.theme .sp-img { display: block; background: hsl(var(--sky)) center / cover no-repeat; flex: none; }
@@ -755,3 +690,58 @@ html.theme .sp-cta::after { content: ""; position: absolute; top: 0; bottom: 0; 
   html.theme .sp-card:hover .sp-cta .lucide { transform: translateX(0.25rem); }
 }
 @media (prefers-reduced-motion: reduce) { html.theme .opt, html.theme .hs-box li a, html.theme .sp-cta { transition: none; } html.theme .sp-card:hover .sp-cta::after { animation: none; opacity: 0; } }
+
+/* 8. Hot deals today (D-113): owner posters first, then the 10 most-viewed deals of the last 24 h. Every card has the same size and the same slots;
+   only colours (store tint --cb/--cbd, the store's button colour --bb/--bf) and content change. Desktop pages of 4 (site.js topDeals); phones swipe. */
+html.theme .top-deals { padding-top: 1rem; }
+/* D-113 round 2: Embla slider. 4 in view (3 / 2 / 1-with-peek on smaller screens); arrows sit at the sides, centred on the cards */
+html.theme .td-carousel { --per: 4; --gap: 1rem; position: relative; }
+html.theme .td-viewport { overflow: hidden; padding: 0.5rem 0.375rem 1rem; margin: -0.5rem -0.375rem -1rem; }  /* room for the hover lift */
+html.theme .td-container { display: flex; touch-action: pan-y pinch-zoom; margin-left: calc(-1 * var(--gap)); }
+html.theme .td-slide { flex: 0 0 calc(100% / var(--per)); min-width: 0; padding-left: var(--gap); }
+html.theme .td-slide > .td-card { width: 100%; }
+html.theme .td-btn { position: absolute; top: calc(50% - 1.375rem); z-index: 3; width: 2.75rem; height: 2.75rem; display: grid; place-items: center; border-radius: 62.4375rem; border: 1px solid hsl(var(--border)); background: #fff; color: hsl(var(--ink)); cursor: pointer; box-shadow: 0 6px 16px -6px rgba(8,36,84,.35); transition: border-color .15s, color .15s, transform .15s; }
+html.theme .td-prev { left: -1.375rem; } html.theme .td-next { right: -1.375rem; }
+html.theme .td-btn .lucide { width: 1.25rem; height: 1.25rem; }
+html.theme .td-btn:hover { border-color: hsl(var(--navy)); color: hsl(var(--navy)); transform: scale(1.06); }
+html.theme .td-btn:focus-visible { outline: 2px solid hsl(var(--navy)); outline-offset: 2px; }
+html.theme .td-btn[hidden] { display: none; }
+html.theme .td-card { display: flex; flex-direction: column; gap: 0.625rem; height: 22.625rem; min-width: 0; padding: 0.75rem; border-radius: 0.875rem; background: var(--cb); border: 1px solid var(--cbd); color: hsl(var(--ink)); text-decoration: none; position: relative; overflow: hidden; transition: transform .2s cubic-bezier(.2,0,0,1), box-shadow .2s; }
+html.theme .td-card:focus-visible { outline: 2px solid hsl(var(--navy)); outline-offset: 2px; }
+html.theme .td-photo { position: relative; flex: 0 0 11.875rem; height: 11.875rem; border-radius: 0.625rem; background: #fff; overflow: hidden; }
+html.theme .td-photo img { display: block; width: 100%; height: 100%; object-fit: contain; padding: 0.5rem; box-sizing: border-box; transition: transform .35s cubic-bezier(.2,0,0,1); }
+html.theme .td-photo img.fill { object-fit: cover; padding: 0; }
+html.theme .td-feat, html.theme .td-trend { position: absolute; left: 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem; height: 1.375rem; padding: 0 0.5625rem; border-radius: 62.4375rem; font-size: 0.71875rem; font-weight: 700; white-space: nowrap; }
+html.theme .td-feat { top: 0.5rem; background: hsl(var(--gold)); color: hsl(var(--navy)); }
+html.theme .td-trend { bottom: 0.5rem; background: rgba(255,255,255,.95); color: hsl(var(--navy)); box-shadow: 0 1px 3px rgba(8,36,84,.18); }
+html.theme .td-feat svg, html.theme .td-trend svg { width: 0.75rem; height: 0.75rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+html.theme .td-txt { display: grid; grid-template-rows: 1.125rem 2.25rem 1.5rem; row-gap: 0.25rem; min-width: 0; }
+html.theme .td-store { display: flex; align-items: center; height: 1.125rem; }
+html.theme .td-st { height: 0.9375rem; width: auto; max-width: 4.5rem; object-fit: contain; object-position: left; }
+html.theme .td-st-t { font-size: 0.75rem; font-weight: 700; }
+html.theme .td-title { font-size: 0.84375rem; line-height: 1.125rem; height: 2.25rem; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+html.theme .td-price { display: flex; align-items: baseline; gap: 0.4375rem; white-space: nowrap; overflow: hidden; line-height: 1.5rem; }
+html.theme .td-price b { font-size: 1.125rem; font-weight: 800; }
+html.theme .td-price s { font-size: 0.78125rem; color: hsl(var(--muted-foreground)); }
+html.theme .td-price em { font-style: normal; font-size: 0.8125rem; font-weight: 700; color: hsl(var(--save)); }
+html.theme .td-price em.td-end { color: hsl(var(--ink)); font-weight: 600; }
+/* View deal: the store's own button colour; same behaviour as Buy now (D-108): on card hover it lifts, one Shine sweep, the basket tilts */
+html.theme .td-view { display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex: 0 0 2.5rem; height: 2.5rem; margin-top: auto; width: 100%; border-radius: 0.625rem; background: var(--bb); color: var(--bf); font-size: 0.875rem; font-weight: 700; position: relative; isolation: isolate; overflow: hidden; transition: filter .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .td-view .lucide { width: 1rem; height: 1rem; }
+html.theme .td-view::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
+@media (hover: hover) {
+  html.theme .td-card:hover { z-index: 2; transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 32px -16px rgba(8,36,84,.35), 0 2px 6px rgba(8,36,84,.06); }
+  html.theme .td-card:hover .td-photo img { transform: scale(1.05); }
+  html.theme .td-card:hover .td-view { filter: brightness(.95) saturate(1.1); transform: translateY(-2px); box-shadow: 0 8px 18px -8px rgba(8,36,84,.55); }
+  html.theme .td-card:hover .td-view::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  html.theme .td-card:hover .td-view .lucide { animation: basket-tilt .6s cubic-bezier(.2,0,0,1) .05s 1; }
+}
+@media (max-width: 1099px) { html.theme .td-carousel { --per: 3; } }
+@media (max-width: 799px) { html.theme .td-carousel { --per: 2; } }
+@media (max-width: 1279px) { html.theme .td-prev { left: -0.75rem; } html.theme .td-next { right: -0.75rem; } }
+/* phones: one card with the next one peeking in; swipe; no arrows */
+@media (max-width: 599px) {
+  html.theme .td-carousel { --per: 1.16; --gap: 0.75rem; }
+  html.theme .td-btn { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .td-card, html.theme .td-card *, html.theme .td-card *::after { animation: none !important; transition: none !important; } }

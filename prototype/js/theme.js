@@ -15,9 +15,9 @@
   });
 
   // icon chips: Home section heads, and the matching page head on each type page
-  var ICONS = { 'h-cats': ['layout-grid', 't-peach'], 'h-fresh': ['clock', 't-sky'], 'h-top': ['star', 't-mint'], 'h-stores': ['store', 't-sky'], 'h-loot': ['flame', 't-peach'], 'h-new': ['sparkles', 't-mint'] };
+  var ICONS = { 'h-cats': ['layout-grid', 't-peach'], 'h-fresh': ['star', 't-sky'], 'h-top': ['star', 't-mint'], 'h-stores': ['store', 't-sky'], 'h-loot': ['flame', 't-peach'], 'h-new': ['sparkles', 't-mint'] };
   var PAGE_ICON_EXTRA = { '/faq': ['circle-help', 't-sky'] };
-  var PAGE_ICON = { '/loot-deals': 'h-loot', '/fresh-deals': 'h-fresh', '/top-deals': 'h-top', '/new-deals': 'h-new', '/categories': 'h-cats', '/stores': 'h-stores' };
+  var PAGE_ICON = { '/loot-deals': 'h-loot', '/top-deals': 'h-fresh', '/new-deals': 'h-new', '/categories': 'h-cats', '/stores': 'h-stores' };
   function chip(h, key, loot) {
     if (!h || h.querySelector('.sh-ico')) return;
     var s = document.createElement('span'); s.className = 'sh-ico ' + ICONS[key][1]; s.innerHTML = '<i data-lucide="' + ICONS[key][0] + '"></i>';

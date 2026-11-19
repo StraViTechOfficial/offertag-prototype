@@ -57,7 +57,7 @@
   function chip(label, onX) { var el = document.createElement('span'); el.className = 'chip-x'; el.textContent = label; var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Remove ' + label); b.innerHTML = '<i data-lucide="x"></i>'; b.addEventListener('click', onX); el.appendChild(b); return el; }
   function inr(v) { return '₹' + v.toLocaleString('en-IN'); }
 
-  // D-104: on Fresh only, pinned deals fill every Nth card (N set by the admin on the Pinned board, default 3) down the whole feed,
+  // D-104, D-114: on Top deals only, pinned deals fill every Nth card (N set by the admin on the Pinned board, default 3) down the whole feed,
   // in pinned-slot order; slots with no pinned deal left take the next normal deal. Applies to the default view; a sort or filter shows plain order.
   var PIN_EVERY = +(document.body.dataset.pinEvery || 0), PIN_IDS = (document.body.dataset.pins || '').split(',').filter(Boolean);
   if (PIN_EVERY) { try { var ae = +localStorage.getItem('adm-pin-every'); if (ae >= 2) PIN_EVERY = ae; var ap = JSON.parse(localStorage.getItem('adm-pins') || 'null'); if (ap && ap.length) PIN_IDS = ap.map(String); } catch (e) {} }
@@ -133,7 +133,7 @@
     if (total === 0) return;
     if (left === 0) {
       var end = document.createElement('div'); end.className = 'end';
-      end.innerHTML = '<span>That\'s all for now.</span><a class="btn btn-outline btn-sm" href="/top-deals">See Top picks</a><a class="btn btn-ghost btn-sm" href="#top">Back to top</a>';
+      end.innerHTML = '<span>That\'s all for now.</span><a class="btn btn-outline btn-sm" href="/loot-deals">See Loot deals</a><a class="btn btn-ghost btn-sm" href="#top">Back to top</a>';
       loadState.appendChild(end); return;
     }
     if (batch % (AUTO + 1) === 0) {

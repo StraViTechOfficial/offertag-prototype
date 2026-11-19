@@ -142,8 +142,8 @@ def attention_html():  # M-15 / M-17 (D-106): one place for everything waiting, 
     fr = ''.join(f'<li><span class="fn-pos">{i + 1}</span><img src="{dimg(d)}" alt="" loading="lazy"><span class="t-title">{E(d["t"])}</span>{"<span class=fn-pin><i data-lucide=pin></i>Pinned</span>" if pin else f"<span class=t-meta>{d[chr(97)+chr(103)+chr(101)+chr(116)+chr(120)+chr(116)]}</span>"}</li>' for i, (d, pin) in enumerate(fresh_now()))
     return f'''<section class="panel attention"><div class="panel-h"><h2>Needs attention</h2><span class="tag-sample">Sample</span></div><div class="att-list">{rows}</div></section>
         <div class="two-col">
-          <section class="panel"><div class="panel-h"><h2>On Fresh now <small>first {len(fresh_now())} cards</small></h2><a href="fresh.html" target="_blank" rel="noopener">Open Fresh <i data-lucide="external-link"></i></a></div><ol class="tlist fresh-now">{fr}</ol></section>
-          <section class="panel"><div class="panel-h"><h2>Pinned on Fresh</h2><a href="admin-pinned.html">Pinned board <i data-lucide="chevron-right"></i></a></div>
+          <section class="panel"><div class="panel-h"><h2>On Top deals now <small>first {len(fresh_now())} cards</small></h2><a href="fresh.html" target="_blank" rel="noopener">Open Top deals <i data-lucide="external-link"></i></a></div><ol class="tlist fresh-now">{fr}</ol></section>
+          <section class="panel"><div class="panel-h"><h2>Pinned on Top deals</h2><a href="admin-pinned.html">Pinned board <i data-lucide="chevron-right"></i></a></div>
             <p class="pin-sum"><b>{len(pinned)}</b> pinned deals, one every <b>{PIN_EVERY}</b> cards: cards {", ".join(str(PIN_EVERY * (i + 1)) for i in range(min(4, len(pinned))))}{" … " + str(PIN_EVERY * len(pinned)) if len(pinned) > 4 else ""}.</p>
             <ul class="tlist">{"".join(f'<li><span class="fn-pos">{i + 1}</span><img src="{dimg(d)}" alt="" loading="lazy"><span class="t-title">{E(d["t"])}</span><span class="t-meta">card {PIN_EVERY * (i + 1)}</span></li>' for i, d in enumerate(pinned[:5]))}</ul></section>
         </div>'''
@@ -156,7 +156,7 @@ def build_overview():
         ('Incoming', A_INCOMING_COUNT, 'admin-incoming.html', 'Review'),
         ('Alerts sent today', 2, 'admin-alerts.html', 'Alerts'),
         ('Inbox unhandled', A_INBOX_COUNT, 'admin-inbox.html', 'Open inbox'),
-        ('Pinned on Fresh', len(A_PIN), 'admin-pinned.html', 'Pinned board'),
+        ('Pinned on Top deals', len(A_PIN), 'admin-pinned.html', 'Pinned board'),
     ]
     k = ''.join(f'<a class="kpi" href="{h}"><span class="kpi-l">{l}</span><b class="kpi-n"{" data-count=incoming" if l == "Incoming" else ""}>{v}</b><span class="kpi-a">{a} <i data-lucide="arrow-right"></i></span></a>' for l, v, h, a in kpis)
     rows = ''.join(f'<li><span class="t-time">{d["agetxt"]}</span><img src="{dimg(d)}" alt="" loading="lazy"><a class="t-title" href="{d["page"]}" target="_blank" rel="noopener">{E(d["t"])}</a><span class="t-meta">{E(d["store"])}</span>{types_html(d["types"][:1] if d["types"][0] != "Fresh" else d["types"][1:2])}<span class="pill pill-live">Live</span></li>' for d in latest)
@@ -494,7 +494,7 @@ def build_post():
       <section class="done panel" data-done hidden tabindex="-1">
         <i data-lucide="circle-check"></i>
         <h2 data-done-title>Deal is live</h2>
-        <p data-done-sub>It’s at the top of Fresh and in its type lists.</p>
+        <p data-done-sub>It’s at the top of Top deals and in its type lists.</p>
         <div class="done-links">
           <label class="fld"><span class="lab">Public page</span><span class="copyrow"><input class="input" readonly data-done-page><a class="btn btn-outline btn-sm" href="#" target="_blank" rel="noopener" data-done-open>Open</a></span></label>
           <label class="fld"><span class="lab">Short link</span><span class="copyrow"><input class="input" readonly data-done-short><button class="btn btn-outline btn-sm" type="button" data-copy-short>Copy</button></span></label>
@@ -518,8 +518,8 @@ def build_pinned():
     data = [dict(id=r['id'], age=ages[i % len(ages)]) for i, r in enumerate(pins)]
     gaps = ''.join(f'<option value="{n}"{" selected" if n == PIN_EVERY else ""}>{n}</option>' for n in range(2, 11))
     body = f'''      <div class="page-h">
-        <div><h1>Pinned board</h1><p>Pinned deals show on the Fresh page only, in a repeating slot every few cards, all the way down the feed. Slot 1 is the first pinned spot, slot 2 the next, and so on. <span class="desk-only">Drag a card to change the order; dropping on another card swaps the two.</span><span class="phone-only">Change the order with the slot menu on each card; picking a filled slot swaps the two.</span> When pinned deals run out, the rest of the slots show normal fresh deals.</p></div>
-        <div class="page-h-acts"><a class="btn btn-outline" href="fresh.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>Preview on Fresh</a></div>
+        <div><h1>Pinned board</h1><p>Pinned deals show on the Top deals page only, in a repeating slot every few cards, all the way down the feed. Slot 1 is the first pinned spot, slot 2 the next, and so on. <span class="desk-only">Drag a card to change the order; dropping on another card swaps the two.</span><span class="phone-only">Change the order with the slot menu on each card; picking a filled slot swaps the two.</span> When pinned deals run out, the rest of the slots show normal fresh deals.</p></div>
+        <div class="page-h-acts"><a class="btn btn-outline" href="fresh.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>Preview on Top deals</a></div>
       </div>
       <section class="panel pin-gap">
         <label class="pin-gap-f"><span>Show a pinned deal every</span><span class="select"><select data-pin-every aria-label="Cards between pinned deals">{gaps}</select><i data-lucide="chevron-down"></i></span><span>cards on Fresh</span></label>
@@ -571,28 +571,37 @@ def build_alerts():
       </aside>'''
     shell('admin-alerts.html', 'Alerts', 'alerts', body, scripts=f'<script>window.ADM_DEALS = {adm_data()};</script>\n')
 
-# ---------- Sale posters (DEV-019) ----------
+# ---------- Sale posters → owner posters in "Hot deals today" (D-113, DEV-031) ----------
 def build_posters():
-    dates = [('2026-11-08', '2026-11-16'), ('2026-11-10', '2026-11-20'), ('2026-11-12', '2026-11-15'), ('2026-11-01', '2026-11-30')]  # SAMPLE
-    ps = [dict(id=i + 1, title=f'{x["kicker"]}: {x["title"]}', img=f'assets/posters/{x["img"]}.jpg', link=(x['store'] + ' store page') if x['store'] else 'Loot deals', start=dates[i][0], end=dates[i][1], on=True) for i, x in enumerate(POSTERS)]
-    ps.append(dict(id=5, title='Republic Day sale: up to 70% off', img='assets/posters/festive.jpg', link='Loot deals', start='2026-01-20', end='2026-01-26', on=True))
-    ps.append(dict(id=6, title='Black Friday week: global brands', img='assets/posters/fashion.jpg', link='Fresh deals', start='2026-11-24', end='2026-11-30', on=True))
+    # SAMPLE owner posters: kind "deal" features an existing deal, kind "custom" is the owner's own picture (any size), title, store, link and dates
+    ps = [dict(id=1, kind='custom', title=x['title'], img=x['img'], store=x['store'], link='Flipkart store page', start='2026-11-10', end='2026-11-22', on=True) for x in TD_CUSTOM]
+    ps += [dict(id=2, kind='deal', deal=d['id'], title=d['t'], img=td_img(d)[0], store=d['store'], link='Deal page', start='2026-11-12', end='2026-11-21', on=True) for d in TD_FEATURED]
+    ps.append(dict(id=3, kind='custom', title='Republic Day sale: up to 70% off', img='assets/posters/festive.jpg', store='Amazon', link='Loot deals', start='2026-01-20', end='2026-01-26', on=True))
+    deal_opts = [dict(id=d['id'], t=d['t'], img=td_img(d)[0], store=d['store'], price=inr(d['p']), pct=d['pct']) for d in by_views]
+    shop_opts = ''.join(f'<option>{E(x["name"])}</option>' for x in SHOPS)
     body = f'''      <div class="page-h">
-        <div><h1>Sale posters</h1><p>Posters show at the top of Home in this order: the current one large, the next one beside it (D-107). Visitors move between them with arrows and dots; they never slide on their own. A poster shows only between its start and end dates and while it is on.</p></div>
+        <div><h1>Sale posters</h1><p>Your posters show first in <b>Hot deals today</b> at the top of Home, in this order, each as a card with a ★ Featured label. After them, the 10 most-viewed deals of the last 24 hours fill the row on their own. A poster shows only between its start and end dates and while it is on.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-poster-new><i data-lucide="plus"></i>Add poster</button></div>
       </div>
       <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-ptab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-pcount="cur"></span></button><button class="tabs-trigger" role="tab" data-ptab="past" aria-selected="false">Ended <span class="adm-count muted" data-pcount="past"></span></button></div>
       <ol class="posters" data-posters></ol>
-      <p class="foot-note"><i data-lucide="info"></i>Desktop image 1600 × 700 px. Phone image 800 × 800 px; if you skip it, the desktop image is cropped to fit. The title is read out by screen readers, so write what the poster says.</p>
+      <p class="foot-note"><i data-lucide="info"></i>Feature a deal uses the deal’s own photo, price and link. A custom poster takes a picture of any size: it fills the card’s photo frame, so keep the main subject in the middle. Card colour and button colour come from the store.</p>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="poster-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="pe-title">
-        <div class="sheet-header"><div class="sheet-title" id="pe-title">Add poster</div><p class="sheet-desc">Shows on Home between the dates you set.</p></div>
+        <div class="sheet-header"><div class="sheet-title" id="pe-title">Add poster</div><p class="sheet-desc">Shows first in Hot deals today between the dates you set.</p></div>
         <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
         <form class="sheet-body pe" data-pe novalidate>
-          <div class="fld"><span class="lab">Desktop image * <small>1600 × 700</small></span><label class="drop wide" data-drop="d"><img alt="" hidden><span><i data-lucide="upload"></i>Choose image</span><input type="file" accept="image/*" hidden></label><span class="err" hidden>Add the desktop image.</span></div>
-          <div class="fld"><span class="lab">Phone image <small>800 × 800, optional</small></span><label class="drop sq" data-drop="m"><img alt="" hidden><span><i data-lucide="upload"></i>Choose image</span><input type="file" accept="image/*" hidden></label></div>
-          <label class="fld"><span class="lab">Title *</span><input class="input" type="text" name="title" maxlength="90" placeholder="What the poster says, e.g. Big Billion Days: up to 80% off"><span class="err" hidden>Add a title.</span></label>
-          <label class="fld"><span class="lab">Opens *</span><input class="input" type="text" name="link" placeholder="A store page, a category, a deal or a full link"><span class="err" hidden>Add where the poster leads.</span></label>
+          <div class="fld"><span class="lab">Poster type</span><div class="pe-kind" role="radiogroup" aria-label="Poster type"><label><input type="radio" name="kind" value="deal" checked><span>Feature a deal</span></label><label><input type="radio" name="kind" value="custom"><span>Custom poster</span></label></div></div>
+          <div data-kind="deal">
+            <label class="fld"><span class="lab">Deal *</span><select class="input" name="deal"><option value="">Choose a deal</option>{''.join(f'<option value="{o["id"]}">{E(o["t"][:70])} · {o["price"]} · {E(o["store"])}</option>' for o in deal_opts)}</select><span class="err" hidden>Choose a deal.</span></label>
+            <p class="muted pe-hint">The card uses the deal’s photo, title, price and link.</p>
+          </div>
+          <div data-kind="custom" hidden>
+            <div class="fld"><span class="lab">Picture * <small>any size</small></span><label class="drop wide" data-drop="d"><img alt="" hidden><span><i data-lucide="upload"></i>Choose image</span><input type="file" accept="image/*" hidden></label><span class="err" hidden>Add a picture.</span></div>
+            <label class="fld"><span class="lab">Title *</span><input class="input" type="text" name="title" maxlength="70" placeholder="e.g. Big Billion Days: up to 80% off electronics"><span class="err" hidden>Add a title.</span></label>
+            <label class="fld"><span class="lab">Store *</span><select class="input" name="store">{shop_opts}</select></label>
+            <label class="fld"><span class="lab">Opens *</span><input class="input" type="text" name="link" placeholder="A store page, a category, a deal or a full link"><span class="err" hidden>Add where the poster leads.</span></label>
+          </div>
           <div class="grid2"><label class="fld"><span class="lab">Start *</span><input class="input" type="date" name="start"></label><label class="fld"><span class="lab">End *</span><input class="input" type="date" name="end"><span class="err" hidden>End must be on or after the start.</span></label></div>
           {ck('name="on" checked', 'On')}
         </form>
@@ -602,7 +611,7 @@ def build_posters():
         <div class="sheet-header"><div class="sheet-title" id="cf-title"></div><p class="sheet-desc" id="cf-desc"></p></div>
         <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-confirm-go></button></div>
       </aside>'''
-    shell('admin-posters.html', 'Sale posters', 'posters', body, scripts=f'<script>window.ADM_POSTERS = {json.dumps(ps, ensure_ascii=False)}; window.ADM_TODAY = "{TODAY.isoformat()}";</script>\n')
+    shell('admin-posters.html', 'Sale posters', 'posters', body, scripts=f'<script>window.ADM_POSTERS = {json.dumps(ps, ensure_ascii=False)}; window.ADM_POSTER_DEALS = {json.dumps(deal_opts, ensure_ascii=False)}; window.ADM_TODAY = "{TODAY.isoformat()}";</script>\n')
 
 build_overview(); build_incoming(); build_deals(); build_soon()
 # ---------- Sponsored (DEV-030, D-108): paid ad cards on Home; views and clicks per ad for the advertiser's report ----------
@@ -612,7 +621,7 @@ def build_sponsored():
                start=x['start'], end=x['end'], on=x['on'], views=x['views'], clicks=x['clicks']) for x in SPONSORS]  # same records Home uses
     sp.append(dict(id=3, adv='FitZone Gym, Powai', title='FitZone: 3 months for the price of 2', line='Opening offer at our Powai branch.', cta='Join now', link='https://example.com/ad-3', img='assets/posters/festive.jpg', start='2026-10-01', end='2026-10-31', on=True, views=24980, clicks=511))
     body = f'''      <div class="page-h">
-        <div><h1>Sponsored</h1><p>Paid ad cards from businesses. Desktop shows one at the top of Home's right panel; phones and tablets show it between Top picks and Loot deals. With more than one live, each visit shows one at random. Every card is labelled "Sponsored".</p></div>
+        <div><h1>Sponsored</h1><p>Paid ad cards from businesses. Desktop shows one at the top of Home's right panel; phones and tablets show it between Top deals and Shop by store. With more than one live, each visit shows one at random. Every card is labelled "Sponsored".</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-sp-new><i data-lucide="plus"></i>Add sponsored ad</button></div>
       </div>
       <div class="sp-stats" data-sp-stats></div>

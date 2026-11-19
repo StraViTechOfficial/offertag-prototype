@@ -275,7 +275,7 @@
         if (d.pin) { var s = d.pin; d.pin = null; done('Unpinned from slot ' + s, u); return; }
         if (d.status !== 'live') { toast('Only live deals can be pinned.', { icon: 'info' }); return; }
         var free = model.reduce(function (m, x) { return Math.max(m, x.pin || 0); }, 0) + 1;  // D-104: slots are open-ended; a new pin takes the next slot
-        d.pin = free; done('Pinned to slot ' + free + ' on Fresh', u);
+        d.pin = free; done('Pinned to slot ' + free + ' on Top deals', u);
       },
       push: function (ds) { confirmBox('Send a push alert?', 'An alert for “' + ds[0].t.slice(0, 60) + '…” goes to every web and app subscriber now. It can’t be taken back.', 'Send alert', function () { toast('Push alert sent'); }); },
       del: function (ds) {
@@ -571,7 +571,7 @@
       $('[data-done-title]').textContent = later ? 'Deal scheduled' : 'Deal is live';
       $('[data-done-sub]').textContent = later ? 'It goes live on ' + new Date(el('at').value).toLocaleString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + '.' : 'It’s at the top of Fresh and in its type lists' + (el('notify').checked ? ', and the push alert is on its way.' : '.');
       $('[data-done-page]').value = 'offertag.in/deal/' + el('title').value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
-      $('[data-done-open]').href = state.matched ? state.matched.page : '/fresh-deals';
+      $('[data-done-open]').href = state.matched ? state.matched.page : '/top-deals';
       $('[data-done-short]').value = shortUrl; $('[data-done-share]').href = withRole(ROUTES.edit(m.id)) + '#share'; $('[data-another]').href = withRole(ROUTES.post);
       $('[data-post]').hidden = true; $('[data-sticky]').hidden = true; $('.page-h').hidden = true; var d = $('[data-done]'); d.hidden = false; d.focus(); window.scrollTo(0, 0);
     });
@@ -584,7 +584,7 @@
 
   /* =================== Pinned board =================== */
   if ($('[data-slots]')) (function () {
-    // D-104: open-ended slot list. Slot k shows on Fresh at card k × N (N = "every" setting). Last tile is always an empty "+ Pin a deal".
+    // D-104: open-ended slot list. Slot k shows on Top deals at card k × N (N = "every" setting). Last tile is always an empty "+ Pin a deal".
     var P = window.ADM_PINS, order = P.pins.slice(), every = P.every, lifted = null, dragFrom = null;
     try { var se = +localStorage.getItem('adm-pin-every'); if (se >= 2) every = se; var sp = JSON.parse(localStorage.getItem('adm-pins-full') || 'null'); if (sp && sp.length) order = sp; } catch (e) {}
     var gapSel = $('[data-pin-every]'); gapSel.value = String(every);
@@ -596,7 +596,7 @@
     function render() {
       var html = order.map(function (x, i) {
         var s = i + 1, d = dealById(x.id); if (!d) return '';
-        return '<div class="slot" role="listitem" data-slot="' + s + '" draggable="true" tabindex="0" aria-roledescription="Pinned deal" aria-label="Slot ' + s + ', card ' + card(s) + ' on Fresh: ' + esc(d.t) + '. Press Space to move."' + (lifted === s ? ' data-lifted' : '') + '>' +
+        return '<div class="slot" role="listitem" data-slot="' + s + '" draggable="true" tabindex="0" aria-roledescription="Pinned deal" aria-label="Slot ' + s + ', card ' + card(s) + ' on Top deals: ' + esc(d.t) + '. Press Space to move."' + (lifted === s ? ' data-lifted' : '') + '>' +
           '<div class="slot-h"><span>Slot ' + s + ' <small>· card ' + card(s) + '</small></span><i data-lucide="grip-vertical"></i></div><img src="' + d.img + '" alt=""><div class="slot-t">' + esc(d.t) + '</div>' +
           '<div class="slot-p"><b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span></div><div class="slot-age">pinned ' + x.age + ' ago</div>' +
           '<div class="slot-acts"><a href="' + withRole(ROUTES.edit(d.id)) + '">Edit</a><button type="button" data-unpin="' + s + '">Unpin</button>' + slotSel(s) + '</div></div>';
@@ -607,12 +607,12 @@
       var pos = []; for (var k = 1; k <= Math.min(order.length, 4); k++) pos.push(card(k));
       $('[data-pin-gap-h]').innerHTML = order.length
         ? order.length + ' pinned deal' + (order.length === 1 ? '' : 's') + ' at cards ' + pos.join(', ') + (order.length > 4 ? ' … ' + card(order.length) : '') + '. Once they run out, those spots show normal fresh deals.'
-        : 'No pinned deals. Fresh shows normal deals only.';
+        : 'No pinned deals. Top deals shows normal deals only.';
       icons();
       if (lifted) { var c = $('[data-slot="' + lifted + '"]'); if (c) c.focus(); }
     }
     function swap(a, b) { var t = order[a - 1]; order[a - 1] = order[b - 1]; order[b - 1] = t; }
-    gapSel.addEventListener('change', function () { var u = snap(); every = +gapSel.value; saved('A pinned deal now shows every ' + every + ' cards on Fresh', u); });
+    gapSel.addEventListener('change', function () { var u = snap(); every = +gapSel.value; saved('A pinned deal now shows every ' + every + ' cards on Top deals', u); });
     var box = $('[data-slots]');
     box.addEventListener('dragstart', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c) return; dragFrom = +c.dataset.slot; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragFrom); c.classList.add('is-drag'); });
     box.addEventListener('dragend', function () { $$('.slot').forEach(function (x) { x.classList.remove('is-drag', 'is-over'); }); });
@@ -707,12 +707,12 @@
         var st = status(p), ord = tab === 'cur';
         return '<li class="poster-row" data-pid="' + p.id + '">' + (ord ? '<span class="p-ord">' + (i + 1) + '</span>' : '') +
           '<img class="p-img" src="' + p.img + '" alt="">' +
-          '<div class="p-main"><b>' + esc(p.title) + '</b><span>' + fmt(p.start) + ' – ' + fmt(p.end) + ' · opens ' + esc(p.link) + '</span></div>' +
+          '<div class="p-main"><b>' + esc(p.title) + '</b><span><span class="p-kind">' + (p.kind === 'deal' ? 'Featured deal' : 'Custom poster') + '</span>' + esc(p.store || '') + ' · ' + fmt(p.start) + ' – ' + fmt(p.end) + ' · opens ' + esc(p.link) + '</span></div>' +
           '<span class="pill pill-' + PL[st] + '">' + SL[st] + '</span>' +
           (st !== 'ended' ? '<label class="switch" title="Show on Home"><input type="checkbox" data-p-on' + (p.on ? ' checked' : '') + ' aria-label="Show ' + esc(p.title) + ' on Home"><span></span></label>' : '') +
           '<div class="p-acts">' + (ord ? '<button type="button" class="btn btn-ghost btn-icon btn-sm" data-p-up aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '><i data-lucide="arrow-up"></i></button><button type="button" class="btn btn-ghost btn-icon btn-sm" data-p-down aria-label="Move down"' + (i === show.length - 1 ? ' disabled' : '') + '><i data-lucide="arrow-down"></i></button>' : '') +
           '<button type="button" class="btn btn-ghost btn-sm" data-p-edit>Edit</button><button type="button" class="btn btn-ghost btn-icon btn-sm danger" data-p-del aria-label="Delete poster"><i data-lucide="trash-2"></i></button></div></li>';
-      }).join('') : '<li class="empty">' + (tab === 'cur' ? 'No posters live or coming up. Home shows Fresh deals at the top instead.' : 'No ended posters.') + '</li>';
+      }).join('') : '<li class="empty">' + (tab === 'cur' ? 'No posters live or coming up. Hot deals today shows only the most-viewed deals.' : 'No ended posters.') + '</li>';
       icons();
     }
     $$('[data-ptab]').forEach(function (t) { t.addEventListener('click', function () { tab = t.dataset.ptab; $$('[data-ptab]').forEach(function (x) { x.dataset.state = x === t ? 'active' : ''; x.setAttribute('aria-selected', x === t); }); render(); }); });
@@ -734,20 +734,26 @@
     $$('[data-drop]').forEach(function (z) { $('input', z).addEventListener('change', function (e) { readImg(e.target.files[0], function (u) { setDrop(z.dataset.drop, u); var er = $('.err', z.closest('.fld')); if (er) er.hidden = true; }); }); });
     function openEdit(p) {
       editing = p || null; $('#pe-title').textContent = p ? 'Edit poster' : 'Add poster'; D.reset(); $$('.err', D).forEach(function (x) { x.hidden = true; });
-      setDrop('d', p ? p.img : ''); setDrop('m', p && p.mimg ? p.mimg : '');
-      if (p) { D.elements.title.value = p.title; D.elements.link.value = p.link; D.elements.start.value = p.start; D.elements.end.value = p.end; D.elements.on.checked = p.on; }
+      var kind = p ? p.kind : 'deal'; setKind(kind);
+      setDrop('d', p && p.kind === 'custom' ? p.img : '');
+      if (p) { if (p.kind === 'deal') D.elements.deal.value = p.deal; else { D.elements.title.value = p.title; D.elements.link.value = p.link; D.elements.store.value = p.store; } D.elements.start.value = p.start; D.elements.end.value = p.end; D.elements.on.checked = p.on; }
       else { D.elements.start.value = T; D.elements.end.value = ''; }
       openSheet(sheet);
     }
+    function setKind(k) { $$('[name="kind"]', D).forEach(function (r) { r.checked = r.value === k; }); $$('[data-kind]', D).forEach(function (x) { x.hidden = x.dataset.kind !== k; }); }
+    $$('[name="kind"]', D).forEach(function (r) { r.addEventListener('change', function () { setKind(r.value); }); });
     $('[data-poster-new]').addEventListener('click', function () { openEdit(null); });
     D.addEventListener('input', function (e) { var f = e.target.closest('.fld'), er = f && $('.err', f); if (er) er.hidden = true; });
     $('[data-pe-save]').addEventListener('click', function () {
       var f = D.elements, bad = [];
       function chk(ok, node) { var e = $('.err', node.closest('.fld')); if (e) e.hidden = ok; if (!ok) bad.push(node); }
-      chk(!!imgs.d, $('[data-drop="d"]')); chk(!!f.title.value.trim(), f.title); chk(!!f.link.value.trim(), f.link);
+      var kind = $('[name="kind"]:checked', D).value, dl = null;
+      if (kind === 'deal') { dl = window.ADM_POSTER_DEALS.filter(function (x) { return x.id === f.deal.value; })[0]; chk(!!dl, f.deal); }
+      else { chk(!!imgs.d, $('[data-drop="d"]')); chk(!!f.title.value.trim(), f.title); chk(!!f.link.value.trim(), f.link); }
       chk(!!f.start.value && !!f.end.value && f.end.value >= f.start.value, f.end);
       if (bad.length) { (bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
-      var u = snap(), o = { title: f.title.value.trim(), link: f.link.value.trim(), start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d, mimg: imgs.m };
+      var u = snap(), o = kind === 'deal' ? { kind: 'deal', deal: dl.id, title: dl.t, img: dl.img, store: dl.store, link: 'Deal page', start: f.start.value, end: f.end.value, on: f.on.checked }
+        : { kind: 'custom', title: f.title.value.trim(), link: f.link.value.trim(), store: f.store.value, start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d };
       if (editing) Object.assign(editing, o); else { o.id = Date.now(); list.unshift(o); }
       closeSheet(); tab = status(o) === 'ended' ? 'past' : 'cur'; $$('[data-ptab]').forEach(function (x) { x.dataset.state = x.dataset.ptab === tab ? 'active' : ''; x.setAttribute('aria-selected', x.dataset.ptab === tab); });
       render(); toast(editing ? 'Poster saved' : 'Poster added' + (status(o) === 'scheduled' ? '. It shows from ' + fmt(o.start) : status(o) === 'live' ? ' and live on Home' : ''), { action: 'Undo', onAction: u });

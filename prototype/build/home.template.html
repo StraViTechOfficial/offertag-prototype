@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OfferTag — Today's best deals, coupons and loot</title>
-<meta name="description" content="Fresh deals from Amazon, Flipkart and more, posted all day. Bachat har shopping par.">
+<meta name="description" content="Top deals from Amazon, Flipkart and more, posted all day. Bachat har shopping par.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="css/ui.css">
@@ -20,7 +20,7 @@
       <a class="logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
       <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
       <nav class="hnav" aria-label="Deal types">
-        <a href="index.html">Home</a><a href="fresh.html">Fresh</a><a href="top-picks.html">Top picks</a><a href="loot.html">Loot</a><a href="new.html">New</a><a href="pantry.html">Pantry</a>
+        <a href="index.html">Home</a><a href="fresh.html">Top deals</a><a href="loot.html">Loot</a><a href="new.html">New</a><a href="pantry.html">Pantry</a>
         <a href="blog.html" class="hnav-blog" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span><span class="blog-tip" role="tooltip"><small>New on the blog</small>{{BLOG_LATEST_TITLE}}</span></a>
       </nav>
       <form class="header-search" data-search role="search">
@@ -55,10 +55,16 @@
 <main>
   {{SINCE}}
   {{PROMO_STRIP}}
-  <!-- Sale posters (S16, D-096 · DEV-019): uploaded by admin; arrows and dots, no autoplay (D-072). Prototype posters are SAMPLE artwork. Pinned deals show on Fresh only, every Nth card (D-104). -->
-  <section class="section promo" id="hero" aria-label="Sales and offers">
+  <!-- Hot deals today (D-113 · DEV-031): owner posters first (featured deal / custom poster), then the 10 most-viewed deals of the last 24 h; no rank, no view count.
+       Desktop: 4 in view, arrows at the sides slide 4 at a time and loop (Embla), no autoplay (D-072); phones: one card with the next peeking, swipe. Pinned deals show on the Top deals page only (D-104, D-114). -->
+  <section class="section top-deals" id="hero" aria-labelledby="h-td">
     <div class="container">
-      {{PROMO}}
+      <div class="section-head"><div><h2 id="h-td">Hot deals today</h2></div></div>
+      <div class="td-carousel" data-td role="region" aria-roledescription="carousel" aria-labelledby="h-td">
+        <div class="td-viewport"><div class="td-container">{{TOP_DEALS}}</div></div>
+        <button class="td-btn td-prev" type="button" data-td-prev aria-label="Previous deals"><i data-lucide="chevron-left"></i></button>
+        <button class="td-btn td-next" type="button" data-td-next aria-label="Next deals"><i data-lucide="chevron-right"></i></button>
+      </div>
     </div>
   </section>
 
@@ -74,19 +80,11 @@
     </div>
   </section>
 
-  <!-- Fresh -->
+  <!-- Top deals (was Fresh, D-114) -->
   <section class="section deals" aria-labelledby="h-fresh" id="fresh">
     <div class="container">
-      <div class="section-head"><div><h2 id="h-fresh">Fresh deals</h2><p>Posted today, newest first</p></div><a class="view-all" href="fresh.html">View all <i data-lucide="chevron-right"></i></a></div>
+      <div class="section-head"><div><h2 id="h-fresh">Top deals</h2><p>Newest first</p></div><a class="view-all" href="fresh.html">View all <i data-lucide="chevron-right"></i></a></div>
       {{FRESH}}
-    </div>
-  </section>
-
-  <!-- Top picks -->
-  <section class="section deals" aria-labelledby="h-top" id="top">
-    <div class="container">
-      <div class="section-head"><div><h2 id="h-top">Top picks</h2><p>Our picks, ranked</p></div><a class="view-all" href="top-picks.html">View all <i data-lucide="chevron-right"></i></a></div>
-      {{TOP}}
     </div>
   </section>
 
@@ -129,8 +127,7 @@
     <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
     <div class="separator" style="margin:8px 0"></div>
     <div class="sheet-section">Deals</div>
-    <a href="fresh.html"><i data-lucide="clock"></i>Fresh</a>
-    <a href="top-picks.html"><i data-lucide="star"></i>Top picks</a>
+    <a href="fresh.html"><i data-lucide="star"></i>Top deals</a>
     <a href="loot.html"><i data-lucide="tag"></i>Loot</a>
     <a href="new.html"><i data-lucide="sparkles"></i>New</a>
     <a href="pantry.html"><i data-lucide="shopping-basket"></i>Pantry</a>

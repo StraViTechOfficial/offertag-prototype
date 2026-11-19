@@ -16,7 +16,6 @@
   if (window.EmblaCarousel) {
     document.querySelectorAll('.carousel').forEach(function (root) {
       var viewport = root.querySelector('.carousel-viewport');
-      if (root.dataset.duo === 'true') { duo(root); return; }
       var embla = EmblaCarousel(viewport, { align: 'start', containScroll: 'trimSnaps', dragFree: root.dataset.free === 'true', slidesToScroll: 'auto' });
       var prev = root.querySelector('.carousel-prev'), next = root.querySelector('.carousel-next');
       // D-107: deal rows carry their arrows in the section header (beside View all), never on top of the cards
@@ -44,36 +43,17 @@
     });
   }
 
-  // Sale posters (D-107): desktop shows the current poster at 2/3 and the next at 1/3; next → the small one grows into the big
-  // place and the one after it slides in; wraps round; no autoplay (D-072). Phones (< 768 px): one poster per view, swipe (Embla).
-  function duo(root) {
-    var viewport = root.querySelector('.carousel-viewport'), items = [].slice.call(root.querySelectorAll('.carousel-item')), n = items.length, i = 0;
-    var prev = root.querySelector('.carousel-prev'), next = root.querySelector('.carousel-next'), mq = window.matchMedia('(min-width: 768px)'), embla = null, timer;
-    var dots = document.createElement('div'); dots.className = 'carousel-dots'; dots.setAttribute('role', 'group'); dots.setAttribute('aria-label', 'Choose poster');
-    items.forEach(function (_, k) { var d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', 'Poster ' + (k + 1)); d.addEventListener('click', function () { go(k); }); dots.appendChild(d); });
-    root.appendChild(dots);
-    function paint() {
-      items.forEach(function (it, k) {
-        var d = (k - i + n) % n, role = d === 0 ? 'is-main' : d === 1 ? 'is-next' : d === n - 1 ? 'is-prev' : 'is-off';
-        it.classList.remove('is-main', 'is-next', 'is-prev', 'is-off'); if (mq.matches) it.classList.add(role);
-        var a = it.querySelector('a'); if (a) { a.tabIndex = (!mq.matches || d === 0) ? 0 : -1; if (mq.matches && d !== 0) a.setAttribute('aria-hidden', 'true'); else a.removeAttribute('aria-hidden'); }
-      });
-      [].forEach.call(dots.children, function (d, k) { d.setAttribute('aria-current', k === i ? 'true' : 'false'); });
-    }
-    function go(k) {
-      if (!mq.matches) { if (embla) embla.scrollTo(k); return; }
-      i = (k + n) % n; root.classList.add('is-anim'); clearTimeout(timer); timer = setTimeout(function () { root.classList.remove('is-anim'); }, 420); paint();
-    }
-    function mode() {
-      if (mq.matches) { if (embla) { embla.destroy(); embla = null; } root.classList.add('is-duo'); prev.disabled = next.disabled = false; }
-      else { root.classList.remove('is-duo'); if (!embla) { embla = EmblaCarousel(viewport, { align: 'start', startIndex: i }); embla.on('select', function () { i = embla.selectedScrollSnap(); paint(); }); } }
-      paint();
-    }
-    prev.addEventListener('click', function () { if (mq.matches) go(i - 1); else if (embla) embla.scrollPrev(); });
-    next.addEventListener('click', function () { if (mq.matches) go(i + 1); else if (embla) embla.scrollNext(); });
-    items.forEach(function (it, k) { it.addEventListener('click', function (e) { if (mq.matches && it.classList.contains('is-next')) { e.preventDefault(); go(k); } }); });
-    (mq.addEventListener ? mq.addEventListener('change', mode) : mq.addListener(mode)); mode();
-  }
+  // Hot deals today (D-113): Embla slider, loops endlessly. Arrows slide one view (4 cards on desktop) at a time; phones swipe.
+  // No autoplay (D-072). Reduced motion: the arrows jump instead of sliding.
+  if (window.EmblaCarousel) document.querySelectorAll('[data-td]').forEach(function (root) {
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var embla = EmblaCarousel(root.querySelector('.td-viewport'), { loop: true, align: 'start', slidesToScroll: 'auto', duration: 30 });
+    var prev = root.querySelector('[data-td-prev]'), next = root.querySelector('[data-td-next]');
+    prev.addEventListener('click', function () { embla.scrollPrev(still); });
+    next.addEventListener('click', function () { embla.scrollNext(still); });
+    function sync() { var many = embla.scrollSnapList().length > 1; prev.hidden = next.hidden = !many; }
+    embla.on('reInit', sync); sync();
+  });
 
   // sheet / dialog (generic): any element with [data-sheet-open="id"] opens that sheet; shared overlay #sheet-overlay
   var overlay = document.getElementById('sheet-overlay'), current = null, lastFocus;
@@ -174,7 +154,7 @@
       h += '<div class="ss-sec"><span>Deals</span></div>' + hits.slice(0, 3).map(function (d) { return '<a class="ss-deal" href="' + d.page + '"><img src="assets/deals/' + d.file + '" alt="" width="40" height="40" loading="lazy"><span class="t">' + esc(d.t) + '</span><b>' + inr(d.p) + '</b></a>'; }).join('');
       h += '<a class="ss-row ss-all" href="' + target(q) + '" data-q="' + esc(q) + '"><span>See all ' + hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for “' + esc(q) + '”</span><i data-lucide="chevron-right"></i></a>';
     } else {
-      h += '<p class="ss-none">No deals for “' + esc(q) + '”. Try a store or category above, or <a href="/fresh-deals">today\'s Fresh deals</a>.</p>';
+      h += '<p class="ss-none">No deals for “' + esc(q) + '”. Try a store or category above, or <a href="/top-deals">today\'s Top deals</a>.</p>';
     }
     return h;
   }

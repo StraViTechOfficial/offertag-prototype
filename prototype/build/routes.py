@@ -12,7 +12,8 @@ R_MANIFEST = os.path.join(HERE, 'routes.json')
 ROUTE = {
     'index.html': '/',
     # deal types: /{dealType}, lookup name hyphenated (DealsController@dealPage; W05)
-    'fresh.html': '/fresh-deals', 'top-picks.html': '/top-deals', 'loot.html': '/loot-deals', 'new.html': '/new-deals', 'pantry.html': '/pantry-deals',
+    'fresh.html': '/top-deals',  # D-114: Fresh renamed Top deals; /fresh-deals 301s here (dev); Top picks page removed
+    'loot.html': '/loot-deals', 'new.html': '/new-deals', 'pantry.html': '/pantry-deals',
     'search.html': '/deals/search',
     'categories.html': '/categories', 'stores.html': '/stores',               # new (DEV-025)
     'login.html': '/login',   # forced re-login retired (D-106): no /relogin
@@ -85,7 +86,7 @@ def put(route, html):
 
 flat = [os.path.basename(f) for f in _glob.glob(os.path.join(ROOT, '*.html'))]
 for fname in sorted(flat):
-    if fname in ('look-review.html',): continue   # hand-made S16 colour review sheet, not a site page; stays at /look-review.html, never deleted
+    if fname in ('look-review.html', 'poster-options.html'): continue   # hand-made S16 colour review sheet, not a site page; stays at /look-review.html, never deleted
     if fname not in ROUTE: missing.append(fname); continue
     src = open(os.path.join(ROOT, fname)).read()
     html = rewrite(src)
@@ -106,3 +107,7 @@ di = os.path.join(ROOT, 'js', 'deals-index.js'); open(di, 'w').write(rewrite(ope
 
 json.dump(sorted(set(written)), open(R_MANIFEST, 'w'), indent=0)
 print(f'Routes: {len(set(written))} addresses from {len(flat)} pages' + (f'; NOT ROUTED: {missing}' if missing else ''))
+
+# ---- D-114: old address of Fresh. Live site: 301 /fresh-deals → /top-deals (dev); the prototype stands in with a redirect page ----
+os.makedirs(os.path.join(ROOT, 'fresh-deals'), exist_ok=True)
+open(os.path.join(ROOT, 'fresh-deals', 'index.html'), 'w').write('<!doctype html><meta charset="utf-8"><title>Moved to Top deals</title><link rel="canonical" href="/top-deals"><meta http-equiv="refresh" content="0; url=/top-deals"><script>location.replace("/top-deals" + location.search + location.hash)</script><p>Fresh deals is now <a href="/top-deals">Top deals</a>.</p>\n')

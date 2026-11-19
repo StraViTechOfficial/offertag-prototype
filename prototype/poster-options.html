@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Most viewed posters: options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap">
+<style>
+:root { --ink:#101B36; --muted:#5A6479; --line:#E3E7EF; --page:#F4F6FA; --navy:#082454; --gold:#F5B000; --save:#0B7A45; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--page); color:var(--ink); font:15px/1.5 Geist, system-ui, sans-serif; -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1248px; margin:0 auto; padding:32px 24px 80px; }
+h1 { font-size:30px; line-height:1.15; letter-spacing:-.02em; margin:0 0 8px; }
+.lead { color:var(--muted); max-width:80ch; margin:0 0 6px; }
+.toc { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 8px; }
+.toc a { font-weight:600; color:var(--navy); background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 12px; text-decoration:none; font-size:14px; }
+.opt { margin-top:48px; display:grid; gap:16px; }
+.opt-h h2 { font-size:21px; margin:0 0 4px; letter-spacing:-.015em; }
+.opt-h p { margin:0; color:var(--muted); max-width:90ch; }
+.frame-d { background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px 0 0; overflow:hidden; }
+.ghost { margin:16px 24px 20px; height:46px; border:2px dashed var(--line); border-radius:10px; display:grid; place-items:center; color:var(--muted); font-size:13px; }
+
+.row { margin:0 24px; }
+.row-h { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.row-h h3 { margin:0; font-size:18px; letter-spacing:-.01em; display:flex; align-items:center; gap:8px; }
+.i { display:inline-grid; place-items:center; width:18px; height:18px; border-radius:99px; border:1.5px solid currentColor; font:700 11px/1 Geist; opacity:.6; cursor:help; }
+.nav { display:flex; align-items:center; gap:8px; }
+.count { font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums; margin-right:4px; }
+.nav button { width:36px; height:36px; border-radius:99px; border:1px solid var(--line); background:#fff; color:var(--ink); font:600 20px/1 Geist; cursor:pointer; }
+.nav button:hover { border-color:var(--navy); }
+.track { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
+.track > .pc { display:none; } .track > .pc.on { display:flex; }
+
+/* card: tint from the store; same lift as deal cards */
+/* one fixed card, photo on top: every slot has a fixed size, so all cards line up exactly; only colours and content change */
+.pc { flex-direction:column; gap:10px; height:362px; padding:12px; border-radius:14px; text-decoration:none; color:var(--ink); background:var(--cb); border:1px solid var(--cbd); transition:transform .2s cubic-bezier(.2,0,0,1), box-shadow .2s; min-width:0; position:relative; overflow:hidden; }
+.well { position:relative; height:190px; flex:0 0 190px; border-radius:10px; background:#fff; overflow:hidden; }
+.well img { display:block; width:100%; height:100%; object-fit:contain; object-position:center; padding:8px; box-sizing:border-box; transition:transform .35s cubic-bezier(.2,0,0,1); }
+.well img[src*="posters/"], .well img.fill { object-fit:cover; padding:0; }
+.pc:hover .well img { transform:scale(1.05) !important; }
+.chip-f, .chip-x { position:absolute; display:inline-flex; align-items:center; gap:4px; height:22px; padding:0 9px; border-radius:99px; font-size:11.5px; font-weight:700; white-space:nowrap; }
+.chip-f { top:8px; left:8px; background:var(--gold); color:var(--navy); }
+.chip-x { left:8px; bottom:8px; background:rgba(255,255,255,.95); color:var(--navy); box-shadow:0 1px 3px rgba(8,36,84,.18); }
+.chip-f svg, .chip-x svg { width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+.txt { display:grid; grid-template-rows:18px 36px 24px; row-gap:4px; min-width:0; }
+.st-w { display:flex; align-items:center; height:18px; }
+.st { height:15px; width:auto; max-width:72px; object-fit:contain; object-position:left; }
+.st-t { font-size:12px; font-weight:700; }
+.t { font-size:13.5px; line-height:18px; height:36px; font-weight:500; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.l1 { display:flex; align-items:baseline; gap:7px; white-space:nowrap; overflow:hidden; line-height:24px; }
+.l1 b { font-size:18px; font-weight:800; }
+.l1 s { font-size:12.5px; color:#5A6479; }
+.l1 em { font-style:normal; font-size:13px; font-weight:700; color:var(--save); }
+.l1 em.end { color:var(--ink); font-weight:600; }
+
+/* View deal: store's own button colour; same behaviour as the deal cards' Buy now (D-107/D-108): on card hover it lifts, one Shine sweep crosses it, the basket tilts */
+.btn-view { display:flex; align-items:center; justify-content:center; gap:8px; height:40px; flex:0 0 40px; margin-top:auto; width:100%; border-radius:10px; background:var(--bb); color:var(--bf); font-size:14px; font-weight:700; position:relative; isolation:isolate; overflow:hidden; transition:filter .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+.btn-view .ic { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.btn-view::after { content:""; position:absolute; top:0; bottom:0; left:-60%; width:45%; background:linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent); transform:skewX(-18deg); opacity:0; pointer-events:none; }
+@media (hover: hover) {
+  .pc:hover { z-index:2; transform:translateY(-4px) scale(1.02); box-shadow:0 20px 32px -16px rgba(8,36,84,.35), 0 2px 6px rgba(8,36,84,.06); }
+  .pc:hover .well img { transform:scale(1.05); }
+  .pc:hover .btn-view { filter:brightness(.95) saturate(1.1); transform:translateY(-2px); box-shadow:0 8px 18px -8px rgba(8,36,84,.55); }
+  .pc:hover .btn-view::after { opacity:1; animation:buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  .pc:hover .btn-view .ic { animation:basket-tilt .6s cubic-bezier(.2,0,0,1) .05s 1; }
+  .pc .btn-view:active { transform:translateY(0) scale(.98); }
+}
+@keyframes buy-shine { from { left:-60%; } to { left:120%; } }
+@keyframes basket-tilt { 0% { transform:rotate(0); } 30% { transform:rotate(-14deg) translateY(-1px); } 60% { transform:rotate(9deg); } 100% { transform:rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .pc, .pc *, .pc *::after { animation:none !important; transition:none !important; } }
+
+/* phone */
+.frame-p { display:grid; justify-items:start; gap:8px; }
+.phone { width:412px; max-width:100%; background:#fff; border:1px solid var(--line); border-radius:28px; padding:0 0 4px; overflow:hidden; }
+.ph-top { height:52px; display:flex; align-items:center; padding:0 16px; font-weight:800; color:var(--navy); border-bottom:1px solid var(--line); margin-bottom:14px; }
+.phone .row { margin:0 0 0 16px; }
+.phone .row-h { padding-right:16px; }
+.phone .ghost { margin:14px 16px; }
+.ph-track { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 16px 8px 0; scrollbar-width:none; }
+.ph-track::-webkit-scrollbar { display:none; }
+.ph-track > .pc { display:flex; flex:0 0 86%; scroll-snap-align:start; }
+.cap { margin:0; color:var(--muted); font-size:13px; }
+
+/* tints */
+.sws { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:12px; }
+.sw { display:flex; align-items:center; gap:12px; padding:12px; border-radius:12px; background:var(--cb); border:1px solid var(--cbd); }
+.sw-c { width:72px; height:36px; border-radius:8px; background:#fff; display:grid; place-items:center; border:1px solid var(--cbd); flex:0 0 auto; }
+.sw-c .st { height:16px; max-width:58px; object-position:center; }
+.sw-n { display:flex; flex-direction:column; min-width:0; flex:1; }
+.sw-n b { font-size:14px; } .sw-n small { font-size:12px; color:#5A6479; font-variant-numeric:tabular-nums; }
+.sw-b { flex:0 0 auto; height:28px; padding:0 10px; border-radius:7px; display:inline-flex; align-items:center; font-size:12px; font-weight:700; }
+.sws { grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)) !important; }
+.sw-n small { white-space:nowrap; }
+
+.rules { margin-top:56px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px 24px; overflow-x:auto; }
+.rules h2 { margin:0 0 10px; font-size:19px; }
+.rules table { border-collapse:collapse; width:100%; font-size:14px; }
+.rules td, .rules th { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+.rules th { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+.sample { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; background:#FDEBDF; color:#8a3b12; padding:2px 8px; border-radius:6px; }
+@media (max-width: 1100px) { .track { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+</style></head>
+<body><div class="wrap">
+  <span class="sample">Review sheet · not a site page</span>
+  <h1>Top deals today: cards</h1>
+  <p class="lead">Photo on top, every card the same size with every line in the same place. Card tint and <b>View deal</b> button use the store’s own colours (Amazon orange, Flipkart yellow). No rank numbers and no view counts on the cards. Hover a card: it lifts, a sheen crosses the button once and the basket tilts.</p>
+  <p class="lead">Order: owner posters first (a <b>custom poster</b> and a <b>featured deal</b>), then the 10 most-viewed deals of the last 24 hours, in that order (the order is not shown). Arrows show 4 at a time and wrap round.</p>
+  <nav class="toc"><a href="#mixed">Mixed stores</a><a href="#live">Today's real data</a><a href="#tints">All store colours</a><a href="#rules">Chips</a></nav>
+  <section class="opt" id="mixed">
+  <div class="opt-h"><h2>Mixed stores <span class="sample">Sample</span></h2><p>The snapshot only has Amazon deals, so here the store on each card is assigned by hand (Flipkart, Myntra, Meesho, Ajio, BigBasket, JioMart) to show how a mixed row looks.</p></div>
+  <div class="frame-d"><div class="row" data-row>
+      <div class="row-h"><h3>Top deals today</h3>
+        <div class="nav"><span class="count" data-count></span><button type="button" data-prev aria-label="Previous">‹</button><button type="button" data-next aria-label="Next">›</button></div></div>
+      <div class="track" data-track><a class="pc" style="--cb:#E6EEFC;--cbd:#B3C6EE;--bb:#FFE11B;--bf:#101B36" href="#custom" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/posters/electronics.jpg" alt="Big Billion Days poster" loading="lazy"><span class="chip-f"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>Featured</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span>
+    <span class="t">Big Billion Days: up to 80% off electronics</span>
+    <span class="l1"><b>Sale</b><em class="end">Ends 8 Oct</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/puma-unisex-adult-runningroad-running-shoe-474144" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794230591.jpg" alt="" loading="lazy"><span class="chip-f"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>Featured</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">PUMA Unisex-Adult RunningRoad Running Shoe</span>
+    <span class="l1"><b>₹2,324</b><s>₹7,499</s><em>69% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/massive-handpicked-offers-474457" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794318908.jpg" alt="" loading="lazy"><span class="chip-x"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Trending</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">Pasta at Good discount</span>
+    <span class="l1"><b>₹113</b><s>₹253</s><em>55% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#E6EEFC;--cbd:#B3C6EE;--bb:#FFE11B;--bf:#101B36" href="/deal/trustbasket-ambiance-pot-large-plastic-flower-pot-uv-resistant-decorative-planter-for-living-room-21x17x23cm-474147" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794230968.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span>
+    <span class="t">TrustBasket Ambiance Pot | Large Plastic Flower Pot | U</span>
+    <span class="l1"><b>₹292</b><s>₹2,999</s><em>90% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFE7EC;--cbd:#F5B3C2;--bb:#D6285A;--bf:#FFFFFF" href="/deal/milton-new-meal-combi-lunch-box-with-insulated-fabric-jacket-3-microware-safe-plastic-containers-280-ml-each-tumbler-with-lid-400-ml-leak-proof-tiffin-for-office-college-picnic-black-474453" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313978.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/myntra.svg" alt="Myntra"></span>
+    <span class="t">MILTON New Meal Combi Lunch Box with Insulated Fabric J</span>
+    <span class="l1"><b>₹199</b><s>₹575</s><em>65% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/milton-steel-seal-750-airtight-food-grade-modular-plastic-container-bpa-free-stackable-transparent-wide-mouth-with-see-through-lid-ideal-for-cereals-pulses-spices-set-of-2-750-ml-each-474451" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313729.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">MILTON Steel Seal 750 Airtight Food Grade Modular Plast</span>
+    <span class="l1"><b>₹99</b><s>₹750</s><em>87% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#F6E7F3;--cbd:#DDB3D3;--bb:#9F2089;--bf:#FFFFFF" href="/deal/dynamotrade-magic-eraser-cleaning-sponge-for-walls-kitchen-shoes-1-pcs-coupon-474464" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794323983.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/meesho.png" alt="Meesho"></span>
+    <span class="t">DYNAMOTRADE Magic Eraser Cleaning Sponge for Walls, Kit</span>
+    <span class="l1"><b>₹24</b><s>₹499</s><em>95% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#ECEFF3;--cbd:#C6CFDA;--bb:#D5A249;--bf:#101B36" href="/deal/about-space-bed-84-x-74-inches-king-size-bed-without-storage-engineered-wooden-bed-frame-with-headboard-mdf-board-for-mattress-1-year-warranty-cot-for-bedroom-satin-weave-linen-beige-coupon-bank-offer-474150" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794231756.jpg" alt="" loading="lazy"><span class="chip-x"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Trending</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/ajio.svg" alt="Ajio"></span>
+    <span class="t">ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Withou</span>
+    <span class="l1"><b>₹9,000</b><s>₹34,999</s><em>74% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#E6EEFC;--cbd:#B3C6EE;--bb:#FFE11B;--bf:#101B36" href="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794231088.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span>
+    <span class="t">The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jacket</span>
+    <span class="l1"><b>₹990</b><s>₹5,099</s><em>81% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#EEF6E2;--cbd:#C6DEA0;--bb:#84C225;--bf:#101B36" href="/deal/milton-decker-lunch-box-with-insulated-fabric-jacket-2-inner-stainless-steel-containers-450-ml-each-1-oval-stainless-steel-450-ml-microwave-safe-leak-proof-tiffin-for-office-easy-to-carry-blue-474452" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313902.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/bigbasket.svg" alt="Bigbasket"></span>
+    <span class="t">MILTON Decker Lunch Box with Insulated Fabric Jacket, 2</span>
+    <span class="l1"><b>₹299</b><s>₹1,750</s><em>82% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#E4EEF3;--cbd:#B1CBD8;--bb:#0078AD;--bf:#FFFFFF" href="/deal/trustbasket-extra-large-barbecue-skewers-for-bbq-tandoor-grill-set-of-6-474442" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313073.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/jiomart.svg" alt="Jiomart"></span>
+    <span class="t">TrustBasket Extra Large Barbecue Skewers for BBQ Tandoo</span>
+    <span class="l1"><b>₹89</b><s>₹1,009</s><em>91% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/cello-petal-bathroom-set-sturdy-and-durable-lightweight-and-rigid-easy-to-clean-and-attractive-design-small-set-of-3-dark-brown-474141" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794229159.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">Cello Petal Bathroom Set | Sturdy and Durable | Lightwe</span>
+    <span class="l1"><b>₹430</b><s>₹1,149</s><em>63% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a></div></div>
+    <div class="ghost"><span>Shop by category · Fresh deals · Top picks … (rest of Home)</span></div></div>
+  <div class="frame-p"><div class="phone"><div class="ph-top">OfferTag</div>
+      <div class="row is-phone"><div class="row-h"><h3>Top deals today</h3></div>
+        <div class="track ph-track"><a class="pc" style="--cb:#E6EEFC;--cbd:#B3C6EE;--bb:#FFE11B;--bf:#101B36" href="#custom" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/posters/electronics.jpg" alt="Big Billion Days poster" loading="lazy"><span class="chip-f"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>Featured</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span>
+    <span class="t">Big Billion Days: up to 80% off electronics</span>
+    <span class="l1"><b>Sale</b><em class="end">Ends 8 Oct</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/puma-unisex-adult-runningroad-running-shoe-474144" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794230591.jpg" alt="" loading="lazy"><span class="chip-f"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>Featured</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">PUMA Unisex-Adult RunningRoad Running Shoe</span>
+    <span class="l1"><b>₹2,324</b><s>₹7,499</s><em>69% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/massive-handpicked-offers-474457" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794318908.jpg" alt="" loading="lazy"><span class="chip-x"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Trending</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">Pasta at Good discount</span>
+    <span class="l1"><b>₹113</b><s>₹253</s><em>55% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#E6EEFC;--cbd:#B3C6EE;--bb:#FFE11B;--bf:#101B36" href="/deal/trustbasket-ambiance-pot-large-plastic-flower-pot-uv-resistant-decorative-planter-for-living-room-21x17x23cm-474147" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794230968.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span>
+    <span class="t">TrustBasket Ambiance Pot | Large Plastic Flower Pot | U</span>
+    <span class="l1"><b>₹292</b><s>₹2,999</s><em>90% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFE7EC;--cbd:#F5B3C2;--bb:#D6285A;--bf:#FFFFFF" href="/deal/milton-new-meal-combi-lunch-box-with-insulated-fabric-jacket-3-microware-safe-plastic-containers-280-ml-each-tumbler-with-lid-400-ml-leak-proof-tiffin-for-office-college-picnic-black-474453" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313978.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/myntra.svg" alt="Myntra"></span>
+    <span class="t">MILTON New Meal Combi Lunch Box with Insulated Fabric J</span>
+    <span class="l1"><b>₹199</b><s>₹575</s><em>65% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/milton-steel-seal-750-airtight-food-grade-modular-plastic-container-bpa-free-stackable-transparent-wide-mouth-with-see-through-lid-ideal-for-cereals-pulses-spices-set-of-2-750-ml-each-474451" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313729.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">MILTON Steel Seal 750 Airtight Food Grade Modular Plast</span>
+    <span class="l1"><b>₹99</b><s>₹750</s><em>87% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#F6E7F3;--cbd:#DDB3D3;--bb:#9F2089;--bf:#FFFFFF" href="/deal/dynamotrade-magic-eraser-cleaning-sponge-for-walls-kitchen-shoes-1-pcs-coupon-474464" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794323983.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/meesho.png" alt="Meesho"></span>
+    <span class="t">DYNAMOTRADE Magic Eraser Cleaning Sponge for Walls, Kit</span>
+    <span class="l1"><b>₹24</b><s>₹499</s><em>95% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#ECEFF3;--cbd:#C6CFDA;--bb:#D5A249;--bf:#101B36" href="/deal/about-space-bed-84-x-74-inches-king-size-bed-without-storage-engineered-wooden-bed-frame-with-headboard-mdf-board-for-mattress-1-year-warranty-cot-for-bedroom-satin-weave-linen-beige-coupon-bank-offer-474150" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794231756.jpg" alt="" loading="lazy"><span class="chip-x"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Trending</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/ajio.svg" alt="Ajio"></span>
+    <span class="t">ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Withou</span>
+    <span class="l1"><b>₹9,000</b><s>₹34,999</s><em>74% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#E6EEFC;--cbd:#B3C6EE;--bb:#FFE11B;--bf:#101B36" href="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794231088.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span>
+    <span class="t">The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jacket</span>
+    <span class="l1"><b>₹990</b><s>₹5,099</s><em>81% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#EEF6E2;--cbd:#C6DEA0;--bb:#84C225;--bf:#101B36" href="/deal/milton-decker-lunch-box-with-insulated-fabric-jacket-2-inner-stainless-steel-containers-450-ml-each-1-oval-stainless-steel-450-ml-microwave-safe-leak-proof-tiffin-for-office-easy-to-carry-blue-474452" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313902.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/bigbasket.svg" alt="Bigbasket"></span>
+    <span class="t">MILTON Decker Lunch Box with Insulated Fabric Jacket, 2</span>
+    <span class="l1"><b>₹299</b><s>₹1,750</s><em>82% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#E4EEF3;--cbd:#B1CBD8;--bb:#0078AD;--bf:#FFFFFF" href="/deal/trustbasket-extra-large-barbecue-skewers-for-bbq-tandoor-grill-set-of-6-474442" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313073.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/jiomart.svg" alt="Jiomart"></span>
+    <span class="t">TrustBasket Extra Large Barbecue Skewers for BBQ Tandoo</span>
+    <span class="l1"><b>₹89</b><s>₹1,009</s><em>91% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/cello-petal-bathroom-set-sturdy-and-durable-lightweight-and-rigid-easy-to-clean-and-attractive-design-small-set-of-3-dark-brown-474141" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794229159.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">Cello Petal Bathroom Set | Sturdy and Durable | Lightwe</span>
+    <span class="l1"><b>₹430</b><s>₹1,149</s><em>63% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a></div></div>
+      <div class="ghost">Rest of Home</div></div>
+    <p class="cap">Phone (412 px): one card, the next one peeks in. Swipe.</p></div>
+</section>
+  <section class="opt" id="live">
+  <div class="opt-h"><h2>Today’s real data</h2><p>The 10 most-viewed deals in the snapshot. They are all Amazon, so the row is all marigold with orange buttons. The first card is a custom Flipkart poster, the second a featured deal.</p></div>
+  <div class="frame-d"><div class="row" data-row>
+      <div class="row-h"><h3>Top deals today</h3>
+        <div class="nav"><span class="count" data-count></span><button type="button" data-prev aria-label="Previous">‹</button><button type="button" data-next aria-label="Next">›</button></div></div>
+      <div class="track" data-track><a class="pc" style="--cb:#E6EEFC;--cbd:#B3C6EE;--bb:#FFE11B;--bf:#101B36" href="#custom" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/posters/electronics.jpg" alt="Big Billion Days poster" loading="lazy"><span class="chip-f"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>Featured</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span>
+    <span class="t">Big Billion Days: up to 80% off electronics</span>
+    <span class="l1"><b>Sale</b><em class="end">Ends 8 Oct</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/puma-unisex-adult-runningroad-running-shoe-474144" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794230591.jpg" alt="" loading="lazy"><span class="chip-f"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>Featured</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">PUMA Unisex-Adult RunningRoad Running Shoe</span>
+    <span class="l1"><b>₹2,324</b><s>₹7,499</s><em>69% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/massive-handpicked-offers-474457" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794318908.jpg" alt="" loading="lazy"><span class="chip-x"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Trending</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">Pasta at Good discount</span>
+    <span class="l1"><b>₹113</b><s>₹253</s><em>55% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/trustbasket-ambiance-pot-large-plastic-flower-pot-uv-resistant-decorative-planter-for-living-room-21x17x23cm-474147" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794230968.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">TrustBasket Ambiance Pot | Large Plastic Flower Pot | U</span>
+    <span class="l1"><b>₹292</b><s>₹2,999</s><em>90% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/milton-new-meal-combi-lunch-box-with-insulated-fabric-jacket-3-microware-safe-plastic-containers-280-ml-each-tumbler-with-lid-400-ml-leak-proof-tiffin-for-office-college-picnic-black-474453" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313978.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">MILTON New Meal Combi Lunch Box with Insulated Fabric J</span>
+    <span class="l1"><b>₹199</b><s>₹575</s><em>65% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/milton-steel-seal-750-airtight-food-grade-modular-plastic-container-bpa-free-stackable-transparent-wide-mouth-with-see-through-lid-ideal-for-cereals-pulses-spices-set-of-2-750-ml-each-474451" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313729.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">MILTON Steel Seal 750 Airtight Food Grade Modular Plast</span>
+    <span class="l1"><b>₹99</b><s>₹750</s><em>87% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/dynamotrade-magic-eraser-cleaning-sponge-for-walls-kitchen-shoes-1-pcs-coupon-474464" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794323983.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">DYNAMOTRADE Magic Eraser Cleaning Sponge for Walls, Kit</span>
+    <span class="l1"><b>₹24</b><s>₹499</s><em>95% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/about-space-bed-84-x-74-inches-king-size-bed-without-storage-engineered-wooden-bed-frame-with-headboard-mdf-board-for-mattress-1-year-warranty-cot-for-bedroom-satin-weave-linen-beige-coupon-bank-offer-474150" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794231756.jpg" alt="" loading="lazy"><span class="chip-x"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Trending</span></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Withou</span>
+    <span class="l1"><b>₹9,000</b><s>₹34,999</s><em>74% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794231088.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jacket</span>
+    <span class="l1"><b>₹990</b><s>₹5,099</s><em>81% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/milton-decker-lunch-box-with-insulated-fabric-jacket-2-inner-stainless-steel-containers-450-ml-each-1-oval-stainless-steel-450-ml-microwave-safe-leak-proof-tiffin-for-office-easy-to-carry-blue-474452" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313902.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">MILTON Decker Lunch Box with Insulated Fabric Jacket, 2</span>
+    <span class="l1"><b>₹299</b><s>₹1,750</s><em>82% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/trustbasket-extra-large-barbecue-skewers-for-bbq-tandoor-grill-set-of-6-474442" target="_blank" rel="noopener">
+  <span class="well"><img src="assets/deals-trim/1794313073.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">TrustBasket Extra Large Barbecue Skewers for BBQ Tandoo</span>
+    <span class="l1"><b>₹89</b><s>₹1,009</s><em>91% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a><a class="pc" style="--cb:#FFF1D6;--cbd:#EDCB86;--bb:#FFA41C;--bf:#101B36" href="/deal/cello-petal-bathroom-set-sturdy-and-durable-lightweight-and-rigid-easy-to-clean-and-attractive-design-small-set-of-3-dark-brown-474141" target="_blank" rel="noopener">
+  <span class="well"><img class="fill" src="assets/deals-trim/1794229159.jpg" alt="" loading="lazy"></span>
+  <span class="txt">
+    <span class="st-w"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span>
+    <span class="t">Cello Petal Bathroom Set | Sturdy and Durable | Lightwe</span>
+    <span class="l1"><b>₹430</b><s>₹1,149</s><em>63% off</em></span>
+  </span>
+  <span class="btn-view">View deal<svg class="ic" viewBox="0 0 24 24"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg></span>
+</a></div></div>
+    <div class="ghost"><span>Shop by category · Fresh deals · Top picks … (rest of Home)</span></div></div>
+  
+</section>
+  <section class="opt" id="tints">
+    <div class="opt-h"><h2>All store colours</h2><p>A soft version of each store's own brand colour. The button uses the store's own button colour; its text is dark or white, whichever reads better. Stores without a colour, and Others, use sky blue.</p></div>
+    <div class="sws"><div class="sw" style="--cb:#FFF1D6;--cbd:#EDCB86"><span class="sw-c"><img class="st" src="assets/stores/amazon.svg" alt="Amazon"></span><span class="sw-n"><b>Amazon</b><small>Card Marigold · #FFF1D6</small><small>Button #FFA41C · contrast 8.6:1</small></span><span class="sw-b" style="background:#FFA41C;color:#101B36">View deal</span></div><div class="sw" style="--cb:#E6EEFC;--cbd:#B3C6EE"><span class="sw-c"><img class="st" src="assets/stores/flipkart.svg" alt="Flipkart"></span><span class="sw-n"><b>Flipkart</b><small>Card Sky blue · #E6EEFC</small><small>Button #FFE11B · contrast 13.0:1</small></span><span class="sw-b" style="background:#FFE11B;color:#101B36">View deal</span></div><div class="sw" style="--cb:#FFE7EC;--cbd:#F5B3C2"><span class="sw-c"><img class="st" src="assets/stores/myntra.svg" alt="Myntra"></span><span class="sw-n"><b>Myntra</b><small>Card Light pink · #FFE7EC</small><small>Button #D6285A · contrast 4.9:1</small></span><span class="sw-b" style="background:#D6285A;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#E4EEF3;--cbd:#B1CBD8"><span class="sw-c"><img class="st" src="assets/stores/jiomart.svg" alt="Jiomart"></span><span class="sw-n"><b>Jiomart</b><small>Card Steel blue · #E4EEF3</small><small>Button #0078AD · contrast 4.9:1</small></span><span class="sw-b" style="background:#0078AD;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#ECEFF3;--cbd:#C6CFDA"><span class="sw-c"><img class="st" src="assets/stores/ajio.svg" alt="Ajio"></span><span class="sw-n"><b>Ajio</b><small>Card Slate grey · #ECEFF3</small><small>Button #D5A249 · contrast 7.4:1</small></span><span class="sw-b" style="background:#D5A249;color:#101B36">View deal</span></div><div class="sw" style="--cb:#EEF6E2;--cbd:#C6DEA0"><span class="sw-c"><img class="st" src="assets/stores/bigbasket.svg" alt="Bigbasket"></span><span class="sw-n"><b>Bigbasket</b><small>Card Leaf green · #EEF6E2</small><small>Button #84C225 · contrast 7.9:1</small></span><span class="sw-b" style="background:#84C225;color:#101B36">View deal</span></div><div class="sw" style="--cb:#FFF8D1;--cbd:#E6D57A"><span class="sw-c"><img class="st" src="assets/stores/blinkit.svg" alt="Blinkit"></span><span class="sw-n"><b>Blinkit</b><small>Card Lemon · #FFF8D1</small><small>Button #0C831F · contrast 4.9:1</small></span><span class="sw-b" style="background:#0C831F;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#EFE7F8;--cbd:#CDB6E8"><span class="sw-c"><img class="st" src="assets/stores/zepto.svg" alt="Zepto"></span><span class="sw-n"><b>Zepto</b><small>Card Lavender · #EFE7F8</small><small>Button #7B2CBF · contrast 7.1:1</small></span><span class="sw-b" style="background:#7B2CBF;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#FFE9DC;--cbd:#F2BC9B"><span class="sw-c"><img class="st" src="assets/stores/swiggy.svg" alt="Swiggy"></span><span class="sw-n"><b>Swiggy</b><small>Card Peach · #FFE9DC</small><small>Button #FC8019 · contrast 6.7:1</small></span><span class="sw-b" style="background:#FC8019;color:#101B36">View deal</span></div><div class="sw" style="--cb:#E1F5FC;--cbd:#A6DDF0"><span class="sw-c"><img class="st" src="assets/stores/paytm.svg" alt="Paytm"></span><span class="sw-n"><b>Paytm</b><small>Card Cyan · #E1F5FC</small><small>Button #002E6E · contrast 13.0:1</small></span><span class="sw-b" style="background:#002E6E;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#ECEBFB;--cbd:#C3C0EE"><span class="sw-c"><img class="st" src="assets/stores/shopsy.svg" alt="Shopsy"></span><span class="sw-n"><b>Shopsy</b><small>Card Periwinkle · #ECEBFB</small><small>Button #4D4AE8 · contrast 6.1:1</small></span><span class="sw-b" style="background:#4D4AE8;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#F6E7F3;--cbd:#DDB3D3"><span class="sw-c"><img class="st" src="assets/stores/meesho.png" alt="Meesho"></span><span class="sw-n"><b>Meesho</b><small>Card Mauve · #F6E7F3</small><small>Button #9F2089 · contrast 6.9:1</small></span><span class="sw-b" style="background:#9F2089;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#FDE9EC;--cbd:#F0B3BD"><span class="sw-c"><img class="st" src="assets/stores/bookmyshow.svg" alt="Bookmyshow"></span><span class="sw-n"><b>Bookmyshow</b><small>Card Rose · #FDE9EC</small><small>Button #DC354B · contrast 4.5:1</small></span><span class="sw-b" style="background:#DC354B;color:#FFFFFF">View deal</span></div><div class="sw" style="--cb:#E6EEFC;--cbd:#B3C6EE"><span class="sw-c"><span class="st-t">Others</span></span><span class="sw-n"><b>Others</b><small>Card Sky blue (default) · #E6EEFC</small><small>Button #082454 · contrast 15.1:1</small></span><span class="sw-b" style="background:#082454;color:#FFFFFF">View deal</span></div></div>
+  </section>
+  <section class="rules" id="rules">
+    <h2>Chips (live)</h2>
+    <table><thead><tr><th>Chip</th><th>Shows when</th></tr></thead><tbody>
+      <tr><td><b>★ Featured</b></td><td>Owner’s own poster: a featured deal or a custom poster. Always first. Top-left of the photo.</td></tr>
+      <tr><td>↗ Trending</td><td>Views in the last 3 hours are at least double the 3 hours before (and 50+ views). Bottom-left of the photo. In this preview it is placed by hand.</td></tr>
+      <tr><td colspan="2">Nothing else: no rank numbers, no view counts. Never: Selling fast, Only few left, Bestseller, Hurry.</td></tr>
+    </tbody></table>
+  </section>
+</div>
+<script>
+document.querySelectorAll('[data-row]').forEach(function (row) {
+  var items = [].slice.call(row.querySelectorAll('[data-track] > .pc')), n = items.length, per = 4, page = 0, count = row.querySelector('[data-count]');
+  function pages() { return Math.ceil(n / per); }
+  function show() {
+    items.forEach(function (x) { x.classList.remove('on'); x.style.order = ''; });
+    for (var k = 0; k < per; k++) { var it = items[(page * per + k) % n]; it.classList.add('on'); it.style.order = k; }
+    count.textContent = 'Page ' + (page + 1) + ' of ' + pages();
+  }
+  row.querySelector('[data-next]').addEventListener('click', function () { page = (page + 1) % pages(); show(); });
+  row.querySelector('[data-prev]').addEventListener('click', function () { page = (page - 1 + pages()) % pages(); show(); });
+  show();
+});
+</script>
+</body></html>

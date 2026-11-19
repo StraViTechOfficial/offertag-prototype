@@ -43,7 +43,7 @@ CHANNELS = [  # SAMPLE connection states (data sheet C)
 def build_social():
     rows = []
     for c in CHANNELS:
-        acct = (_sel('data-pin-board aria-label="Pinterest board"', _opts(['Loot deals', 'Fresh deals', 'All deals'], 'Loot deals'), 'sel-sm') if c['acct'] == 'board' else f'<span class="ch-acct">{E(c["acct"])}</span>')
+        acct = (_sel('data-pin-board aria-label="Pinterest board"', _opts(['Loot deals', 'Top deals', 'All deals'], 'Loot deals'), 'sel-sm') if c['acct'] == 'board' else f'<span class="ch-acct">{E(c["acct"])}</span>')
         rows.append(f'''          <li class="ch" data-ch="{c["k"]}" data-state="{c["state"]}">
             <span class="ch-mark ch-{c["k"]}" aria-hidden="true">{c["mark"]}</span>
             <div class="ch-main"><b>{E(c["name"])}</b>{acct}</div>
@@ -267,12 +267,12 @@ def build_catalogue():
                          title=c['title'], seo=c['description']))
     tcount = lambda t: sum(1 for d in deals if t in d['types'])
     dtypes = [dict(id=i + 1, name=n, rule=r, order=i + 1, n=tcount(k), on=True) for i, (n, k, r) in enumerate([
-        ('Fresh', 'Fresh', 'Everything posted today, newest first'), ('Top picks', 'Top', 'Our picks, ranked'), ('Loot', 'Loot', '70% off or more'),
+        ('Top deals', 'Fresh', 'Everything we post, newest first'), ('Loot', 'Loot', '70% off or more'),
         ('New', 'New', 'Just in'), ('Pantry', 'Pantry', 'Grocery and kitchen essentials')])]
     for d in dtypes:
         if d['name'] == 'New': d['rule'] = PAGES['new']['rule'] if 'new' in PAGES else d['rule']
         if d['name'] == 'Loot': d['rule'] = PAGES['loot']['rule'] if 'loot' in PAGES else d['rule']
-        if d['name'] == 'Fresh': d['rule'] = PAGES['fresh']['rule'] if 'fresh' in PAGES else d['rule']
+        if d['name'] == 'Top deals': d['rule'] = PAGES['fresh']['rule'] if 'fresh' in PAGES else d['rule']
     types = [dict(id=1, name='Deal Type', alias='deal_type')]
     body = f'''      <div class="page-h">
         <div><h1>Catalogue</h1><p>Shops, categories and deal types the site is built on. Changes show on the website at once.</p></div>
