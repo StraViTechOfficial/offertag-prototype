@@ -745,3 +745,114 @@ html.theme .td-view::after { content: ""; position: absolute; top: 0; bottom: 0;
   html.theme .td-btn { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { html.theme .td-card, html.theme .td-card *, html.theme .td-card *::after { animation: none !important; transition: none !important; } }
+
+/* ============ S22 fixes ============ */
+/* hover pop (D-112) must not spill sideways out of scrolling columns: it triggered a sideways scroll that moved the row away from the pointer and shook it */
+@media (min-width: 900px) { html.theme .filters { overflow-x: hidden; scrollbar-gutter: stable; padding-right: 0.625rem; } }
+html.theme .fgroup .opts.scroll { overflow-x: hidden; }
+/* list view: the grey photo box sits inside the card with an even gap, square, no divider */
+html.theme .results.is-list .deal .img { margin: 0.8125rem; border-right: 0; align-self: stretch; aspect-ratio: auto; min-height: 10rem; }
+
+/* D-121: Home. Hot deals today moves into the left column; the right column starts beside it.
+   Wide screens: 3 Hot deals in view. Smaller screens keep their slider sizes (4 / 3 / 2 / 1 with peek). No Hot deals: the section hides and Top deals moves up. */
+@media (min-width: 1200px) { html.theme .home-main .td-carousel { --per: 3; } }
+html.theme .home-main .top-deals:not(:has(.td-slide)) { display: none; }
+
+/* D-122: Home head row. "Hot deals today" on the left, the new-deals capsule beside it, "Last deal posted" at the far right of the left column.
+   Wide screens: grid rows head / (main, side), so the Hot deals cards and the ad start on the same line. No Hot deals: the heading hides, the capsule stays. */
+html.theme .home-head { align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 0.5rem 1rem; padding-top: 1.25rem; margin-bottom: 0.625rem; }
+html.theme .home-head .since { flex: 1 1 auto; min-width: 0; padding-top: 0; gap: 1rem; }
+html.theme .home-body:not(:has(.td-slide)) #h-td { display: none; }
+html.theme .home-main .top-deals { padding-top: 0; }
+@media (min-width: 1200px) {
+  html.theme .home-body { grid-template-areas: "head ." "main side"; row-gap: 0; }
+  html.theme .home-head { grid-area: head; }
+  html.theme .home-main { grid-area: main; }
+  html.theme .home-side { grid-area: side; padding-top: 0; }
+  html.theme .home-body:not(:has(.td-slide)) #fresh { padding-top: 0; }
+}
+/* D-122: between 1200 and 1379 px the left column is too narrow for heading + capsule + "Last deal posted"; the grey line gives way so the capsule stays beside the heading */
+@media (min-width: 1200px) and (max-width: 1379px) { html.theme .home-head .since-meta { display: none; } }
+/* D-123: the right-column ad's button sits centred in the card */
+html.theme .sp-side .sp-cta { justify-self: center; }
+/* D-124: no deal count above the cards on deal pages (Top deals, Loot, New, Pantry, category, store); search keeps its result count */
+html.theme body[data-page="listing"]:not([data-kind="search"]) .toolbar .count { display: none; }
+
+/* D-125: the desktop filter column sits in a white card (same look as the Home Shop by category box); groups start closed (template) */
+@media (min-width: 900px) {
+  html.theme .filters { background: #fff; border: 1px solid hsl(var(--line)); border-radius: 1rem; box-shadow: 0 1px 2px hsl(var(--navy) / .04); padding: 0.375rem 0.75rem 0.25rem 1rem; }
+  html.theme .filters .fgroup:last-of-type { border-bottom: 0; }
+}
+/* D-125: while the next batch loads, the spinner area holds a screen's height so the list never "ends" under a fast scroll and the filter card stays put */
+html.theme .load-state:has(.loader) { min-height: 100vh; align-content: start; }
+/* D-126: the join tab moves from mid-height to the lower left so it never sits on the Hot deals arrow; it stays high enough for the opened half-disc to fit above the screen bottom */
+html.theme .fjoin { top: auto; bottom: calc(var(--R) + 2.75rem - 1.75rem); transform: none; }
+
+/* ============ D-127: brand scrollbar (option 5 of scrollbar-review.html), public site only (admin keeps its own) ============
+   Blue-to-navy pill on a light track. The bar is 14 px wide with a 2 px clear edge, so the track shows 10 px and the pill 6 px,
+   and it never touches a card's border. Inside rounded boxes the track stops short of the corners (margin-block), so the radius is never cut.
+   Chrome only applies these when scrollbar-width / scrollbar-color are left on auto, so the old thin settings are reset below.
+   Firefox cannot draw rounded or gradient bars: it gets a thin navy bar on the same light track. */
+html.theme { --sb-track: #F1F4F9; --sb-a: #2C5BB8; --sb-b: hsl(var(--navy)); }
+@supports selector(::-webkit-scrollbar) {
+  html.theme .fgroup .opts.scroll, html.theme .home-side { scrollbar-width: auto; scrollbar-color: auto; }
+}
+html.theme::-webkit-scrollbar, html.theme ::-webkit-scrollbar { width: 14px; height: 14px; background: transparent; }
+html.theme::-webkit-scrollbar-track, html.theme ::-webkit-scrollbar-track { background: var(--sb-track); background-clip: padding-box; border: 2px solid transparent; border-radius: 999px; }
+html.theme::-webkit-scrollbar-thumb, html.theme ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--sb-a), var(--sb-b)); background-clip: padding-box; border: 4px solid transparent; border-radius: 999px; min-height: 2.5rem; }
+html.theme ::-webkit-scrollbar-thumb:horizontal { background: linear-gradient(90deg, var(--sb-a), var(--sb-b)); background-clip: padding-box; min-width: 2.5rem; }
+html.theme::-webkit-scrollbar-thumb:hover, html.theme ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #3B6FD6, #0B2F6E); background-clip: padding-box; }
+html.theme::-webkit-scrollbar-corner, html.theme ::-webkit-scrollbar-corner { background: transparent; }
+/* keep the track clear of rounded corners */
+html.theme .filters::-webkit-scrollbar-track { margin-block: 0.75rem; }
+html.theme .sheet::-webkit-scrollbar-track, html.theme .sheet-body::-webkit-scrollbar-track, html.theme .popover::-webkit-scrollbar-track { margin-block: 0.5rem; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-track { margin-block: 0.125rem; }
+/* filter card: the bar sits in its own reserved lane inside the card's right edge; the long lists keep their text clear of the bar */
+@media (min-width: 900px) { html.theme .filters { padding-right: 0.25rem; } }
+html.theme .fgroup .opts.scroll { margin-right: 0; padding-right: 0.5rem; }
+@supports not selector(::-webkit-scrollbar) {
+  html.theme { scrollbar-color: var(--sb-b) var(--sb-track); }
+  html.theme .filters, html.theme .fgroup .opts.scroll, html.theme .sheet, html.theme .sheet-body, html.theme .popover, html.theme .legal-toc, html.theme .post-rail { scrollbar-width: thin; }
+}
+/* D-127: the long Category / Store lists inside the filter card get a slimmer copy of the same pill (track 6 px, pill 4 px) so they read as second level next to the card's bar */
+html.theme .fgroup .opts.scroll::-webkit-scrollbar { width: 10px; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-track { background: var(--sb-track); background-clip: padding-box; border: 2px solid transparent; border-radius: 999px; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--sb-a), var(--sb-b)); background-clip: padding-box; border: 3px solid transparent; border-radius: 999px; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #3B6FD6, #0B2F6E); background-clip: padding-box; }
+
+/* ============ D-128: soft roll-down for every dropdown, thin navy ring on hover (public site) ============ */
+/* 1a. floating menus (Sort, Account) and the search suggestions unroll from their button and roll back up (site.js waits 240 ms before hiding) */
+html.theme .dropdown .menu, html.theme .popover { clip-path: inset(-1.5rem -1.5rem 100% -1.5rem); opacity: 0; transform: translateY(-0.25rem); transition: clip-path .24s cubic-bezier(.2,0,0,1), opacity .18s ease, transform .24s cubic-bezier(.2,0,0,1); }
+html.theme .dropdown .menu[data-state="open"], html.theme .popover[data-state="open"] { clip-path: inset(-1.5rem -1.5rem -1.5rem -1.5rem); opacity: 1; transform: none; }
+/* 1b. fold-out panels (filter groups, FAQ, How to get it, About text): site.js animates the height; the arrow turns in step */
+html.theme details > summary .lucide { transition: transform .26s cubic-bezier(.2,0,0,1); }
+html.theme details.is-closing > summary .lucide { transform: none !important; }
+html.theme .faq-item.is-closing summary { color: inherit; }
+@media (prefers-reduced-motion: reduce) { html.theme .dropdown .menu, html.theme .popover { transition: none; } }
+
+/* 2. thin navy ring 2 px outside anything you can click; it follows the rounded corners */
+@media (hover: hover) {
+  html.theme :where(.btn:not(.btn-link), .chip-x, .card.store, .td-btn, .carousel-prev, .carousel-next, .sheet-close, .sheet-nav-btn, .fjoin-tab, .fs-btn, .sp-cta, [aria-controls="menu-sheet"]):hover { outline: 1.5px solid hsl(var(--navy)); outline-offset: 2px; }
+  /* dark footer: navy would not show, so the ring is white there */
+  html.theme :is(.ft-play, .ft-alerts, footer .btn):hover { outline: 1.5px solid #fff; outline-offset: 2px; }
+  /* cards already lift; their own edge turns navy instead of adding a second ring */
+  html.theme :is(.deal, .post-card, .sp-card):hover { border-color: hsl(var(--navy)); }
+  html.theme .td-card:hover { border-color: hsl(var(--navy)); }
+  html.theme .opt:not(.is-zero):hover, html.theme .hs-box li a:hover { box-shadow: 0 0.5rem 1rem -0.5rem hsl(var(--navy) / .35), 0 0 0 1.5px hsl(var(--navy)); }
+}
+
+/* D-128 round 2 (user review): no ring on the search box, Clear all (text buttons), the grid / list switch, or the deal cards inside a blog article;
+   the blog's right-rail deal cards get the ring around the whole card instead (their Buy now no longer rings on its own) */
+@media (hover: hover) {
+  html.theme .deal-embed:not(.is-rail) .btn:hover { outline: 0; }
+  html.theme .deal-embed.is-rail:hover { outline: 1.5px solid hsl(var(--navy)); outline-offset: 2px; }
+  html.theme .deal-embed.is-rail .btn:hover { outline: 0; }
+}
+/* filter groups without their own scroll (Discount, Price, Posted, Deal type) get the same inner room as the long lists, so the hover pill stays inside the card */
+html.theme .fgroup .opts:not(.scroll) { padding: 3px 0.5rem 3px 3px; }
+
+/* D-132: side rails stick below the header (82 px), not under it, so "Deals in this post" (and the legal contents list) stay in view with even space above and below */
+@media (min-width: 1024px) {
+  html.theme .post-rail { top: 5.5rem; max-height: calc(100vh - 6.5rem); }
+  html.theme .legal-toc { top: 6.25rem; max-height: calc(100vh - 7.25rem); }
+}

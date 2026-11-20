@@ -294,7 +294,31 @@ MRP ₹1,199 → ₹611 (49% off)"><i data-lucide="link"></i>Copy link</button>
 <button class="btn btn-outline btn-icon to-top" id="to-top" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
 
 <div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
-
+<aside class="sheet" id="menu-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet-header"><div class="sheet-title" id="sheet-title">Menu</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <nav class="sheet-nav">
+    <a href="/login" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in with Google or email</a>
+    <a href="/user/profile" data-when-user hidden><i data-lucide="user"></i><span data-user-name></span></a>
+    <a href="/admin" data-when-staff hidden><i data-lucide="layout-dashboard"></i>Admin panel</a>
+    <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
+    <div class="separator" style="margin:8px 0"></div>
+    <div class="sheet-section">Deals</div>
+    <a href="/top-deals"><i data-lucide="star"></i>Top deals</a>
+    <a href="/loot-deals"><i data-lucide="tag"></i>Loot</a>
+    <a href="/new-deals"><i data-lucide="sparkles"></i>New</a>
+    <a href="/pantry-deals"><i data-lucide="shopping-basket"></i>Pantry</a>
+    <div class="sheet-section">Browse</div>
+    <a href="/categories"><i data-lucide="layout-grid"></i>Shop by category</a>
+    <a href="/stores"><i data-lucide="store"></i>Shop by store</a>
+    <a href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing"><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
+    <div class="sheet-section">More</div>
+    <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
+    <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
+    <a href="/faq"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
+    <a href="/contact"><i data-lucide="mail"></i>Feedback</a>
+  </nav>
+</aside>
 <!-- Search sheet (phone, full screen; D-064): recent · stores · categories, suggestions while typing; site.js renders the body -->
 <aside class="sheet sheet-full" id="search-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Search">
   <form class="ss-head" data-search role="search">

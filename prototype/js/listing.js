@@ -83,7 +83,7 @@
     countEl.textContent = vis.length; if (sheetCount) sheetCount.textContent = vis.length;
     empty.hidden = vis.length > 0;
     var nFilters = s.cat.length + s.store.length + s.type.length + (s.disc ? 1 : 0) + (s.price ? 1 : 0) + (s.posted ? 1 : 0) + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0);
-    if (KIND === 'search') rule.textContent = Q ? vis.length + ' result' + (vis.length === 1 ? '' : 's') + ', newest first' : 'All deals, newest first';
+    if (KIND === 'search' && rule) rule.textContent = Q ? vis.length + ' result' + (vis.length === 1 ? '' : 's') + ', newest first' : 'All deals, newest first';
     if (!vis.length) {
       emptyText.textContent = nFilters ? 'No deals match these filters.' : (KIND === 'search' && Q ? 'No deals for \u201c' + Q + '\u201d.' : 'No ' + (h1.textContent.replace(/ deals.*$/, '')) + ' deals right now.');
       emptyClear.hidden = !nFilters;
@@ -116,11 +116,7 @@
     var left = Math.max(0, total - limit);
     loadState.innerHTML = '';
     if (total === 0) return;
-    if (left === 0) {
-      var end = document.createElement('div'); end.className = 'end';
-      end.innerHTML = '<span>That\'s all for now.</span><a class="btn btn-outline btn-sm" href="/loot-deals">See Loot deals</a><a class="btn btn-ghost btn-sm" href="#top">Back to top</a>';
-      loadState.appendChild(end); return;
-    }
+    if (left === 0) return;  // D-125: no end-of-list line; the last row of cards runs into the footer
     if (batch % (AUTO + 1) === 0) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn-outline btn-lg'; b.textContent = 'Show more deals (' + left + ' more)';
       b.addEventListener('click', nextBatch); loadState.appendChild(b);
@@ -173,10 +169,12 @@
   }
   readUrl();
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
+    var io = new IntersectionObserver(function (entries) {
       if (!entries[0].isIntersecting || loading || !loadState.querySelector('.loader')) return;
-      loading = true; setTimeout(function () { nextBatch(); loading = false; }, 350);
-    }, { rootMargin: '400px 0px' }).observe(loadState);
+      // re-observe after each batch: if the list end is still within reach, the observer reports again and the next batch loads
+      loading = true; setTimeout(function () { nextBatch(); loading = false; io.unobserve(loadState); io.observe(loadState); }, 350);
+    }, { rootMargin: '1200px 0px' });
+    io.observe(loadState);  // D-125: load about 3 rows ahead so the list never runs out under a fast scroll
   }
 
   function reset() { limit = PAGE; batch = 1; apply(); }

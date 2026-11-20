@@ -147,7 +147,7 @@ tpl_list = open(os.path.join(HERE, 'listing.template.html')).read()
 # shared blocks are cut from the home template
 HEADER = tpl_home[tpl_home.index('<header'):tpl_home.index('</header>') + 9]
 FOOTER = tpl_home[tpl_home.index('<footer'):tpl_home.index('</footer>') + 9]
-MENU = tpl_home[tpl_home.index('<aside class="sheet" id="menu-sheet"'):tpl_home.index('</aside>') + 8]
+_m = tpl_home.index('<aside class="sheet" id="menu-sheet"'); MENU = tpl_home[_m:tpl_home.index('</aside>', _m) + 8]  # S22: search from the menu's own start (the Home side panel's </aside> comes first)
 
 SEARCH_SHEET = '''<!-- Search sheet (phone, full screen; D-064): recent · stores · categories, suggestions while typing; site.js renders the body -->
 <aside class="sheet sheet-full" id="search-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Search">
@@ -204,7 +204,7 @@ def fill(tpl, **kw):
 
 home = tpl_home
 # "New since your last visit" line (D-097): ages come from the feed snapshot; site.js counts deals newer than this visitor's last visit
-SINCE = (f'<div class="container since" data-since data-today="{len(deals)}" data-ages="{",".join(str(d["agemin"]) for d in deals)}" hidden>'
+SINCE = (f'<div class="since" data-since data-today="{len(deals)}" data-ages="{",".join(str(d["agemin"]) for d in deals)}" hidden>'
          f'<a class="since-link" href="fresh.html"><span class="since-dot" aria-hidden="true"></span><span data-since-text></span><span class="since-go">See them →</span></a>'
          f'<span class="since-meta">Last deal posted {min(deals, key=lambda d: d["agemin"])["agetxt"]} ago</span></div>')
 home = home.replace('{{SINCE}}', SINCE)
@@ -298,7 +298,8 @@ def sponsor_slot(where):
     if not live: return ''
     return f'<div class="sp-slot sp-slot-{where}" data-sp-slot>' + ''.join(sponsor_card(x, where) for x in live) + '</div>'
 home = home.replace('{{SIDE}}', sponsor_slot('side') + side_panel())
-home = home.replace('{{SPONSOR_INLINE}}', f'<section class="section sp-inline" aria-label="Sponsored"><div class="container">{sponsor_slot("inline")}</div></section>')
+_spi = sponsor_slot('inline')  # D-121: no live ad, no section, so Top deals moves up under Hot deals
+home = home.replace('{{SPONSOR_INLINE}}', f'<section class="section sp-inline" aria-label="Sponsored"><div class="container">{_spi}</div></section>' if _spi else '')
 home = home.replace('{{PROMO_STRIP}}', '')  # D-107: promo strip withdrawn (DEV-027); Sale posters carry promotions (meeting §1.3)
 open(os.path.join(ROOT, 'index.html'), 'w').write(home)
 print('index.html', len(deals), 'deals')
@@ -822,11 +823,17 @@ def build_static():
     for p in POSTS:
         parts = []
         lead_i = next((i for i, b in enumerate(p['body']) if 'p' in b), None)
+        # D-131: a section (heading and what follows) that introduced deal cards is dropped with them; advice sections and the lead stay
+        sec_of, sec = [], -1
+        for b in p['body']:
+            if 'h' in b: sec += 1
+            sec_of.append(sec)
+        deal_secs = {sec_of[i] for i, b in enumerate(p['body']) if 'deal' in b and sec_of[i] >= 0}
         for i, b in enumerate(p['body']):
-            if i == lead_i: continue
+            if i == lead_i or sec_of[i] in deal_secs: continue
             if 'p' in b: parts.append(f'<p>{E(b["p"])}</p>')
             elif 'h' in b: parts.append(f'<h2>{E(b["h"])}</h2>')
-            elif 'deal' in b: parts.append(embed(deals[b['deal']]))
+            elif 'deal' in b: continue  # D-130: no deal cards inside the article; the post's deals show in the right rail (Deals in this post)
             elif 'img' in b: parts.append(f'<img class="post-img" src="assets/deals/lg/{deals[b["img"]]["file"]}" alt="{E(b["alt"])}" loading="lazy" width="300" height="300">')
         share_text = f"{p['title']}\n{p['url']}"
         # D-111 (option C): one Share button; hover/focus (tap on phones) slides out WhatsApp, Telegram, Copy link

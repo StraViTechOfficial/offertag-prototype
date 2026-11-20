@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scrollbar review</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Review page only (S22). Five scrollbar options on the OfferTag colours; nothing here is wired into the site yet. */
+:root { --ink:#101B36; --muted:#5A6479; --line:#E3E7EF; --page:#F4F6FA; --navy:#082454; --navy-60:rgba(8,36,84,.6); --sky:#E6EEFC; --save:#0B7A45; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.55 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 32px 16px 120px; }
+h1 { font-size: 28px; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 8px; }
+.lead { color: var(--muted); max-width: 72ch; margin: 0 0 6px; }
+.note { font-size: 13px; color: var(--muted); }
+.opt { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px 20px; margin-top: 22px; }
+.opt.is-on { border-color: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
+.opt-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.opt-head h2 { font-size: 19px; margin: 0 0 2px; letter-spacing: -.01em; }
+.opt-head p { margin: 0; color: var(--muted); font-size: 14px; max-width: 62ch; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.tag { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--sky); color: var(--navy); }
+.tag.warn { background: #FDEBDF; color: #8A3B12; }
+.try { height: 38px; padding: 0 14px; border-radius: 10px; border: 1px solid rgba(8,36,84,.28); background: #fff; color: var(--navy); font: 600 14px Inter, system-ui, sans-serif; cursor: pointer; white-space: nowrap; }
+.try:hover, .opt.is-on .try { background: var(--navy); color: #fff; border-color: var(--navy); }
+.demos { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+@media (max-width: 720px) { .demos { grid-template-columns: 1fr; } }
+.demo-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 6px; }
+.pane { height: 300px; overflow-y: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.filters { padding: 8px 6px 8px 14px; }
+.filters .fh { display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; padding: 6px 0 8px; }
+.filters label { display: flex; align-items: center; gap: 10px; min-height: 32px; font-size: 14px; }
+.filters input { width: 16px; height: 16px; accent-color: var(--navy); }
+.feed { padding: 12px; background: var(--page); display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+.card .ph { aspect-ratio: 1; border-radius: 8px; background: linear-gradient(135deg, #EEF2F8, #E3E7EF); }
+.card .l1 { height: 10px; border-radius: 4px; background: #E3E7EF; margin: 10px 0 6px; width: 80%; }
+.card .l2 { height: 14px; border-radius: 4px; background: #D5DBE6; width: 50%; }
+.whole { position: sticky; bottom: 16px; margin-top: 28px; background: var(--ink); color: #fff; border-radius: 12px; padding: 10px 14px; font-size: 14px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.whole b { color: #fff; }
+.whole button { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,.35); background: transparent; color: #fff; font: 600 13px Inter, system-ui, sans-serif; cursor: pointer; }
+.sources { margin-top: 36px; font-size: 13px; color: var(--muted); }
+.sources a { color: var(--navy); }
+
+/* ---------- 1 · Quiet thin (standard properties only) ---------- */
+.sb1, html[data-sb="1"] { scrollbar-width: thin; scrollbar-color: #C3CBD9 transparent; }
+.sb1:hover, html[data-sb="1"]:hover { scrollbar-color: #8E9AB0 transparent; }
+
+/* ---------- 2 · Navy pill on a soft track ---------- */
+.sb2::-webkit-scrollbar, html[data-sb="2"]::-webkit-scrollbar { width: 12px; height: 12px; }
+.sb2::-webkit-scrollbar-track, html[data-sb="2"]::-webkit-scrollbar-track { background: #EEF2F8; border-radius: 999px; margin: 6px; }
+.sb2::-webkit-scrollbar-thumb, html[data-sb="2"]::-webkit-scrollbar-thumb { background: var(--navy-60); border-radius: 999px; border: 3px solid #EEF2F8; }
+.sb2::-webkit-scrollbar-thumb:hover, html[data-sb="2"]::-webkit-scrollbar-thumb:hover { background: var(--navy); }
+@supports not selector(::-webkit-scrollbar) { .sb2, html[data-sb="2"] { scrollbar-width: thin; scrollbar-color: var(--navy-60) #EEF2F8; } }
+
+/* ---------- 3 · Floating pill that grows on hover ---------- */
+.sb3::-webkit-scrollbar, html[data-sb="3"]::-webkit-scrollbar { width: 14px; height: 14px; }
+.sb3::-webkit-scrollbar-track, html[data-sb="3"]::-webkit-scrollbar-track { background: transparent; }
+.sb3::-webkit-scrollbar-thumb, html[data-sb="3"]::-webkit-scrollbar-thumb { background: #B7C0D0; background-clip: padding-box; border: 5px solid transparent; border-radius: 999px; min-height: 40px; }
+.sb3::-webkit-scrollbar-thumb:hover, html[data-sb="3"]::-webkit-scrollbar-thumb:hover { background: var(--navy); background-clip: padding-box; border-width: 3px; }
+@supports not selector(::-webkit-scrollbar) { .sb3, html[data-sb="3"] { scrollbar-width: thin; scrollbar-color: #B7C0D0 transparent; } }
+
+/* ---------- 4 · Hidden until you scroll or hover ---------- */
+.sb4::-webkit-scrollbar, html[data-sb="4"]::-webkit-scrollbar { width: 12px; height: 12px; }
+.sb4::-webkit-scrollbar-track, html[data-sb="4"]::-webkit-scrollbar-track { background: transparent; }
+.sb4::-webkit-scrollbar-thumb, html[data-sb="4"]::-webkit-scrollbar-thumb { background: transparent; background-clip: padding-box; border: 4px solid transparent; border-radius: 999px; }
+.sb4:hover::-webkit-scrollbar-thumb, .sb4.is-scrolling::-webkit-scrollbar-thumb, html[data-sb="4"]:hover::-webkit-scrollbar-thumb, html[data-sb="4"].is-scrolling::-webkit-scrollbar-thumb { background: #A9B3C5; background-clip: padding-box; }
+.sb4::-webkit-scrollbar-thumb:hover, html[data-sb="4"]::-webkit-scrollbar-thumb:hover { background: var(--navy); background-clip: padding-box; }
+@supports not selector(::-webkit-scrollbar) { .sb4, html[data-sb="4"] { scrollbar-width: thin; scrollbar-color: transparent transparent; } .sb4:hover, .sb4.is-scrolling, html[data-sb="4"]:hover, html[data-sb="4"].is-scrolling { scrollbar-color: #A9B3C5 transparent; } }
+
+/* ---------- 5 · Brand gradient pill ---------- */
+.sb5::-webkit-scrollbar, html[data-sb="5"]::-webkit-scrollbar { width: 10px; height: 10px; }
+.sb5::-webkit-scrollbar-track, html[data-sb="5"]::-webkit-scrollbar-track { background: #F1F4F9; border-radius: 999px; }
+.sb5::-webkit-scrollbar-thumb, html[data-sb="5"]::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #2C5BB8, var(--navy)); border-radius: 999px; border: 2px solid #F1F4F9; }
+.sb5::-webkit-scrollbar-thumb:hover, html[data-sb="5"]::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #3B6FD6, #0B2F6E); }
+@supports not selector(::-webkit-scrollbar) { .sb5, html[data-sb="5"] { scrollbar-width: thin; scrollbar-color: var(--navy) #F1F4F9; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pick a scrollbar</h1>
+  <p class="lead">Five options on the OfferTag colours. Each card has a filter list and a page of cards to scroll. Press <b>Try on this whole page</b> to put that option on this page's own scrollbar on the right.</p>
+  <p class="note">The chosen one goes on every scroll area: the page, the filter card and its long lists, the Home right column, and menus. Cards and filter names below are layout samples only. Chrome, Edge and Safari show every detail; Firefox shows a thin version in the same colours.</p>
+
+  <div id="options"></div>
+
+  <div class="whole" role="status"><span>Whole-page scrollbar now: <b id="whole-name">Browser default</b></span><button type="button" id="reset">Back to browser default</button></div>
+
+  <p class="sources">Research: <a href="https://developer.chrome.com/docs/css-ui/scrollbar-styling">Chrome: scrollbar styling</a> · <a href="https://developer.chrome.com/docs/modern-web-guidance/guides/visual-design/customize-scrollbar-color-and-thickness">Chrome: colour and thickness</a> · <a href="https://www.w3.org/TR/css-scrollbars-1/">W3C CSS Scrollbars Level 1</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Scrollbars">MDN: CSS scrollbars</a> · <a href="https://ishadeed.com/article/custom-scrollbars-css/">Ahmad Shadeed: custom scrollbars</a> · <a href="https://nerdy.dev/notebook/custom-scrollbar.html">nerdy.dev: hover-grow scrollbar</a></p>
+</div>
+
+<script>
+(function () {
+  var OPTS = [
+    { n: 1, name: 'Quiet thin', desc: 'A thin light-grey bar with no track. Darkens a little when you point at the scroll area. Closest to Apple and Google sites.', tags: ['Calmest', 'Works the same in every browser'] },
+    { n: 2, name: 'Navy pill on a soft track', desc: 'A rounded navy bar inside a pale blue-grey track. Always visible, clearly on brand. Turns full navy on hover.', tags: ['Most visible', 'On brand'] },
+    { n: 3, name: 'Floating pill that grows', desc: 'A slim grey pill floating with no track. When you point at it, it grows wider and turns navy, so it is easy to grab.', tags: ['Recommended', 'Modern', 'Easy to grab'] },
+    { n: 4, name: 'Hidden until you scroll', desc: 'No bar while still. A grey pill appears when you point at the area or scroll, then fades. Cleanest look, but people may not notice a list scrolls.', tags: ['Cleanest'], warn: 'Hidden lists can go unnoticed' },
+    { n: 5, name: 'Brand gradient pill', desc: 'A blue-to-navy rounded bar on a light track. The most decorated option.', tags: ['Most decorated'] }
+  ];
+  var CATS = ['Kitchen', 'Others', 'Clothing', 'Beauty', 'Grocery', 'Footwear', 'Home & Decore', 'Electronics', 'Accessories', 'Luggage', 'Personal Care', 'Speaker', 'Mobile', 'Watch', 'Bags', 'Baby', 'Health', 'Books', 'Automotive', 'AC'];
+  var host = document.getElementById('options'), html = document.documentElement, nameEl = document.getElementById('whole-name');
+  var cards = ''; for (var i = 0; i < 18; i++) cards += '<div class="card"><div class="ph"></div><div class="l1"></div><div class="l2"></div></div>';
+  var list = CATS.map(function (c) { return '<label><input type="checkbox">' + c + '</label>'; }).join('');
+  host.innerHTML = OPTS.map(function (o) {
+    return '<section class="opt" data-n="' + o.n + '" aria-labelledby="o' + o.n + '"><div class="opt-head"><div><h2 id="o' + o.n + '">' + o.n + ' · ' + o.name + '</h2><p>' + o.desc + '</p><div class="tags">' +
+      o.tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('') + (o.warn ? '<span class="tag warn">' + o.warn + '</span>' : '') +
+      '</div></div><button class="try" type="button" data-try="' + o.n + '">Try on this whole page</button></div>' +
+      '<div class="demos"><div><p class="demo-label">Filter list</p><div class="pane filters sb' + o.n + '"><div class="fh"><span>Category</span></div>' + list + '</div></div>' +
+      '<div><p class="demo-label">Page of deals</p><div class="pane feed sb' + o.n + '">' + cards + '</div></div></div></section>';
+  }).join('');
+  function set(n) {
+    if (n) html.setAttribute('data-sb', n); else html.removeAttribute('data-sb');
+    document.querySelectorAll('.opt').forEach(function (s) { s.classList.toggle('is-on', s.dataset.n === String(n)); });
+    nameEl.textContent = n ? n + ' · ' + OPTS[n - 1].name : 'Browser default';
+    html.style.overflow = 'hidden'; void html.offsetHeight; html.style.overflow = '';  // repaint the page scrollbar right away
+  }
+  document.addEventListener('click', function (e) { var b = e.target.closest('[data-try]'); if (b) set(+b.dataset.try); });
+  document.getElementById('reset').addEventListener('click', function () { set(0); });
+  // option 4: show the bar while scrolling
+  function flash(el) { el.classList.add('is-scrolling'); clearTimeout(el._t); el._t = setTimeout(function () { el.classList.remove('is-scrolling'); }, 900); }
+  document.querySelectorAll('.sb4').forEach(function (el) { el.addEventListener('scroll', function () { flash(el); }, { passive: true }); });
+  window.addEventListener('scroll', function () { if (html.getAttribute('data-sb') === '4') flash(html); }, { passive: true });
+})();
+</script>
+</body>
+</html>

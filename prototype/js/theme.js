@@ -22,7 +22,7 @@
     if (!h || h.querySelector('.sh-ico')) return;
     var s = document.createElement('span'); s.className = 'sh-ico ' + ICONS[key][1]; s.innerHTML = '<i data-lucide="' + ICONS[key][0] + '"></i>';
     h.insertBefore(s, h.firstChild);
-    if (loot) { var t = document.createElement('span'); t.className = 'loot-tag'; t.textContent = '70%+ OFF'; h.appendChild(t); }
+    if (loot) { var t = document.createElement('span'); t.className = 'loot-tag'; t.textContent = '80%+ OFF'; h.appendChild(t); }
   }
   Object.keys(ICONS).forEach(function (id) { chip(document.getElementById(id), id, id === 'h-loot'); });
   var file = location.pathname.replace(/\/(index\.html)?$/, '') || '/';  // D-105: real addresses

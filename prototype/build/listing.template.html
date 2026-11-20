@@ -19,7 +19,7 @@
 <main>
   <div class="container">
     <div class="crumbs">{{CRUMBS}}</div>
-    <div class="page-head"><h1 id="page-title">{{TITLE}}</h1><p id="page-rule">{{RULE}}</p></div>
+    <div class="page-head"><h1 id="page-title">{{TITLE}}</h1></div>
 
     <div class="listing">
       {{COMMUNITY}}
@@ -28,15 +28,15 @@
         <form id="filter-form">
           <!-- Shown once the BRD coupon field exists (D-075). Hidden in this prototype: no coupon data yet. -->
           <label class="opt coupon-toggle" hidden><input type="checkbox" name="coupon" value="1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Has a coupon</span></label>
-          <details class="fgroup" open data-group-name="cat" {{CAT_HIDDEN}}><summary>Category <i data-lucide="chevron-down"></i></summary>
+          <details class="fgroup" data-group-name="cat" {{CAT_HIDDEN}}><summary>Category <i data-lucide="chevron-down"></i></summary>
             <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a category" data-find="cat" aria-label="Find a category"></label>
             <div class="opts scroll" data-group="cat">{{CAT_OPTS}}</div>
           </details>
-          <details class="fgroup" open data-group-name="store" {{STORE_HIDDEN}}><summary>Store <i data-lucide="chevron-down"></i></summary>
+          <details class="fgroup" data-group-name="store" {{STORE_HIDDEN}}><summary>Store <i data-lucide="chevron-down"></i></summary>
             <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a store" data-find="store" aria-label="Find a store"></label>
             <div class="opts scroll" data-group="store">{{STORE_OPTS}}</div>
           </details>
-          <details class="fgroup" open data-group-name="disc"><summary>Discount <i data-lucide="chevron-down"></i></summary>
+          <details class="fgroup" data-group-name="disc"><summary>Discount <i data-lucide="chevron-down"></i></summary>
             <div class="opts" data-group="disc">
               <label class="opt"><input type="radio" name="disc" value="0" checked><span class="box radio"></span><span class="txt">Any</span></label>
               <label class="opt"><input type="radio" name="disc" value="50"><span class="box radio"></span><span class="txt">50% or more</span></label>
@@ -44,7 +44,7 @@
               <label class="opt"><input type="radio" name="disc" value="90"><span class="box radio"></span><span class="txt">90% or more</span></label>
             </div>
           </details>
-          <details class="fgroup" open data-group-name="price"><summary>Price <i data-lucide="chevron-down"></i></summary>
+          <details class="fgroup" data-group-name="price"><summary>Price <i data-lucide="chevron-down"></i></summary>
             <div class="opts" data-group="price">
               <label class="opt"><input type="radio" name="price" value="" checked><span class="box radio"></span><span class="txt">Any</span></label>
               <label class="opt"><input type="radio" name="price" value="0-499"><span class="box radio"></span><span class="txt">Under ₹499</span></label>

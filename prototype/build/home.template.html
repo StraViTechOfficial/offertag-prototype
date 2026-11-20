@@ -53,13 +53,18 @@
 {{COMMUNITY}}
 
 <main>
-  {{SINCE}}
   {{PROMO_STRIP}}
   <!-- Hot deals today (D-113 · DEV-031): owner posters first (featured deal / custom poster), then the 10 most-viewed deals of the last 24 h; no rank, no view count.
        Desktop: 4 in view, arrows at the sides slide 4 at a time and loop (Embla), no autoplay (D-072); phones: one card with the next peeking, swipe. Pinned deals show on the Top deals page only (D-104, D-114). -->
+
+  <!-- D-121: desktop (1200 px up) has a right column (ad, Shop by category, Shop by store) that starts beside Hot deals today; smaller screens show Hot deals, then the ad, then the deal rows, and reach categories and stores from the menu -->
+  <div class="container home-body">
+  <!-- D-122: "Hot deals today" and the new-deals capsule share one line above the left column; the cards and the right column start on the same line below it -->
+  <div class="section-head home-head"><h2 id="h-td">Hot deals today</h2>{{SINCE}}</div>
+  <aside class="home-side" aria-label="Shop by category and store">{{SIDE}}</aside>
+  <div class="home-main">
   <section class="section top-deals" id="hero" aria-labelledby="h-td">
     <div class="container">
-      <div class="section-head"><div><h2 id="h-td">Hot deals today</h2></div></div>
       <div class="td-carousel" data-td role="region" aria-roledescription="carousel" aria-labelledby="h-td">
         <div class="td-viewport"><div class="td-container">{{TOP_DEALS}}</div></div>
         <button class="td-btn td-prev" type="button" data-td-prev aria-label="Previous deals"><i data-lucide="chevron-left"></i></button>
@@ -68,41 +73,23 @@
     </div>
   </section>
 
-  <!-- M-10 / D-106, D-107: desktop (1200 px up) puts Shop by category / store in a side panel on the right so the deal rows get the width; smaller screens keep the strips -->
-  <div class="container home-body">
-  <aside class="home-side" aria-label="Shop by category and store">{{SIDE}}</aside>
-  <div class="home-main">
-  <!-- Categories -->
-  <section class="section cats" aria-labelledby="h-cats">
-    <div class="container">
-      <div class="section-head"><div><h2 id="h-cats">Shop by category</h2></div><a class="view-all" href="categories.html">All categories <i data-lucide="chevron-right"></i></a></div>
-      {{CATS}}
-    </div>
-  </section>
+  <!-- Sponsored (DEV-030, D-108): phone and tablet only, right under Hot deals (D-121); desktop shows it at the top of the right column -->
+  {{SPONSOR_INLINE}}
+
 
   <!-- Top deals (was Fresh, D-114) -->
   <section class="section deals" aria-labelledby="h-fresh" id="fresh">
     <div class="container">
-      <div class="section-head"><div><h2 id="h-fresh">Top deals</h2><p>Newest first</p></div><a class="view-all" href="fresh.html">View all <i data-lucide="chevron-right"></i></a></div>
+      <div class="section-head"><div><h2 id="h-fresh">Top deals</h2></div><a class="view-all" href="fresh.html">View all <i data-lucide="chevron-right"></i></a></div>
       {{FRESH}}
     </div>
   </section>
 
-  <!-- Sponsored (DEV-030, D-108): phone and tablet only; desktop shows it at the top of the right panel -->
-  {{SPONSOR_INLINE}}
-
-  <!-- Stores -->
-  <section class="section home-stores" aria-labelledby="h-stores">
-    <div class="container">
-      <div class="section-head"><div><h2 id="h-stores">Shop by store</h2><p>Deals listed all time</p></div><a class="view-all" href="stores.html">All stores <i data-lucide="chevron-right"></i></a></div>
-      <div class="stores-grid">{{STORES}}</div>
-    </div>
-  </section>
 
   <!-- Loot -->
   <section class="section deals" aria-labelledby="h-loot" id="loot">
     <div class="container">
-      <div class="section-head"><div><h2 id="h-loot">Loot deals</h2><p>70% off or more</p></div><a class="view-all" href="loot.html">View all <i data-lucide="chevron-right"></i></a></div>
+      <div class="section-head"><div><h2 id="h-loot">Loot deals</h2></div><a class="view-all" href="loot.html">View all <i data-lucide="chevron-right"></i></a></div>
       {{LOOT}}
     </div>
   </section>
@@ -132,8 +119,8 @@
     <a href="new.html"><i data-lucide="sparkles"></i>New</a>
     <a href="pantry.html"><i data-lucide="shopping-basket"></i>Pantry</a>
     <div class="sheet-section">Browse</div>
-    <a href="categories.html"><i data-lucide="layout-grid"></i>Categories</a>
-    <a href="stores.html"><i data-lucide="store"></i>Stores</a>
+    <a href="categories.html"><i data-lucide="layout-grid"></i>Shop by category</a>
+    <a href="stores.html"><i data-lucide="store"></i>Shop by store</a>
     <a href="blog.html" data-blog-link><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
     <div class="sheet-section">More</div>
     <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>

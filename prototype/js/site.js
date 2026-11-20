@@ -86,7 +86,7 @@
 
   // dropdown menus (shadcn DropdownMenu behaviour): one open at a time, outside click / Esc close, arrow keys move
   var openMenu = null;
-  function closeMenu() { if (!openMenu) return; var m = openMenu; openMenu = null; m.menu.dataset.state = 'closed'; m.trigger.setAttribute('aria-expanded', 'false'); setTimeout(function () { if (openMenu !== m) m.menu.hidden = true; }, 120); }
+  function closeMenu() { if (!openMenu) return; var m = openMenu; openMenu = null; m.menu.dataset.state = 'closed'; m.trigger.setAttribute('aria-expanded', 'false'); setTimeout(function () { if (openMenu !== m) m.menu.hidden = true; }, 240); }
   document.querySelectorAll('.dropdown').forEach(function (dd) {
     var trigger = dd.querySelector('[data-menu-trigger]'), menu = dd.querySelector('.menu'); if (!trigger || !menu) return;
     trigger.addEventListener('click', function (e) {
@@ -185,7 +185,7 @@
   if (pop && hq) {
     wire(pop); var open = false;
     function show() { pop.innerHTML = render(hq.value); pop.hidden = false; requestAnimationFrame(function () { pop.dataset.state = 'open'; }); hq.setAttribute('aria-expanded', 'true'); open = true; OT.icons(); }
-    function hide() { if (!open) return; open = false; pop.dataset.state = 'closed'; hq.setAttribute('aria-expanded', 'false'); setTimeout(function () { if (!open) pop.hidden = true; }, 120); }
+    function hide() { if (!open) return; open = false; pop.dataset.state = 'closed'; hq.setAttribute('aria-expanded', 'false'); setTimeout(function () { if (!open) pop.hidden = true; }, 240); }
     hq.addEventListener('focus', show); hq.addEventListener('input', show);
     document.addEventListener('click', function (e) { if (!hf.contains(e.target)) hide(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && open) { hide(); hq.blur(); } });
@@ -460,7 +460,7 @@
   });
   // blog share (D-111): hover/focus opens on desktop; tap toggles on touch; outside tap and Esc close
   all('[data-share]').forEach(function (s) {
-    var t = s.querySelector('[data-share-trig]');
+    var t = s.querySelector('[data-share-trig]'); if (!t) return;  // S22: the deal page's Copy link button also carries data-share; only blog share menus have a trigger
     function set(o) { s.classList.toggle('is-open', o); t.setAttribute('aria-expanded', o ? 'true' : 'false'); }
     t.addEventListener('click', function () { set(!s.classList.contains('is-open')); });
     s.addEventListener('mouseleave', function () { set(false); });
@@ -471,4 +471,24 @@
     if (q.get('empty') === '1') { document.getElementById('blog-list').hidden = true; document.getElementById('blog-empty').hidden = false; }
     if (q.get('pager') === '1') document.getElementById('blog-pager').hidden = false;
   }
+})();
+
+/* D-128: fold-out panels (<details>: filter groups, FAQ, How to get it, About text) roll open and closed instead of jumping.
+   Public site only. Reduced motion keeps the instant toggle. A click mid-roll reverses from where it is. */
+(function () {
+  if (!document.documentElement.classList.contains('theme') || !Element.prototype.animate) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)'), DUR = 260, EASE = 'cubic-bezier(.2,0,0,1)';
+  document.addEventListener('click', function (e) {
+    var s = e.target.closest('summary'), d = s && s.parentElement;
+    if (!d || d.tagName !== 'DETAILS' || s !== d.querySelector(':scope > summary') || still.matches) return;
+    e.preventDefault();
+    var from = d.getBoundingClientRect().height, closing = d.open && !d.classList.contains('is-closing');
+    if (d._roll) { d._roll.onfinish = null; d._roll.cancel(); }
+    var to;
+    if (closing) { d.classList.add('is-closing'); d.open = false; to = d.getBoundingClientRect().height; d.open = true; }
+    else { d.classList.remove('is-closing'); d.open = true; to = d.getBoundingClientRect().height; }
+    d.style.overflow = 'hidden';
+    var a = d._roll = d.animate({ height: [from + 'px', to + 'px'] }, { duration: DUR, easing: EASE });
+    a.onfinish = function () { if (closing) { d.open = false; d.classList.remove('is-closing'); } d.style.overflow = ''; d._roll = null; };
+  });
 })();
