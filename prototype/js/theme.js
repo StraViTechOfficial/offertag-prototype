@@ -22,8 +22,13 @@
     if (!h || h.querySelector('.sh-ico')) return;
     var s = document.createElement('span'); s.className = 'sh-ico ' + ICONS[key][1]; s.innerHTML = '<i data-lucide="' + ICONS[key][0] + '"></i>';
     h.insertBefore(s, h.firstChild);
-    // D-138: "Over 80% off" (the Loot rule is more than 80%); beside a page's H1, inside a section's H2
-    if (loot) { var t = document.createElement('span'); t.className = 'loot-tag'; t.textContent = 'Over 80% off'; if (h.tagName === 'H1') h.after(t); else h.appendChild(t); }
+    // D-140: "+80% off" pinned to the heading's top-right corner; beside the heading (in a .loot-sup wrapper), never inside it
+    if (loot) {
+      var t = document.createElement('span'); t.className = 'loot-tag'; t.innerHTML = '<i data-lucide="zap"></i>+80% off';
+      var box = h.tagName === 'H1' ? document.createElement('div') : h.parentElement;
+      if (h.tagName === 'H1') { h.parentNode.insertBefore(box, h); box.appendChild(h); }
+      box.classList.add('loot-sup'); box.appendChild(t);
+    }
   }
   Object.keys(ICONS).forEach(function (id) { chip(document.getElementById(id), id, id === 'h-loot'); });
   var file = location.pathname.replace(/\/(index\.html)?$/, '') || '/';  // D-105: real addresses

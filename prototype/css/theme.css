@@ -101,11 +101,15 @@ html.theme .sh-ico .lucide { width: 1rem; height: 1rem; }
 /* Loot sits on one peach band (one band per page) */
 html.theme #loot { background: hsl(var(--peach)); margin-top: 1.75rem; padding-bottom: 1.5rem; }
 html.theme #loot .section-head p { color: hsl(20 40% 35%); }
-/* Loot badge (D-138): a light pill in the Loot red, one line, never squeezed. On list pages it sits beside the H1, not inside it,
-   so the heading reads as the title alone; on phones it drops under the title, lined up with the title text. */
-html.theme .loot-tag { display: inline-flex; align-items: center; flex: none; white-space: nowrap; margin-left: 0.625rem; padding: 0.25rem 0.625rem; border-radius: 62.4375rem; background: hsl(var(--loot) / .08); border: 1px solid hsl(var(--loot) / .22); color: hsl(var(--loot)); font-size: 0.75rem; font-weight: 600; line-height: 1rem; letter-spacing: 0; }
-html.theme .page-head > .loot-tag { margin-left: 0; align-self: center; }
-@media (max-width: 899px) { html.theme .page-head > .loot-tag { margin: -0.25rem 0 0 2.5rem; } }
+/* Loot badge (D-140): a small "+80% off" pill pinned to the heading's top-right corner, like an exponent. It sits beside the
+   heading, never inside it (the heading reads as the title alone); the wrapper keeps room for it, so it never overlaps and stays
+   on the corner when the title wraps on phones. */
+html.theme .loot-sup { position: relative; padding-right: 5rem; min-width: 0; }
+html.theme .loot-tag { position: absolute; top: -0.25rem; right: 0; display: inline-flex; align-items: center; gap: 0.125rem; padding: 0.0625rem 0.375rem 0.0625rem 0.3125rem; border-radius: 62.4375rem; background: hsl(var(--loot)); color: #fff; font-size: 0.625rem; font-weight: 700; line-height: 0.875rem; letter-spacing: 0.01em; white-space: nowrap; box-shadow: 0 1px 2px hsl(var(--loot) / .3); }
+html.theme .loot-tag .lucide { width: 0.625rem; height: 0.625rem; fill: currentColor; stroke-width: 2.5; }
+@media (min-width: 768px) { html.theme .loot-tag { top: -0.125rem; } }
+/* phones: no room is held beside the title (it keeps one line where it fits); the badge rides just above the title's end */
+@media (max-width: 767px) { html.theme .loot-sup { width: fit-content; max-width: 100%; padding: 0.75rem 0 0; } html.theme .loot-tag { top: -0.25rem; right: -0.25rem; } }
 /* store tiles: monogram chip (placeholder until client logos arrive) */
 html.theme .store .mono { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; display: grid; place-items: center; font-weight: 800; font-size: 1.0625rem; color: hsl(var(--navy)); background: hsl(var(--tint, var(--sky))); margin-bottom: 0.25rem; }
 /* join row = the one navy band */
