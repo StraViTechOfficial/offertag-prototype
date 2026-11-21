@@ -298,8 +298,9 @@ html.theme .since-meta { color: hsl(var(--muted-foreground)); font-size: 0.8125r
 /* Size: every size is in rem, so one root value scales the public site. Phones keep 16 px; laptops 112.5 %; big monitors 125 % (the owner's preferred look). Admin (html.admin) keeps 16 px. */
 html.theme { font-size: 100%; }
 @media (min-width: 768px) { html.theme { font-size: 106.25%; } }
-@media (min-width: 1280px) { html.theme { font-size: 112.5%; } }
-@media (min-width: 1680px) { html.theme { font-size: 125%; } }
+/* Laptops and desktops scale with the screen: the base size follows the width (15px on a 1536px laptop),
+   held down on short screens by the height, and kept between 14 and 20px. */
+@media (min-width: 1024px) { html.theme { font-size: clamp(0.875rem, min(0.975vw, 2.05vh), 1.25rem); } }
 html.theme body { font-size: 1rem; line-height: 1.5; }
 /* Width: content stops growing at 1600 px on big monitors and stays centred */
 html.theme .container { max-width: 1600px; }
@@ -342,7 +343,7 @@ html.theme.is-embed .fstack { display: none; }
 html.theme .deals .carousel-item { flex-basis: 50%; }
 @media (min-width: 640px) { html.theme .deals .carousel-item { flex-basis: 33.3333%; } }
 @media (min-width: 1100px) { html.theme .deals .carousel-item { flex-basis: 25%; } }
-@media (min-width: 1680px) { html.theme .deals .carousel-item { flex-basis: 20%; } }
+@media (min-width: 1280px) { html.theme .deals .carousel-item { flex-basis: 20%; } }
 html.theme .deal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 640px) { html.theme .deal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1280px) { html.theme .deal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -381,9 +382,9 @@ html.theme .card-share .lucide { width: 0.875rem; height: 0.875rem; }
 }
 /* more, smaller cards per row: Home rows 2 · 3 · 5 · 6; listing grids 2 · 3 · 4 · 5 */
 @media (min-width: 1100px) { html.theme .deals .carousel-item { flex-basis: 20%; } }
-@media (min-width: 1680px) { html.theme .deals .carousel-item { flex-basis: 16.6667%; } }
+@media (min-width: 1280px) { html.theme .deals .carousel-item { flex-basis: 16.6667%; } }
 @media (min-width: 1024px) { html.theme .deal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (min-width: 1680px) { html.theme .deal-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { html.theme .deal-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 html.theme .deal .saveline { min-width: 0; } html.theme .deal .save { min-width: 0; overflow: hidden; text-overflow: ellipsis; } html.theme .deal .store-chip { flex: none; }
 html.theme .deal .priceline { flex-wrap: nowrap; min-width: 0; } html.theme .deal .was { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
@@ -463,9 +464,9 @@ html.theme .sh-nav .carousel-prev, html.theme .sh-nav .carousel-next { position:
 html.theme .sh-nav .carousel-prev svg, html.theme .sh-nav .carousel-next svg { width: 1rem; height: 1rem; }
 @media (hover: hover) { html.theme .sh-nav .carousel-prev:hover, html.theme .sh-nav .carousel-next:hover { background: hsl(var(--navy)); border-color: hsl(var(--navy)); color: #fff; } }
 @media (max-width: 767px) { html.theme .sh-nav { display: none; } }
-/* home deal rows inside the main column: 4 per row (5 from 1680 px) so the square cards keep readable type */
+/* home deal rows inside the main column: 4 per row (5 from 1280 px, where the type starts scaling with the screen) so the square cards keep readable type */
 @media (min-width: 1200px) { html.theme .home-main .deals .carousel-item { flex-basis: 25%; } }
-@media (min-width: 1680px) { html.theme .home-main .deals .carousel-item { flex-basis: 20%; } }
+@media (min-width: 1280px) { html.theme .home-main .deals .carousel-item { flex-basis: 20%; } }
 
 /* 3. Loot band inside the column: rounded peach panel with its own padding, so icon, title, subtitle and cards line up */
 html.theme .home-main #loot { margin-top: 1.5rem; padding: 1rem 1.25rem 1.25rem; border-radius: 1.25rem; }
