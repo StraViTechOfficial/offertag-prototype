@@ -102,6 +102,7 @@ html.theme .sh-ico .lucide { width: 1rem; height: 1rem; }
 html.theme #loot { background: hsl(var(--peach)); margin-top: 1.75rem; padding-bottom: 1.5rem; }
 html.theme #loot .section-head p { color: hsl(20 40% 35%); }
 html.theme .loot-tag { display: inline-flex; align-items: center; gap: 0.25rem; margin-left: 0.5rem; padding: 2px 0.5rem; border-radius: 62.4375rem; background: hsl(var(--loot)); color: #fff; font-size: 0.6875rem; font-weight: 700; letter-spacing: .02em; vertical-align: 0.1875rem; }
+html.theme .loot-tag { flex: none; white-space: nowrap; }  /* a long title wraps beside the pill; the pill never shrinks into a circle */
 /* store tiles: monogram chip (placeholder until client logos arrive) */
 html.theme .store .mono { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; display: grid; place-items: center; font-weight: 800; font-size: 1.0625rem; color: hsl(var(--navy)); background: hsl(var(--tint, var(--sky))); margin-bottom: 0.25rem; }
 /* join row = the one navy band */
