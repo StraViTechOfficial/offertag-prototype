@@ -539,7 +539,7 @@ html.theme .deal .acts .btn-buy::after { content: ""; position: absolute; top: 0
 /* 7b. Card pops on hover (D-108): grows a little, lifts, deeper shadow; rows get room so the grown card is never clipped */
 @media (hover: hover) {
   html.theme .deal { transition: transform .22s cubic-bezier(.2,0,0,1), box-shadow .22s, border-color .22s; }
-  html.theme .deal:hover { position: relative; z-index: 2; transform: translateY(-4px) scale(1.035); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--navy) / .35), 0 2px 6px hsl(var(--navy) / .06); border-color: hsl(var(--navy) / .22); }
+  html.theme .deal:hover { position: relative; z-index: 2; transform: translateY(-2px) scale(1.015); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--navy) / .35), 0 2px 6px hsl(var(--navy) / .06); border-color: hsl(var(--navy) / .22); }
   html.theme .deals .carousel-viewport { padding: 0.75rem 0.5rem; margin: -0.75rem -0.5rem; }
 }
 @media (prefers-reduced-motion: reduce) { html.theme .deal:hover { transform: none; } }
@@ -592,7 +592,7 @@ html.theme .btn-view .lucide { width: .9375rem; height: .9375rem; transition: tr
 html.theme .btn-view::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, hsl(0 0% 100% / .45), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
 @media (max-width: 639px) { html.theme .btn-view { height: 2.125rem; font-size: .8125rem; } }
 @media (hover: hover) {
-  html.theme .post-card:hover { z-index: 2; transform: translateY(-4px) scale(1.02); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--navy) / .35), 0 2px 6px hsl(var(--navy) / .06); }
+  html.theme .post-card:hover { z-index: 2; transform: translateY(-2px) scale(1.01); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--navy) / .35), 0 2px 6px hsl(var(--navy) / .06); }
   html.theme .post-card:hover .post-cover img { transform: scale(1.05); }
   html.theme .post-card:hover h2 a { color: hsl(var(--navy)); }
   html.theme .post-card:hover .btn-view { background: hsl(var(--navy)); color: #fff; border-color: hsl(var(--navy)); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--navy) / .6); }
@@ -610,12 +610,15 @@ html.theme .post-head h1 { margin: 0; font-size: 1.5rem; line-height: 1.875rem; 
 html.theme .post-lead { margin: .25rem 0 0; font-size: 1rem; line-height: 1.5rem; color: hsl(var(--ink) / .8); }
 html.theme .post-head .post-share { margin-top: .5rem; }
 html.theme .post-head .post-share .btn { border-radius: 999px; }
+/* D-134: from 640px the picture floats left; once the text passes the picture it carries on underneath, full width */
 @media (min-width: 640px) {
-  html.theme .post-head { grid-template-columns: 15rem minmax(0, 1fr); gap: 1.5rem; padding: 1.25rem; }
-  html.theme .post-head.no-pic { grid-template-columns: 1fr; }
-  html.theme .post-hero { aspect-ratio: 1; }
+  html.theme .post-head { display: flow-root; padding: 1.25rem; }
+  html.theme .post-hero { aspect-ratio: 1; float: left; width: 15rem; margin: 0 1.5rem .75rem 0; }
+  html.theme .post-head-txt { display: block; align-content: normal; }
+  html.theme .post-head-txt > * + * { margin-top: .5rem; }
+  html.theme .post-head .post-share { margin-top: 1rem; }
 }
-@media (min-width: 1024px) { html.theme .post-head { grid-template-columns: 17.5rem minmax(0, 1fr); } html.theme .post-head h1 { font-size: 2rem; line-height: 2.5rem; } }
+@media (min-width: 1024px) { html.theme .post-hero { width: 17.5rem; } html.theme .post-head h1 { font-size: 2rem; line-height: 2.5rem; } }
 html.theme .post-body { margin-top: 1.5rem; }
 
 /* deal cards inside the post and in the right rail */
@@ -643,7 +646,7 @@ html.theme .post-rail .emb-acts .btn-buy { height: 2.125rem; padding: 0 .75rem; 
 html.theme .post-rail .emb-store { max-width: 3.75rem; height: 1rem; }
 html.theme .post-rail { padding: .75rem .5rem .5rem; margin: -.75rem -.5rem 0; }
 @media (hover: hover) {
-  html.theme .deal-embed:hover { z-index: 2; transform: translateY(-3px) scale(1.02); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--navy) / .35), 0 2px 6px hsl(var(--navy) / .06); }
+  html.theme .deal-embed:hover { z-index: 2; transform: translateY(-2px) scale(1.01); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--navy) / .35), 0 2px 6px hsl(var(--navy) / .06); }
   html.theme .deal-embed:hover .img img { transform: scale(1.06); }
   html.theme .deal-embed:hover .emb-acts .btn-buy { background: hsl(var(--navy)); color: #fff; border-color: hsl(var(--navy)); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--navy) / .6); }
   html.theme .deal-embed:hover .emb-acts .btn-buy::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
