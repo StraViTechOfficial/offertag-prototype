@@ -804,7 +804,6 @@ html.theme .list-head .toolbar { flex: 1 1 100%; min-width: 0; }
 @media (min-width: 900px) and (max-width: 1199px) { html.theme body[data-page="listing"] { --stick: calc(7.5rem + 1px); } }
 /* not frozen: a hovered first-row card may lift over the row's bottom gap; frozen (listing.js adds .is-stuck): cards always go under */
 @media (min-width: 900px) { html.theme .list-head.is-stuck { z-index: 3; } }
-}
 /* D-126: the join tab moves from mid-height to the lower left so it never sits on the Hot deals arrow; it stays high enough for the opened half-disc to fit above the screen bottom */
 html.theme .fjoin { top: auto; bottom: calc(var(--R) + 2.75rem - 1.75rem); transform: none; }
 
