@@ -781,13 +781,18 @@ html.theme .sp-side .sp-cta { justify-self: center; }
 /* D-124: no deal count above the cards on deal pages (Top deals, Loot, New, Pantry, category, store); search keeps its result count */
 html.theme body[data-page="listing"]:not([data-kind="search"]) .toolbar .count { display: none; }
 
-/* D-125: the desktop filter column sits in a white card (same look as the Home Shop by category box); groups start closed (template) */
+/* D-125: the desktop filter column sits in a white card (same look as the Home Shop by category box); groups start closed except Posted (D-135, template) */
 @media (min-width: 900px) {
   html.theme .filters { background: #fff; border: 1px solid hsl(var(--line)); border-radius: 1rem; box-shadow: 0 1px 2px hsl(var(--navy) / .04); padding: 0.375rem 0.75rem 0.25rem 1rem; }
   html.theme .filters .fgroup:last-of-type { border-bottom: 0; }
 }
 /* D-125: while the next batch loads, the spinner area holds a screen's height so the list never "ends" under a fast scroll and the filter card stays put */
 html.theme .load-state:has(.loader) { min-height: 100vh; align-content: start; }
+/* D-135: desktop deal pages: Sort, grid/list and filter chips sit on the heading line, so the first row of cards starts level with the Filters card. Posted opens by default (template) */
+@media (min-width: 900px) {
+  html.theme body[data-page="listing"] .listing { position: relative; row-gap: 0; }
+  html.theme body[data-page="listing"] .listing > section > .toolbar { position: absolute; left: calc(16.25rem + 2rem); right: 0; bottom: 100%; padding-bottom: 0; }
+}
 /* D-126: the join tab moves from mid-height to the lower left so it never sits on the Hot deals arrow; it stays high enough for the opened half-disc to fit above the screen bottom */
 html.theme .fjoin { top: auto; bottom: calc(var(--R) + 2.75rem - 1.75rem); transform: none; }
 
