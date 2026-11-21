@@ -420,7 +420,8 @@ html.theme .hs-all .lucide { width: 0.875rem; height: 0.875rem; }
 /* ---- Deal page (M-12, M-13, D-106): every section is a white card; image fills its box; view count beside comments ---- */
 html.theme .detail-main { gap: 1rem; }
 html.theme .deal-image { height: 20rem; padding: 1rem; background: #fff; border: 1px solid hsl(var(--line)); border-radius: var(--radius); }
-html.theme .deal-image img { height: 100%; width: auto; max-width: 100%; object-fit: contain; }
+/* the photo fills the frame inside its padding: a percentage height never resolves inside a button, so a 300px photo spilled out of a frame shorter than 300px */
+html.theme .deal-image img { position: absolute; inset: 1rem; width: calc(100% - 2rem); height: calc(100% - 2rem); max-width: none; max-height: none; object-fit: contain; }
 html.theme .detail-main > .block, html.theme .detail-main > .comments { background: #fff; border: 1px solid hsl(var(--line)); border-radius: var(--radius); padding: 1rem 1.125rem; margin: 0; }
 html.theme .detail-main > .block h2, html.theme .detail-main > .comments h2 { font-size: 1rem; margin: 0 0 0.5rem; }
 html.theme .detail-main > .howto { padding-top: 0.875rem; padding-bottom: 0.875rem; }

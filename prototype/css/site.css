@@ -302,6 +302,8 @@ body[data-page="detail"] .header-search-mobile { display: none; }
 .comment .c-acts .btn[aria-pressed="true"] .lucide { fill: currentColor; }
 .comment .c-del { display: none; }
 .is-admin .comment .c-del { display: inline-flex; }
+/* a member deletes their own comment (Muiz, 21 Nov) */
+.comment .c-del.is-mine { display: inline-flex; }
 .replies { grid-column: 2; display: grid; gap: 0.75rem; margin-top: 0.5rem; }
 .replies .comment { grid-template-columns: 1.75rem 1fr; }
 .replies .avatar { width: 1.75rem; height: 1.75rem; font-size: 0.75rem; }
