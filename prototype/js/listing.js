@@ -257,3 +257,12 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !so.hidden) close(false); });
   window.addEventListener('popstate', function () { if (!so.hidden) { close(true); } });
 })();
+
+/* D-136: mark the frozen heading row so a hovered card never lifts over it while frozen */
+(function () {
+  var head = document.querySelector('.list-head'); if (!head) return;
+  function size() { document.body.style.setProperty('--head-h', head.offsetHeight + 'px'); check(); }
+  function check() { var top = parseFloat(getComputedStyle(head).top) || 0; head.classList.toggle('is-stuck', getComputedStyle(head).position === 'sticky' && window.scrollY > 0 && head.getBoundingClientRect().top <= top + 0.5); }
+  window.addEventListener('scroll', check, { passive: true });
+  window.addEventListener('resize', size); if (window.ResizeObserver) new ResizeObserver(size).observe(head); size();
+})();

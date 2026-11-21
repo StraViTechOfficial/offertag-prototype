@@ -53,7 +53,30 @@
 <main>
   <div class="container">
     <div class="crumbs"><a href="/">Home</a><i data-lucide="chevron-right"></i><span>Loot deals</span></div>
-    <div class="page-head"><h1 id="page-title">Loot deals</h1></div>
+    <div class="page-head list-head"><h1 id="page-title">Loot deals</h1>
+        <div class="toolbar">
+          <button class="btn btn-outline phone-only" id="open-filters" type="button"><i data-lucide="sliders-horizontal"></i>Filter <span class="badge badge-default" id="filter-count" hidden>0</span></button>
+          <button class="btn btn-outline phone-only" id="open-sort" type="button"><i data-lucide="arrow-up-down"></i><span id="sort-label-m">Sort</span></button>
+          <span class="count"><b id="count">11</b> deals</span>
+          <div class="chips locked" id="locked"></div>
+          <div class="chips" id="chips"></div>
+          <div class="right">
+            <div class="dropdown sort-desktop" id="sort-menu">
+              <button class="btn btn-outline" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><i data-lucide="arrow-up-down"></i><span id="sort-label">Sort</span><i data-lucide="chevron-down"></i></button>
+              <div class="menu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-sort="recommended">Recommended</button>
+                <button type="button" role="menuitemradio" data-sort="newest">Newest</button>
+                <button type="button" role="menuitemradio" data-sort="disc">Discount: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="saving">Biggest saving</button>
+                <button type="button" role="menuitemradio" data-sort="price-asc">Price: low to high</button>
+                <button type="button" role="menuitemradio" data-sort="price-desc">Price: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="views">Most viewed</button>
+              </div>
+            </div>
+            <div class="density" role="group" aria-label="Density"><button type="button" data-density="grid" aria-pressed="true" aria-label="Grid"><i data-lucide="layout-grid"></i></button><button type="button" data-density="list" aria-pressed="false" aria-label="List"><i data-lucide="list"></i></button></div>
+          </div>
+        </div>
+    </div>
 
     <div class="listing">
       
@@ -104,29 +127,6 @@
       </aside>
 
       <section aria-label="Results">
-        <div class="toolbar">
-          <button class="btn btn-outline phone-only" id="open-filters" type="button"><i data-lucide="sliders-horizontal"></i>Filter <span class="badge badge-default" id="filter-count" hidden>0</span></button>
-          <button class="btn btn-outline phone-only" id="open-sort" type="button"><i data-lucide="arrow-up-down"></i><span id="sort-label-m">Sort</span></button>
-          <span class="count"><b id="count">11</b> deals</span>
-          <div class="chips locked" id="locked"></div>
-          <div class="chips" id="chips"></div>
-          <div class="right">
-            <div class="dropdown sort-desktop" id="sort-menu">
-              <button class="btn btn-outline" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><i data-lucide="arrow-up-down"></i><span id="sort-label">Sort</span><i data-lucide="chevron-down"></i></button>
-              <div class="menu" role="menu" hidden>
-                <button type="button" role="menuitemradio" data-sort="recommended">Recommended</button>
-                <button type="button" role="menuitemradio" data-sort="newest">Newest</button>
-                <button type="button" role="menuitemradio" data-sort="disc">Discount: high to low</button>
-                <button type="button" role="menuitemradio" data-sort="saving">Biggest saving</button>
-                <button type="button" role="menuitemradio" data-sort="price-asc">Price: low to high</button>
-                <button type="button" role="menuitemradio" data-sort="price-desc">Price: high to low</button>
-                <button type="button" role="menuitemradio" data-sort="views">Most viewed</button>
-              </div>
-            </div>
-            <div class="density" role="group" aria-label="Density"><button type="button" data-density="grid" aria-pressed="true" aria-label="Grid"><i data-lucide="layout-grid"></i></button><button type="button" data-density="list" aria-pressed="false" aria-label="List"><i data-lucide="list"></i></button></div>
-          </div>
-        </div>
-
         <div class="deal-grid results" id="results"><article class="card deal" data-id="474464" data-page="/deal/dynamotrade-magic-eraser-cleaning-sponge-for-walls-kitchen-shoes-1-pcs-coupon-474464" data-q="dynamotrade magic eraser cleaning sponge for walls, kitchen &amp; shoes (1 pcs) (coupon) kitchen amazon" data-pinned="1" data-cat="Kitchen" data-store="Amazon" data-pct="95" data-price="24" data-save="475" data-age="120" data-views="21" data-types="Fresh,Top,Loot,Pantry,New">
   <a class="img" href="/deal/dynamotrade-magic-eraser-cleaning-sponge-for-walls-kitchen-shoes-1-pcs-coupon-474464" aria-label="DYNAMOTRADE Magic Eraser Cleaning Sponge for Walls, Kitchen &amp; Shoes (1 Pcs) (Coupon)"><img src="/assets/deals/lg/1794323983.jpg" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">95% off</span></a>
   <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>

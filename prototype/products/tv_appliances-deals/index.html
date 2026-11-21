@@ -53,7 +53,30 @@
 <main>
   <div class="container">
     <div class="crumbs"><a href="/">Home</a><i data-lucide="chevron-right"></i><a href="/categories">Categories</a><i data-lucide="chevron-right"></i><span>TV &amp; Appliances</span></div>
-    <div class="page-head"><h1 id="page-title">TV &amp; Appliances deals</h1></div>
+    <div class="page-head list-head"><h1 id="page-title">TV &amp; Appliances deals</h1>
+        <div class="toolbar">
+          <button class="btn btn-outline phone-only" id="open-filters" type="button"><i data-lucide="sliders-horizontal"></i>Filter <span class="badge badge-default" id="filter-count" hidden>0</span></button>
+          <button class="btn btn-outline phone-only" id="open-sort" type="button"><i data-lucide="arrow-up-down"></i><span id="sort-label-m">Sort</span></button>
+          <span class="count"><b id="count">0</b> deals</span>
+          <div class="chips locked" id="locked"><span class="chip-x is-locked"><i data-lucide="lock"></i>TV &amp; Appliances</span></div>
+          <div class="chips" id="chips"></div>
+          <div class="right">
+            <div class="dropdown sort-desktop" id="sort-menu">
+              <button class="btn btn-outline" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><i data-lucide="arrow-up-down"></i><span id="sort-label">Sort</span><i data-lucide="chevron-down"></i></button>
+              <div class="menu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-sort="recommended">Recommended</button>
+                <button type="button" role="menuitemradio" data-sort="newest">Newest</button>
+                <button type="button" role="menuitemradio" data-sort="disc">Discount: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="saving">Biggest saving</button>
+                <button type="button" role="menuitemradio" data-sort="price-asc">Price: low to high</button>
+                <button type="button" role="menuitemradio" data-sort="price-desc">Price: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="views">Most viewed</button>
+              </div>
+            </div>
+            <div class="density" role="group" aria-label="Density"><button type="button" data-density="grid" aria-pressed="true" aria-label="Grid"><i data-lucide="layout-grid"></i></button><button type="button" data-density="list" aria-pressed="false" aria-label="List"><i data-lucide="list"></i></button></div>
+          </div>
+        </div>
+    </div>
 
     <div class="listing">
       
@@ -104,29 +127,6 @@
       </aside>
 
       <section aria-label="Results">
-        <div class="toolbar">
-          <button class="btn btn-outline phone-only" id="open-filters" type="button"><i data-lucide="sliders-horizontal"></i>Filter <span class="badge badge-default" id="filter-count" hidden>0</span></button>
-          <button class="btn btn-outline phone-only" id="open-sort" type="button"><i data-lucide="arrow-up-down"></i><span id="sort-label-m">Sort</span></button>
-          <span class="count"><b id="count">0</b> deals</span>
-          <div class="chips locked" id="locked"><span class="chip-x is-locked"><i data-lucide="lock"></i>TV &amp; Appliances</span></div>
-          <div class="chips" id="chips"></div>
-          <div class="right">
-            <div class="dropdown sort-desktop" id="sort-menu">
-              <button class="btn btn-outline" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><i data-lucide="arrow-up-down"></i><span id="sort-label">Sort</span><i data-lucide="chevron-down"></i></button>
-              <div class="menu" role="menu" hidden>
-                <button type="button" role="menuitemradio" data-sort="recommended">Recommended</button>
-                <button type="button" role="menuitemradio" data-sort="newest">Newest</button>
-                <button type="button" role="menuitemradio" data-sort="disc">Discount: high to low</button>
-                <button type="button" role="menuitemradio" data-sort="saving">Biggest saving</button>
-                <button type="button" role="menuitemradio" data-sort="price-asc">Price: low to high</button>
-                <button type="button" role="menuitemradio" data-sort="price-desc">Price: high to low</button>
-                <button type="button" role="menuitemradio" data-sort="views">Most viewed</button>
-              </div>
-            </div>
-            <div class="density" role="group" aria-label="Density"><button type="button" data-density="grid" aria-pressed="true" aria-label="Grid"><i data-lucide="layout-grid"></i></button><button type="button" data-density="list" aria-pressed="false" aria-label="List"><i data-lucide="list"></i></button></div>
-          </div>
-        </div>
-
         <div class="deal-grid results" id="results">
           <div class="empty" id="empty" hidden><p id="empty-text">No deals match these filters.</p><button class="btn btn-outline" type="button" data-clear id="empty-clear">Clear all filters</button><p class="nearby">Try nearby: <a href="/products/kitchen-deals">Kitchen</a> · <a href="/products/others-deals">Others</a> · <a href="/products/clothing-deals">Clothing</a></p></div>
         </div>
