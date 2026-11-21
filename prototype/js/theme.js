@@ -22,7 +22,7 @@
     if (!h || h.querySelector('.sh-ico')) return;
     var s = document.createElement('span'); s.className = 'sh-ico ' + ICONS[key][1]; s.innerHTML = '<i data-lucide="' + ICONS[key][0] + '"></i>';
     h.insertBefore(s, h.firstChild);
-    // D-140: "+80% off" pinned to the heading's top-right corner; beside the heading (in a .loot-sup wrapper), never inside it
+    // D-141: "+80% off" sticker on the heading's top-right corner; beside the heading (in a .loot-sup wrapper), never inside it
     if (loot) {
       var t = document.createElement('span'); t.className = 'loot-tag'; t.innerHTML = '<i data-lucide="zap"></i>+80% off';
       var box = h.tagName === 'H1' ? document.createElement('div') : h.parentElement;
