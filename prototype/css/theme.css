@@ -856,3 +856,11 @@ html.theme .fgroup .opts:not(.scroll) { padding: 3px 0.5rem 3px 3px; }
   html.theme .post-rail { top: 5.5rem; max-height: calc(100vh - 6.5rem); }
   html.theme .legal-toc { top: 6.25rem; max-height: calc(100vh - 7.25rem); }
 }
+
+/* D-133: wide screens get side margins that grow with the screen (about 10% each side, as in the user's 80% zoom view).
+   The content never gets narrower than 1180 px (Home right column + 3 Hot deals still fit) and never wider than 1600 px.
+   Under 1024 px nothing changes. The header, page and footer share .container, so they stay aligned. */
+@media (min-width: 1024px) {
+  html.theme .container { max-width: none; padding-left: max(3rem, min(10vw, (100vw - 1180px) / 2), (100vw - 1600px) / 2); padding-right: max(3rem, min(10vw, (100vw - 1180px) / 2), (100vw - 1600px) / 2); }
+  html.theme .home-main .container { padding-left: 0; padding-right: 0; }
+}
