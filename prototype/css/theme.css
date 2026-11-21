@@ -802,12 +802,13 @@ html.theme .list-head .toolbar { flex: 1 1 100%; min-width: 0; }
 @media (max-width: 899px) { html.theme .list-head { row-gap: .75rem; padding-bottom: 0; } html.theme body[data-page="listing"] .listing { padding-top: 0; } }
 @media (min-width: 900px) {
   html.theme body[data-page="listing"] { --stick: calc(4.5rem + 1px); --gap-below: 1.75rem; }
-  html.theme .list-head { position: sticky; top: var(--stick); z-index: 1; flex-wrap: nowrap; align-items: flex-end; padding: .75rem 0 var(--gap-below); background: hsl(var(--page)); }
+  html.theme .list-head { position: sticky; top: calc(var(--stick) - 1px); z-index: 1; flex-wrap: nowrap; align-items: flex-end; padding: calc(.75rem + 1px) 0 var(--gap-below); background: hsl(var(--page)); }
   html.theme .list-head .toolbar { flex: 1 1 auto; padding-bottom: 0; }
   html.theme body[data-page="listing"] .listing { row-gap: 0; padding-top: 0; }
-  html.theme body[data-page="listing"] .listing > .filters { top: calc(var(--stick) + var(--head-h, 5.25rem)); max-height: calc(100vh - var(--stick) - var(--head-h, 5.25rem) - 1rem); }
+  html.theme body[data-page="listing"] .listing > .filters { top: calc(var(--stick) - 1px + var(--head-h, 5.25rem)); max-height: calc(100vh - var(--stick) + 1px - var(--head-h, 5.25rem) - 1rem); }
 }
 @media (min-width: 900px) and (max-width: 1199px) { html.theme body[data-page="listing"] { --stick: calc(7.5rem + 1px); } }
+/* the row tucks 1px under the header border: at 125% scaling the header ends at 81.8px, and a row starting at 82px let cards show through the hairline */
 /* not frozen: a hovered first-row card may lift over the row's bottom gap; frozen (listing.js adds .is-stuck): cards always go under */
 @media (min-width: 900px) { html.theme .list-head.is-stuck { z-index: 3; } }
 /* an open Sort menu floats above the cards (their share buttons sit on layer 2) */
