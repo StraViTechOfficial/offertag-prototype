@@ -1,4 +1,4 @@
-/* listing.js — client-side filters, sort, density, hybrid loading (D-032) and phone sheets for the listing pages */
+/* listing.js — client-side filters, sort, hybrid loading (D-032) and phone sheets for the listing pages */
 (function () {
   var results = document.getElementById('results'); if (!results) return;
   var cards = Array.prototype.slice.call(results.querySelectorAll('.deal'));
@@ -196,9 +196,6 @@
   // store search inside the group
   form.querySelectorAll('[data-find]').forEach(function (inp) { inp.addEventListener('input', function () { var q = inp.value.trim().toLowerCase(); form.querySelectorAll('[data-group="' + inp.dataset.find + '"] .opt').forEach(function (o) { o.hidden = q && o.textContent.toLowerCase().indexOf(q) < 0; }); }); });
 
-  // density
-  document.querySelectorAll('[data-density]').forEach(function (b) { b.addEventListener('click', function () { document.querySelectorAll('[data-density]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); results.classList.toggle('is-list', b.dataset.density === 'list'); try { localStorage.setItem('ot-density', b.dataset.density); } catch (e) {} }); });
-  try { if (localStorage.getItem('ot-density') === 'list') document.querySelector('[data-density="list"]').click(); } catch (e) {}
 
   // phone sheets: the filter form moves into the bottom sheet while it is open, then back
   var overlay = document.getElementById('sheet-overlay'), fsheet = document.getElementById('filter-sheet'), ssheet = document.getElementById('sort-sheet'), fbody = document.getElementById('filter-sheet-body'), current = null, lastFocus;
