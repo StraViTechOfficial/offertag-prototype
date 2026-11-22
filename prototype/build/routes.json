@@ -110,6 +110,7 @@
 "/admin/posters",
 "/admin/reports",
 "/admin/role",
+"/admin/security",
 "/admin/settings/site",
 "/admin/settings/tags",
 "/admin/shop",

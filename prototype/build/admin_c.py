@@ -203,7 +203,7 @@ def build_site():
 def build_roles():
     Y, N = '<span class="yes"><i data-lucide="check"></i><span class="visually-hidden">Yes</span></span>', '<span class="no">—<span class="visually-hidden">No</span></span>'
     areas = [('Overview', 1, 0), ('All deals: edit, clone, share, status', 1, 1), ('Incoming deals: approve, reject', 1, 1), ('Post a deal', 1, 1), ('Pinned board', 1, 0),
-             ('Sale posters', 1, 0), ('Alerts', 1, 0), ('Social sharing', 1, 0), ('Blog', 1, 0), ('Inbox', 1, 0), ('Catalogue', 1, 0), ('Users', 1, 0), ('Settings', 1, 0)]
+             ('Sale posters', 1, 0), ('Alerts', 1, 0), ('Social sharing', 1, 0), ('Blog', 1, 0), ('Inbox', 1, 0), ('Catalogue', 1, 0), ('Users', 1, 0), ('Settings', 1, 0), ('Security', 1, 0)]
     rows = ''.join(f'<tr><td>{E(a)}</td><td class="ctr">{Y if x else N}</td><td class="ctr">{Y if y else N}</td></tr>' for a, x, y in areas)
     body = f'''      <div class="page-h">
         <div><h1>Roles</h1><p>What each role can open in the admin. Roles are fixed; to give someone a different role, ask the developer.</p></div>

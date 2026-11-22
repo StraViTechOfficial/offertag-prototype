@@ -996,3 +996,36 @@ html.admin .q-input:not(:focus):not([aria-invalid]) { border-color: transparent;
 .pe [data-kind] { display: grid; gap: 14px; }
 .pe [data-kind][hidden] { display: none; }
 .p-kind { font-size: 11.5px; font-weight: 600; color: hsl(var(--navy)); background: hsl(var(--sky)); border-radius: 99px; padding: 1px 8px; margin-right: 6px; }
+
+/* Security screen: same panels, rows and pills as Site & app; one warning band while the check is on. */
+.bc-panel { margin-bottom: 20px; transition: border-color .2s, box-shadow .2s; }
+.bc-panel.is-on { border-color: hsl(var(--warn) / .55); box-shadow: 0 0 0 3px hsl(var(--warn) / .12); }
+.bc-status { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; padding: 0 16px 12px; }
+.bc-meta { font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+.bc-alert { display: flex; gap: 10px; align-items: flex-start; margin: 0 16px 12px; padding: 12px 14px; border-radius: 10px; background: hsl(var(--warn) / .1); color: hsl(var(--foreground)); border: 1px solid hsl(var(--warn) / .35); }
+.bc-alert .lucide { flex: none; color: hsl(var(--warn)); margin-top: 1px; }
+.bc-alert p { margin: 0; font-size: 13px; }
+.bc-help { padding: 10px 16px 14px; border-top: 1px solid hsl(var(--border) / .6); }
+.fl-count { font-size: 12.5px; color: hsl(var(--muted-foreground)); font-variant-numeric: tabular-nums; }
+.fl-intro { margin: 0; padding: 12px 16px; font-size: 13px; color: hsl(var(--muted-foreground)); max-width: 72ch; }
+.fl-panel .tbl-wrap { border: 0; border-top: 1px solid hsl(var(--border)); border-radius: 0; overflow-x: auto; }
+.fl-ip { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; overflow-wrap: anywhere; }
+@media (min-width: 900px) {
+  .fl-tbl td { padding: 10px; vertical-align: middle; border-bottom: 1px solid hsl(var(--border) / .6); }
+  .fl-tbl tr:last-child td { border-bottom: 0; }
+  .fl-ip { white-space: nowrap; }
+}
+@media (max-width: 899px) {
+  .fl-panel .tbl-wrap { padding: 12px 12px 2px; }
+  .ltbl td.fl-ip { font-size: 13.5px; padding-right: 0; }
+  .ltbl td.fl-act { position: static; margin-top: 6px; }
+  .fl-tbl .fl-by { display: inline; margin-left: 6px; }
+  .bc-help .hint-line { flex-wrap: nowrap; align-items: flex-start; }
+  .bc-help .hint-line .lucide { flex: none; margin-top: 2px; }
+}
+.fl-by { display: block; font-size: 12px; color: hsl(var(--muted-foreground)); }
+.fl-when { white-space: nowrap; font-variant-numeric: tabular-nums; color: hsl(var(--muted-foreground)); }
+.fl-act { text-align: right; white-space: nowrap; }
+.fl-act .btn .lucide { width: 14px; height: 14px; }
+.switch input:disabled + span { opacity: .55; }
+@media (prefers-reduced-motion: reduce) { .bc-panel { transition: none; } }

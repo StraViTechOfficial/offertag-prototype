@@ -46,6 +46,7 @@ Preview: `python3 design-system/prototype/build/serve.py`, then `http://localhos
 | `/admin/settings/site` | `admin-site.html` | new |
 | `/admin/role` | `admin-roles.html` | live, unchanged |
 | `/admin/users` | `admin-users.html` | live, unchanged |
+| `/admin/security` | `admin-security.html` | new: bot check switch and flagged IPs (Muiz, 22 Nov) |
 | `/admin/shop` | `admin-catalogue.html` | live, unchanged |
 | `/admin/blog` | `admin-blog.html` | new |
 | `/admin/blog/create` | `admin-blog-edit.html` | new |

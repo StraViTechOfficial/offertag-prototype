@@ -157,3 +157,9 @@ Deal types tab: Name · Order (1 = Home tab, Q-021) · Active · Edit. Types tab
 │ …                                                  …                                         │
 ```
 Sub-admin lands on All deals instead.
+
+## 9. Settings → Security (Muiz, 22 Nov; `/admin/security`, admin only)
+Built in the prototype: `build/admin_e.py`, `js/admin-e.js`, `bc-*` / `fl-*` rules in `css/admin.css`. APIs #77–80; rules in `offertag-backend/docs/project/features/security.md`.
+- **Bot check first.** One switch, "Bot check for all visitors" (never "panic" or "block"). Turning on asks first; turning off does not. Pill Off / Turning on… / On, plus who changed it last and when. While on: orange edge and a warning to turn it off once the site is normal. State is read from Cloudflare every time the screen loads.
+- **Flagged IPs below.** Live rows only, newest first: IP (an IPv6 /64 shown as one), status (Flagged · Always allowed), why and by whom (the click counter or a staff name), added, until. "Let back in" for flagged rows, "Remove" for others, both with a confirm. Phone: one card per IP, the button on its own row.
+- No Block button (no API).

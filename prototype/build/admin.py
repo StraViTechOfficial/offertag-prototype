@@ -41,6 +41,7 @@ NAV = [
         ('tags', 'Affiliate tags', 'admin-tags.html', 'admin', None),
         ('site', 'Site & app', 'admin-site.html', 'admin', None),
         ('roles', 'Roles', 'admin-roles.html', 'admin', None),
+        ('security', 'Security', 'admin-security.html', 'admin', None),
     ]),
 ]
 
@@ -653,5 +654,6 @@ def build_sponsored():
 build_post(); build_pinned(); build_alerts(); build_posters(); build_sponsored()
 exec(open(os.path.join(HERE, 'admin_c.py')).read())
 exec(open(os.path.join(HERE, 'admin_d.py')).read())
+exec(open(os.path.join(HERE, 'admin_e.py')).read())
 exec(open(os.path.join(HERE, 'admin_login.py')).read())
 print('Admin: batch A (admin, admin-incoming, admin-deals) + batch B (admin-post, admin-pinned, admin-alerts, admin-posters, admin-sponsored) + admin-soon')
