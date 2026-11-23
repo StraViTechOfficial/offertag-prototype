@@ -554,7 +554,7 @@ SAMPLE_COMMENTS = {
         ('Priya', 'Does it come with the mattress or only the frame?', '2 h', 0, [('OfferTag', True, 'Frame, headboard and MDF base only. Mattress is separate.', '1 h', 2)]),
         ('Amit', 'Ordered one. Delivery shows 6 days to Pune.', '3 h', 1, []),
         ('Deepak', 'MRP is inflated, but ₹9k for engineered wood king is fine.', '3 h', 4, []),
-        ('Kavya', 'Any idea if the beige colour is same as photo?', '4 h', 0, []),
+        ('Kavya', 'Any idea if the beige colour is same as photo? Seller photos here: https://www.amazon.com/dp/B0GQBSVK7M/', '4 h', 0, [('Arjun', False, 'Looks lighter in person. Also listed on https://www.flipkart.com/about-space-bed/p/itm123 and www.pepperfry.in/beds', '3 h', 1)]),
         ('Mohit', 'Out of stock for 400001 pincode.', '5 h', 2, []),
         ('Neha', 'Coupon worked, paid ₹8,900 with bank offer.', '5 h', 6, []),
         ('Suresh', 'Assembly took about 40 minutes, two people needed.', '6 h', 1, []),
@@ -565,7 +565,15 @@ SAMPLE_COMMENTS = {
     ],
     1: [('Sameer', 'Great price for a 9 W, bought 6.', '30 min', 2, []), ('Farah', 'Only 1 per order for me.', '1 h', 0, [])],
 }
+# D-149: links in comments are plain text; the same trim as js/detail.js trimLinks() and the API on save
+_TL_MD = re.compile(r'\[([^\]]+)\]\(([^)\s]+)\)')
+_TL_COM = re.compile(r'(?<![\w./@-])(?:https?://)?(?:www\.)?((?:[a-z0-9-]+\.)*[a-z0-9-]+)\.com(?:/(?=[\s.,;:!?)]|$))?(?![\w-]|\.[a-z0-9])', re.I)
+_TL_PROTO = re.compile(r'\bhttps?://(?:www\.)?', re.I)
+_TL_WWW = re.compile(r'(?<![\w./-])www\.', re.I)
+def trim_links(s):
+    return _TL_WWW.sub('', _TL_PROTO.sub('', _TL_COM.sub(r'\1', _TL_MD.sub(r'\1 (\2)', s))))
 def comment_li(name, text, when, likes, admin=False, reply=False, hidden=False):
+    text = trim_links(text)
     init = name[0].upper()
     acts = f'<div class="c-acts"><button class="btn btn-ghost like" type="button" aria-pressed="false"><i data-lucide="heart"></i><span>{likes}</span></button>' + ('' if reply else '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>'
     role = '<span class="badge badge-secondary">OfferTag</span>' if admin else ''
@@ -612,6 +620,12 @@ for idx, d in enumerate(deals + extras):
     steps = f'<details class="block howto"{" open" if exceptions else ""}><summary><h2>How to get it</h2><span class="hint">{len(default_steps) + len(exceptions)} steps at {E(d["store"])}</span><i data-lucide="chevron-down"></i></summary><ol class="steps">{step_items}</ol></details>'
     pricebox = (f'<div class="price-now sale">Up to {d["pct"]}% off</div><div class="price-was">Sale post, prices vary by item</div>' if sale else f'<div class="price-now">{inr(d["p"])}</div><div class="price-was"><span class="mrp">MRP <s>{inr(d["m"])}</s></span><span class="badge badge-secondary">Save {inr(d["save"])} ({d["pct"]}%)</span></div>')
     bar_price = f'<div class="bb-price"><b>Up to {d["pct"]}% off</b></div>' if sale else f'<div class="bb-price"><b>{inr(d["p"])}</b><s>{inr(d["m"])}</s></div>'
+    # As the website: the store's logo beside Buy now; related deals as a list in the right column (RelatedSide.tsx)
+    slg = store_logo(d['store'])
+    store_chip = f'<img class="store-chip" src="{slg}" alt="{E(d["store"])}" loading="lazy">' if slg else f'<span class="store-chip is-text">{E(d["store"])}</span>'
+    related_side = ''.join(f'<li><a href="{x["page"]}"><span class="rs-img"><img src="{dimg(x)}" alt="" loading="lazy" width="300" height="300"></span><span class="rs-body"><span class="rs-title">{E(x["t"])}</span>'
+                           + (f'<span class="rs-price">Up to {x["pct"]}% off</span>' if x['p'] <= 0 else f'<span class="rs-price">{inr(x["p"])}<s>{inr(x["m"])}</s><em>{x["pct"]}% off</em></span>')
+                           + '</span></a></li>' for x in related)
     ncom = len(SAMPLE_COMMENTS.get(idx, [])) if idx < len(deals) else 0
     out = tpl_detail
     for k, v in dict(TITLE=E(d['t']), TITLE_SHORT=E(d['t'] if len(d['t']) <= 48 else d['t'][:47].rstrip() + '…'), FILE=d['file'], PRICE=('Up to ' + d['pct'] + '% off') if sale else inr(d['p']), PRICE_RAW=str(d['p']), MRP=inr(d['m']), PCT=d['pct'], STORE=E(d['store']), CAT=E(CN(d['cat'])), AGE=E(d['agetxt']), POSTED=E(d['posted']), POSTED_ISO=posted_iso(d['posted']),
@@ -619,7 +633,7 @@ for idx, d in enumerate(deals + extras):
                      CAPTION=caption, COUPON=coupon, COUPON_BAR=coupon_bar, OFFERS=offers, NOTE=note, HIGHLIGHTS=highlights, LINKS=links, DESCRIPTION=description, SPECS=specs, STEPS=steps,
                      WA_ICON=_icon(re.match(r'(\w+)', 'whatsapp')), TG_ICON=_icon(re.match(r'(\w+)', 'telegram')), WA='https://wa.me/?text=' + quote(share_text), TG='https://t.me/share/url?url=' + quote(f"https://www.offertag.in/d/{d['id']}") + '&text=' + quote(share_text), SHARE_TEXT=E(share_text),
                      AMZ_SEARCH='https://www.amazon.in/s?k=' + quote(d['t']) + '&tag=offertag-21', FK_SEARCH='https://www.flipkart.com/search?q=' + quote(d['t']) + '&affid=offertag',
-                     RELATED=carousel(''.join(card(x) for x in related)), COMMENTS=comments_html(idx), COMMENT_COUNT=str(ncom), VIEWS=f"{int(d.get('views') or 0):,}", COMMENTS_EMPTY_HIDDEN='' if ncom == 0 else 'hidden', COMMENTS_MORE_HIDDEN='' if ncom > 10 else 'hidden',
+                     RELATED=carousel(''.join(card(x) for x in related)), RELATED_SIDE=related_side, STORE_CHIP=store_chip, COMMENTS=comments_html(idx), COMMENT_COUNT=str(ncom), VIEWS=f"{int(d.get('views') or 0):,}", COMMENTS_EMPTY_HIDDEN='' if ncom == 0 else 'hidden', COMMENTS_MORE_HIDDEN='' if ncom > 10 else 'hidden',
                      CAT_PAGE=cat_page(d['cat']), STORE_PAGE=store_page(d['store']), HEADER=HEADER_DETAIL, FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET).items():
         out = out.replace('{{' + k + '}}', str(v))
     open(os.path.join(ROOT, d['page']), 'w').write(out)

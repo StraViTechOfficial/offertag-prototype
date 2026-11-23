@@ -47,8 +47,17 @@
   function setCount() { countEls[0].textContent = '(' + total + ')'; if (linkCount) linkCount.childNodes[1].textContent = total + ' comments'; if (empty) empty.hidden = total > 0; }
   function rel(name, admin) { return '<div class="avatar' + (admin ? ' is-admin' : '') + '" aria-hidden="true">' + name.charAt(0).toUpperCase() + '</div><div class="who"><b></b>' + (admin ? '<span class="badge badge-secondary">OfferTag</span>' : '') + '<time>Just now</time></div>'; }
   function esc(s) { return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function fmt(s) { // bold **x** and [text](url) only (brief v2 §10)
-    return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="nofollow noopener">$1</a>');
+  // D-149: a pasted link is plain text, never clickable: http(s)://, www. and the host's .com are removed ("https://www.amazon.com/dp/B0X" → "amazon/dp/B0X").
+  // [text](url) reads "text (url)". The API runs the same trim when a comment is saved, so the site and the app show the same text.
+  function trimLinks(s) {
+    return s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '$1 ($2)')
+      .replace(/(?<![\w.\/@-])(?:https?:\/\/)?(?:www\.)?((?:[a-z0-9-]+\.)*[a-z0-9-]+)\.com(?:\/(?=[\s.,;:!?)]|$))?(?![\w-]|\.[a-z0-9])/gi, '$1')
+      .replace(/\bhttps?:\/\/(?:www\.)?/gi, '')
+      .replace(/(?<![\w.\/-])www\./gi, '');
+  }
+  OT.trimLinks = trimLinks;
+  function fmt(s) { // bold **x** only; links are plain text (D-149)
+    return esc(trimLinks(s)).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   }
   function makeComment(text, name, admin, reply) {
     var li = document.createElement('li'); li.className = 'comment'; li.innerHTML = rel(name, admin) + '<p class="text">' + fmt(text) + '</p><div class="c-acts"><button class="btn btn-ghost like" type="button" aria-pressed="false"><i data-lucide="heart"></i><span>0</span></button>' + (reply ? '' : '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>' + (reply ? '' : '<ol class="replies"></ol>');
@@ -75,12 +84,12 @@
   if (list) { wire(list); setCount(); }
   if (more) more.querySelector('button').addEventListener('click', function () { var hid = list.querySelectorAll(':scope > .comment[hidden]'); Array.prototype.slice.call(hid, 0, 10).forEach(function (c) { c.hidden = false; }); if (list.querySelectorAll(':scope > .comment[hidden]').length === 0) more.hidden = true; });
 
-  // composer (signed in): bold / link wrap, counter, post
+  // composer (signed in): bold wrap, counter, post
   var cin = document.getElementById('composer-in'), ta = document.getElementById('comment-text'), chars = document.getElementById('chars'), err = document.getElementById('comment-error');
   if (cin) {
     ta.addEventListener('input', function () { chars.textContent = ta.value.length + '/300'; });
     cin.querySelectorAll('[data-wrap]').forEach(function (b) { b.addEventListener('click', function () {
-      var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e) || 'text', w = b.dataset.wrap === 'link' ? '[' + sel + '](https://)' : '**' + sel + '**';
+      var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e) || 'text', w = '**' + sel + '**';
       ta.setRangeText(w, s, e, 'end'); ta.focus(); ta.dispatchEvent(new Event('input'));
     }); });
     cin.addEventListener('submit', function (e) {

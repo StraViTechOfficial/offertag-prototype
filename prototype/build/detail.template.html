@@ -23,14 +23,31 @@
     <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a><i data-lucide="chevron-right"></i><a href="{{CAT_PAGE}}">{{CAT}}</a><i data-lucide="chevron-right"></i><span class="crumb-title">{{TITLE_SHORT}}</span></nav>
 
     <article class="detail" itemscope itemtype="https://schema.org/Product">
-      <!-- Left column: image, steps, description, comments -->
+      <!-- As the website (DealPage.tsx): the photo and its details in one card, then the blocks and comments in one card; related deals in a right column from 1180 px, a swipe row below that -->
       <div class="detail-main">
+        <div class="deal-hero">
         <button class="deal-image" type="button" id="zoom-open" aria-label="Zoom image">
           <img src="assets/deals/lg/{{FILE}}" alt="{{TITLE}}" width="300" height="300" itemprop="image">
           {{BADGE}}
           <span class="zoom-hint"><i data-lucide="zoom-in"></i></span>
         </button>
+        <div class="panel-core">
+          <div class="kicker">{{TYPE}}<span class="kstore" itemprop="brand"><i data-lucide="store"></i>{{STORE}}</span><span class="dot">·</span><time datetime="{{POSTED_ISO}}" title="Posted {{POSTED}}">{{AGE}} ago</time></div>
+          <h1 class="deal-title" itemprop="name">{{TITLE}}</h1>
+          {{CAPTION}}
+          <div class="pricebox" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <meta itemprop="priceCurrency" content="INR"><meta itemprop="price" content="{{PRICE_RAW}}">
+            {{PRICEBOX}}
+          </div>
+          {{COUPON}}
+          {{OFFERS}}
+          <div class="buy-row">{{STORE_CHIP}}<a class="btn btn-outline btn-lg btn-buy buy" id="buy" href="{{LINK}}" target="_blank" rel="nofollow sponsored noopener" itemprop="url" aria-label="Buy now at {{STORE}}"><span class="buy-label">Buy now</span><i data-lucide="shopping-basket"></i></a></div>
+          {{NOTE}}
+          <div class="deal-stats"><span class="views" title="Views counted by the site"><i data-lucide="eye"></i>{{VIEWS}} views</span><a class="comment-link" href="#comments"><i data-lucide="message-square"></i>{{COMMENT_COUNT}} comments<i data-lucide="arrow-down"></i></a><div class="post-share sh-exp" data-share><button class="sh-trig" type="button" aria-expanded="false" aria-controls="sh-items" data-share-trig><i data-lucide="share-2"></i>Share</button><span class="sh-items" id="sh-items"><a class="sh-ic sh-wa" href="{{WA}}" target="_blank" rel="noopener" aria-label="Share on WhatsApp" data-tip="WhatsApp">{{WA_ICON}}</a><a class="sh-ic sh-tg" href="{{TG}}" target="_blank" rel="noopener" aria-label="Share on Telegram" data-tip="Telegram">{{TG_ICON}}</a><button class="sh-ic sh-copy" type="button" id="copy-link" aria-label="Copy link" data-tip="Copy link" data-share="{{SHARE_TEXT}}"><i data-lucide="link"></i></button></span></div></div>
+        </div>
+        </div>
 
+        <div class="deal-body">
         <!-- Content blocks (contract §7, order 13–17). Each block is omitted by the build when its field is blank. -->
         {{HIGHLIGHTS}}
         {{LINKS}}
@@ -48,7 +65,7 @@
               <div class="field">
                 <textarea class="textarea" id="comment-text" rows="2" placeholder="Write a comment…" maxlength="300" aria-label="Write a comment"></textarea>
                 <div class="composer-bar">
-                  <div class="tools"><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Bold" data-wrap="**"><i data-lucide="bold"></i></button><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Link" data-wrap="link"><i data-lucide="link"></i></button><span class="chars" id="chars">0/300</span></div>
+                  <div class="tools"><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Bold" data-wrap="**"><i data-lucide="bold"></i></button><span class="chars" id="chars">0/300</span></div>
                   <button type="submit" class="btn btn-default btn-sm">Post</button>
                 </div>
                 <p class="form-error" id="comment-error" hidden>Could not post. Your text is kept, try again.</p>
@@ -60,35 +77,15 @@
           <p class="comments-empty" id="comments-empty" {{COMMENTS_EMPTY_HIDDEN}}>Be the first to comment.</p>
           <div class="more-row" id="comments-more" {{COMMENTS_MORE_HIDDEN}}><button class="btn btn-outline" type="button">Show more comments</button></div>
         </section>
+        </div>
 
         <div class="report-row"><button class="btn btn-link" type="button" id="report-open"><i data-lucide="flag"></i>Report a problem with this deal</button></div>
       </div>
 
-      <!-- Right column: sticky panel -->
-      <aside class="detail-panel">
-        <div class="panel-sticky">
-          <div class="panel-core">
-          <div class="kicker">{{TYPE}}<span class="kstore" itemprop="brand"><i data-lucide="store"></i>{{STORE}}</span><span class="dot">·</span><time datetime="{{POSTED_ISO}}" title="Posted {{POSTED}}">{{AGE}} ago</time></div>
-          <h1 class="deal-title" itemprop="name">{{TITLE}}</h1>
-          {{CAPTION}}
-          <div class="pricebox" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-            <meta itemprop="priceCurrency" content="INR"><meta itemprop="price" content="{{PRICE_RAW}}">
-            {{PRICEBOX}}
-          </div>
-          {{COUPON}}
-          {{OFFERS}}
-          <a class="btn btn-default btn-lg btn-block buy" id="buy" href="{{LINK}}" target="_blank" rel="nofollow sponsored noopener" itemprop="url"><span class="buy-label">Buy at {{STORE}}</span><i data-lucide="external-link"></i></a>
-          {{NOTE}}
-          <div class="share-row" role="group" aria-label="Share">
-            <a class="btn btn-outline btn-sm sh-btn sh-btn-wa" href="{{WA}}" target="_blank" rel="noopener">{{WA_ICON}}WhatsApp</a>
-            <a class="btn btn-outline btn-sm sh-btn sh-btn-tg" href="{{TG}}" target="_blank" rel="noopener">{{TG_ICON}}Telegram</a>
-            <button class="btn btn-outline btn-sm sh-btn sh-btn-copy" type="button" id="copy-link" data-share="{{SHARE_TEXT}}"><i data-lucide="link"></i>Copy link</button>
-          </div>
-          <div class="deal-stats"><span class="views" title="Views counted by the site"><i data-lucide="eye"></i>{{VIEWS}} views</span><a class="comment-link" href="#comments"><i data-lucide="message-square"></i>{{COMMENT_COUNT}} comments<i data-lucide="arrow-down"></i></a></div>
-          </div>
-
-          <!-- "Never miss a loot" card removed (M-04, D-106): the corner join button carries WhatsApp, Telegram and browser alerts -->
-        </div>
+      <aside class="related-side" aria-labelledby="h-related-side">
+        <h2 id="h-related-side">Related deals</h2>
+        <ul>{{RELATED_SIDE}}</ul>
+        <a class="btn btn-outline btn-block rs-all" href="{{CAT_PAGE}}">See all in {{CAT}}<i data-lucide="chevron-right"></i></a>
       </aside>
 
     <!-- Related -->
