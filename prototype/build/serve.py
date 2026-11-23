@@ -13,7 +13,8 @@ from pathlib import Path
 from urllib.parse import urlsplit, unquote
 
 ROOT = Path(__file__).resolve().parent.parent
-PORT = 8090
+PORT = int(os.environ.get("PORT", 8090))
+HOST = os.environ.get("HOST", "127.0.0.1")  # HOST=0.0.0.0 to reach it from other devices on the Wi-Fi
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -59,4 +60,4 @@ class Handler(SimpleHTTPRequestHandler):
         self._handle(head=True)
 
 
-ThreadingHTTPServer(("127.0.0.1", PORT), partial(Handler, directory=str(ROOT))).serve_forever()
+ThreadingHTTPServer((HOST, PORT), partial(Handler, directory=str(ROOT))).serve_forever()
