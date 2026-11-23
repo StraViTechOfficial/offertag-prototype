@@ -60,13 +60,11 @@
     return esc(trimLinks(s)).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   }
   function makeComment(text, name, admin, reply) {
-    var li = document.createElement('li'); li.className = 'comment'; li.innerHTML = rel(name, admin) + '<p class="text">' + fmt(text) + '</p><div class="c-acts"><button class="btn btn-ghost like" type="button" aria-pressed="false"><i data-lucide="heart"></i><span>0</span></button>' + (reply ? '' : '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>' + (reply ? '' : '<ol class="replies"></ol>');
+    var li = document.createElement('li'); li.className = 'comment'; li.innerHTML = rel(name, admin) + '<p class="text">' + fmt(text) + '</p><div class="c-acts">' + OT.emoji.ACTS + (reply ? '' : '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>' + (reply ? '' : '<ol class="replies"></ol>');
     li.querySelector('.who b').textContent = name; return li;
   }
   function wire(root) {
-    root.querySelectorAll('.like').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () {
-      if (!body.classList.contains('is-signed-in')) { OT.toast('Sign in to like', 'log-in'); return; }
-      var on = b.getAttribute('aria-pressed') !== 'true', n = b.querySelector('span'); b.setAttribute('aria-pressed', on); n.textContent = (+n.textContent || 0) + (on ? 1 : -1); }); });
+    OT.emoji.wireReactions(root);   // D-147: six reactions replace the heart like
     root.querySelectorAll('.reply-btn').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { openReply(b.closest('.comment')); }); });
     root.querySelectorAll('.c-del').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { var li = b.closest('.comment'); var isTop = li.parentNode === list; li.remove(); if (isTop) { total--; setCount(); } OT.toast('Comment deleted', 'trash-2'); }); });
     root.querySelectorAll('.more-replies').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { b.closest('.comment').querySelectorAll('.replies > [hidden]').forEach(function (r) { r.hidden = false; }); b.remove(); }); });
@@ -76,10 +74,10 @@
   function openReply(li) {
     if (!body.classList.contains('is-signed-in')) { OT.toast('Sign in to reply', 'log-in'); document.getElementById('composer').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
     if (openForm) openForm.remove();
-    var f = document.createElement('form'); f.className = 'reply-form'; f.innerHTML = '<textarea class="textarea" rows="1" placeholder="Write a reply…" maxlength="300" aria-label="Write a reply"></textarea><div class="acts"><button class="btn btn-default btn-sm" type="submit">Post</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancel</button></div>';
-    li.querySelector('.replies').before(f); openForm = f; f.querySelector('textarea').focus();
+    var f = document.createElement('form'); f.className = 'reply-form'; f.innerHTML = '<div class="ta-wrap"><textarea class="textarea" rows="1" placeholder="Write a reply…" aria-label="Write a reply"></textarea><button type="button" class="btn btn-ghost btn-sm btn-icon ta-emoji" aria-label="Emoji"><i data-lucide="smile"></i></button></div><div class="acts"><button class="btn btn-default btn-sm" type="submit">Post</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancel</button></div>';
+    li.querySelector('.replies').before(f); openForm = f; OT.icons(); OT.emoji.attach(f.querySelector('textarea'), null, f.querySelector('.ta-emoji')); f.querySelector('textarea').focus();
     f.querySelector('[data-cancel]').addEventListener('click', function () { f.remove(); openForm = null; });
-    f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; var r = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin'), true); li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
+    f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; if (OT.emoji.tooLong(f.querySelector('textarea'))) { OT.toast('Keep it to 300 characters', 'circle-alert'); return; } var r = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin'), true); li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
   }
   if (list) { wire(list); setCount(); }
   if (more) more.querySelector('button').addEventListener('click', function () { var hid = list.querySelectorAll(':scope > .comment[hidden]'); Array.prototype.slice.call(hid, 0, 10).forEach(function (c) { c.hidden = false; }); if (list.querySelectorAll(':scope > .comment[hidden]').length === 0) more.hidden = true; });
@@ -87,13 +85,14 @@
   // composer (signed in): bold wrap, counter, post
   var cin = document.getElementById('composer-in'), ta = document.getElementById('comment-text'), chars = document.getElementById('chars'), err = document.getElementById('comment-error');
   if (cin) {
-    ta.addEventListener('input', function () { chars.textContent = ta.value.length + '/300'; });
+    OT.emoji.attach(ta, chars, cin.querySelector('[data-emoji]'));   // D-147: picker, ":" search, smileys, count where an emoji is 1
     cin.querySelectorAll('[data-wrap]').forEach(function (b) { b.addEventListener('click', function () {
       var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e) || 'text', w = '**' + sel + '**';
       ta.setRangeText(w, s, e, 'end'); ta.focus(); ta.dispatchEvent(new Event('input'));
     }); });
     cin.addEventListener('submit', function (e) {
       e.preventDefault(); var t = ta.value.trim(); if (!t) { ta.focus(); return; }
+      if (OT.emoji.tooLong(ta)) { OT.toast('Keep it to 300 characters', 'circle-alert'); ta.focus(); return; }
       if (q.get('fail') === '1') { err.hidden = false; return; } err.hidden = true;
       var li = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin')); list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/300'; OT.toast('Comment posted', 'check');
     });

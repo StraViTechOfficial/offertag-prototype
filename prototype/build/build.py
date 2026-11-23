@@ -572,10 +572,27 @@ _TL_PROTO = re.compile(r'\bhttps?://(?:www\.)?', re.I)
 _TL_WWW = re.compile(r'(?<![\w./-])www\.', re.I)
 def trim_links(s):
     return _TL_WWW.sub('', _TL_PROTO.sub('', _TL_COM.sub(r'\1', _TL_MD.sub(r'\1 (\2)', s))))
+# D-147: six reactions, one per member per comment. SAMPLE: the old like count is spread over the six, with sample names for "who reacted".
+RX = [('👍', 'Like'), ('❤️', 'Love'), ('😂', 'Haha'), ('😮', 'Wow'), ('🔥', 'Hot deal'), ('😢', 'Sad')]
+RX_NAMES = ['Rahul', 'Priya', 'Amit', 'Neha', 'Deepak', 'Kavya', 'Suresh', 'Ritu', 'Ankit', 'Pooja', 'Vikram', 'Sneha', 'Mohit', 'Farah', 'Arjun']
+def reactions_html(n, seed):
+    h = sum(ord(c) for c in seed)
+    split = {}
+    for i in range(n):
+        k = [0, 0, 0, 4, 4, 1, 3, 2, 5][(h + i * 7) % 9] if i else 0   # mostly Like, then Hot deal, Love, Wow
+        split[k] = split.get(k, 0) + 1
+    pills, at = [], h % len(RX_NAMES)
+    for k, (e, label) in enumerate(RX):
+        c = split.get(k)
+        if not c: continue
+        who = [RX_NAMES[(at + j) % len(RX_NAMES)] for j in range(c)]; at += c
+        pills.append(f'<button class="rx-pill" type="button" data-e="{e}" data-who="{"|".join(who)}" aria-pressed="false" aria-label="{label}, {c} reaction{"" if c == 1 else "s"}"><span class="rx-e" aria-hidden="true">{e}</span><b>{c}</b></button>')
+    return ('<span class="rx-pills" role="group" aria-label="Reactions">' + ''.join(pills) + '</span>'
+            '<button class="btn btn-ghost rx-add" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="React"><i data-lucide="smile-plus"></i><span class="rx-add-e" aria-hidden="true"></span></button>')
 def comment_li(name, text, when, likes, admin=False, reply=False, hidden=False):
     text = trim_links(text)
     init = name[0].upper()
-    acts = f'<div class="c-acts"><button class="btn btn-ghost like" type="button" aria-pressed="false"><i data-lucide="heart"></i><span>{likes}</span></button>' + ('' if reply else '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>'
+    acts = f'<div class="c-acts">{reactions_html(likes, name + text)}' + ('' if reply else '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>'
     role = '<span class="badge badge-secondary">OfferTag</span>' if admin else ''
     return f'<li class="comment"{" hidden" if hidden else ""}><div class="avatar{" is-admin" if admin else ""}" aria-hidden="true">{init}</div><div class="who"><b>{E(name)}</b>{role}<time>{when}</time></div><p class="text">{E(text)}</p>{acts}'
 def comments_html(idx):

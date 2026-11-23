@@ -101,9 +101,9 @@ MRP ₹150 → ₹43 (71% off)"><i data-lucide="link"></i></button></span></div>
             <form class="signed-in" id="composer-in" hidden>
               <div class="avatar" aria-hidden="true">A</div>
               <div class="field">
-                <textarea class="textarea" id="comment-text" rows="2" placeholder="Write a comment…" maxlength="300" aria-label="Write a comment"></textarea>
+                <textarea class="textarea" id="comment-text" rows="2" placeholder="Write a comment…" aria-label="Write a comment"></textarea>
                 <div class="composer-bar">
-                  <div class="tools"><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Bold" data-wrap="**"><i data-lucide="bold"></i></button><span class="chars" id="chars">0/300</span></div>
+                  <div class="tools"><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Bold" data-wrap="**"><i data-lucide="bold"></i></button><button type="button" class="btn btn-ghost btn-sm btn-icon" aria-label="Emoji" data-emoji><i data-lucide="smile"></i></button><span class="chars" id="chars">0/300</span></div>
                   <button type="submit" class="btn btn-default btn-sm">Post</button>
                 </div>
                 <p class="form-error" id="comment-error" hidden>Could not post. Your text is kept, try again.</p>
@@ -111,7 +111,7 @@ MRP ₹150 → ₹43 (71% off)"><i data-lucide="link"></i></button></span></div>
             </form>
           </div>
 
-          <ol class="comment-list" id="comment-list"><li class="comment"><div class="avatar" aria-hidden="true">S</div><div class="who"><b>Sameer</b><time>30 min</time></div><p class="text">Great price for a 9 W, bought 6.</p><div class="c-acts"><button class="btn btn-ghost like" type="button" aria-pressed="false"><i data-lucide="heart"></i><span>2</span></button><button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button><button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div><ol class="replies"></ol></li><li class="comment"><div class="avatar" aria-hidden="true">F</div><div class="who"><b>Farah</b><time>1 h</time></div><p class="text">Only 1 per order for me.</p><div class="c-acts"><button class="btn btn-ghost like" type="button" aria-pressed="false"><i data-lucide="heart"></i><span>0</span></button><button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button><button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div><ol class="replies"></ol></li></ol>
+          <ol class="comment-list" id="comment-list"><li class="comment"><div class="avatar" aria-hidden="true">S</div><div class="who"><b>Sameer</b><time>30 min</time></div><p class="text">Great price for a 9 W, bought 6.</p><div class="c-acts"><span class="rx-pills" role="group" aria-label="Reactions"><button class="rx-pill" type="button" data-e="👍" data-who="Vikram" aria-pressed="false" aria-label="Like, 1 reaction"><span class="rx-e" aria-hidden="true">👍</span><b>1</b></button><button class="rx-pill" type="button" data-e="❤️" data-who="Sneha" aria-pressed="false" aria-label="Love, 1 reaction"><span class="rx-e" aria-hidden="true">❤️</span><b>1</b></button></span><button class="btn btn-ghost rx-add" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="React"><i data-lucide="smile-plus"></i><span class="rx-add-e" aria-hidden="true"></span></button><button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button><button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div><ol class="replies"></ol></li><li class="comment"><div class="avatar" aria-hidden="true">F</div><div class="who"><b>Farah</b><time>1 h</time></div><p class="text">Only 1 per order for me.</p><div class="c-acts"><span class="rx-pills" role="group" aria-label="Reactions"></span><button class="btn btn-ghost rx-add" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="React"><i data-lucide="smile-plus"></i><span class="rx-add-e" aria-hidden="true"></span></button><button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button><button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div><ol class="replies"></ol></li></ol>
           <p class="comments-empty" id="comments-empty" hidden>Be the first to comment.</p>
           <div class="more-row" id="comments-more" hidden><button class="btn btn-outline" type="button">Show more comments</button></div>
         </section>
@@ -382,6 +382,7 @@ MRP ₹150 → ₹43 (71% off)"><i data-lucide="link"></i></button></span></div>
 <script src="/js/deals-index.js"></script>
 <script src="/js/theme.js"></script>
 <script src="/js/site.js"></script>
+<script src="/js/emoji.js"></script>
 <script src="/js/detail.js"></script>
 </body>
 </html>
