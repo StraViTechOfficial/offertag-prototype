@@ -1,5 +1,5 @@
 # Deal content contract — what a deal is made of, who writes it, how the page renders it
-AGREED v1 · 2026-11-11 · D-077 (contract), D-078 (auto-clean), D-079 (publish rule), D-080 (steps), D-081 (coupon + offer fields). Source audit: `docs/research/deal-content-audit.md`. Page: `../screens/deal-detail.md` v3. Form: `../screens/admin-deals.md` §3. Reference implementation of §4–§6: `../prototype/build/build.py` (functions `clean_html`, `split_blocks`, `steps_split`).
+AGREED v1 · 2026-11-11 · D-077 (contract), D-078 (auto-clean), D-079 (publish rule), D-080 (steps), D-081 (coupon + offer fields). Source audit: `../offertag-website/docs/research/deal-content-audit.md`. Page: `../screens/deal-detail.md` v3. Form: `../screens/admin-deals.md` §3. Reference implementation of §4–§6: `../prototype/build/build.py` (functions `clean_html`, `split_blocks`, `steps_split`).
 
 Principle: the scraper is the main author. Every field below can arrive from a machine, be blank, or be edited by a person later. The page is complete with the six required fields; nothing else may leave an empty heading, box or line.
 

@@ -2,7 +2,7 @@
 One file per screen group, written before the group is built. Every element the screen shows, filters on, sorts by or links to gets exactly one source:
 - `table.column` — a column in `old-code/schema.sql` (live data)
 - `old-code: …` — a route, controller rule or formula in `/mnt/d/PC-Downloads/old-code`
-- `BRD …` — a line in `docs/brd/brd.txt`
+- `BRD …` — a line in `../offertag-website/docs/brd/brd.txt`
 - `D-xxx` — a decision that derives the value (types from discount %, etc.)
 - `SAMPLE` — the real store is empty today; the README names it; never for counts, names, prices or lists that exist live
 Prototype file names in older sheets are now addresses: see `../routes.md` (D-105).

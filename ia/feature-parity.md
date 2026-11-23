@@ -1,5 +1,5 @@
 # Feature parity — BRD × old website × Flutter app × our design
-COMPLETE · 2026-11-09 · D-054, Law 14. Every ADD/CHANGE/Q below was resolved in D-055–D-061 (shells, card/detail, admin, public briefs); DEV-007–016 logged. Q-031 (offertag.net) is the only item still open. S10a (D-062–D-066) drew the remaining agreed-in-words screens; Q-021 closed (Top picks). Sources: `docs/brd/brd.txt` (B-items), `inventory/old-website.md` (W-items), `inventory/flutter-app.md` (A-items). Our design = D-043–D-053 and `briefs/*.md`.
+COMPLETE · 2026-11-09 · D-054, Law 14. Every ADD/CHANGE/Q below was resolved in D-055–D-061 (shells, card/detail, admin, public briefs); DEV-007–016 logged. Q-031 (offertag.net) is the only item still open. S10a (D-062–D-066) drew the remaining agreed-in-words screens; Q-021 closed (Top picks). Sources: `../offertag-website/docs/brd/brd.txt` (B-items), `inventory/old-website.md` (W-items), `inventory/flutter-app.md` (A-items). Our design = D-043–D-053 and `briefs/*.md`.
 
 Status key: **PLACED** (already in a brief/decision) · **ADD** (missing; place it, no decision needed beyond "yes") · **CHANGE** (in our design but differs from BRD or today; needs a decision) · **REMOVED** (BRD removes it; line quoted) · **Q** (question with recommendation, see bottom). Dev = backend/dev-phase, no UI.
 
@@ -209,7 +209,7 @@ Replaces W46 pattern without points. Phone-first. Tabs Pending / Approved / Reje
 | Site & app settings | B33 | **ADD** screen |
 
 ## Decisions needed (recommendation first; Law 13)
-Q-024 Carousel · Q-025 Community bar placement · Q-026 Sub-admin sees Incoming deals · Q-027 Web push opt-in · Q-028 Live chat on phone · Q-029 "Login-based notifications" scope · Q-030 OTP email template in scope · Q-031 offertag.net · Q-032 Category on card · Q-033 View counter on detail · Q-034 Amazon/Flipkart search links · Q-035 Username field · Q-036 Excel import. Full text in `docs/OPEN-QUESTIONS.md`; deviations in `docs/BRD-DEVIATIONS.md` DEV-007–016.
+Q-024 Carousel · Q-025 Community bar placement · Q-026 Sub-admin sees Incoming deals · Q-027 Web push opt-in · Q-028 Live chat on phone · Q-029 "Login-based notifications" scope · Q-030 OTP email template in scope · Q-031 offertag.net · Q-032 Category on card · Q-033 View counter on detail · Q-034 Amazon/Flipkart search links · Q-035 Username field · Q-036 Excel import. Full text in `../offertag-website/docs/OPEN-QUESTIONS.md`; deviations in `../offertag-website/docs/BRD-DEVIATIONS.md` DEV-007–016.
 
 ## Outcome
 D-055 shells · D-056 footer · D-057 admin shell · D-058 card/detail · D-059 admin deals · D-060 admin tools · D-061 auth/account/static/blog. Briefs rewritten; new briefs: shell, auth-account, static-blog; admin brief v2. Screens: `../screens/*.md`.

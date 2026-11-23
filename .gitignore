@@ -1,0 +1,9 @@
+# Windows download markers
+*:Zone.Identifier
+
+# Local tooling
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+nohup.out
