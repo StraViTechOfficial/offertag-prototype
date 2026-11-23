@@ -230,7 +230,7 @@
         '<td class="m">' + pill(d.status) + '</td>' +
         '<td class="m num">' + pin + '</td>' +
         '<td class="m d-when">' + esc(d.when) + '</td>' +
-        '<td class="m num">' + INR.format(d.views) + '</td>' +
+        '<td class="m num" title="' + INR.format(d.views) + ' total views · ' + INR.format(d.clicks) + ' Buy clicks">' + INR.format(d.uniq) + '</td>' +
         '<td class="c-act"><button class="btn btn-ghost btn-icon btn-sm" type="button" data-row-menu aria-haspopup="menu" aria-label="Actions for ' + esc(d.t.slice(0, 40)) + '"><i data-lucide="ellipsis"></i></button></td>' +
         '<td class="c-meta">' + esc(d.store) + ' · <b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span> ' + pill(d.status) + (d.pin ? ' <span class="d-pin">' + d.pin + '</span>' : '') + ' <span>' + esc(d.when) + '</span></td></tr>';
     }
@@ -536,7 +536,8 @@
     if (EDIT) {
       fill(src);
       $('[data-form-title]').textContent = 'Edit deal'; $('[data-form-sub]').textContent = 'Last edited by Adil, 2 h ago · ' + (src.status === 'live' ? 'Live' : src.status[0].toUpperCase() + src.status.slice(1));
-      document.title = 'Edit deal · OfferTag Admin'; $$('[data-edit-only]').forEach(function (x) { x.hidden = false; }); $('[data-open-page]').href = src.page;
+      document.title = 'Edit deal · OfferTag Admin'; $$('[data-edit-only]').forEach(function (x) { x.hidden = false; });
+      $('[data-v-uniq]').textContent = INR.format(src.uniq); $('[data-v-total]').textContent = INR.format(src.views); $('[data-v-clicks]').textContent = INR.format(src.clicks);   // D-148 $('[data-open-page]').href = src.page;
       $('[data-saved]').hidden = true; $$('.adm-sub a[aria-current]').forEach(function (a) { a.removeAttribute('aria-current'); });
       var all = $('.adm-sub a[href="/admin/deal"], .adm-sub a[href^="/admin/deal?"]'); if (all) all.setAttribute('aria-current', 'page');
     } else if (src) {

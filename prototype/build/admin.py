@@ -248,6 +248,12 @@ def build_incoming():
 
 # ---------- All deals (admin-deals §2) ----------
 SHOP_HOSTS = {'amazon': 'Amazon', 'amzn': 'Amazon', 'flipkart': 'Flipkart', 'fkrt': 'Flipkart', 'myntra': 'Myntra', 'ajio': 'Ajio', 'jiomart': 'Jiomart', 'bigbasket': 'BigBasket', 'meesho': 'Meesho', 'blinkit': 'Blinkit', 'swiggy': 'Swiggy', 'nykaa': 'Nykaa', 'tatacliq': 'Tata CLiQ'}
+# D-148 views. SAMPLE: total = the public count (every view, repeats included); unique = each visitor once per deal (member id, else browser cookie or app install id);
+# Buy clicks = taps on Buy through our link. The build phase records these; the prototype derives steady sample numbers from the deal id.
+def adm_uniq(d):
+    v = int(d.get('views') or 0); return round(v * (0.55 + (int(d['id']) % 23) / 100))
+def adm_clicks(d):
+    v = int(d.get('views') or 0); return round(v * (0.09 + (int(d['id']) % 11) / 100))
 def adm_rows():  # one list for All deals, the post form, the pinned board and alerts (data sheets A and B)
     rows = []
     for i, d in enumerate(sorted(deals, key=lambda d: d['agemin'])):
@@ -256,7 +262,7 @@ def adm_rows():  # one list for All deals, the post form, the pinned board and a
         if i == 17: st = 'withdrawn'
         rows.append(dict(id=d['id'], t=d['t'], store=d['store'], cat=d['cat'], p=d['p'], m=d['m'], pct=int(d['pct']),
                          types=[t for t in d['types'] if t != 'Fresh'], status=st, pin=A_PIN.get(d['file']), age=d['agemin'] if st != 'scheduled' else -1,
-                         when=when, views=d['views'], img=dimg(d), page=d['page'], link=d['link'], display=1,
+                         when=when, views=d['views'], uniq=adm_uniq(d), clicks=adm_clicks(d), img=dimg(d), page=d['page'], link=d['link'], display=1,
                          caption=d['caption'], coupon=d['coupon'], terms=d['coupon_terms'], offers=d['offers'], note=d['note'], exc=d['step_exceptions'],
                          logo=store_logo(d['store']) or ''))
     return rows
@@ -298,7 +304,7 @@ def build_deals():
             <th class="num"><button type="button" data-sort="pct">Off</button></th>
             <th>Type</th><th><button type="button" data-sort="status">Status</button></th><th class="num">Pin</th>
             <th><button type="button" data-sort="age" aria-sort="ascending">Posted</button></th>
-            <th class="num"><button type="button" data-sort="views">Views</button></th><th class="c-act"><span class="visually-hidden">Actions</span></th>
+            <th class="num"><button type="button" data-sort="uniq" title="Each visitor counted once per deal">Unique views</button></th><th class="c-act"><span class="visually-hidden">Actions</span></th>
           </tr></thead>
           <tbody data-rows></tbody>
         </table>
@@ -477,6 +483,13 @@ def build_post():
             </article></div>
             <a class="side-link" href="#" target="_blank" rel="noopener" data-edit-only hidden data-open-page>Open public page <i data-lucide="external-link"></i></a>
           </details>
+          <section class="panel side-sec vstats-sec" data-edit-only hidden><div class="panel-h"><h2>Views</h2><span class="tag-sample">Sample</span></div>
+            <dl class="vstats">
+              <div class="is-main"><dt>Unique visitors</dt><dd data-v-uniq>0</dd></div>
+              <div><dt>Total views</dt><dd data-v-total>0</dd></div>
+              <div><dt>Buy clicks</dt><dd data-v-clicks>0</dd></div>
+            </dl>
+            <p class="vstats-note">Unique counts each visitor once per deal: a member, or one browser or app. Total counts every view and is the number on the public page.</p></section>
           <section class="panel side-sec" id="share" data-edit-only hidden><div class="panel-h"><h2>Share</h2><small>Nothing is shared on its own</small></div>
             <div class="share">
               {ck('data-ch="fb" checked', 'Facebook Page')}{ck('data-ch="pin"', 'Pinterest')}{ck('data-ch="th" checked', 'Threads')}

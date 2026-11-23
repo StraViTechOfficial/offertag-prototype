@@ -1029,3 +1029,11 @@ html.admin .q-input:not(:focus):not([aria-invalid]) { border-color: transparent;
 .fl-act .btn .lucide { width: 14px; height: 14px; }
 .switch input:disabled + span { opacity: .55; }
 @media (prefers-reduced-motion: reduce) { .bc-panel { transition: none; } }
+
+/* D-148 · Edit deal: views panel (unique visitors first, then total views and Buy clicks) */
+.vstats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 0; background: hsl(var(--border)); border-bottom: 1px solid hsl(var(--border)); }
+.vstats > div { padding: 12px 14px; background: hsl(var(--card)); }
+.vstats dt { font-size: 12px; color: hsl(var(--muted-foreground)); }
+.vstats dd { margin: 2px 0 0; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vstats .is-main dd { color: hsl(var(--primary)); }
+.vstats-note { margin: 0; padding: 10px 16px 12px; font-size: 12px; line-height: 1.45; color: hsl(var(--muted-foreground)); }
