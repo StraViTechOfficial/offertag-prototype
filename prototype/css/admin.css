@@ -1037,3 +1037,49 @@ html.admin .q-input:not(:focus):not([aria-invalid]) { border-color: transparent;
 .vstats dd { margin: 2px 0 0; font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .vstats .is-main dd { color: hsl(var(--primary)); }
 .vstats-note { margin: 0; padding: 10px 16px 12px; font-size: 12px; line-height: 1.45; color: hsl(var(--muted-foreground)); }
+
+/* ======================= D-150 · Admin light theme =======================
+   The admin starts on Dark (as before, D-098); Light and Automatic come from the sidebar switch (saved as adm-theme).
+   Light uses the public site's Look B palette: cool grey page, white cards and sidebar, navy buttons. */
+html.admin[data-theme="light"] {
+  --background: 220 33% 97%;
+  --side: 0 0% 100%;
+  --card: 0 0% 100%;
+  --card-foreground: 223 54% 14%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 223 54% 14%;
+  --foreground: 223 54% 14%;
+  --muted: 220 33% 96%;
+  --muted-foreground: 221 15% 41%;
+  --secondary: 220 33% 95%;
+  --secondary-foreground: 223 54% 14%;
+  --accent: 220 40% 95%;
+  --accent-foreground: 223 54% 14%;
+  --border: 220 25% 91%;
+  --input: 220 22% 86%;
+  --primary: var(--navy);
+  --primary-foreground: 0 0% 100%;
+  --ring: var(--navy);
+  --save: 151 83% 26%;
+  --live: 151 83% 26%;
+  --warn: 28 90% 36%;
+  --loot: 357 60% 49%;
+  --destructive: 357 65% 48%;
+  --link: 218 75% 38%;
+  color-scheme: light;
+}
+html.admin[data-theme="light"] .btn-default:hover { background: hsl(var(--navy) / .88); }
+html.admin[data-theme="light"] .menu, html.admin[data-theme="light"] .popover, html.admin[data-theme="light"] .toast, html.admin[data-theme="light"] .sheet { box-shadow: 0 12px 32px hsl(218 83% 18% / .14), 0 2px 6px hsl(218 83% 18% / .06); }
+html.admin[data-theme="light"] .slot[data-lifted] { box-shadow: 0 10px 24px hsl(218 83% 18% / .18); }
+html.admin[data-theme="light"] .adm-brand img { filter: none; mix-blend-mode: multiply; }
+html.admin[data-theme="light"] .adm-link[aria-current="page"], html.admin[data-theme="light"] .adm-sub a[aria-current="page"] { background: hsl(var(--sky)); }
+html.admin[data-theme="light"] .ch-th { box-shadow: inset 0 0 0 1px hsl(var(--border)); }
+html.admin[data-theme="light"] .card, html.admin[data-theme="light"] .panel { box-shadow: 0 1px 2px hsl(218 83% 18% / .04), 0 2px 8px hsl(218 83% 18% / .04); }
+
+/* D-150 · theme switch in the sidebar foot */
+.theme-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin: 0 0 6px; border-radius: 10px; background: hsl(var(--muted)); }
+.theme-seg button { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; border: 0; border-radius: 7px; background: none; color: hsl(var(--muted-foreground)); font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; }
+.theme-seg button[aria-checked="true"] { background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 1px 3px rgba(0,0,0,.2); font-weight: 600; }
+.theme-seg button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 1px; }
+.side-min .adm-theme { grid-template-columns: 1fr; }
+.side-min .adm-theme span { display: none; }

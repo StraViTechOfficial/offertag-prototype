@@ -1,6 +1,20 @@
 <!doctype html>
 <html lang="en" class="theme">
 <head>
+<script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
+try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
+var m=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
+var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
+var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
+apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
+window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
+var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('DOMContentLoaded',apply);
+window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
+<meta name="theme-color" content="#ffffff">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OfferTag: AC Loot Deals | Hot AC Shopping Deals Online</title>
@@ -30,6 +44,11 @@
       <div class="header-actions">
         <a class="btn btn-link nav-blog" href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden>New</span></a>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
+        <!-- D-150: theme menu (Light · Dark · Automatic); the icon shows the current choice -->
+        <div class="dropdown theme-menu">
+          <button class="btn btn-ghost btn-icon theme-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Theme"><i data-lucide="sun" class="tb-light"></i><i data-lucide="moon" class="tb-dark"></i><i data-lucide="sun-moon" class="tb-auto"></i></button>
+          <div class="menu theme-menu-list" role="menu" hidden data-state="closed" aria-label="Theme"><div class="menu-label">Theme</div><button type="button" role="menuitemradio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i>Light</button><button type="button" role="menuitemradio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i>Dark</button><button type="button" role="menuitemradio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i>Automatic<small>Follows your device</small></button></div>
+        </div>
         <a class="btn btn-outline" href="/login" data-signin-open data-when-guest>Sign in</a>
         <div class="dropdown account-menu" data-when-user hidden>
           <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
@@ -352,6 +371,8 @@
     <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
     <a href="/faq"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
     <a href="/contact"><i data-lucide="mail"></i>Feedback</a>
+    <div class="sheet-section">Theme</div>
+    <div class="theme-seg" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
   </nav>
 </aside>
 <!-- Search sheet (phone, full screen; D-064): recent · stores · categories, suggestions while typing; site.js renders the body -->

@@ -1,6 +1,20 @@
 <!doctype html>
 <html lang="en" class="admin">
 <head>
+<script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
+try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
+var m=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
+var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
+var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
+apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
+window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
+var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('DOMContentLoaded',apply);
+window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
+<meta name="theme-color" content="#ffffff">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
@@ -30,6 +44,7 @@
 <div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="settings"></i><span>Settings</span></div><div class="adm-sub"><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin" aria-current="page">Security</a></div></div>
     </nav>
     <div class="adm-side-foot">
+      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
       <a class="adm-link" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
       <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
     </div>

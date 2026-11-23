@@ -30,6 +30,11 @@
       <div class="header-actions">
         <a class="btn btn-link nav-blog" href="blog.html" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span></a>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
+        <!-- D-150: theme menu (Light · Dark · Automatic); the icon shows the current choice -->
+        <div class="dropdown theme-menu">
+          <button class="btn btn-ghost btn-icon theme-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Theme"><i data-lucide="sun" class="tb-light"></i><i data-lucide="moon" class="tb-dark"></i><i data-lucide="sun-moon" class="tb-auto"></i></button>
+          <div class="menu theme-menu-list" role="menu" hidden data-state="closed" aria-label="Theme"><div class="menu-label">Theme</div><button type="button" role="menuitemradio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i>Light</button><button type="button" role="menuitemradio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i>Dark</button><button type="button" role="menuitemradio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i>Automatic<small>Follows your device</small></button></div>
+        </div>
         <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>Sign in</a>
         <div class="dropdown account-menu" data-when-user hidden>
           <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
@@ -127,6 +132,8 @@
     <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
     <a href="faq.html"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
     <a href="contact.html"><i data-lucide="mail"></i>Feedback</a>
+    <div class="sheet-section">Theme</div>
+    <div class="theme-seg" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
   </nav>
 </aside>
 {{SEARCH_SHEET}}

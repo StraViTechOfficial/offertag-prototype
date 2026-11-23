@@ -7,6 +7,7 @@
 import glob as _glob, re as _re, shutil as _shutil
 
 R_MANIFEST = os.path.join(HERE, 'routes.json')
+exec(open(os.path.join(HERE, 'theme_head.py')).read())  # D-150: add_theme()
 
 # ---- 1. one address per flat page ----
 ROUTE = {
@@ -63,7 +64,7 @@ _ASSET = _re.compile(r'''(?<=["'(=])(css|js|assets)/''')
 def rewrite(html):
     html = _LINK.sub(lambda m: url_for(m.group(1), m.group(2) or '', m.group(3) or '') if m.group(1) in ROUTE else m.group(0), html)
     html = _ASSET.sub(r'/\1/', html)
-    return html.replace('action="search.html"', 'action="/deals/search"')
+    return add_theme(html.replace('action="search.html"', 'action="/deals/search"'))   # D-150: theme set before the page draws
 
 def out_path(route):
     if route == '/': return os.path.join(ROOT, 'index.html')

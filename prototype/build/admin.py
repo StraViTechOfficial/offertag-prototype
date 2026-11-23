@@ -83,6 +83,7 @@ def shell(fname, title, active, body, scripts='', after=''):
 {sidebar(active)}
     </nav>
     <div class="adm-side-foot">
+      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
       <a class="adm-link" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
       <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
     </div>
