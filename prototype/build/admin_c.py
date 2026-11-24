@@ -12,7 +12,7 @@ OVERLAY = '      <div class="sheet-overlay" data-overlay hidden data-state="clos
 def jdump(x): return json.dumps(x, ensure_ascii=False).replace('</', '<\\/')
 
 def admin_only(page_name, body):  # sub-admins never reach these pages (D-057); ?role=sub shows why
-    return (f'      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>{page_name} is for admins only. Sub-admins see Deals and View site. <a href="admin-deals.html?role=sub">Go to All deals</a></p></div>\n'
+    return (f'      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>{page_name} is for admins only. Sub-admins see Incoming, Deals and View site. <a href="admin-deals.html?role=sub">Go to All deals</a></p></div>\n'
             f'      <div data-role="admin">\n{body}\n      </div>')
 
 def tabs(attr, items, active):  # items: (key, label, count or None)
@@ -182,7 +182,6 @@ def build_site():
           {row('What the flag does', 'Nothing is published or promoted on its own. An admin always decides.', _sel('name="feat_do" aria-label="What the flag does"', '<option>Flag in Incoming for review</option><option>Flag and suggest Top pick</option><option>Flag and suggest a push alert</option>'))}
         </section>
         <section class="panel"><div class="panel-h"><h2>Header</h2></div>
-          {row('Blog “New” pill', 'Shows next to Blog until a visitor opens the newest post.', sw('name="blognew"', True, 'Blog New pill'))}
         </section>
         <section class="panel"><div class="panel-h"><h2>Links</h2><small>footer, menu, Deal alerts and app</small></div>
           {row('WhatsApp group', '', url('wa', 'https://chat.whatsapp.com/FpM8Z1mM898BmFOqd8ccqg', 'https://chat.whatsapp.com/…'))}
@@ -200,16 +199,17 @@ def build_site():
 # ---------- Roles (read-only, D-057) ----------
 def build_roles():
     Y, N = '<span class="yes"><i data-lucide="check"></i><span class="visually-hidden">Yes</span></span>', '<span class="no">—<span class="visually-hidden">No</span></span>'
-    areas = [('Overview', 1, 0), ('All deals: edit, clone, share, status', 1, 1), ('Incoming deals: approve, reject', 1, 1), ('Post a deal', 1, 1), ('Pinned board', 1, 0),
-             ('Sale posters', 1, 0), ('Alerts', 1, 0), ('Social sharing', 1, 0), ('Blog', 1, 0), ('Inbox', 1, 0), ('Catalogue', 1, 0), ('Users', 1, 0), ('Settings', 1, 0), ('Security', 1, 0)]
+    areas = [('Overview', 1, 0), ('Incoming: approve, reject', 1, 1), ('Deals: all deals, post, edit, clone, share, status', 1, 1), ('Deals: Pinned board', 1, 0),
+             ('Promote: Sale posters, Sponsored', 1, 0), ('Alerts', 1, 0), ('Blog', 1, 0), ('Inbox', 1, 0), ('Members', 1, 0), ('Catalogue', 1, 0),
+             ('Settings: Site & app, Affiliate tags, Social sharing, Users, Roles, Security', 1, 0)]   # D-160 menu
     rows = ''.join(f'<tr><td>{E(a)}</td><td class="ctr">{Y if x else N}</td><td class="ctr">{Y if y else N}</td></tr>' for a, x, y in areas)
     body = f'''      <div class="page-h">
         <div><h1>Roles</h1><p>What each role can open in the admin. Roles are fixed; to give someone a different role, ask the developer.</p></div>
       </div>
       <div class="roles">
         <div class="role-c"><b>Admin</b><p>Everything, including settings and users.</p></div>
-        <div class="role-c"><b>Sub-admin</b><p>Posts and manages deals. Sees Deals and View site only.</p></div>
-        <div class="role-c"><b>Member</b><p>Signs in on the website or app to save deals and comment. No admin access.</p></div>
+        <div class="role-c"><b>Sub-admin</b><p>Posts and manages deals. Sees Incoming, Deals and View site only.</p></div>
+        <div class="role-c"><b>Member</b><p>Signs in on the website or app to comment and get alerts. No admin access. Listed under Members.</p></div>
       </div>
       <div class="tbl-wrap"><table class="tbl roles-tbl">
         <thead><tr><th>Area</th><th class="ctr">Admin</th><th class="ctr">Sub-admin</th></tr></thead>
@@ -226,21 +226,22 @@ USERS = [  # SAMPLE (data sheet C)
     ('Kavya N.', 'kavya@…', '', 'Member', '2026-11', ''), ('Vikram T.', 'vikram@…', '90xxxxxx13', 'Member', '2020-07', ''),
     ('Ananya G.', 'ananya@…', '', 'Member', '2025-12', ''), ('Deepak J.', 'deepak@…', '88xxxxxx70', 'Member', '2019-09', ''),
 ]
-def build_users():
+def build_users():  # D-161: Users = the people who run the admin (admin, sub-admin). Members have their own page.
     data = [dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, tag=t) for i, (n, e, p, r, j, t) in enumerate(USERS)]
+    staff_n = sum(1 for u in USERS if u[3] != 'Member')
     body = f'''      <div class="page-h">
-        <div><h1>Users</h1><p>Everyone with an account. Admins and sub-admins can have their own Amazon tag for the links they share.</p></div>
+        <div><h1>Users</h1><p>The people who run the admin: admins and sub-admins. Each can have their own Amazon tag for the links they share. Members who signed up on the site are under <a href="admin-members.html">Members</a>.</p></div>
       </div>
       <div class="toolbar">
-        <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search users</span><input class="input" type="search" placeholder="Name, email or phone" data-uq></label>
-        {_sel('data-urole aria-label="Role"', '<option value="">All roles</option><option>Admin</option><option>Sub-admin</option><option>Member</option>', 'tb-sel')}
+        <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search users</span><input class="input" type="search" placeholder="Name or email" data-uq></label>
+        {_sel('data-urole aria-label="Role"', '<option value="">Admins and sub-admins</option><option>Admin</option><option>Sub-admin</option>', 'tb-sel')}
         <span class="count" data-ucount></span><span class="tag-sample">Sample</span>
       </div>
       <div class="tbl-wrap"><table class="tbl ltbl users-tbl">
-        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Amazon tag</th></tr></thead>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Amazon tag</th></tr></thead>
         <tbody data-urows></tbody></table>
         <p class="empty" data-uempty hidden>No users match. <button class="btn-link" type="button" data-uclear>Clear search</button></p></div>
-      <p class="foot-note"><i data-lucide="info"></i><span>This prototype holds 12 sample users; the live list pages through every account. Emails and phone numbers stay masked in lists.</span></p>
+      <p class="foot-note"><i data-lucide="info"></i><span>Roles are fixed. To make a member a sub-admin, or to remove someone's access, ask the developer. See <a href="admin-roles.html">Roles</a> for what each role can open.</span></p>
 {OVERLAY}
       <aside class="sheet sheet-right" id="user-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="ue-title">
         <div class="sheet-header"><div class="sheet-title" id="ue-title">User</div><p class="sheet-desc" data-ue-sub></p></div>
@@ -248,11 +249,76 @@ def build_users():
         <form class="sheet-body pe" data-ue novalidate>
           <dl class="kv" data-ue-kv></dl>
           <label class="fld" data-ue-tagfld><span class="lab">Amazon tag <small>replaces the website tag on links this person shares</small></span><input class="input mono" type="text" name="tag" placeholder="e.g. offertag3-21" spellcheck="false" autocomplete="off"><span class="err" hidden>Amazon tags in India end in “-21”.</span></label>
-          <p class="hint-line" data-ue-member hidden><i data-lucide="info"></i>Members don’t post deals, so they have no tag.</p>
         </form>
         <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ue-save>Save</button></div>
       </aside>'''
     shell('admin-users.html', 'Users', 'users', admin_only('Users', body), scripts=f'<script>window.ADM_USERS = {jdump(data)};</script>\n', after=C_AFTER)
+
+# ---------- Members (D-161): everyone who signed up on the site or app. Read-only list built for ~29k rows ----------
+# Sources (Law 15): users.name, users.email, users.mobile, users.created_at, users.allow_notifications, users.is_active (old-code schema.sql);
+# comment count = comments per member; deletion request = Inbox → Deletion requests. Total = BRD p.1 "28,880 sign-ups".
+MEMBERS_TOTAL = 28880
+def member_rows():
+    import random
+    rnd = random.Random(158)
+    com = {}
+    try:
+        for c in json.load(open(os.path.join(ROOT, 'data', 'community.json')))['comments']:
+            if not c.get('admin'): com[c['name']] = com.get(c['name'], 0) + 1
+    except Exception:
+        pass
+    seed = [(n, e, ph, j) for n, e, ph, r, j, t in USERS if r == 'Member']
+    firsts = ['Amit', 'Mohit', 'Suresh', 'Ankit', 'Ritu', 'Pooja', 'Sameer', 'Farah', 'Neha', 'Rohan', 'Isha', 'Karan', 'Meera', 'Aditya', 'Divya', 'Nikhil', 'Sana', 'Varun', 'Tanvi', 'Rahul',
+              'Gaurav', 'Swati', 'Harsh', 'Nisha', 'Yash', 'Shreya', 'Manoj', 'Lakshmi', 'Imran', 'Zoya', 'Rajesh', 'Anjali', 'Siddharth', 'Bhavna', 'Pranav', 'Kriti', 'Vivek', 'Asha', 'Tarun', 'Reema']
+    lasts = 'ABCDGHJKLMNPRSTVY'
+    rows, seen = [], set()
+    for n, e, ph, j in seed:
+        rows.append(dict(name=n, email=e, phone=ph, joined=j + '-' + f'{rnd.randint(1, 28):02d}')); seen.add(n)
+    while len(rows) < 160:
+        f = rnd.choice(firsts); n = f'{f} {rnd.choice(lasts)}.'
+        if n in seen: continue
+        seen.add(n); y = rnd.choices([2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026], [3, 8, 4, 5, 6, 8, 12, 20])[0]
+        mth = rnd.randint(1, 11 if y == 2026 else 12); day = rnd.randint(1, 24 if (y, mth) == (2026, 11) else 28)
+        ph = f'{rnd.choice("6789")}{rnd.randint(0, 9)}xxxxxx{rnd.randint(10, 99)}' if rnd.random() < .45 else ''
+        rows.append(dict(name=n, email=f.lower() + ('.' + n.split()[1][0].lower() if rnd.random() < .5 else '') + '@…', phone=ph, joined=f'{y}-{mth:02d}-{day:02d}'))
+    out = []
+    for i, r in enumerate(rows):
+        first = r['name'].split()[0]
+        out.append(dict(id=1000 + i, name=r['name'], email=r['email'], phone=r['phone'], joined=r['joined'], alerts=rnd.random() < .38,
+                        comments=com.pop(first, 0), active=True, deletion=False))
+    # the one open deletion request in the Inbox sample
+    for m in out:
+        if m['name'].startswith('Arjun'): m['deletion'] = True; break
+    return out
+
+def build_members():
+    data = member_rows()
+    sel = lambda attr, label, opts: _sel(f'{attr} aria-label="{label}"', ''.join(f'<option value="{v}">{E(t)}</option>' for v, t in opts), 'tb-sel')
+    body = f'''      <div class="page-h">
+        <div><h1>Members</h1><p><b>{MEMBERS_TOTAL:,}</b> people have an account on the site or app · this prototype holds {len(data)} samples. Search finds anyone by name, email or phone.</p></div>
+      </div>
+      <div class="toolbar mb-tools">
+        <label class="input-wrap tb-search mb-search"><i data-lucide="search"></i><span class="visually-hidden">Search members</span><input class="input" type="search" placeholder="Search {MEMBERS_TOTAL:,} members by name, email or phone" data-mq autocomplete="off"></label>
+        {sel('data-mjoined', 'Joined', [('', 'Joined: any time'), ('7', 'Last 7 days'), ('30', 'Last 30 days'), ('365', 'Last 12 months'), ('old', 'Over a year ago')])}
+        {sel('data-malerts', 'Deal alerts', [('', 'Deal alerts: all'), ('on', 'Alerts on'), ('off', 'Alerts off')])}
+        {sel('data-msort', 'Sort', [('new', 'Newest first'), ('old', 'Oldest first'), ('name', 'Name A–Z'), ('com', 'Most comments')])}
+      </div>
+      <div class="chips-row"><span class="count" data-mcount></span><span class="tag-sample">Sample</span>
+        <label class="select per"><span class="visually-hidden">Rows per page</span><select data-mper><option>25</option><option>50</option><option>100</option></select><i data-lucide="chevron-down"></i></label></div>
+      <div class="tbl-wrap"><table class="tbl ltbl mb-tbl">
+        <thead><tr><th>Member</th><th>Phone</th><th>Joined</th><th>Deal alerts</th><th class="num">Comments</th><th class="c-act"><span class="visually-hidden">Open</span></th></tr></thead>
+        <tbody data-mrows></tbody></table>
+        <p class="empty" data-mempty hidden>No members match. <button class="btn-link" type="button" data-mclear>Clear search and filters</button></p></div>
+      <nav class="pager" data-mpager aria-label="Pages"></nav>
+      <p class="foot-note"><i data-lucide="shield"></i><span>Emails and phone numbers stay masked. Members sign in with a code sent to their email; there is nothing to reset. Admins and sub-admins are under <a href="admin-users.html">Settings → Users</a>.</span></p>
+{OVERLAY}
+      <aside class="sheet sheet-right" id="member-view" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="mv-title">
+        <div class="sheet-header"><div class="sheet-title" id="mv-title">Member</div><p class="sheet-desc" data-mv-sub></p></div>
+        <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
+        <div class="sheet-body pe"><dl class="kv" data-mv-kv></dl><div data-mv-more></div></div>
+        <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Close</button></div>
+      </aside>'''
+    shell('admin-members.html', 'Members', 'members', admin_only('Members', body), scripts=f'<script>window.ADM_MEMBERS = {jdump(data)}; window.ADM_MEMBERS_TODAY = "2026-11-24";</script>\n', after=C_AFTER)
 
 # ---------- Catalogue (admin-tools §7) ----------
 def build_catalogue():
@@ -276,7 +342,7 @@ def build_catalogue():
         <div><h1>Catalogue</h1><p>Shops, categories and deal types the site is built on. Changes show on the website at once.</p></div>
         <div class="page-h-acts"><button class="btn btn-default" type="button" data-cat-add><i data-lucide="plus"></i><span data-cat-add-l>Add shop</span></button></div>
       </div>
-      {tabs('data-ctab', [('shops', 'Shops', len(shops)), ('categories', 'Categories', len(cats)), ('dealtypes', 'Deal types', len(dtypes)), ('types', 'Types', len(types))], 'shops')}
+      {tabs('data-ctab', [('shops', 'Shops', len(shops)), ('categories', 'Categories', len(cats)), ('dealtypes', 'Deal types', len(dtypes))], 'shops')}
       <div class="toolbar" data-cat-tools>
         <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search</span><input class="input" type="search" placeholder="Search by name" data-cq></label>
         <span data-cat-active>{ck('data-conly checked', 'Active only')}</span>
@@ -296,5 +362,5 @@ def build_catalogue():
     shell('admin-catalogue.html', 'Catalogue', 'shops', admin_only('Catalogue', body),
           scripts=f'<script>window.ADM_CAT = {jdump(dict(shops=shops, categories=cats, dealtypes=dtypes, types=types))};</script>\n', after=C_AFTER)
 
-build_social(); build_tags(); build_inbox(); build_site(); build_roles(); build_users(); build_catalogue()
+build_social(); build_tags(); build_inbox(); build_site(); build_roles(); build_users(); build_members(); build_catalogue()
 print('Admin: batch C (admin-social, admin-tags, admin-inbox, admin-site, admin-roles, admin-users, admin-catalogue)')

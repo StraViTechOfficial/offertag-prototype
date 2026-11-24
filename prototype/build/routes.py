@@ -29,7 +29,7 @@ ROUTE = {
     'admin.html': '/admin', 'admin-incoming.html': '/admin/incoming', 'admin-deals.html': '/admin/deal', 'admin-post.html': '/admin/deal/create',
     'admin-pinned.html': '/admin/pinned', 'admin-alerts.html': '/admin/admin-notifications', 'admin-posters.html': '/admin/posters', 'admin-sponsored.html': '/admin/sponsored',
     'admin-social.html': '/admin/social', 'admin-tags.html': '/admin/settings/tags', 'admin-inbox.html': '/admin/feedback',
-    'admin-site.html': '/admin/settings/site', 'admin-roles.html': '/admin/role', 'admin-users.html': '/admin/users', 'admin-security.html': '/admin/security',
+    'admin-site.html': '/admin/settings/site', 'admin-roles.html': '/admin/role', 'admin-users.html': '/admin/users', 'admin-members.html': '/admin/members', 'admin-security.html': '/admin/security',
     'admin-catalogue.html': '/admin/shop', 'admin-blog.html': '/admin/blog', 'admin-blog-edit.html': '/admin/blog/create', 'admin-soon.html': '/admin/soon',
 }
 for d in deals + extras: ROUTE[d['page']] = d['slug'] if d['slug'].startswith('/deal/') else '/deal/' + d['slug'].lstrip('/')  # snapshot slug is the live path

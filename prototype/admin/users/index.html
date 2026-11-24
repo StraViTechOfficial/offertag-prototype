@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="admin">
+<html lang="en" class="admin" data-total-deals="79664">
 <head>
 <script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
 try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
@@ -35,19 +35,17 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<div class="adm-group"><div class="adm-group-h"><i data-lucide="tag"></i><span>Deals</span></div><div class="adm-sub"><a href="/admin/deal">All deals</a><a href="/admin/incoming">Incoming<span class="adm-count" data-count="incoming">5</span></a><a href="/admin/deal/create">Post a deal</a><a href="/admin/pinned" data-role="admin">Pinned board</a></div></div>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="gallery-horizontal"></i><span>Sale posters</span></a>
-<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
+<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
 <a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
-<a class="adm-link" href="/admin/social" data-role="admin"><i data-lucide="share-2"></i><span>Social sharing</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="inbox"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></div><div class="adm-sub"><a href="/admin/feedback" data-role="admin">Feedback</a><a href="/admin/reports" data-role="admin">Reports</a><a href="/admin/deletion-requests" data-role="admin">Deletion requests</a><a href="/admin/comments" data-role="admin">Comments</a></div></div>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="library"></i><span>Catalogue</span></div><div class="adm-sub"><a href="/admin/shop" data-role="admin">Shops</a><a href="/admin/category" data-role="admin">Categories</a><a href="/admin/lookup" data-role="admin">Deal types</a><a href="/admin/type" data-role="admin">Types</a></div></div>
-<a class="adm-link" href="/admin/users" data-role="admin" aria-current="page"><i data-lucide="users"></i><span>Users</span></a>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="settings"></i><span>Settings</span></div><div class="adm-sub"><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></div></div>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
+<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
+<a class="adm-link" href="/admin/settings/site" data-role="admin" aria-current="page"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
     <div class="adm-side-foot">
-      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
       <a class="adm-link" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
       <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
     </div>
@@ -69,26 +67,30 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
           <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
           <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
           <div class="separator"></div>
+          <div class="menu-label">Theme</div>
+          <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
+          <div class="separator"></div>
           <a role="menuitem" href="/admin/login?state=out"><i data-lucide="log-out"></i>Sign out</a>
         </div>
       </div>
     </header>
     <main class="adm-content" id="main">
-      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Users is for admins only. Sub-admins see Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin" aria-current="page">Users</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></nav>
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Users is for admins only. Sub-admins see Incoming, Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="page-h">
-        <div><h1>Users</h1><p>Everyone with an account. Admins and sub-admins can have their own Amazon tag for the links they share.</p></div>
+        <div><h1>Users</h1><p>The people who run the admin: admins and sub-admins. Each can have their own Amazon tag for the links they share. Members who signed up on the site are under <a href="/admin/members">Members</a>.</p></div>
       </div>
       <div class="toolbar">
-        <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search users</span><input class="input" type="search" placeholder="Name, email or phone" data-uq></label>
-        <label class="select tb-sel"><select data-urole aria-label="Role"><option value="">All roles</option><option>Admin</option><option>Sub-admin</option><option>Member</option></select><i data-lucide="chevron-down"></i></label>
+        <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search users</span><input class="input" type="search" placeholder="Name or email" data-uq></label>
+        <label class="select tb-sel"><select data-urole aria-label="Role"><option value="">Admins and sub-admins</option><option>Admin</option><option>Sub-admin</option></select><i data-lucide="chevron-down"></i></label>
         <span class="count" data-ucount></span><span class="tag-sample">Sample</span>
       </div>
       <div class="tbl-wrap"><table class="tbl ltbl users-tbl">
-        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Amazon tag</th></tr></thead>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Amazon tag</th></tr></thead>
         <tbody data-urows></tbody></table>
         <p class="empty" data-uempty hidden>No users match. <button class="btn-link" type="button" data-uclear>Clear search</button></p></div>
-      <p class="foot-note"><i data-lucide="info"></i><span>This prototype holds 12 sample users; the live list pages through every account. Emails and phone numbers stay masked in lists.</span></p>
+      <p class="foot-note"><i data-lucide="info"></i><span>Roles are fixed. To make a member a sub-admin, or to remove someone's access, ask the developer. See <a href="/admin/role">Roles</a> for what each role can open.</span></p>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="user-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="ue-title">
         <div class="sheet-header"><div class="sheet-title" id="ue-title">User</div><p class="sheet-desc" data-ue-sub></p></div>
@@ -96,7 +98,6 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
         <form class="sheet-body pe" data-ue novalidate>
           <dl class="kv" data-ue-kv></dl>
           <label class="fld" data-ue-tagfld><span class="lab">Amazon tag <small>replaces the website tag on links this person shares</small></span><input class="input mono" type="text" name="tag" placeholder="e.g. offertag3-21" spellcheck="false" autocomplete="off"><span class="err" hidden>Amazon tags in India end in “-21”.</span></label>
-          <p class="hint-line" data-ue-member hidden><i data-lucide="info"></i>Members don’t post deals, so they have no tag.</p>
         </form>
         <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ue-save>Save</button></div>
       </aside>

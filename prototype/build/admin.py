@@ -11,59 +11,53 @@ A_PIN = {d['file']: i + 1 for i, d in enumerate(pinned)}  # the 8 SAMPLE pinned 
 
 def soon(label): return 'admin-soon.html?s=' + label.replace(' ', '+')
 
-# Sidebar (D-057). role: 'all' = admin + sub-admin, 'admin' = admin only. Sale posters added (DEV-019, D-098 §5).
+# Sidebar (D-160, replaces the D-057 tree): nine flat links, no sub-items, so the whole menu fits a laptop screen.
+# Pages that belong together sit behind one link and share a row of section tabs (SECTIONS) above the page.
+# role: 'all' = admin + sub-admin, 'admin' = admin only. Addresses are unchanged (Law 4); only the menu changes.
 NAV = [
-    ('overview', 'Overview', 'layout-dashboard', 'admin.html', 'admin', None, None),
-    ('deals', 'Deals', 'tag', None, 'all', None, [
-        ('all', 'All deals', 'admin-deals.html', 'all', None),
-        ('incoming', 'Incoming', 'admin-incoming.html', 'all', A_INCOMING_COUNT),
-        ('post', 'Post a deal', 'admin-post.html', 'all', None),
-        ('pinned', 'Pinned board', 'admin-pinned.html', 'admin', None),
-    ]),
-    ('posters', 'Sale posters', 'gallery-horizontal', 'admin-posters.html', 'admin', None, None),
-    ('sponsored', 'Sponsored', 'megaphone', 'admin-sponsored.html', 'admin', None, None),  # DEV-030, D-108
-    ('alerts', 'Alerts', 'bell', 'admin-alerts.html', 'admin', None, None),
-    ('social', 'Social sharing', 'share-2', 'admin-social.html', 'admin', None, None),
-    ('blog', 'Blog', 'newspaper', 'admin-blog.html', 'admin', None, None),
-    ('inbox', 'Inbox', 'inbox', None, 'admin', A_INBOX_COUNT, [
-        ('feedback', 'Feedback', 'admin-inbox.html?tab=feedback', 'admin', None),
-        ('reports', 'Reports', 'admin-inbox.html?tab=reports', 'admin', None),
-        ('deletion', 'Deletion requests', 'admin-inbox.html?tab=deletion', 'admin', None),
-        ('comments', 'Comments', 'admin-inbox.html?tab=comments', 'admin', None),   # D-153: comments from the deal pages (plan.md B5)
-    ]),
-    ('catalogue', 'Catalogue', 'library', None, 'admin', None, [
-        ('shops', 'Shops', 'admin-catalogue.html?tab=shops', 'admin', None),
-        ('categories', 'Categories', 'admin-catalogue.html?tab=categories', 'admin', None),
-        ('dealtypes', 'Deal types', 'admin-catalogue.html?tab=dealtypes', 'admin', None),
-        ('types', 'Types', 'admin-catalogue.html?tab=types', 'admin', None),
-    ]),
-    ('users', 'Users', 'users', 'admin-users.html', 'admin', None, None),
-    ('settings', 'Settings', 'settings', None, 'admin', None, [
-        ('tags', 'Affiliate tags', 'admin-tags.html', 'admin', None),
-        ('site', 'Site & app', 'admin-site.html', 'admin', None),
-        ('roles', 'Roles', 'admin-roles.html', 'admin', None),
-        ('security', 'Security', 'admin-security.html', 'admin', None),
-    ]),
+    ('overview', 'Overview', 'layout-dashboard', 'admin.html', 'admin', None),
+    ('incoming', 'Incoming', 'inbox', 'admin-incoming.html', 'all', A_INCOMING_COUNT),
+    ('deals', 'Deals', 'tag', 'admin-deals.html', 'all', None),
+    ('promote', 'Promote', 'megaphone', 'admin-posters.html', 'admin', None),        # Sale posters + Sponsored (DEV-019/031, DEV-030)
+    ('alerts', 'Alerts', 'bell', 'admin-alerts.html', 'admin', None),
+    ('blog', 'Blog', 'newspaper', 'admin-blog.html', 'admin', None),
+    ('inbox', 'Inbox', 'mail', 'admin-inbox.html?tab=feedback', 'admin', A_INBOX_COUNT),
+    ('members', 'Members', 'users', 'admin-members.html', 'admin', None),           # D-161: people who signed up (admins are Settings → Users)
+    ('catalogue', 'Catalogue', 'library', 'admin-catalogue.html?tab=shops', 'admin', None),
+    ('settings', 'Settings', 'settings', 'admin-site.html', 'admin', None),
 ]
+# Section tabs: page key → (menu key, tabs). Tabs: (page key, label, href, role).
+_SEC = {
+    'deals': [('all', 'All deals', 'admin-deals.html', 'all'), ('pinned', 'Pinned board', 'admin-pinned.html', 'admin')],
+    'promote': [('posters', 'Sale posters', 'admin-posters.html', 'admin'), ('sponsored', 'Sponsored', 'admin-sponsored.html', 'admin')],
+    'settings': [('site', 'Site & app', 'admin-site.html', 'admin'), ('tags', 'Affiliate tags', 'admin-tags.html', 'admin'), ('social', 'Social sharing', 'admin-social.html', 'admin'),
+                 ('users', 'Users', 'admin-users.html', 'admin'), ('roles', 'Roles', 'admin-roles.html', 'admin'), ('security', 'Security', 'admin-security.html', 'admin')],
+}
+SECTION_OF = {k: sec for sec, tabs in _SEC.items() for k, *_ in tabs}
+SECTION_OF.update({'post': 'deals', 'feedback': 'inbox', 'shops': 'catalogue'})   # Post a deal and the tabbed Inbox / Catalogue pages
 
 def _badge(n, key): return f'<span class="adm-count" data-count="{key}">{n}</span>' if n else ''
 
 def sidebar(active):
+    on = SECTION_OF.get(active, active)
     out = []
-    for key, label, icon, href, role, badge, kids in NAV:
+    for key, label, icon, href, role, badge in NAV:
         r = f' data-role="{role}"' if role == 'admin' else ''
-        if kids:
-            open_ = any(k[0] == active for k in kids)
-            sub = ''.join(f'<a href="{h}"{" data-role=" + chr(34) + kr + chr(34) if kr == "admin" else ""}{" aria-current=" + chr(34) + "page" + chr(34) if k == active else ""}>{E(l)}{_badge(b, k)}</a>' for k, l, h, kr, b in kids)
-            out.append(f'<div class="adm-group"{r}><div class="adm-group-h"><i data-lucide="{icon}"></i><span>{E(label)}</span>{_badge(badge, key) if not open_ else ""}</div><div class="adm-sub">{sub}</div></div>')
-        else:
-            cur = ' aria-current="page"' if key == active else ''
-            out.append(f'<a class="adm-link" href="{href}"{r}{cur}><i data-lucide="{icon}"></i><span>{E(label)}</span>{_badge(badge, key)}</a>')
+        cur = ' aria-current="page"' if key == on else ''
+        out.append(f'<a class="adm-link" href="{href}"{r}{cur}><i data-lucide="{icon}"></i><span>{E(label)}</span>{_badge(badge, key)}</a>')
     return '\n'.join(out)
+
+def section_tabs(active):  # links between the pages of one section; the page keeps its own heading below
+    sec = SECTION_OF.get(active)
+    tabs = _SEC.get(sec)
+    if not tabs or active not in [k for k, *_ in tabs]: return ''   # Post / Edit keep their own back link instead
+    label = next(l for k, l, *_ in NAV if k == sec)
+    links = ''.join(f'<a href="{h}"{" data-role=" + chr(34) + "admin" + chr(34) if r == "admin" else ""}{" aria-current=" + chr(34) + "page" + chr(34) if k == active else ""}>{E(l)}</a>' for k, l, h, r in tabs)
+    return f'      <nav class="sec-tabs" aria-label="{E(label)}">{links}</nav>\n'
 
 def shell(fname, title, active, body, scripts='', after=''):
     page = f'''<!doctype html>
-<html lang="en" class="admin">
+<html lang="en" class="admin" data-total-deals="{CATALOGUE['all_total']}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -84,7 +78,6 @@ def shell(fname, title, active, body, scripts='', after=''):
 {sidebar(active)}
     </nav>
     <div class="adm-side-foot">
-      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
       <a class="adm-link" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
       <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
     </div>
@@ -106,12 +99,15 @@ def shell(fname, title, active, body, scripts='', after=''):
           <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
           <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
           <div class="separator"></div>
+          <div class="menu-label">Theme</div>
+          <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
+          <div class="separator"></div>
           <a role="menuitem" href="admin-login.html?state=out"><i data-lucide="log-out"></i>Sign out</a>
         </div>
       </div>
     </header>
     <main class="adm-content" id="main">
-{body}
+{section_tabs(active)}{body}
     </main>
   </div>
 </div>
@@ -128,54 +124,29 @@ def types_html(ts): return ''.join(f'<span class="tchip t-{t.lower()}">{"Top dea
 # ---------- Overview (admin-tools §8) ----------
 INBOX_UNHANDLED = dict(feedback=2, reports=2, deletion=1)   # matches build_inbox() SAMPLE rows (admin_c.py); total = A_INBOX_COUNT
 
-def fresh_now(n=10):  # Fresh as visitors see it: newest first, pinned deal every PIN_EVERY cards (D-104; listing.js placePins)
-    pins = [d for d in pinned]; rest = [d for d in PAGES['fresh']['items'] if d not in pins]; out = []
-    while len(out) < n and (rest or pins):
-        if (len(out) + 1) % PIN_EVERY == 0 and pins: out.append((pins.pop(0), True))
-        elif rest: out.append((rest.pop(0), False))
-        else: out.append((pins.pop(0), True))
-    return out
-
-def attention_html():  # M-15 / M-17 (D-106): one place for everything waiting, plus what Fresh and the pins look like right now
-    items = [('inbox', 'Incoming deals to review', A_INCOMING_COUNT, 'admin-incoming.html', 'Telegram bot and held deals'),
-             ('mail', 'Contact messages', INBOX_UNHANDLED['feedback'], 'admin-inbox.html?tab=feedback', 'From the Contact form, not handled'),
-             ('flag', 'Problems reported on deals', INBOX_UNHANDLED['reports'], 'admin-inbox.html?tab=reports', 'Link, price or stock reports'),
-             ('user-x', 'Account deletion requests', INBOX_UNHANDLED['deletion'], 'admin-inbox.html?tab=deletion', 'From the app and the site; 7-day promise')]
-    rows = ''.join(f'<a class="att-row{" is-clear" if n == 0 else ""}" href="{h}"><i data-lucide="{ic}"></i><span class="att-t"><b>{E(t)}</b><small>{E(sub)}</small></span><span class="att-n">{n if n else "All clear"}</span><i data-lucide="chevron-right" class="att-go"></i></a>' for ic, t, n, h, sub in items)
-    fr = ''.join(f'<li><span class="fn-pos">{i + 1}</span><img src="{dimg(d)}" alt="" loading="lazy"><span class="t-title">{E(d["t"])}</span>{"<span class=fn-pin><i data-lucide=pin></i>Pinned</span>" if pin else f"<span class=t-meta>{d[chr(97)+chr(103)+chr(101)+chr(116)+chr(120)+chr(116)]}</span>"}</li>' for i, (d, pin) in enumerate(fresh_now()))
-    return f'''<section class="panel attention"><div class="panel-h"><h2>Needs attention</h2><span class="tag-sample">Sample</span></div><div class="att-list">{rows}</div></section>
-        <div class="two-col">
-          <section class="panel"><div class="panel-h"><h2>On Top deals now <small>first {len(fresh_now())} cards</small></h2><a href="fresh.html" target="_blank" rel="noopener">Open Top deals <i data-lucide="external-link"></i></a></div><ol class="tlist fresh-now">{fr}</ol></section>
-          <section class="panel"><div class="panel-h"><h2>Pinned on Top deals</h2><a href="admin-pinned.html">Pinned board <i data-lucide="chevron-right"></i></a></div>
-            <p class="pin-sum"><b>{len(pinned)}</b> pinned deals, one every <b>{PIN_EVERY}</b> cards: cards {", ".join(str(PIN_EVERY * (i + 1)) for i in range(min(4, len(pinned))))}{" … " + str(PIN_EVERY * len(pinned)) if len(pinned) > 4 else ""}.</p>
-            <ul class="tlist">{"".join(f'<li><span class="fn-pos">{i + 1}</span><img src="{dimg(d)}" alt="" loading="lazy"><span class="t-title">{E(d["t"])}</span><span class="t-meta">card {PIN_EVERY * (i + 1)}</span></li>' for i, d in enumerate(pinned[:5]))}</ul></section>
-        </div>'''
-
-def build_overview():
+def build_overview():  # D-160: four counts, then what is live and what is pinned. Nothing repeated, no sample panels.
     today = [d for d in deals if d['agemin'] <= 1440]
-    latest = sorted(deals, key=lambda d: d['agemin'])[:5]
+    latest = sorted(deals, key=lambda d: d['agemin'])[:6]
     kpis = [
-        ('Posted today', len(today), 'admin-deals.html?posted=today', 'View deals'),
-        ('Incoming', A_INCOMING_COUNT, 'admin-incoming.html', 'Review'),
-        ('Alerts sent today', 2, 'admin-alerts.html', 'Alerts'),
-        ('Inbox unhandled', A_INBOX_COUNT, 'admin-inbox.html', 'Open inbox'),
-        ('Pinned on Top deals', len(A_PIN), 'admin-pinned.html', 'Pinned board'),
+        ('Posted today', len(today), 'admin-deals.html?posted=today', 'View deals', 'today'),
+        ('Incoming', A_INCOMING_COUNT, 'admin-incoming.html', 'Review', 'incoming'),
+        ('Inbox unhandled', A_INBOX_COUNT, 'admin-inbox.html?tab=feedback', 'Open inbox', 'inbox'),
+        ('Pinned on Top deals', len(A_PIN), 'admin-pinned.html', 'Pinned board', 'pinned'),
     ]
-    k = ''.join(f'<a class="kpi" href="{h}"><span class="kpi-l">{l}</span><b class="kpi-n"{" data-count=incoming" if l == "Incoming" else ""}>{v}</b><span class="kpi-a">{a} <i data-lucide="arrow-right"></i></span></a>' for l, v, h, a in kpis)
-    rows = ''.join(f'<li><span class="t-time">{d["agetxt"]}</span><img src="{dimg(d)}" alt="" loading="lazy"><a class="t-title" href="{d["page"]}" target="_blank" rel="noopener">{E(d["t"])}</a><span class="t-meta">{E(d["store"])}</span>{types_html(d["types"][:1] if d["types"][0] != "Fresh" else d["types"][1:2])}<span class="pill pill-live">Live</span></li>' for d in latest)
-    shares = [(latest[0], [('Facebook', 1), ('Threads', 0)]), (latest[1], [('Facebook', 1), ('Pinterest', 1)]), (latest[2], [('Threads', 1)]), (latest[3], [('Facebook', 1)]), (latest[4], [('Pinterest', 0)])]
-    srows = ''.join(f'<li><span class="t-time">{d["agetxt"]}</span><span class="t-title">{E(d["t"])}</span><span class="share-res">{"".join(f"<span class={chr(34)}{"ok" if ok else "bad"}{chr(34)}><i data-lucide={chr(34)}{"check" if ok else "x"}{chr(34)}></i>{p}</span>" for p, ok in r)}</span></li>' for d, r in shares)
+    k = ''.join(f'<a class="kpi" href="{h}" data-kpi="{key}"><span class="kpi-l">{l}</span><b class="kpi-n">{v}</b><span class="kpi-a">{a} <i data-lucide="arrow-right"></i></span></a>' for l, v, h, a, key in kpis)
+    rows = ''.join(f'<li><span class="t-time">{d["agetxt"]}</span><img src="{dimg(d)}" alt="" loading="lazy"><a class="t-title" href="{d["page"]}" target="_blank" rel="noopener">{E(d["t"])}</a><span class="t-meta">{E(d["store"])}</span>{types_html(d["types"][:1] if d["types"][0] != "Fresh" else d["types"][1:2])}</li>' for d in latest)
+    pins = ''.join(f'<li><span class="fn-pos">{i + 1}</span><img src="{dimg(d)}" alt="" loading="lazy"><span class="t-title">{E(d["t"])}</span><span class="t-meta">card {PIN_EVERY * (i + 1)}</span></li>' for i, d in enumerate(pinned[:6]))
     body = f'''      <div class="page-h">
         <div><h1>Overview</h1><p>{TODAY.strftime("%A %-d %b")} · today so far</p></div>
-        <div class="page-h-acts"><a class="btn btn-outline" href="admin-incoming.html"><i data-lucide="inbox"></i>Review incoming <span class="adm-count" data-count="incoming">{A_INCOMING_COUNT}</span></a></div>
       </div>
       <div class="sub-note" data-role="sub"><i data-lucide="info"></i><p>Sub-admins don't see Overview. They start on <a href="admin-deals.html?role=sub">All deals</a>.</p></div>
       <div data-role="admin">
-        <div class="kpis">{k}</div>
-        {attention_html()}
-        <div class="two-col">
-          <section class="panel"><div class="panel-h"><h2>Latest live deals</h2><a href="admin-deals.html">All deals <i data-lucide="chevron-right"></i></a></div><ul class="tlist">{rows}</ul></section>
-          <section class="panel"><div class="panel-h"><h2>Recent shares</h2><span class="tag-sample">Sample</span></div><ul class="tlist">{srows}</ul></section>
+        <div class="kpis kpis-4">{k}</div>
+        <div class="two-col ov-cols">
+          <section class="panel" data-ov-latest><div class="panel-h"><h2>Latest live deals</h2><a href="admin-deals.html">All deals <i data-lucide="chevron-right"></i></a></div><ul class="tlist">{rows}</ul></section>
+          <section class="panel" data-ov-pins><div class="panel-h"><h2>Pinned on Top deals</h2><a href="admin-pinned.html">Pinned board <i data-lucide="chevron-right"></i></a></div>
+            <p class="pin-sum"><b>{len(pinned)}</b> pinned, one every <b>{PIN_EVERY}</b> cards on Top deals.</p>
+            <ul class="tlist">{pins}</ul></section>
         </div>
       </div>'''
     shell('admin.html', 'Overview', 'overview', body)
@@ -255,7 +226,7 @@ def adm_rows():  # one list for All deals, the post form, the pinned board and a
         st = 'live'; when = d['agetxt']
         if i == 17: st = 'withdrawn'
         rows.append(dict(id=d['id'], t=d['t'], store=d['store'], cat=d['cat'], p=d['p'], m=d['m'], pct=int(d['pct']),
-                         types=[t for t in d['types'] if t != 'Fresh'], status=st, pin=A_PIN.get(d['file']), age=d['agemin'] if st != 'scheduled' else -1,
+                         types=[t for t in d['types'] if t != 'Fresh'], status=st, pin=A_PIN.get(d['file']), age=d['agemin'],
                          when=when, views=d['views'], uniq=adm_uniq(d), clicks=adm_clicks(d), img=dimg(d), page=d['page'], link=d['link'], display=1,
                          caption=d['caption'], coupon=d['coupon'], terms=d['coupon_terms'], offers=d['offers'], note=d['note'], exc=d['step_exceptions'],
                          logo=store_logo(d['store']) or ''))
@@ -268,8 +239,7 @@ def build_deals():
     sel = lambda name, label, opts: f'<label class="select tb-sel"><span class="visually-hidden">{label}</span><select data-f="{name}"><option value="">{label}</option>{"".join(f"<option value={chr(34)}{E(v)}{chr(34)}>{E(t)}</option>" for v, t in opts)}</select><i data-lucide="chevron-down"></i></label>'
     stores = sorted({r['store'] for r in rows}, key=lambda s: shop_by_name[s]['order'] if s in shop_by_name else 99)
     catsl = [c['name'] for c in CATS if any(r['cat'] == c['name'] for r in rows)]
-    toolbar = ''.join([
-        sel('status', 'Status', [('live', 'Live'), ('pending', 'Pending'), ('rejected', 'Rejected'), ('withdrawn', 'Withdrawn')]),
+    toolbar = ''.join([   # D-160: status moved to the tabs above; the rest sit behind one Filters button
         sel('type', 'Type', [('Top', 'Top deal'), ('Loot', 'Loot'), ('New', 'New'), ('Pantry', 'Pantry')]),
         sel('store', 'Store', [(s, s) for s in stores]),
         sel('cat', 'Category', [(c, c) for c in catsl]),
@@ -277,28 +247,29 @@ def build_deals():
         sel('display', 'Shows on', [('1', 'Web + App'), ('2', 'Web only'), ('3', 'App only')]),
         sel('posted', 'Posted', [('today', 'Today'), ('week', 'Last 7 days')]),
     ])
+    st_tabs = ''.join(f'<button type="button" data-st="{v}" aria-pressed="{"true" if not v else "false"}">{l} <span class="st-n" data-st-n="{v}"></span></button>' for v, l in [('', 'All'), ('live', 'Live'), ('pending', 'Pending'), ('withdrawn', 'Withdrawn'), ('rejected', 'Rejected')])
     cat_opts = ''.join(f'<option>{E(c["name"])}</option>' for c in CATS)
     store_opts = ''.join(f'<option>{E(s["name"])}</option>' for s in SHOPS)
     body = f'''      <div class="page-h">
         <div><h1>All deals</h1><p><span data-total>{CATALOGUE["all_total"]:,}</span> deals on the live site · this prototype holds the latest {len(rows)}</p></div>
       </div>
-      <div class="toolbar">
+      <div class="toolbar dl-tools">
+        <div class="st-seg" role="group" aria-label="Status" data-st-seg>{st_tabs}</div>
         <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" placeholder="Title or link" data-f="q"></label>
-        <button class="btn btn-outline tb-more" type="button" data-filters-toggle aria-expanded="false"><i data-lucide="sliders-horizontal"></i>Filters</button>
-        <div class="tb-sels" data-filters>{toolbar}</div>
+        <button class="btn btn-outline tb-more" type="button" data-filters-toggle aria-expanded="false" aria-controls="dl-filters"><i data-lucide="sliders-horizontal"></i>Filters<span class="adm-count muted" data-fcount hidden></span></button>
+        <div class="tb-sels" id="dl-filters" data-filters>{toolbar}</div>
       </div>
       <div class="chips-row"><div class="chips" data-chips></div><span class="count" data-count-line></span>
         <label class="select per"><span class="visually-hidden">Rows per page</span><select data-per><option>25</option><option>50</option><option>100</option></select><i data-lucide="chevron-down"></i></label></div>
       <div class="tbl-wrap">
-        <table class="tbl" data-tbl>
+        <table class="tbl dl-tbl" data-tbl>
           <thead><tr>
             <th class="c-ck"><label class="ck"><input type="checkbox" data-all aria-label="Select all on this page"><span class="box"><i data-lucide="check"></i></span></label></th>
-            <th class="c-deal">Deal</th><th>Store</th>
+            <th class="c-deal">Deal</th>
             <th class="num"><button type="button" data-sort="p">Price</button></th>
-            <th class="num"><button type="button" data-sort="pct">Off</button></th>
-            <th>Type</th><th><button type="button" data-sort="status">Status</button></th><th class="num">Pin</th>
+            <th><button type="button" data-sort="status">Status</button></th>
             <th><button type="button" data-sort="age" aria-sort="ascending">Posted</button></th>
-            <th class="num"><button type="button" data-sort="uniq" title="Each visitor counted once per deal">Unique views</button></th><th class="c-act"><span class="visually-hidden">Actions</span></th>
+            <th class="num"><button type="button" data-sort="uniq" title="Each visitor counted once per deal">Views</button></th><th class="c-act"><span class="visually-hidden">Actions</span></th>
           </tr></thead>
           <tbody data-rows></tbody>
         </table>
@@ -433,7 +404,9 @@ def build_post():
             <div class="fld"><span class="lab">Deal types <small>set from the discount, change if needed</small></span>
               <div class="tpick" data-types><button type="button" value="Top" aria-pressed="false">Top deal</button><button type="button" value="Loot" aria-pressed="false">Loot</button><button type="button" value="New" aria-pressed="false">New</button><button type="button" value="Pantry" aria-pressed="false">Pantry</button></div></div>
           </div>
-          <div class="sec">
+          <details class="sec more-sec" data-more>
+            <summary><span><b>More details</b><small>Caption, coupon, description, how to get it and extras. Most deals don’t need them.</small></span><i data-lucide="chevron-down"></i></summary>
+            <div class="more-body">
             <div class="grid3 g-cap">
               <label class="fld"><span class="lab">Caption <small>≤ 40</small></span><input class="input" type="text" name="caption" maxlength="40" placeholder="e.g. Lowest ever"></label>
               <label class="fld"><span class="lab">Coupon <small>≤ 20</small></span><input class="input upper" type="text" name="coupon" maxlength="20" placeholder="SAVE20"></label>
@@ -447,15 +420,14 @@ def build_post():
             <div class="fld"><span class="lab">How to get it</span>
               <details class="steps"><summary>Store default steps (<span data-steps-n>{len(SHOP_STEPS['*'])}</span>) <small>from Catalogue → Shops</small></summary><ol>{steps}</ol></details>
               <div class="blk-rows" data-exc></div><button type="button" class="btn-link add-row" data-add-exc>+ Add an extra step (shown first)</button></div>
-          </div>
+            </div>
+          </details>
           <div class="sec">
             <div class="grid3">
               <label class="fld"><span class="lab">Shows on</span>{_sel('name="display"', '<option value="1">Web + App</option><option value="2">Web only</option><option value="3">App only</option>')}</label>
               <div class="fld"><span class="lab">Pinned</span><div class="pinrow">{ck('name="pin"', 'Pin')}{_sel('name="slot" aria-label="Slot"', ''.join(f'<option value="{x}">Slot {x}{" (next free)" if x == len(A_PIN) + 1 else ""}</option>' for x in range(1, len(A_PIN) + 2)))}</div></div>
               <div class="fld"><span class="lab">Push alert</span>{ck('name="notify"', 'Send push <small data-notify-hint>auto at 90% off</small>')}</div>
             </div>
-            <div class="fld" hidden><span class="lab">Publish</span>   <!-- D-155: deals publish at once, no scheduling; kept hidden on "Now" for the form script -->
-              <div class="pubrow"><label class="rad"><input type="radio" name="when" value="now" checked><span></span>Now</label><label class="rad"><input type="radio" name="when" value="later"><span></span>Schedule</label><input class="input" type="datetime-local" name="at" value="2026-11-14T09:00" disabled aria-label="Publish at"></div></div>
           </div>
           <div class="form-foot" data-foot>
             <button class="btn btn-default btn-lg" type="submit" data-submit>Publish</button>
@@ -601,7 +573,10 @@ def build_posters():
         <form class="sheet-body pe" data-pe novalidate>
           <div class="fld"><span class="lab">Poster type</span><div class="pe-kind" role="radiogroup" aria-label="Poster type"><label><input type="radio" name="kind" value="deal" checked><span>Feature a deal</span></label><label><input type="radio" name="kind" value="custom"><span>Custom poster</span></label></div></div>
           <div data-kind="deal">
-            <label class="fld"><span class="lab">Deal *</span><select class="input" name="deal"><option value="">Choose a deal</option>{''.join(f'<option value="{o["id"]}">{E(o["t"][:70])} · {o["price"]} · {E(o["store"])}</option>' for o in deal_opts)}</select><span class="err" hidden>Choose a deal.</span></label>
+            <div class="fld"><span class="lab" id="pe-deal-l">Deal *</span><input type="hidden" name="deal">
+              <div class="dsel" data-dsel hidden></div>
+              <div class="dpick" data-dpick><div class="dpick-row"><label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Search, or paste a deal link" data-dq aria-labelledby="pe-deal-l"></label><button class="btn btn-outline" type="button" data-dbrowse><i data-lucide="table-properties"></i>Browse all</button></div><ul class="pick-list dpick-list" data-dlist role="listbox" aria-label="Matching deals" hidden></ul></div>
+              <span class="err" hidden>Choose a deal.</span></div>
             <p class="muted pe-hint">The card uses the deal’s photo, title, price and link.</p>
           </div>
           <div data-kind="custom" hidden>

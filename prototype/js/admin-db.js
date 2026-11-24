@@ -18,17 +18,11 @@
     function pack(v) { if (!v) return ''; if (refOf[v]) return refOf[v]; if (/^data:/.test(v)) { var r = DB.putImage(v); if (r) refOf[v] = r; return r || ''; } return v; }
 
     /* ---------- deals as the admin lists them ---------- */
-    function schedText(t) {
-      var d = new Date(t), n = new Date(), tm = d.getHours() + ':' + ('0' + d.getMinutes()).slice(-2);
-      var day = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime(), dd = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-      return dd === day ? 'Today ' + tm : dd === day + 864e5 ? 'Tomorrow ' + tm : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' ' + tm;
-    }
     function row(d) {
-      var future = d.status === 'scheduled';
       return { id: String(d.id), t: d.t, store: d.store, cat: d.cat || '', p: d.p, m: d.m, pct: d.pct, types: (d.types || []).filter(function (t) { return t !== 'Fresh'; }), status: d.status, pin: d.pin || null,
-        age: future ? -1 : d.agemin, when: future ? schedText(d.schedAt) : d.agemin < 1 ? 'now' : d.agetxt, views: d.views || 0, uniq: d.uniq || 0, clicks: d.clicks || 0, img: d.img, page: d.page, link: d.link === '#buy' ? '#buy' : d.link,
+        age: d.agemin, when: d.agemin < 1 ? 'now' : d.agetxt, views: d.views || 0, uniq: d.uniq || 0, clicks: d.clicks || 0, img: d.img, page: d.page, link: d.link === '#buy' ? '#buy' : d.link,
         display: d.display || 1, caption: d.caption || '', coupon: d.coupon || '', terms: d.terms || '', offers: d.offers || [], note: d.note || '', exc: d.exc || [], logo: DB.logo(d.store),
-        highlights: d.highlights || [], specs: d.specs || [], desc: d.desc || '', schedAt: d.schedAt || null };
+        highlights: d.highlights || [], specs: d.specs || [], desc: d.desc || '' };
     }
     function rows() { return DB.deals({ all: true }).filter(function (d) { return !d.detailOnly; }).map(row); }
 
@@ -118,8 +112,6 @@
       else if (vals.some(function (v) { return v === 'Kitchen'; }) && vals.some(function (v) { return v === 'Footwear'; })) add = catNames;
       if (add) add.forEach(function (n) { if (vals.indexOf(n) < 0) { var o = document.createElement('option'); o.value = n; o.textContent = n; s.appendChild(o); } });
     });
-    var pd = $('[data-pe] select[name="deal"]');
-    if (pd) pd.innerHTML = '<option value="">Choose a deal</option>' + window.ADM_POSTER_DEALS.map(function (o) { return '<option value="' + o.id + '">' + E(o.t.slice(0, 70)) + ' · ' + o.price + ' · ' + E(o.store) + '</option>'; }).join('');
 
     /* ---------- Site & app: the saved values fill the form before its save bar takes its starting point ---------- */
     var sf = $('[data-site]');
@@ -131,7 +123,7 @@
     var pending = DB.deals({ all: true }).filter(function (d) { return d.status === 'pending'; });
     function badge(key, n) {
       $$('[data-count="' + key + '"]').forEach(function (el) { el.textContent = n; if (el.classList.contains('adm-count')) { if (n) el.removeAttribute('data-zero'); else el.setAttribute('data-zero', ''); } });
-      $$('.adm-nav a, .adm-group-h').forEach(function (a) { var t = a.textContent.trim(); if ((key === 'incoming' && /^Incoming/.test(t)) || (key === 'inbox' && /^Inbox/.test(t))) { var b = $('.adm-count', a); if (!b && n) a.insertAdjacentHTML('beforeend', '<span class="adm-count" data-count="' + key + '">' + n + '</span>'); } });
+      $$('.adm-nav a').forEach(function (a) { var t = a.textContent.trim(); if ((key === 'incoming' && /^Incoming/.test(t)) || (key === 'inbox' && /^Inbox/.test(t))) { var b = $('.adm-count', a); if (!b && n) a.insertAdjacentHTML('beforeend', '<span class="adm-count" data-count="' + key + '">' + n + '</span>'); } });
     }
     badge('incoming', pending.length); badge('inbox', DB.inboxOpen());
 
@@ -171,26 +163,20 @@
       };
     }
 
-    /* ---------- Overview (built as fixed numbers; drawn from the data) ---------- */
+    /* ---------- Overview (built as fixed numbers; drawn from the data; D-160 layout) ---------- */
     var kpis = $('.kpis');
     if (kpis) {
       var sub = $('.page-h p'); if (sub && /today so far/.test(sub.textContent)) sub.textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' }) + ' · today so far';
       var live = DB.deals(), today = live.filter(function (d) { return d.agemin <= 1440; }), pins = DB.pins(), every = DB.pinEvery();
-      var open = function (k) { return DB.get(k).filter(function (x) { return !x.done; }).length; };
-      var setK = function (label, v) { $$('.kpi', kpis).forEach(function (k) { if ($('.kpi-l', k).textContent.trim() === label) $('.kpi-n', k).textContent = v; }); };
-      setK('Posted today', today.length); setK('Incoming', pending.length); setK('Inbox unhandled', DB.inboxOpen()); setK('Pinned on Top deals', pins.length);
-      var al = DB.get('alerts'); if (al) setK('Alerts sent today', al.filter(function (a) { return a.at >= new Date().setHours(0, 0, 0, 0); }).length + 2);
-      var att = [['inbox', 'Incoming deals to review', pending.length, '/admin/incoming', 'Telegram bot and held deals'], ['mail', 'Contact messages', open('feedback'), '/admin/feedback', 'From the Contact form, not handled'],
-        ['flag', 'Problems reported on deals', open('reports'), '/admin/reports', 'Link, price or stock reports'], ['user-x', 'Account deletion requests', open('deletion'), '/admin/deletion-requests', 'From the app and the site; 7-day promise']];
-      var al2 = $('.att-list'); if (al2) al2.innerHTML = att.map(function (a) { return '<a class="att-row' + (a[2] ? '' : ' is-clear') + '" href="' + a[3] + '"><i data-lucide="' + a[0] + '"></i><span class="att-t"><b>' + a[1] + '</b><small>' + a[4] + '</small></span><span class="att-n">' + (a[2] || 'All clear') + '</span><i data-lucide="chevron-right" class="att-go"></i></a>'; }).join('');
-      // On Top deals now: newest Top deals with a pinned deal every N cards (listing.js placePins)
-      var topList = live.filter(function (d) { return d.typesAll.indexOf('Top') > -1; }), pq = pins.slice(), rest = topList.filter(function (d) { return !d.pin; }), out = [];
-      while (out.length < 10 && (rest.length || pq.length)) { if ((out.length + 1) % every === 0 && pq.length) out.push([pq.shift(), 1]); else if (rest.length) out.push([rest.shift(), 0]); else out.push([pq.shift(), 1]); }
-      var fn = $('.fresh-now'); if (fn) fn.innerHTML = out.map(function (x, i) { var d = x[0]; return '<li><span class="fn-pos">' + (i + 1) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><span class="t-title">' + E(d.t) + '</span>' + (x[1] ? '<span class=fn-pin><i data-lucide=pin></i>Pinned</span>' : '<span class=t-meta>' + E(d.agetxt) + '</span>') + '</li>'; }).join('');
-      var ps = $('.pin-sum'); if (ps) { var pos = pins.slice(0, 4).map(function (d, i) { return every * (i + 1); }); ps.innerHTML = pins.length ? '<b>' + pins.length + '</b> pinned deals, one every <b>' + every + '</b> cards: cards ' + pos.join(', ') + (pins.length > 4 ? ' … ' + every * pins.length : '') + '.' : 'No pinned deals.'; var ul = ps.nextElementSibling; if (ul) ul.innerHTML = pins.slice(0, 5).map(function (d, i) { return '<li><span class="fn-pos">' + (i + 1) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><span class="t-title">' + E(d.t) + '</span><span class="t-meta">card ' + every * (i + 1) + '</span></li>'; }).join(''); }
-      var latest = $$('.panel').filter(function (p) { var h = $('h2', p); return h && /^Latest live deals/.test(h.textContent); })[0];
-      if (latest) $('ul', latest).innerHTML = live.slice(0, 5).map(function (d) { var t = d.typesAll.filter(function (x) { return x !== 'Fresh'; })[0] || 'New'; return '<li><span class="t-time">' + (d.agemin < 1 ? 'now' : E(d.agetxt)) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><a class="t-title" href="' + E(d.page) + '" target="_blank" rel="noopener">' + E(d.t) + '</a><span class="t-meta">' + E(d.store) + '</span><span class="tchip t-' + t.toLowerCase() + '">' + (t === 'Top' ? 'Top deal' : t) + '</span><span class="pill pill-live">Live</span></li>'; }).join('');
-      $$('.tag-sample', $('.attention') || document.createElement('div')).forEach(function (t) { t.remove(); });
+      var setK = function (key, v) { var k = $('[data-kpi="' + key + '"] .kpi-n', kpis); if (k) k.textContent = v; };
+      setK('today', today.length); setK('incoming', pending.length); setK('inbox', DB.inboxOpen()); setK('pinned', pins.length);
+      var pp = $('[data-ov-pins]');
+      if (pp) {
+        $('.pin-sum', pp).innerHTML = pins.length ? '<b>' + pins.length + '</b> pinned, one every <b>' + every + '</b> cards on Top deals.' : 'Nothing pinned. Pin a deal from All deals or the Pinned board.';
+        $('ul', pp).innerHTML = pins.slice(0, 6).map(function (d, i) { return '<li><span class="fn-pos">' + (i + 1) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><span class="t-title">' + E(d.t) + '</span><span class="t-meta">card ' + every * (i + 1) + '</span></li>'; }).join('');
+      }
+      var latest = $('[data-ov-latest] ul');
+      if (latest) latest.innerHTML = live.slice(0, 6).map(function (d) { var t = d.typesAll.filter(function (x) { return x !== 'Fresh'; })[0] || 'New'; return '<li><span class="t-time">' + (d.agemin < 1 ? 'now' : E(d.agetxt)) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><a class="t-title" href="' + E(d.page) + '" target="_blank" rel="noopener">' + E(d.t) + '</a><span class="t-meta">' + E(d.store) + '</span><span class="tchip t-' + t.toLowerCase() + '">' + (t === 'Top' ? 'Top deal' : t) + '</span></li>'; }).join('');
     }
 
     /* ---------- the playground note and Reset, on every admin page ---------- */

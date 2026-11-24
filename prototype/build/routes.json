@@ -253,6 +253,7 @@
 "/admin/incoming",
 "/admin/login",
 "/admin/lookup",
+"/admin/members",
 "/admin/pinned",
 "/admin/posters",
 "/admin/reports",

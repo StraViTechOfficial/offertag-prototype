@@ -200,7 +200,7 @@
     });
     return '<span class="rx-pills" role="group" aria-label="Reactions">' + pills + '</span><button class="btn btn-ghost rx-add' + (mine ? ' has-mine' : '') + '" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="' + (mine ? 'Your reaction. Change reaction' : 'React') + '"><i data-lucide="smile-plus"></i><span class="rx-add-e" aria-hidden="true">' + mine + '</span></button>';
   }
-  function fmtText(s) { return E(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'); }
+  function fmtText(s) { return E(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>'); }   // bold, italic (D-162)
   function commentLi(c, reply, hidden) {
     var acts = '<div class="c-acts">' + rxHTML(c) + (reply ? '' : '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>';
     return '<li class="comment" data-cid="' + E(c.id) + '"' + (hidden ? ' hidden' : '') + '><div class="avatar' + (c.admin ? ' is-admin' : '') + '" aria-hidden="true">' + E(c.name.charAt(0).toUpperCase()) + '</div><div class="who"><b>' + E(c.name) + '</b>' + (c.admin ? '<span class="badge badge-secondary">OfferTag</span>' : '') + '<time>' + E(c.when) + '</time></div><p class="text">' + fmtText(c.text) + '</p>' + acts;
@@ -311,7 +311,14 @@
     if (p.html != null) {  // written in the admin editor: deal cards show in the rail (D-130), images and text stay
       var t = document.createElement('div'); t.innerHTML = p.html;
       $$('[data-deal]', t).forEach(function (n) { n.remove(); });
-      $$('figure[data-img]', t).forEach(function (f) { var i = document.createElement('img'); i.className = 'post-img'; i.src = f.getAttribute('data-img'); i.alt = f.getAttribute('data-alt') || ''; i.loading = 'lazy'; f.replaceWith(i); });
+      $$('figure[data-img]', t).forEach(function (f) {   // D-162: caption and size (full, or left/right with text beside)
+        var fig = document.createElement('figure'), cap = f.getAttribute('data-cap') || '', size = f.getAttribute('data-size') || 'full';
+        fig.className = 'post-fig post-fig--' + (/^(full|left|right)$/.test(size) ? size : 'full');
+        fig.innerHTML = '<img class="post-img" src="' + E(f.getAttribute('data-img')) + '" alt="' + E(f.getAttribute('data-alt') || '') + '" loading="lazy">' + (cap ? '<figcaption>' + E(cap) + '</figcaption>' : '');
+        f.replaceWith(fig);
+      });
+      $$('figure[data-yt]', t).forEach(function (f) { var id = (f.getAttribute('data-yt') || '').replace(/[^\w-]/g, ''); var x = document.createElement('div'); x.className = 'post-video'; x.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '" title="Video" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>'; f.replaceWith(x); });
+      $$('div[data-cta-href]', t).forEach(function (f) { var h = f.getAttribute('data-cta-href') || '#', st = /(amazon\.|amzn\.|flipkart\.|fkrt\.|myntra\.|ajio\.)/i.test(h); var x = document.createElement('p'); x.className = 'post-cta'; x.innerHTML = '<a class="btn btn-default" href="' + E(h) + '"' + (/^https?:/i.test(h) ? ' target="_blank" rel="' + (st ? 'sponsored nofollow noopener' : 'noopener') + '"' : '') + '>' + E(f.getAttribute('data-cta-label') || 'Open') + '</a>'; f.replaceWith(x); });
       var first = $('p', t), lead = first ? first.innerHTML : ''; if (first) first.remove();
       return { lead: lead, body: t.innerHTML };
     }
@@ -370,7 +377,7 @@
   function applySite() {
     var s = DB.get('site') || {}, seed = DB.seedSite || {};
     if (s.strip === false) $$('.fjoin, [data-fjoin]').forEach(function (x) { x.remove(); });
-    if (s.blognew === false) $$('[data-blog-new]').forEach(function (x) { x.remove(); });
+    // D-157: the Blog ribbon always shows (no admin switch)
     ['wa', 'tg', 'fb', 'ig', 'li', 'play'].forEach(function (k) {
       var from = seed[k], to = s[k]; if (!from || from === to) return;
       $$('a[href="' + CSS.escape(from) + '"]').forEach(function (a) { if (to) a.href = to; else a.remove(); });

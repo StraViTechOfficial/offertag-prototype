@@ -14,7 +14,6 @@
     function set(k, write) {
       btns.forEach(function (b) { var on = b.getAttribute(attr) === k; b.dataset.state = on ? 'active' : ''; b.setAttribute('aria-selected', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
       if (write) { try { if (TR && TR[k]) history.replaceState(null, '', A.withRole(TR[k])); else { var u = new URL(location.href); u.searchParams.set('tab', k); history.replaceState(null, '', u); } } catch (e) {} }
-      if (TR) { var vals = Object.keys(TR).map(function (x) { return TR[x]; }); $$('.adm-sub a').forEach(function (a) { var h = (a.getAttribute('href') || '').split('?')[0]; if (vals.indexOf(h) < 0) return; if (h === TR[k]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); }
       onSwitch(k);
     }
     btns.forEach(function (b, i) {
@@ -172,7 +171,7 @@
       var cm = tab === 'comments', ol = only.closest('label'); if (ol) ol.hidden = cm;
       var notes = document.querySelectorAll('[data-ibx-note]');
       for (var i = 0; i < notes.length; i++) notes[i].hidden = notes[i].getAttribute('data-ibx-note') !== tab;
-      if (cm) { var all = comments(); list.innerHTML = all.map(item).join(''); var e0 = $('[data-ibx-empty]'); e0.hidden = all.length > 0; e0.textContent = 'No comments yet.'; counts(); A.icons(); return; }
+      if (cm) { var all = comments(), who = (A.params.get('q') || '').trim().toLowerCase(); if (who) all = all.filter(function (c) { return (c.name || '').toLowerCase().indexOf(who) === 0; }); list.innerHTML = (who ? '<li class="ib-filter">Comments by <b>' + esc(A.params.get('q')) + '</b> · <a href="' + A.withRole('/admin/comments') + '">Show all comments</a></li>' : '') + all.map(item).join(''); var e0 = $('[data-ibx-empty]'); e0.hidden = all.length > 0; e0.textContent = 'No comments yet.'; counts(); A.icons(); return; }
       var rows = D[tab].filter(function (x) { return !only.checked || !x.done; });
       list.innerHTML = rows.map(item).join(''); var em = $('[data-ibx-empty]');
       em.hidden = rows.length > 0; em.textContent = only.checked && D[tab].length ? 'All caught up. Untick “Unhandled only” to see handled ones.' : 'Nothing here yet.';
@@ -230,13 +229,13 @@
     var U = window.ADM_USERS, q = $('[data-uq]'), role = $('[data-urole]'), body = $('[data-urows]'), sheet = $('#user-edit'), cur = null;
     function staff(u) { return u.role !== 'Member'; }
     function render() {
-      var s = q.value.trim().toLowerCase(), rows = U.filter(function (u) { return (!role.value || u.role === role.value) && (!s || (u.name + ' ' + u.email + ' ' + u.phone).toLowerCase().indexOf(s) > -1); });
+      var s = q.value.trim().toLowerCase(), rows = U.filter(function (u) { return staff(u) && (!role.value || u.role === role.value) && (!s || (u.name + ' ' + u.email).toLowerCase().indexOf(s) > -1); });
       body.innerHTML = rows.map(function (u) {
         var tag = staff(u) ? (u.tag ? '<span class="mono">' + esc(u.tag) + '</span>' : '<span class="d-none">website tag</span>') + ' <button class="btn btn-ghost btn-icon btn-sm" type="button" data-uedit aria-label="Edit Amazon tag for ' + esc(u.name) + '"><i data-lucide="pencil"></i></button>' : '<span class="d-none">—</span>';
-        return '<tr data-u="' + u.id + '"><td class="c-title" data-l="Name"><button class="btn-link u-name" type="button" data-uedit>' + esc(u.name) + '</button></td><td data-l="Email">' + esc(u.email) + '</td><td data-l="Phone"' + (u.phone ? '' : ' class="na"') + '>' + (u.phone ? esc(u.phone) : '<span class="d-none">—</span>') + '</td>'
-          + '<td data-l="Role"><span class="role r-' + u.role.toLowerCase().replace(/[^a-z]/g, '') + '">' + u.role + '</span></td><td class="d-when" data-l="Joined">' + u.joined + '</td><td data-l="Amazon tag"' + (staff(u) ? '' : ' class="na"') + '>' + tag + '</td></tr>';
+        return '<tr data-u="' + u.id + '"><td class="c-title" data-l="Name"><button class="btn-link u-name" type="button" data-uedit>' + esc(u.name) + '</button></td><td data-l="Email">' + esc(u.email) + '</td>'
+          + '<td data-l="Role"><span class="role r-' + u.role.toLowerCase().replace(/[^a-z]/g, '') + '">' + u.role + '</span></td><td class="d-when" data-l="Joined">' + u.joined + '</td><td data-l="Amazon tag">' + tag + '</td></tr>';
       }).join('');
-      $('[data-uempty]').hidden = rows.length > 0; $('[data-ucount]').textContent = rows.length + ' of ' + U.length; A.icons();
+      $('[data-uempty]').hidden = rows.length > 0; $('[data-ucount]').textContent = rows.length + ' of ' + U.filter(staff).length; A.icons();
       if (window.OTDB) OTDB.set('users', U);   // S25 playground
     }
     q.addEventListener('input', render); role.addEventListener('change', render);
@@ -246,7 +245,7 @@
       if (!e.target.closest('[data-uedit]')) return; cur = U.filter(function (u) { return u.id === +e.target.closest('tr').dataset.u; })[0];
       $('#ue-title').textContent = cur.name; $('[data-ue-sub]').textContent = cur.role + ' · joined ' + cur.joined;
       $('[data-ue-kv]').innerHTML = [['Email', cur.email], ['Phone', cur.phone || '—'], ['Role', cur.role + ' <small>roles are set by the developer</small>']].map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + (r[0] === 'Role' ? r[1] : esc(r[1])) + '</dd>'; }).join('');
-      $('[data-ue-tagfld]').hidden = !staff(cur); $('[data-ue-member]').hidden = staff(cur); $('[data-ue-save]').hidden = !staff(cur);
+
       inp.value = cur.tag; fieldErr(inp, ''); A.openSheet(sheet);
     });
     inp.addEventListener('input', function () { if (inp.getAttribute('aria-invalid')) fieldErr(inp, !inp.value.trim() || /^[a-z0-9][a-z0-9-]*-21$/i.test(inp.value.trim()) ? '' : 'Amazon tags in India end in “-21”.'); });
@@ -257,6 +256,67 @@
       toast(v ? 'Amazon tag saved for ' + u.name : u.name + ' now uses the website tag', { action: 'Undo', onAction: function () { u.tag = prev; render(); } });
     }
     $('[data-ue-save]').addEventListener('click', save); f.addEventListener('submit', function (e) { e.preventDefault(); save(); });
+    render();
+  })();
+
+  /* =================== Members (D-161) =================== */
+  // Read-only list of everyone who signed up. Built like the live one: search + three filters + sort + pages,
+  // never a full list. In the build every change here is one paged query (name/email/phone index, created_at).
+  if (window.ADM_MEMBERS) (function () {
+    var M = window.ADM_MEMBERS, T = new Date(window.ADM_MEMBERS_TODAY + 'T00:00'), q = $('[data-mq]'), jn = $('[data-mjoined]'), al = $('[data-malerts]'), so = $('[data-msort]'), per = $('[data-mper]'), body = $('[data-mrows]');
+    var page = 1, timer = null, sheet = $('#member-view');
+    var qs = A.params.get('q'); if (qs) q.value = qs;
+    function days(m) { return Math.round((T - new Date(m.joined + 'T00:00')) / 864e5); }
+    function joinedTxt(m) { var d = new Date(m.joined + 'T00:00'); return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    function initials(n) { return n.split(' ').map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase(); }
+    function list() {
+      var s = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean), j = jn.value, a = al.value;
+      var r = M.filter(function (m) {
+        var h = (m.name + ' ' + m.email + ' ' + m.phone).toLowerCase();
+        if (s.length && !s.every(function (w) { return h.indexOf(w) > -1; })) return false;
+        var d = days(m); if (j === 'old' ? d <= 365 : j && d > +j) return false;
+        if (a && (a === 'on') !== m.alerts) return false;
+        return true;
+      });
+      var k = so.value;
+      r.sort(function (x, y) { return k === 'old' ? (x.joined < y.joined ? -1 : 1) : k === 'name' ? x.name.localeCompare(y.name) : k === 'com' ? (y.comments - x.comments) || (x.joined < y.joined ? 1 : -1) : (x.joined < y.joined ? 1 : -1); });
+      return r;
+    }
+    function render() {
+      var r = list(), n = +per.value, pages = Math.max(1, Math.ceil(r.length / n)); if (page > pages) page = pages;
+      var st = (page - 1) * n, view = r.slice(st, st + n);
+      body.innerHTML = view.map(function (m) {
+        return '<tr data-m="' + m.id + '"><td class="c-title" data-l="Member"><button type="button" class="mb-who" data-mopen><span class="avatar sm">' + initials(m.name) + '</span><span><b>' + esc(m.name) + '</b><small>' + esc(m.email) + '</small></span></button>' + (m.deletion ? ' <span class="pill pill-pending" title="Asked to delete their account">Deletion asked</span>' : '') + '</td>' +
+          '<td data-l="Phone"' + (m.phone ? '' : ' class="na"') + '>' + (m.phone ? esc(m.phone) : '<span class="d-none">—</span>') + '</td>' +
+          '<td class="d-when" data-l="Joined">' + joinedTxt(m) + '</td>' +
+          '<td data-l="Deal alerts">' + (m.alerts ? '<span class="ok-t"><i data-lucide="bell"></i>On</span>' : '<span class="d-none">Off</span>') + '</td>' +
+          '<td class="num" data-l="Comments">' + (m.comments || '<span class="d-none">0</span>') + '</td>' +
+          '<td class="c-act"><button class="btn btn-ghost btn-icon btn-sm" type="button" data-mopen aria-label="Open ' + esc(m.name) + '"><i data-lucide="chevron-right"></i></button></td></tr>';
+      }).join('');
+      $('[data-mempty]').hidden = r.length > 0; $('.mb-tbl').hidden = !r.length;
+      var filtered = q.value.trim() || jn.value || al.value;
+      $('[data-mcount]').textContent = r.length ? (st + 1) + '–' + (st + view.length) + ' of ' + r.length + (filtered ? ' matching' : '') + ' member' + (r.length === 1 ? '' : 's') + ' in this sample' : '0 members';
+      var pg = '';
+      if (pages > 1) {
+        pg += '<button type="button" data-mpage="' + (page - 1) + '"' + (page === 1 ? ' disabled' : '') + ' aria-label="Previous page"><i data-lucide="chevron-left"></i></button>';
+        for (var i = 1; i <= pages; i++) if (i === 1 || i === pages || Math.abs(i - page) <= 1) pg += '<button type="button" data-mpage="' + i + '"' + (i === page ? ' aria-current="page"' : '') + '>' + i + '</button>'; else if (Math.abs(i - page) === 2) pg += '<span class="pg-gap">…</span>';
+        pg += '<button type="button" data-mpage="' + (page + 1) + '"' + (page === pages ? ' disabled' : '') + ' aria-label="Next page"><i data-lucide="chevron-right"></i></button>';
+      }
+      $('[data-mpager]').innerHTML = pg; A.icons();
+    }
+    function again() { page = 1; render(); }
+    q.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(again, 150); });
+    [jn, al, so, per].forEach(function (x) { x.addEventListener('change', again); });
+    $('[data-mclear]').addEventListener('click', function () { q.value = ''; jn.value = ''; al.value = ''; again(); q.focus(); });
+    $('[data-mpager]').addEventListener('click', function (e) { var b = e.target.closest('[data-mpage]'); if (!b || b.disabled) return; page = +b.dataset.mpage; render(); $('.mb-tools').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+    body.addEventListener('click', function (e) {
+      if (!e.target.closest('[data-mopen]')) return; var m = M.filter(function (x) { return x.id === +e.target.closest('tr').dataset.m; })[0];
+      $('#mv-title').textContent = m.name; $('[data-mv-sub]').textContent = 'Member since ' + joinedTxt(m);
+      $('[data-mv-kv]').innerHTML = [['Email', esc(m.email)], ['Phone', m.phone ? esc(m.phone) : '—'], ['Joined', joinedTxt(m)], ['Deal alerts', m.alerts ? 'On' : 'Off'], ['Comments', String(m.comments)], ['Signs in with', 'A code sent to their email']].map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>'; }).join('');
+      $('[data-mv-more]').innerHTML = (m.comments ? '<a class="btn btn-outline btn-block" href="' + A.withRole('/admin/comments?q=' + encodeURIComponent(m.name.split(' ')[0])) + '"><i data-lucide="message-square"></i>See their comments in Inbox</a>' : '') +
+        (m.deletion ? '<p class="hint-line"><i data-lucide="user-x"></i>This member asked to delete their account. <a href="' + A.withRole('/admin/deletion-requests') + '">Open the request</a></p>' : '');
+      A.openSheet(sheet); A.icons();
+    });
     render();
   })();
 

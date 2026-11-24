@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="admin">
+<html lang="en" class="admin" data-total-deals="79664">
 <head>
 <script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
 try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
@@ -36,19 +36,17 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<div class="adm-group"><div class="adm-group-h"><i data-lucide="tag"></i><span>Deals</span></div><div class="adm-sub"><a href="/admin/deal">All deals</a><a href="/admin/incoming">Incoming<span class="adm-count" data-count="incoming">5</span></a><a href="/admin/deal/create">Post a deal</a><a href="/admin/pinned" data-role="admin">Pinned board</a></div></div>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="gallery-horizontal"></i><span>Sale posters</span></a>
-<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
+<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
 <a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
-<a class="adm-link" href="/admin/social" data-role="admin"><i data-lucide="share-2"></i><span>Social sharing</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="inbox"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></div><div class="adm-sub"><a href="/admin/feedback" data-role="admin">Feedback</a><a href="/admin/reports" data-role="admin">Reports</a><a href="/admin/deletion-requests" data-role="admin">Deletion requests</a><a href="/admin/comments" data-role="admin">Comments</a></div></div>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="library"></i><span>Catalogue</span></div><div class="adm-sub"><a href="/admin/shop" data-role="admin" aria-current="page">Shops</a><a href="/admin/category" data-role="admin">Categories</a><a href="/admin/lookup" data-role="admin">Deal types</a><a href="/admin/type" data-role="admin">Types</a></div></div>
-<a class="adm-link" href="/admin/users" data-role="admin"><i data-lucide="users"></i><span>Users</span></a>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="settings"></i><span>Settings</span></div><div class="adm-sub"><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></div></div>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
+<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/shop" data-role="admin" aria-current="page"><i data-lucide="library"></i><span>Catalogue</span></a>
+<a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
     <div class="adm-side-foot">
-      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
       <a class="adm-link" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
       <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
     </div>
@@ -70,18 +68,21 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
           <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
           <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
           <div class="separator"></div>
+          <div class="menu-label">Theme</div>
+          <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
+          <div class="separator"></div>
           <a role="menuitem" href="/admin/login?state=out"><i data-lucide="log-out"></i>Sign out</a>
         </div>
       </div>
     </header>
     <main class="adm-content" id="main">
-      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Catalogue is for admins only. Sub-admins see Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Catalogue is for admins only. Sub-admins see Incoming, Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="page-h">
         <div><h1>Catalogue</h1><p>Shops, categories and deal types the site is built on. Changes show on the website at once.</p></div>
         <div class="page-h-acts"><button class="btn btn-default" type="button" data-cat-add><i data-lucide="plus"></i><span data-cat-add-l>Add shop</span></button></div>
       </div>
-      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-ctab="shops" data-state=active aria-selected="true">Shops <span class="adm-count muted" data-tcount="shops">14</span></button><button class="tabs-trigger" role="tab" type="button" data-ctab="categories" aria-selected="false">Categories <span class="adm-count muted" data-tcount="categories">31</span></button><button class="tabs-trigger" role="tab" type="button" data-ctab="dealtypes" aria-selected="false">Deal types <span class="adm-count muted" data-tcount="dealtypes">4</span></button><button class="tabs-trigger" role="tab" type="button" data-ctab="types" aria-selected="false">Types <span class="adm-count muted" data-tcount="types">1</span></button></div>
+      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-ctab="shops" data-state=active aria-selected="true">Shops <span class="adm-count muted" data-tcount="shops">14</span></button><button class="tabs-trigger" role="tab" type="button" data-ctab="categories" aria-selected="false">Categories <span class="adm-count muted" data-tcount="categories">31</span></button><button class="tabs-trigger" role="tab" type="button" data-ctab="dealtypes" aria-selected="false">Deal types <span class="adm-count muted" data-tcount="dealtypes">4</span></button></div>
       <div class="toolbar" data-cat-tools>
         <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search</span><input class="input" type="search" placeholder="Search by name" data-cq></label>
         <span data-cat-active><label class="ckl"><span class="ck"><input type="checkbox" data-conly checked><span class="box"><i data-lucide="check"></i></span></span><span>Active only</span></label></span>

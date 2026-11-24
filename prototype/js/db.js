@@ -66,12 +66,10 @@
     Object.keys(dealChanges).forEach(function (id) { if (!seen[id] && dealChanges[id]) out.push(dealChanges[id]); });
     return out;
   }
-  function tomorrow9(from) { var d = new Date(from + DAY); d.setHours(9, 0, 0, 0); return d.getTime(); }
   function resolve(d) {
     var x = Object.assign({}, d), t = now();
     if (x.postedAt == null) x.postedAt = EPOCH - (x.ago || 0) * MIN;
-    if (x.status === 'scheduled' && x.schedAt == null) x.schedAt = x.sched === 'tomorrow-9' ? tomorrow9(EPOCH) : x.postedAt;
-    if (x.status === 'scheduled' && x.schedAt <= t) { x.status = 'live'; x.postedAt = x.schedAt; }  // a scheduled deal goes live on its time
+    if (x.status === 'scheduled') x.status = 'live';  // D-160: deals have no scheduling; one saved as scheduled in an older playground goes live
     x.live = x.status === 'live';
     x.agemin = Math.max(0, Math.floor((t - x.postedAt) / MIN));
     x.agetxt = H.ago(x.agemin);

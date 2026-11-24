@@ -86,19 +86,30 @@ def build_blog_edit():
         <div class="be-main">
           <label class="fld"><span class="lab">Title *</span><input class="input be-title" type="text" name="title" maxlength="110" placeholder="e.g. Best TWS earbuds under ₹1,500" autocomplete="off"><span class="err" hidden>Add a title.</span></label>
           <label class="fld"><span class="lab">Summary * <small>one line, shown on the blog list and when shared</small></span><textarea class="textarea" name="summary" rows="2" maxlength="160" placeholder="e.g. Five picks with live prices, and what to check before you buy."></textarea><span class="cnt"><span data-bsum-n>0</span>/160</span><span class="err" hidden>Add a one-line summary.</span></label>
-          <div class="fld"><span class="lab">Post *</span>
+          <div class="fld"><span class="lab" id="be-post-l">Post *</span>
             <div class="rte be-rte">
-              <div class="rte-bar be-bar" role="toolbar" aria-label="Formatting">
-                {tool('bold', 'bold', 'Bold')}{tool('italic', 'italic', 'Italic')}<span class="sep"></span>
-                {tool('h2', 'heading-2', 'Heading')}{tool('h3', 'heading-3', 'Small heading')}{tool('p', 'pilcrow', 'Paragraph')}<span class="sep"></span>
-                {tool('insertUnorderedList', 'list', 'Bullet list')}{tool('insertOrderedList', 'list-ordered', 'Numbered list')}<span class="sep"></span>
-                {tool('createLink', 'link', 'Link')}<label class="be-imgbtn" title="Image" aria-label="Add image"><i data-lucide="image"></i><input type="file" accept="image/*" hidden data-bimg></label>
-                <button class="btn btn-outline btn-sm be-add-deal" type="button" data-bdeal-btn><i data-lucide="plus"></i>Deal</button>
+              <div class="rte-bar be-bar" role="toolbar" aria-label="Formatting" data-bbar>
+                <span class="be-grp">{tool('undo', 'undo-2', 'Undo (Ctrl+Z)')}{tool('redo', 'redo-2', 'Redo (Ctrl+Y)')}</span>
+                <label class="select be-blk"><span class="visually-hidden">Text style</span><select data-bblock><option value="p">Paragraph</option><option value="h2">Heading</option><option value="h3">Subheading</option><option value="h4">Small heading</option><option value="blockquote">Quote</option></select><i data-lucide="chevron-down"></i></label>
+                <span class="be-grp">{tool('bold', 'bold', 'Bold (Ctrl+B)', ' aria-pressed="false"')}{tool('italic', 'italic', 'Italic (Ctrl+I)', ' aria-pressed="false"')}{tool('underline', 'underline', 'Underline (Ctrl+U)', ' aria-pressed="false"')}{tool('strike', 'strikethrough', 'Strikethrough', ' aria-pressed="false"')}</span>
+                <span class="be-grp">{tool('link', 'link', 'Link (Ctrl+K)')}{tool('ul', 'list', 'Bullet list')}{tool('ol', 'list-ordered', 'Numbered list')}</span>
+                <span class="be-grp">{tool('left', 'align-left', 'Align left')}{tool('center', 'align-center', 'Align centre')}{tool('right', 'align-right', 'Align right')}</span>
+                <span class="be-grp">{tool('image', 'image', 'Image')}{tool('table', 'table', 'Table')}{tool('note', 'sticky-note', 'Note box')}{tool('hr', 'minus', 'Divider')}{tool('video', 'youtube', 'YouTube video')}{tool('button', 'mouse-pointer-click', 'Button')}</span>
+                <span class="be-grp">{tool('clear', 'remove-formatting', 'Clear formatting')}</span>
+                <span class="be-bar-end"><button class="btn btn-outline btn-sm be-add-deal" type="button" data-bcmd="deal" data-bdeal-btn><i data-lucide="plus"></i>Deals</button>
+                  <span class="seg be-mode" role="group" aria-label="Edit or preview"><button type="button" data-bmode="edit" aria-pressed="true">Edit</button><button type="button" data-bmode="preview" aria-pressed="false">Preview</button></span></span>
+                <input type="file" accept="image/*" hidden data-bimg>
               </div>
-              <div class="rte-body be-body" contenteditable="true" data-bbody aria-label="Post text" role="textbox" aria-multiline="true"></div>
+              <div class="rte-body be-body" contenteditable="true" data-bbody aria-labelledby="be-post-l" role="textbox" aria-multiline="true"></div>
+              <div class="be-pv" data-bpv hidden>
+                <div class="be-pv-bar"><span><i data-lucide="eye"></i>Preview, as readers see it. Deal cards sit beside the post on a computer.</span><span class="seg" role="group" aria-label="Screen"><button type="button" data-bdev="desk" aria-pressed="true">Computer</button><button type="button" data-bdev="phone" aria-pressed="false">Phone</button></span></div>
+                <div class="be-pv-frame" data-bpv-frame><article class="be-pv-post" data-bpv-post></article></div>
+              </div>
+              <div class="be-status"><span data-bwords>0 words · 1 min read</span><button type="button" class="btn-link" data-boutline-btn aria-expanded="false">Outline (<span data-boutline-n>0</span>)</button><span class="be-hint">Type <kbd>/</kbd> for blocks · <kbd>##</kbd> + space for a heading · <kbd>Ctrl</kbd>+<kbd>K</kbd> for a link</span></div>
+              <ol class="be-outline" data-boutline hidden></ol>
             </div>
             <span class="err" data-bbody-err hidden>Write the post.</span>
-            <small class="hint">Paste or drop an image anywhere in the text to add it. “+ Deal” adds a live deal card.</small>
+            <small class="hint">Paste or drop images straight into the text. Pasting from Google Docs or Word keeps headings, lists, bold and links.</small>
           </div>
         </div>
         <aside class="be-side" data-bside>
@@ -113,11 +124,6 @@ def build_blog_edit():
           </section>
           <section class="panel be-sec"><div class="be-deals-h"><b>Deals in this post <span data-bdeal-n>0</span></b></div><ul class="be-deals" data-bdeals></ul></section>
         </aside>
-      </div>
-      <div class="popover pick-pop be-pick" id="be-pick" hidden data-state="closed" role="dialog" aria-label="Insert a deal">
-        <div class="be-pick-h"><b>Insert a deal</b><button class="btn btn-ghost btn-icon btn-sm" type="button" data-bpick-close aria-label="Close"><i data-lucide="x"></i></button></div>
-        <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Title, link or store" data-bpick-q aria-label="Search deals" autocomplete="off"></label>
-        <ul class="pick-list" data-bpick-list role="listbox"></ul>
       </div>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
 {CONFIRM}'''

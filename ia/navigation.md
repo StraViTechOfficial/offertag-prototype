@@ -9,8 +9,8 @@ Search: full-screen sheet. Detail: full page with sticky buy bar (coupon chip wh
 ## Desktop (≥ 900 px) — D-047/055
 Header 64: logo · inline search · Blog (New) · alerts bell · theme · account menu (Sign in / Profile · Admin panel · Sign out). Underlined type tab bar with rule line. Home only: hottest strip. Left facet panel 260 (community line on top; Category with search, Store with search, Discount, Price, Type, Posted; counts). Main: chips · count · sort · density · compact grid 5/4. Chat launcher bottom-right. Detail: slide-over beside the grid or full page two-column. Footer four columns + collapsed SEO block.
 
-## Admin — D-057
-Sidebar 240 collapsible: Overview · Deals (All, Incoming n, Post, Pinned board) · Alerts · Social sharing · Blog · Inbox n · Catalogue · Users · Settings · View site. Top bar: global search (`/`), theme, account. Sub-admin: Deals (All, Incoming, Post) + View site. Phone: drawer, "+ Post" in top bar; Incoming and Post tuned for one hand.
+## Admin — D-160 (replaces D-057's tree)
+Sidebar 240 collapsible, nine flat links, no sub-items: Overview · Incoming n · Deals · Promote · Alerts · Blog · Inbox n · Members (D-161) · Catalogue · Settings; foot: View site · Collapse. Grouped pages share underlined section tabs above the page: Deals (All deals · Pinned board), Promote (Sale posters · Sponsored), Settings (Site & app · Affiliate tags · Social sharing · Users (admins and sub-admins only) · Roles · Security). Members = everyone who signed up, at `/admin/members`. Inbox and Catalogue keep their in-page tabs; Catalogue no longer shows Types. Top bar: global search (`/`), Post a deal, account menu (View site, theme Light · Dark · Auto, Sign out). Sub-admin: Incoming · Deals (All deals) + View site. Phone: drawer, "+ Post" in top bar. Every address is unchanged.
 
 ## Rules
 One CTA label "Buy at {Store}". Every number labelled. Gold only in badge, savings, type label, active-tab rule. Red only for errors. Focus and pressed states everywhere; nothing depends on hover. Hide, never disable, menu items a role lacks.

@@ -33,7 +33,7 @@ def _deal(d, row=None):
     return dict(
         id=str(d['id']), page=_route(d['page']), t=d['t'], p=d['p'], m=d['m'], pct=int(d['pct']), store=d['store'], cat=d['cat'],
         types=[t for t in (r.get('types') or d['types']) if t != 'Fresh'], status=r.get('status', 'live'), pin=r.get('pin'),
-        ago=d['agemin'], sched=('tomorrow-9' if r.get('status') == 'scheduled' else None),
+        ago=d['agemin'],
         views=int(d.get('views') or 0), uniq=r.get('uniq', 0), clicks=r.get('clicks', 0), display=r.get('display', 1),
         img=_asset(dimg(d)), lg=_asset('assets/deals/lg/' + d['file']), td=_asset(photo), tdFill=fill,
         link=d['link'], posted=d['posted'], postedIso=posted_iso(d['posted']), order=d['order'], caption=rec['caption'], coupon=rec['coupon'], terms=rec['coupon_terms'], offers=rec['offers'], note=rec['note'],
