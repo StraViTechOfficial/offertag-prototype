@@ -40,7 +40,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <a class="logo" href="/" aria-label="OfferTag home"><img src="/assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
       <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
       <nav class="hnav" aria-label="Deal types">
-        <a href="/">Home</a><a href="/top-deals">Top deals</a><a href="/loot-deals">Loot</a><a href="/new-deals">New</a><a href="/pantry-deals">Pantry</a>
+        <a href="/">Home</a><a href="/top-deals">Top</a><a href="/loot-deals">Loot</a><a href="/new-deals">New</a><a href="/pantry-deals">Pantry</a>
         <a href="/blog" class="hnav-blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden><svg viewBox="0 0 44 44" aria-hidden="true"><path class="fold" d="M1 0H6L12 6Z"/><path class="fold" d="M44 43V38L38 32Z"/><path class="band" d="M6 0H25L44 19V38Z"/><text x="28.5" y="15.5" transform="rotate(45 28.5 15.5)">NEW</text></svg></span><span class="blog-tip" role="tooltip"><small>New on the blog</small>Lunch boxes and tiffins worth packing this week</span></a>
       </nav>
       <form class="header-search" data-search role="search">
@@ -50,11 +50,6 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <div class="header-actions">
         <a class="btn btn-link nav-blog" href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden>New</span></a>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
-        <!-- D-150: theme menu (Light · Dark · Automatic); the icon shows the current choice -->
-        <div class="dropdown theme-menu">
-          <button class="btn btn-ghost btn-icon theme-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Theme"><i data-lucide="sun" class="tb-light"></i><i data-lucide="moon" class="tb-dark"></i><i data-lucide="sun-moon" class="tb-auto"></i></button>
-          <div class="menu theme-menu-list" role="menu" hidden data-state="closed" aria-label="Theme"><div class="menu-label">Theme</div><button type="button" role="menuitemradio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i>Light</button><button type="button" role="menuitemradio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i>Dark</button><button type="button" role="menuitemradio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i>Automatic<small>Follows your device</small></button></div>
-        </div>
         <button class="btn btn-ghost btn-icon share-native" id="share-native" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
         <a class="btn btn-outline" href="/login" data-signin-open data-when-guest>Sign in</a>
         <div class="dropdown account-menu" data-when-user hidden>
@@ -120,7 +115,7 @@ MRP ₹300 → ₹150 (50% off)"><i data-lucide="link"></i></button></span></div
           <div class="section-head"><h2 id="h-comments">Comments <span class="count-n" id="comment-count">(0)</span></h2></div>
 
           <div class="composer" id="composer">
-            <div class="signed-out" id="composer-out"><a class="btn btn-outline" href="/login" data-signin-open><i data-lucide="log-in"></i>Sign in to comment</a><span>Google or email code, takes a few seconds.</span></div>
+            <div class="signed-out" id="composer-out"><a class="btn btn-outline" href="/login" data-signin-open><i data-lucide="log-in"></i>Sign in to comment</a><span>A code to your email, takes a few seconds.</span></div>
             <form class="signed-in" id="composer-in" hidden>
               <div class="avatar" aria-hidden="true">A</div>
               <div class="field">
@@ -241,7 +236,7 @@ MRP ₹300 → ₹150 (50% off)"><i data-lucide="link"></i></button></span></div
     <div class="ft-cols">
       <div><h4>Deals</h4><ul><li><a href="/top-deals">Top deals</a></li><li><a href="/loot-deals">Loot deals</a></li><li><a href="/new-deals">New deals</a></li><li><a href="/pantry-deals">Pantry</a></li><li><a href="/categories">All categories</a></li></ul></div>
       <div class="ft-stores"><h4>Top stores</h4><ul><li><a href="/shops/amazon">Amazon</a></li><li><a href="/shops/flipkart">Flipkart</a></li><li><a href="/shops/myntra">Myntra</a></li><li><a href="/shops/ajio">Ajio</a></li><li><a href="/shops/jiomart">JioMart</a></li><li><a href="/shops/bigbasket">BigBasket</a></li><li><a href="/shops/blinkit">Blinkit</a></li><li><a href="/shops/meesho">Meesho</a></li><li><a href="/shops/swiggy">Swiggy</a></li><li><a href="/stores">All stores</a></li></ul></div>
-      <div><h4>Need help?</h4><ul><li><a href="/faq">FAQs</a></li><li><a href="/contact">Contact us</a></li><li><a href="#chat">Chat with us</a></li><li><a href="/contact">Send feedback</a></li><li><a href="/delete-account">Delete account</a></li></ul></div>
+      <div><h4>Need help?</h4><ul><li><a href="/faq">FAQs</a></li><li><a href="/contact">Contact us</a></li><li><a href="/contact">Send feedback</a></li><li><a href="/delete-account">Delete account</a></li></ul></div>
       <div><h4>Privacy &amp; you</h4><ul><li><a href="/privacy">Privacy policy</a></li><li><a href="/terms">Terms of use</a></li><li><a href="/disclaimer">Disclaimer</a></li><li><a href="/blog">Blog</a></li></ul></div>
     </div>
 
@@ -252,7 +247,7 @@ MRP ₹300 → ₹150 (50% off)"><i data-lucide="link"></i></button></span></div
   </div>
   <!-- Back-to-top dock (site.js moves #to-top in; rides above the footer) -->
   <div class="fstack" data-fstack aria-label="Back to top"></div>
-  <!-- Edge join tab (D-107, replaces the D-106 corner button): a half-circle tab on the left edge, halfway down; hover (tap on touch) opens a half-circle fan: WhatsApp, Telegram, Get the app, Chat (desktop). Closes when the pointer leaves, on outside tap or Esc. -->
+  <!-- Edge join tab (D-107, replaces the D-106 corner button): a half-circle tab on the left edge, halfway down; hover (tap on touch) opens a half-circle fan: WhatsApp, Telegram, Get the app (D-155: no live chat). Closes when the pointer leaves, on outside tap or Esc. -->
   <div class="fjoin" data-fjoin>
     <span class="fjoin-disc" aria-hidden="true"></span>
     <button class="fjoin-tab" type="button" data-fjoin-tab aria-expanded="false" aria-controls="fjoin-items" aria-label="Get deals on WhatsApp, Telegram or the app"><i data-lucide="megaphone"></i></button>
@@ -260,7 +255,6 @@ MRP ₹300 → ₹150 (50% off)"><i data-lucide="link"></i></button></span></div
       <a class="fs-btn fs-wa" href="#wa" target="_blank" rel="noopener" aria-label="Join on WhatsApp"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span class="fs-tip">WhatsApp</span></a>
       <a class="fs-btn fs-tg" href="#tg" target="_blank" rel="noopener" aria-label="Join on Telegram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span class="fs-tip">Telegram</span></a>
       <a class="fs-btn fs-app" href="#app" target="_blank" rel="noopener" aria-label="Download the OfferTag app"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><span class="fs-tip">Get the app</span></a>
-      <a class="fs-btn fs-ch" href="#chat" aria-label="Chat with us"><i data-lucide="message-circle"></i><span class="fs-tip">Chat with us</span></a>
     </div>
   </div>
 </footer>
@@ -281,13 +275,13 @@ MRP ₹300 → ₹150 (50% off)"><i data-lucide="link"></i></button></span></div
   <div class="sheet-header"><div class="sheet-title" id="sheet-title">Menu</div></div>
   <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
   <nav class="sheet-nav">
-    <a href="/login" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in with Google or email</a>
+    <a href="/login" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in</a>
     <a href="/user/profile" data-when-user hidden><i data-lucide="user"></i><span data-user-name></span></a>
     <a href="/admin" data-when-staff hidden><i data-lucide="layout-dashboard"></i>Admin panel</a>
     <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
     <div class="separator" style="margin:8px 0"></div>
     <div class="sheet-section">Deals</div>
-    <a href="/top-deals"><i data-lucide="star"></i>Top deals</a>
+    <a href="/top-deals"><i data-lucide="star"></i>Top</a>
     <a href="/loot-deals"><i data-lucide="tag"></i>Loot</a>
     <a href="/new-deals"><i data-lucide="sparkles"></i>New</a>
     <a href="/pantry-deals"><i data-lucide="shopping-basket"></i>Pantry</a>
@@ -297,7 +291,6 @@ MRP ₹300 → ₹150 (50% off)"><i data-lucide="link"></i></button></span></div
     <a href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing"><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
     <div class="sheet-section">More</div>
     <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
-    <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
     <a href="/faq"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
     <a href="/contact"><i data-lucide="mail"></i>Feedback</a>
     <div class="sheet-section">Theme</div>
@@ -320,8 +313,6 @@ MRP ₹300 → ₹150 (50% off)"><i data-lucide="link"></i></button></span></div
   <div class="sheet-body"><div class="signin" data-signin>
   <div class="signin-head"><div class="sheet-title" id="signin-title" data-signin-title>Sign in</div><p class="signin-sub" data-signin-sub>New here? Signing in creates your account.</p></div>
   <div class="signin-step" data-step="start">
-    <button class="btn btn-outline signin-google" type="button" data-google><svg class="g-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.5 5.5 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>Continue with Google</button>
-    <div class="signin-or"><span>or</span></div>
     <form class="signin-form" data-email-form novalidate>
       <label class="field-label">Email<input class="input" type="email" name="email" inputmode="email" autocomplete="email" maxlength="255" placeholder="you@example.com"></label>
       <p class="form-error" data-email-error role="alert" hidden></p>

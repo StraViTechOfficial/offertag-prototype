@@ -9,7 +9,7 @@ This repo is the built site only. It's generated from the `offertag-design` repo
 - **Sample data** sits in `data/*.json`: 115 live deals from offertag.in (fetched 11 and 24 Nov 2026), the catalogue, the Home lists, blog posts and community items.
 - **What a person changes is kept in their own browser** (localStorage, keys starting `pg:`). Other people, other browsers and other devices see only the sample data. A private window or cleared site data starts fresh.
 - **Reset:** Admin → sidebar → Playground → Reset, or add `?pg=reset` to any address.
-- **Sign-in is simulated.** Google signs in the sample member; any 6-digit code works except `000000`. Add `?user=1` to any page to see it signed in, or `?user=admin` to moderate comments on a deal page.
+- **Sign-in is simulated.** Members sign in with a code sent to their email: any email, then any 6-digit code except `000000`. Add `?user=1` to any page to see it signed in, or `?user=admin` to moderate comments on a deal page.
 - **"Fetch from link" never works** in the post-a-deal form: there's no backend. Upload a photo instead.
 - Pages the playground creates (a new deal, category, store or blog post) are served from `_shell/` by `_redirects`, or by `404.html` on hosts without redirect rules.
 

@@ -347,7 +347,7 @@
       b.addEventListener('paste', function (e) { e.preventDefault(); fill(i, (e.clipboardData || window.clipboardData).getData('text')); });
     });
     resend.addEventListener('click', function () { count(); OT.toast('New code sent', 'check'); });
-    root.querySelector('[data-google]').addEventListener('click', function () { done(SAMPLE.email); });
+    var gBtn = root.querySelector('[data-google]'); if (gBtn) gBtn.addEventListener('click', function () { done(SAMPLE.email); });   // D-155: email code only now, no Google button
     form.addEventListener('submit', function (e) {
       e.preventDefault(); var v = email.value.trim(); show(emailErr, '');
       if (!EMAIL.test(v)) { show(emailErr, 'Enter a valid email address.'); email.focus(); return; }

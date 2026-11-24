@@ -119,7 +119,7 @@
     if (who) {
       var h1 = $('#page-title'); if (h1) h1.textContent = who;
       var lock = $('#locked'); if (lock) lock.innerHTML = (L.combo ? [L.shop.name, L.cat.name] : [(L.cat || L.shop).name]).map(function (n) { return '<span class="chip-x is-locked"><i data-lucide="lock"></i>' + E(n) + '</span>'; }).join('');
-      var rule = $('#page-rule'); if (rule && !L.combo) rule.textContent = (L.cat ? 'All stores · ' : 'All categories · ') + Number((L.cat || L.shop).total || 0).toLocaleString('en-IN') + ' listed all time';
+      var rule = $('#page-rule'); if (rule && !L.combo) rule.textContent = L.cat ? 'All stores' : 'All categories';   // D-155: no deal counts
       if (rule && L.combo) rule.textContent = L.items.length + ' today';
       var cr = $('.crumbs');
       if (cr) cr.innerHTML = '<a href="/">Home</a><i data-lucide="chevron-right"></i>' + (L.combo ? '<a href="/stores">Stores</a><i data-lucide="chevron-right"></i><a href="' + E(DB.shopPage(L.shop.name)) + '">' + E(L.shop.name) + '</a><i data-lucide="chevron-right"></i><span>' + E(L.cat.name) + '</span>'
@@ -362,7 +362,7 @@
     var ul = $('#index-list'); if (!ul) return false;
     var cat = p === '/categories', list = cat ? DB.cats() : DB.shops();
     var top = list.slice().sort(function (a, b) { return b.total - a.total; }).slice(0, 8), rest = list.filter(function (r) { return top.indexOf(r) < 0; }).sort(function (a, b) { return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
-    ul.innerHTML = top.concat(rest).map(function (r) { return '<li class="' + (r.total === 0 ? 'is-zero' : '') + '"><a href="' + E(cat ? DB.catPage(r.name) : DB.shopPage(r.name)) + '">' + (cat ? '' : '<span class="avatar" aria-hidden="true">' + E(r.name.charAt(0)) + '</span>') + '<span class="nm">' + E(r.name) + '</span><span class="cnt">' + Number(r.total || 0).toLocaleString('en-IN') + '</span><i data-lucide="chevron-right"></i></a></li>'; }).join('');
+    ul.innerHTML = top.concat(rest).map(function (r) { return '<li class="' + (r.total === 0 ? 'is-zero' : '') + '"><a href="' + E(cat ? DB.catPage(r.name) : DB.shopPage(r.name)) + '">' + (cat ? '' : '<span class="avatar" aria-hidden="true">' + E(r.name.charAt(0)) + '</span>') + '<span class="nm">' + E(r.name) + '</span><i data-lucide="chevron-right"></i></a></li>'; }).join('');
     return true;
   }
 
