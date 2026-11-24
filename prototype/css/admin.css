@@ -435,23 +435,24 @@ html.admin .input:focus-visible, html.admin .textarea:focus-visible { box-shadow
 .pv-wrap { padding: 16px; background: hsl(220 33% 97%); border-radius: 0 0 11px 11px; }
 .side-sec .side-link { display: flex; align-items: center; gap: 4px; padding: 10px 16px; font-size: 13px; color: hsl(var(--link)); border-top: 1px solid hsl(var(--border)); }
 /* public card, light, as visitors see it (Look B) */
-.pv { background: #fff; color: hsl(223 54% 14%); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px hsl(218 83% 18% / .08); max-width: 260px; margin: 0 auto; }
-.pv-img { position: relative; aspect-ratio: 1; background: hsl(220 33% 96%); display: grid; place-items: center; }
+.pv { background: #fff; color: hsl(223 54% 14%); border-radius: 8px; overflow: hidden; border: 1px solid hsl(220 25% 91%); max-width: 260px; margin: 0 auto; }
+.pv-img { position: relative; aspect-ratio: 1; background: #fff; display: grid; place-items: center; }
 .pv-img img { width: 82%; height: 82%; object-fit: contain; mix-blend-mode: multiply; }
-.pv-cap { position: absolute; left: 8px; top: 8px; background: hsl(218 83% 18%); color: #fff; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; }
+.pv-cap { position: absolute; left: 8px; top: 8px; background: hsl(218 83% 18%); color: #fff; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
 .pv-body { padding: 10px 12px 12px; display: grid; gap: 4px; }
 .pv-store { font-size: 11.5px; color: hsl(221 15% 41%); }
 .pv-title { font-size: 13.5px; line-height: 18px; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 36px; }
 .pv-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
 .pv-price b { font-size: 17px; }
 .pv-price s { font-size: 12px; color: hsl(221 15% 41%); }
-.pv-pct { position: absolute; right: 8px; top: 8px; font-size: 11px; font-weight: 600; background: hsl(218 83% 18%); color: #fff; padding: 2px 8px; border-radius: 6px; }
+.pv-pct { position: absolute; right: 8px; top: 8px; display: inline-flex; align-items: center; gap: 1px; font-size: 13px; font-weight: 700; line-height: 1; background: hsl(151 65% 25%); color: #fff; padding: 3px 6px 3px 4px; border-radius: 4px; }
+.pv-pct .lucide { width: 13px; height: 13px; stroke-width: 2.75; }
 .pv-coupon { justify-self: start; font-size: 11.5px; font-weight: 600; border: 1px dashed hsl(218 83% 18% / .5); color: hsl(218 83% 18%); border-radius: 6px; padding: 1px 6px; }
 .pv-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
-.pv-save { font-size: 12px; font-weight: 600; color: hsl(151 83% 26%); }
+.pv-save { font-size: 12px; font-weight: 600; color: hsl(151 65% 25%); }
 .pv-chip img { height: 18px; width: auto; max-width: 72px; object-fit: contain; }
 .pv-chip span { font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: hsl(220 33% 95%); }
-.pv-buy { display: flex; align-items: center; justify-content: center; gap: 6px; height: 40px; margin-top: 6px; border-radius: 10px; border: 1px solid hsl(220 22% 86%); font-size: 14px; font-weight: 600; }
+.pv-buy { display: flex; align-items: center; justify-content: center; gap: 6px; height: 36px; margin-top: 6px; border-radius: 6px; border: 1.5px solid hsl(218 83% 18%); color: hsl(218 83% 18%); font-size: 14px; font-weight: 600; }
 .pv-buy .lucide { width: 16px; height: 16px; }
 .pv.compact { display: grid; grid-template-columns: 96px 1fr; max-width: none; }
 .pv.compact .pv-img { aspect-ratio: auto; }

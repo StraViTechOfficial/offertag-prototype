@@ -1162,3 +1162,156 @@ html.theme[data-theme="dark"] .td-trend { color: hsl(var(--navy)); background: h
 html.theme[data-theme="dark"] .store-word { color: hsl(var(--navy)); }
 html.theme[data-theme="dark"] .store.has-logo:hover .store-word { color: #fff; }
 html.theme[data-theme="dark"] #loot { background: hsl(12 32% 11%); border: 1px solid hsl(12 30% 18%); }
+
+/* ============ D-151: retail clean pass (Adil, website branch design/retail-pass 1abb3b3, there D-147), ported to the prototype ============
+   Final state of his trials only (card v6, ribbon v4 with larger text, clean pass). Every colour goes through the theme roles so Light · Dark · Automatic keep working.
+   New roles: --deal-green (solid tag behind white text), --save-ink (green money text), --fill-deep (Buy hover), --sb-thumb / --sb-thumb-hover (quiet scrollbars). */
+html.theme { --radius: 0.375rem; --deal-green: 151 65% 25%; --save-ink: 151 65% 25%; --fill-deep: 222 84% 10%; --sb-thumb: #B4BDCF; --sb-thumb-hover: #66738F; }
+html.theme[data-theme="dark"] { --deal-green: 151 60% 30%; --save-ink: var(--save); --fill-deep: 217 72% 40%; --sb-thumb: hsl(222 18% 30%); --sb-thumb-hover: hsl(222 16% 45%); }
+
+/* text size: 15px up to 1200px wide, growing to 18px at 1920px; no height term */
+@media (min-width: 1024px) { html.theme { font-size: clamp(0.9375rem, 0.625rem + 0.4167vw, 1.125rem); } }
+
+/* rows and grids sized to the calmer card: 3 · 4 · 5 per row; Home's main column one step behind */
+@media (min-width: 1024px) { html.theme .deal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } html.theme .deals .carousel-item, html.theme .home-main .deals .carousel-item { flex-basis: 33.3333%; } }
+@media (min-width: 1280px) { html.theme .deal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } html.theme .deals .carousel-item { flex-basis: 25%; } }
+@media (min-width: 1440px) { html.theme .home-main .deals .carousel-item { flex-basis: 25%; } }
+@media (min-width: 1600px) { html.theme .deal-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } html.theme .deals .carousel-item { flex-basis: 20%; } }
+@media (min-width: 1800px) { html.theme .home-main .deals .carousel-item { flex-basis: 20%; } }
+
+/* ---- deal card: one hairline box, photo on its well to the edges, ↓% tag top-right, age above a 2-line title, prices, Save + store logo, outline Buy ---- */
+html.theme .deal { border-radius: 0.5rem; border: 1px solid hsl(var(--line)); box-shadow: none; background: hsl(var(--surface)); }
+html.theme .deal .img { margin: 0; padding: 0.5rem; border-radius: 0; border-bottom: 0; background: hsl(var(--well)); }
+html.theme .deal .body { padding: 0.625rem 0.75rem 0.75rem; gap: 0.25rem; }
+html.theme .deal .meta { display: block; margin: 0; font-size: 0.75rem; line-height: 1rem; color: hsl(var(--muted-foreground)); }
+html.theme .deal .title { font-size: 0.875rem; line-height: 1.25rem; font-weight: 400; -webkit-line-clamp: 2; min-height: 2.5rem; }
+html.theme .deal .priceline { margin-top: auto; padding-top: 0.375rem; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.25rem 0.375rem; min-width: 0; }
+html.theme .deal .price { font-size: 1.125rem; line-height: 1.375rem; font-weight: 700; letter-spacing: -0.02em; }
+html.theme .deal .priceline .price, html.theme .deal .priceline .was { flex: none; overflow: visible; text-overflow: clip; }
+html.theme .deal .was { font-size: 0.75rem; }
+html.theme .deal .off-tag { position: absolute; top: 0.5rem; right: 0.5rem; z-index: 1; display: inline-flex; align-items: center; gap: 0.0625rem; padding: 0.1875rem 0.375rem 0.1875rem 0.25rem; border-radius: 0.25rem; background: hsl(var(--deal-green)); color: #fff; font-size: 0.8125rem; font-weight: 700; line-height: 1; }
+html.theme .deal .off-tag .lucide { width: 0.8125rem; height: 0.8125rem; stroke-width: 2.75; }
+html.theme .deal .save { color: hsl(var(--save-ink)); font-weight: 600; font-size: 0.8125rem; line-height: 1.125rem; }
+html.theme .deal .saveline { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 1.25rem; }
+html.theme .deal .saveline .store-chip { flex: 0 1 4rem; min-width: 2.5rem; height: auto; max-height: 1rem; object-fit: contain; object-position: right center; position: relative; top: 0.125rem; }
+html.theme .deal .saveline .store-chip.is-text { top: 0; max-height: none; }
+html.theme .card-share { top: 0.5rem; bottom: auto; left: 0.5rem; right: auto; }
+html.theme .deal .acts { padding-top: 0.625rem; }
+html.theme .deal .acts .btn-buy { height: 2.25rem; border-radius: 0.375rem; gap: 0.5rem; font-size: 0.875rem; font-weight: 600; overflow: hidden; transform: none; box-shadow: none;
+  color: hsl(var(--brand-ink)); border: 1.5px solid hsl(var(--brand-ink)); background: linear-gradient(hsl(var(--fill)), hsl(var(--fill))) no-repeat left / 0% 100%, hsl(var(--surface)); transition: background-size .28s cubic-bezier(.2,0,0,1), color .2s, border-color .2s; }
+html.theme .deal .acts .btn-buy .lucide { width: 0.875rem; height: 0.875rem; stroke-width: 2.25; }
+@keyframes buy-out { 0% { transform: translate(0, 0); opacity: 1; } 45% { transform: translate(0.75rem, -0.75rem); opacity: 0; } 46% { transform: translate(-0.75rem, 0.75rem); opacity: 0; } 100% { transform: translate(0, 0); opacity: 1; } }
+@media (hover: hover) {
+  html.theme .card-share { opacity: 0; transition: opacity .15s; }
+  html.theme .deal:hover .card-share, html.theme .card-share:focus-visible { opacity: 1; }
+  html.theme .deal:hover { transform: none; border-color: hsl(var(--brand-ink) / .55); box-shadow: 0 0.5rem 1.25rem -0.25rem hsl(var(--shadow) / .2); }
+  html.theme .deal:hover .img img { transform: scale(1.03); }
+  html.theme .deal:hover .acts .btn-buy { transform: none; box-shadow: none; color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); background: linear-gradient(hsl(var(--fill)), hsl(var(--fill))) no-repeat left / 100% 100%, hsl(var(--surface)); }
+  html.theme .deal:hover .acts .btn-buy::after { animation: none; opacity: 0; }
+  html.theme .deal:hover .acts .btn-buy .lucide { transform: none; animation: buy-out .5s cubic-bezier(.2,0,0,1) .05s 1; }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .deal .acts .btn-buy { transition: none; } html.theme .deal:hover .acts .btn-buy .lucide { animation: none; } }
+
+/* ---- one corner scale: 8px containers, 6px controls, 4px tags; edge panels square; phone bottom sheets 12px tops ---- */
+html.theme :is(.filters, .blog-tip, .popover, .menu, .hs-box, .home-main section.deals, .td-card, .related-side, main dl, .hero-card, .cat .tile, .join, .listing > .community, .community, .sp-card, .post-card, .post-head, .deal-embed, .faq-more, .ft-app) { border-radius: 0.5rem; }
+html.theme :is(.btn:not(.btn-icon):not(.fs-btn), input:not([type="radio"]):not([type="checkbox"]), select, .header-search, .sh-ico, .card.store, .td-photo, .sh-trig, .post-head .post-share .btn, .deal-stats .btn, .deal-stats .share-btn, .zoom-hint, .specs dl, .seg, .seg span, .seg .seg-thumb, .since, .since-link) { border-radius: 0.375rem; }
+html.theme :is(.hero-card .img, .store .mono, .ft-logo, .ft-app-ico, .ft-play, .ft-alerts, .store-logo img, .hs-stores .store, .sp-cta, .related-side li a, .post-hero, .deal-embed .img) { border-radius: 0.375rem; }
+html.theme :is(.kicker .badge, .menu [role^="menuitem"]) { border-radius: 0.25rem; }
+html.theme :is(.sheet, .slideover, .qv-panel) { border-radius: 0; }
+html.theme .sheet.dialog { border-radius: 0.5rem; }
+html.theme .sheet.sheet-bottom { border-radius: 0.75rem 0.75rem 0 0; }
+html.theme .fjoin-tab { border-radius: 0 0.375rem 0.375rem 0; }
+
+/* ---- no pastel blocks: tiles, hero cards, Hot deals and Loot are plain surfaces with a hairline ---- */
+html.theme :is(.deal-embed .img, .rs-img, .post-hero) { background: hsl(var(--well)); }
+html.theme :is(.hero-card, .cat .tile, .faq-more, .listing > .community) { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); }
+html.theme :is(.store .mono, .sh-ico) { background: hsl(var(--muted)); }
+html.theme .ft-app-ico { background: hsl(var(--surface)); color: hsl(var(--brand-ink)); }
+html.theme .td-card, html.theme[data-theme="dark"] .td-card { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); box-shadow: none; }
+html.theme .td-view { background: hsl(var(--fill)); color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); }
+html.theme .td-view .lucide { transition: transform .2s cubic-bezier(.2,0,0,1); }
+@media (hover: hover) { html.theme .td-card:hover .td-view .lucide { transform: translateX(0.1875rem); } }
+html.theme .td-feat, html.theme .td-trend { border-radius: 0.25rem; height: 1.375rem; padding: 0 0.4375rem; font-size: 0.75rem; }
+html.theme .td-feat, html.theme[data-theme="dark"] .td-feat { background: hsl(var(--fill)); color: hsl(var(--on-fill)); }
+html.theme .td-trend { box-shadow: none; border: 1px solid hsl(var(--line)); }
+html.theme #loot, html.theme .home-main #loot, html.theme[data-theme="dark"] #loot { background: none; border: 0; box-shadow: none; padding-left: 0; padding-right: 0; }
+html.theme .loot-tag { background: hsl(var(--deal-green)); color: #fff; border: 0; border-radius: 0.25rem; box-shadow: none; font-weight: 700; }
+
+/* ---- hovers: no rings, no pop-out; rows go grey with navy text ---- */
+@media (hover: hover) {
+  html.theme :where(.btn:not(.btn-link), .chip-x, .card.store, .td-btn, .carousel-prev, .carousel-next, .sheet-close, .sheet-nav-btn, .fjoin-tab, .fs-btn, .sp-cta, [aria-controls="menu-sheet"]):hover { outline: 0; }
+  html.theme .btn-outline:hover { border-color: hsl(var(--brand-ink)); background: hsl(var(--muted)); }
+  html.theme .opt:not(.is-zero):hover, html.theme .hs-box li a:hover, html.theme #sort-menu [role="menuitemradio"]:hover { transform: none; box-shadow: none; background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+  html.theme #sort-menu [role="menuitemradio"][aria-checked="true"]:hover::before { background: none; }
+}
+html.theme .hnav a { border-radius: 0; }
+html.theme .hnav a:hover { background: none; color: hsl(var(--brand-ink)); }
+html.theme .hnav a:not([aria-current="page"]):hover::after { content: ""; position: absolute; left: 0.6875rem; right: 0.6875rem; bottom: -16px; height: 0.1875rem; border-radius: 0.1875rem 0.1875rem 0 0; background: hsl(var(--brand-ink) / .25); }
+html.theme .hnav a.has-new:not([aria-current="page"]):hover::after { right: 1.5rem; }
+
+/* ---- menus: current page marked in the side menu, a tick on the chosen sort ---- */
+html.theme .sheet-nav a, html.theme .sheet-nav-btn { border-radius: 0.375rem; position: relative; transition: background .15s, color .15s; }
+html.theme .sheet-nav a:hover, html.theme .sheet-nav-btn:hover { background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+html.theme .sheet-nav a:hover .lucide { color: hsl(var(--brand-ink)); }
+html.theme .sheet-nav a[aria-current="page"] { background: hsl(var(--sky)); color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .sheet-nav a[aria-current="page"] .lucide { color: hsl(var(--brand-ink)); }
+html.theme .sheet-nav a[aria-current="page"]::before { content: ""; position: absolute; left: -0.75rem; top: 0.5rem; bottom: 0.5rem; width: 0.1875rem; border-radius: 0 0.1875rem 0.1875rem 0; background: hsl(var(--brand-ink)); }
+html.theme #menu-sheet { width: 18rem; max-width: 85vw; padding: 1rem 0.75rem; gap: 0.5rem; }
+html.theme #menu-sheet .sheet-header { padding-bottom: 0.25rem; }
+html.theme #menu-sheet .sheet-title { font-size: 1rem; padding-left: 0.5rem; }
+html.theme #menu-sheet .sheet-close { top: 0.75rem; right: 0.75rem; }
+html.theme #menu-sheet .sheet-nav a, html.theme #menu-sheet .sheet-nav-btn { height: 2.25rem; gap: 0.625rem; font-size: 0.875rem; }
+html.theme #menu-sheet .sheet-nav .lucide { width: 1rem; height: 1rem; }
+html.theme #menu-sheet .sheet-section { margin: 0.5rem 0 0.125rem; padding-left: 0.5rem; font-size: 0.6875rem; }
+html.theme .menu [role^="menuitem"]:hover, html.theme .menu [role^="menuitem"]:focus-visible { background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+html.theme .menu [role="menuitemradio"][aria-checked="true"] { color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .menu [role="menuitemradio"][aria-checked="true"]::before { width: 0.3125rem; height: 0.5625rem; margin-top: -0.375rem; border-radius: 0; background: none; border: solid hsl(var(--brand-ink)); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+/* ---- Blog NEW: a navy corner ribbon on the Blog tab (SVG band, darker folds) ---- */
+html.theme .hnav a.has-new { position: relative; margin-right: 0; padding-right: 1.5rem; }
+html.theme .hnav .new-pill, html.theme[data-theme="dark"] .hnav .new-pill { position: absolute; top: 0.0625rem; right: -0.125rem; width: 2.5rem; height: 2.5rem; margin: 0; padding: 0; display: block; border: 0; border-radius: 0; clip-path: none; transform: none; background: none; overflow: visible; pointer-events: none; animation: none; }
+html.theme .hnav .new-pill[hidden] { display: none; }
+html.theme .hnav .new-pill svg { display: block; width: 100%; height: 100%; overflow: visible; }
+html.theme .hnav .new-pill .band { fill: hsl(var(--fill)); }
+html.theme .hnav .new-pill .fold { fill: hsl(var(--fill-deep)); }
+html.theme .hnav .new-pill text { fill: hsl(var(--on-fill)); font-size: 9px; font-weight: 800; letter-spacing: .06em; text-anchor: middle; dominant-baseline: central; font-family: inherit; }
+@keyframes ribbon-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+html.theme .hnav .new-pill.is-pulsing svg { animation: ribbon-in .45s cubic-bezier(.2,0,0,1) .4s 1 backwards; }
+@media (prefers-reduced-motion: reduce) { html.theme .hnav .new-pill.is-pulsing svg { animation: none; } }
+html.theme .blog-tip small, html.theme[data-theme="dark"] .blog-tip small { color: hsl(var(--brand-ink)); }
+
+/* ---- listing title scrolls away; only the filters stay pinned ---- */
+@media (min-width: 900px) { html.theme .list-head { position: static; } }
+
+/* ---- quiet scrollbars: thin neutral grey, no gradient, no visible track ---- */
+html.theme::-webkit-scrollbar, html.theme ::-webkit-scrollbar { width: 10px; height: 10px; }
+html.theme::-webkit-scrollbar-track, html.theme ::-webkit-scrollbar-track, html.theme .fgroup .opts.scroll::-webkit-scrollbar-track { background: transparent; border: 0; }
+html.theme::-webkit-scrollbar-thumb, html.theme ::-webkit-scrollbar-thumb, html.theme ::-webkit-scrollbar-thumb:horizontal, html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb { background: var(--sb-thumb); background-clip: padding-box; border: 3px solid transparent; border-radius: 999px; }
+html.theme::-webkit-scrollbar-thumb:hover, html.theme ::-webkit-scrollbar-thumb:hover, html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); background-clip: padding-box; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar { width: 8px; }
+
+/* ---- deal page and quick view: same ↓% tag, saving line and Buy as the card; tighter hierarchy ---- */
+html.theme .deal-image { position: relative; padding: 0.75rem; }
+html.theme .deal-image .off-tag { position: absolute; top: 0.75rem; right: 0.75rem; left: auto; z-index: 1; display: inline-flex; align-items: center; gap: 0.125rem; padding: 0.25rem 0.5rem 0.25rem 0.375rem; border-radius: 0.25rem; background: hsl(var(--deal-green)); color: #fff; font-size: 0.875rem; font-weight: 700; line-height: 1; }
+html.theme .deal-image .off-tag .lucide { width: 0.875rem; height: 0.875rem; stroke-width: 2.75; }
+html.theme .zoom-hint { width: 2rem; height: 2rem; }
+html.theme .kicker .badge { border: 0; background: hsl(var(--muted)); color: hsl(var(--ink)); font-weight: 600; padding: 0.1875rem 0.4375rem; }
+html.theme .pricebox { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.625rem; row-gap: 0.25rem; }
+html.theme .pricebox .price-was { display: contents; }
+html.theme .pricebox .price-was .mrp { font-size: 1rem; }
+html.theme .pricebox .price-was .save { flex-basis: 100%; color: hsl(var(--save-ink)); font-weight: 600; font-size: 0.9375rem; }
+html.theme .buy-row { display: flex; flex-direction: column; align-items: stretch; gap: 0.5rem; }
+html.theme .buy-row .store-chip { align-self: flex-start; height: 1.25rem; max-width: 5rem; object-fit: contain; object-position: left center; }
+html.theme .buy-row .btn-buy { width: 100%; height: 3rem; font-size: 1rem; background: hsl(var(--fill)); color: hsl(var(--on-fill)); border: 0; border-radius: 0.375rem; overflow: hidden; transition: background .2s, box-shadow .2s; }
+@media (hover: hover) { html.theme .buy-row .btn-buy:hover { background: hsl(var(--fill-deep)); color: hsl(var(--on-fill)); box-shadow: 0 0.375rem 1rem -0.25rem hsl(var(--shadow) / .45); } html.theme .buy-row .btn-buy:hover .lucide { animation: buy-out .5s cubic-bezier(.2,0,0,1) 1; } }
+html.theme .deal-stats { flex-wrap: nowrap; }
+html.theme .deal-stats .sh-exp { margin-left: auto; }
+html.theme .deal-stats .sh-trig { height: 2.25rem; padding: 0 0.75rem; }
+html.theme .slideover { width: 34rem; }
+html.theme .so-head { justify-content: space-between; padding: 0 0.5rem; height: 3rem; }
+html.theme .so-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+html.theme #so-full { gap: 0.375rem; color: hsl(var(--ink)); font-weight: 500; }
+html.theme #so-full .lucide { width: 0.875rem; height: 0.875rem; }
+html.theme #so-full:hover, html.theme #so-close:hover { background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+/* the saving never cuts; the store mark gives way first (down to 2.5rem) */
+html.theme .deal .saveline .save { flex: none; overflow: visible; text-overflow: clip; }

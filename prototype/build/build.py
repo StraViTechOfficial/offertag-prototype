@@ -80,14 +80,14 @@ def card(d, wrap=True):  # S16 fix round (D-099): store logo sits on the Save li
     lg = store_logo(d['store'])
     chip = f'<img class="store-chip" src="{lg}" alt="{E(d["store"])}" loading="lazy">' if lg else f'<span class="store-chip is-text">{E(d["store"])}</span>'
     inner = f'''<article class="card deal" data-id="{d['id']}" data-page="{d['page']}" data-q="{E((d['t'] + ' ' + d['cat'] + ' ' + d['store']).lower())}"{' data-pinned="1"' if d.get('pinned') else ''} data-cat="{E(d['cat'])}" data-store="{E(d['store'])}" data-pct="{d['pct']}" data-price="{d['p']}" data-save="{d['save']}" data-age="{d['agemin']}" data-views="{d.get('views') or 0}" data-types="{E(','.join(d['types']))}">
-  <a class="img" href="{d['page']}" aria-label="{E(d['t'])}"><img src="{dimg(d)}" alt="" loading="lazy" width="300" height="300"><span class="badge badge-default">{d['pct']}% off</span></a>
+  <a class="img" href="{d['page']}" aria-label="{E(d['t'])}"><img src="{dimg(d)}" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="{d['pct']}% off"><i data-lucide="arrow-down" aria-hidden="true"></i>{d['pct']}%</span></a>
   <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
   <div class="body">
-    <div class="meta">{E(CN(d['cat']))} · {E(d['agetxt'])}</div>
-    <a class="title" href="{d['page']}">{E(d['t'])}</a>
+    <div class="meta">{E(d['agetxt'])} ago</div>
+    <a class="title" href="{d['page']}" title="{E(d['t'])}">{E(d['t'])}</a>
     <div class="priceline"><span class="price">{inr(d['p'])}</span><span class="was">{inr(d['m'])}</span></div>
     <div class="saveline"><span class="save">Save {inr(d['save'])}</span>{chip}</div>
-    <div class="acts"><a class="btn btn-outline btn-buy" href="{E(d["link"])}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="shopping-basket"></i></a></div>
+    <div class="acts"><a class="btn btn-buy" href="{E(d["link"])}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
   </div></article>'''
     return f'<div class="carousel-item">{inner}</div>' if wrap else inner
 def hero(d, label):
@@ -244,7 +244,7 @@ def td_card(store, photo, fill, title, priceline, href, featured=False, trending
     return (f'<div class="td-slide"><a class="td-card" style="--cb:{bg};--cbd:{bd};--bb:{bb};--bf:{bf}" href="{E(href)}"{tgt}>'
             f'<span class="td-photo"><img{" class=\"fill\"" if fill else ""} src="{photo}" alt="{E(alt)}" loading="lazy">{chips}</span>'
             f'<span class="td-txt"><span class="td-store">{st}</span><span class="td-title">{E(title)}</span><span class="td-price">{priceline}</span></span>'
-            f'<span class="td-view">View deal<i data-lucide="shopping-basket"></i></span></a></div>')
+            f'<span class="td-view">View deal<i data-lucide="arrow-right"></i></span></a></div>')
 def td_deal(d, **kw):
     photo, fill = td_img(d)
     pl = f'<b>{inr(d["p"])}</b><s>{inr(d["m"])}</s><em>{d["pct"]}% off</em>'
@@ -635,7 +635,7 @@ for idx, d in enumerate(deals + extras):
     specs = ('<section class="block specs" aria-labelledby="h-specs"><h2 id="h-specs">Specs</h2><dl>' + ''.join(f'<div><dt>{E(sp["label"])}</dt><dd>{E(sp["value"])}</dd></div>' if sp['label'] else f'<div class="one"><dd>{E(sp["value"])}</dd></div>' for sp in d['specs']) + '</dl></section>') if d['specs'] else ''
     step_items = ''.join(f'<li class="exc">{E(t)}</li>' for t in exceptions) + ''.join((f'<li><a href="{E(link)}" target="_blank" rel="nofollow sponsored noopener">{E(t)}</a> on {E(d["store"])}</li>' if k == 0 else f'<li>{E(t)}</li>') for k, t in enumerate(default_steps))
     steps = f'<details class="block howto"{" open" if exceptions else ""}><summary><h2>How to get it</h2><span class="hint">{len(default_steps) + len(exceptions)} steps at {E(d["store"])}</span><i data-lucide="chevron-down"></i></summary><ol class="steps">{step_items}</ol></details>'
-    pricebox = (f'<div class="price-now sale">Up to {d["pct"]}% off</div><div class="price-was">Sale post, prices vary by item</div>' if sale else f'<div class="price-now">{inr(d["p"])}</div><div class="price-was"><span class="mrp">MRP <s>{inr(d["m"])}</s></span><span class="badge badge-secondary">Save {inr(d["save"])} ({d["pct"]}%)</span></div>')
+    pricebox = (f'<div class="price-now sale">Up to {d["pct"]}% off</div><div class="price-was">Sale post, prices vary by item</div>' if sale else f'<div class="price-now">{inr(d["p"])}</div><div class="price-was"><span class="mrp">MRP <s>{inr(d["m"])}</s></span><span class="save">Save {inr(d["save"])} ({d["pct"]}%)</span></div>')
     bar_price = f'<div class="bb-price"><b>Up to {d["pct"]}% off</b></div>' if sale else f'<div class="bb-price"><b>{inr(d["p"])}</b><s>{inr(d["m"])}</s></div>'
     # As the website: the store's logo beside Buy now; related deals as a list in the right column (RelatedSide.tsx)
     slg = store_logo(d['store'])
@@ -646,7 +646,7 @@ for idx, d in enumerate(deals + extras):
     ncom = len(SAMPLE_COMMENTS.get(idx, [])) if idx < len(deals) else 0
     out = tpl_detail
     for k, v in dict(TITLE=E(d['t']), TITLE_SHORT=E(d['t'] if len(d['t']) <= 48 else d['t'][:47].rstrip() + '…'), FILE=d['file'], PRICE=('Up to ' + d['pct'] + '% off') if sale else inr(d['p']), PRICE_RAW=str(d['p']), MRP=inr(d['m']), PCT=d['pct'], STORE=E(d['store']), CAT=E(CN(d['cat'])), AGE=E(d['agetxt']), POSTED=E(d['posted']), POSTED_ISO=posted_iso(d['posted']),
-                     TYPE=''.join(f'<span class="badge badge-outline">{t}</span>' for t in types), LINK=E(link), PRICEBOX=pricebox, BAR_PRICE=bar_price, BADGE=('' if sale else f'<span class="badge badge-default">{d["pct"]}% off</span>'),
+                     TYPE=''.join(f'<span class="badge badge-outline">{t}</span>' for t in types), LINK=E(link), PRICEBOX=pricebox, BAR_PRICE=bar_price, BADGE=('' if sale else f'<span class="off-tag" aria-label="{d["pct"]}% off"><i data-lucide="arrow-down" aria-hidden="true"></i>{d["pct"]}%</span>'),
                      CAPTION=caption, COUPON=coupon, COUPON_BAR=coupon_bar, OFFERS=offers, NOTE=note, HIGHLIGHTS=highlights, LINKS=links, DESCRIPTION=description, SPECS=specs, STEPS=steps,
                      WA_ICON=_icon(re.match(r'(\w+)', 'whatsapp')), TG_ICON=_icon(re.match(r'(\w+)', 'telegram')), WA='https://wa.me/?text=' + quote(share_text), TG='https://t.me/share/url?url=' + quote(f"https://www.offertag.in/d/{d['id']}") + '&text=' + quote(share_text), SHARE_TEXT=E(share_text),
                      AMZ_SEARCH='https://www.amazon.in/s?k=' + quote(d['t']) + '&tag=offertag-21', FK_SEARCH='https://www.flipkart.com/search?q=' + quote(d['t']) + '&affid=offertag',
@@ -850,7 +850,7 @@ def build_static():
     def embed(d, cls=''):  # D-110: picture left, info right; Buy now + basket, store logo beside it; image, title and Buy are the hit areas (D-050)
         lg = store_logo(d['store'])
         st = f'<img class="emb-store" src="{lg}" alt="{E(d["store"])}" loading="lazy">' if lg else f'<span class="emb-store is-text">{E(d["store"])}</span>'
-        return f'<article class="deal-embed {cls}"><a class="img" href="{d["page"]}" aria-label="{E(d["t"])}"><img src="assets/deals/lg/{d["file"]}" alt="" loading="lazy" width="300" height="300"></a><div class="body"><div class="meta">{E(d["store"])} · {d["pct"]}% off</div><a class="title" href="{d["page"]}">{E(d["t"])}</a><div class="priceline">{price(d)}</div><div class="emb-acts"><a class="btn btn-outline btn-buy" href="{E(buy(d))}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="shopping-basket"></i></a>{st}</div></div></article>'
+        return f'<article class="deal-embed {cls}"><a class="img" href="{d["page"]}" aria-label="{E(d["t"])}"><img src="assets/deals/lg/{d["file"]}" alt="" loading="lazy" width="300" height="300"></a><div class="body"><div class="meta">{E(d["store"])} · {d["pct"]}% off</div><a class="title" href="{d["page"]}">{E(d["t"])}</a><div class="priceline">{price(d)}</div><div class="emb-acts"><a class="btn btn-outline btn-buy" href="{E(buy(d))}" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at {E(d["store"])}">Buy now<i data-lucide="arrow-up-right"></i></a>{st}</div></div></article>'
     for p in POSTS:
         parts = []
         lead_i = next((i for i, b in enumerate(p['body']) if 'p' in b), None)

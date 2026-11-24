@@ -24,7 +24,7 @@
     h.insertBefore(s, h.firstChild);
     // D-141: "+80% off" sticker on the heading's top-right corner; beside the heading (in a .loot-sup wrapper), never inside it
     if (loot) {
-      var t = document.createElement('span'); t.className = 'loot-tag'; t.innerHTML = '<i data-lucide="zap"></i>+80% off';
+      var t = document.createElement('span'); t.className = 'loot-tag'; t.textContent = '80%+ off';
       var box = h.tagName === 'H1' ? document.createElement('div') : h.parentElement;
       if (h.tagName === 'H1') { h.parentNode.insertBefore(box, h); box.appendChild(h); }
       box.classList.add('loot-sup'); box.appendChild(t);

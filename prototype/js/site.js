@@ -204,6 +204,8 @@
   // header type links: mark the current page (Blog for the index and every post)
   var cur = /^\/blog(\/|$)/.test(path) ? '/blog' : path;
   document.querySelectorAll('.hnav a').forEach(function (a) { if (a.getAttribute('href') === cur) a.setAttribute('aria-current', 'page'); });
+  // D-151: the page you are on is marked in the side menu too
+  document.querySelectorAll('#menu-sheet .sheet-nav a').forEach(function (a) { var h = (a.getAttribute('href') || '').replace(/\/$/, ''); if (h && h !== '#' && h === cur.replace(/\/$/, '')) a.setAttribute('aria-current', 'page'); });
 
   // Blog "New" pill: shown until this visitor opens the blog after the newest post went up.
   // Pulses 3 times on the first page of a visit, then stays still. Review: ?blog=new · ?blog=seen

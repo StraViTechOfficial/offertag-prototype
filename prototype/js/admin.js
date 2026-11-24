@@ -480,11 +480,11 @@
     function preview() {
       var p = num(el('p').value), m = num(el('m').value), pct = el('pct').value, st = el('store').value;
       var pi = $('[data-pv-img]'); pi.src = state.img || ''; pi.hidden = !state.img;
-      $('[data-pv-store]').textContent = el('cat').value + ' · now';
+      $('[data-pv-store]').textContent = 'Just now';
       $('[data-pv-title]').textContent = el('title').value || 'Deal title shows here';
       $('[data-pv-p]').textContent = p === 0 ? 'Up to ' + (pct || '—') + '% off' : p !== null ? rs(p) : '₹—';
       $('[data-pv-m]').textContent = m && p ? rs(m) : '';
-      var pp = $('[data-pv-pct]'); pp.textContent = pct ? pct + '% off' : ''; pp.hidden = !pct;
+      var pp = $('[data-pv-pct]'); pp.innerHTML = pct ? '<i data-lucide="arrow-down"></i>' + pct + '%' : ''; if (pct) icons(); pp.hidden = !pct;
       $('[data-pv-save]').textContent = m && p && m > p ? 'Save ' + rs(m - p) : '';
       var cap = $('[data-pv-cap]'); cap.textContent = el('caption').value; cap.hidden = !el('caption').value;
       var cp = $('[data-pv-coupon]'); cp.textContent = el('coupon').value ? 'Code ' + el('coupon').value.toUpperCase() : ''; cp.hidden = !el('coupon').value;
