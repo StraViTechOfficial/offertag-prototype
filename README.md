@@ -31,7 +31,7 @@ The prototype works as a small app for the client to try: add, edit and delete d
 
 ### Hosting the UAT link (D-153)
 
-The deployable copy lives in the private repo `git@github.com:StraViTechOfficial/offertag-prototype.git`: the built `prototype/` folder as the repo root, without `build/` and the internal review sheets. Connect it to Cloudflare Pages or Netlify with no build command and `/` as the output folder. To update it: `python3 build/build.py`, then copy the built files over that repo and push.
+One repo: this one, `git@github.com:StraViTechOfficial/offertag-prototype.git` (D-163, 2026-11-24). The host (Vercel, or Cloudflare Pages / Netlify) deploys `main` with **Root Directory / output folder = `prototype`** and no build command. To update the UAT link: `python3 build/build.py` in `prototype/`, commit, push. `prototype/.vercelignore` keeps `build/` and the review pages off the link on Vercel. The old copy-only history of that repo is kept on the branch `archive/deploy-copy`.
 
 - Not indexed: every page carries `noindex, nofollow`; `robots.txt` blocks all crawlers; `_headers` sends `X-Robots-Tag: noindex` on every response.
 - No CDN at runtime: Lucide 0.468.0, Embla 8.3.0, emoji-picker-element 1.29.1 (with its emoji data) and the Geist font are served from `prototype/vendor/`. `build/routes.py` swaps the CDN addresses in the templates for these at build time.

@@ -1,0 +1,5 @@
+# Vercel (Root Directory = prototype): keep the build scripts and internal review pages off the UAT link
+build
+look-review.html
+poster-options.html
+scrollbar-review.html
