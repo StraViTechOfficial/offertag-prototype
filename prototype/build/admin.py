@@ -29,6 +29,7 @@ NAV = [
         ('feedback', 'Feedback', 'admin-inbox.html?tab=feedback', 'admin', None),
         ('reports', 'Reports', 'admin-inbox.html?tab=reports', 'admin', None),
         ('deletion', 'Deletion requests', 'admin-inbox.html?tab=deletion', 'admin', None),
+        ('comments', 'Comments', 'admin-inbox.html?tab=comments', 'admin', None),   # D-153: comments from the deal pages (plan.md B5)
     ]),
     ('catalogue', 'Catalogue', 'library', None, 'admin', None, [
         ('shops', 'Shops', 'admin-catalogue.html?tab=shops', 'admin', None),
@@ -537,7 +538,7 @@ def build_pinned():
         <div class="page-h-acts"><a class="btn btn-outline" href="fresh.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>Preview on Top deals</a></div>
       </div>
       <section class="panel pin-gap">
-        <label class="pin-gap-f"><span>Show a pinned deal every</span><span class="select"><select data-pin-every aria-label="Cards between pinned deals">{gaps}</select><i data-lucide="chevron-down"></i></span><span>cards on Fresh</span></label>
+        <label class="pin-gap-f"><span>Show a pinned deal every</span><span class="select"><select data-pin-every aria-label="Cards between pinned deals">{gaps}</select><i data-lucide="chevron-down"></i></span><span>cards on Top deals</span></label>
         <p class="pin-gap-h" data-pin-gap-h></p>
       </section>
       <div class="slots" data-slots role="list"></div>

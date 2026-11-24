@@ -15,7 +15,9 @@ What it is not: shared data. Each browser sees the sample data plus only its own
 
 Part A goes first so Part B builds the new card and deal page once, not twice.
 
-Not in this plan, for later: hosting the link, and the deal-content rework (Key Practical Uses / Specifications as on the live site).
+**Hosting (D-153), done 2026-11-24:** UAT pass (every page at phone and desktop, light and dark, plus the client flow) found every non-Amazon store and 19 categories empty, a lingerie deal, CDN-only libraries, no noindex and no favicon. Fixed: 74 more live deals (screened for the client), self-hosted libraries and font, noindex + robots.txt + `_headers`, icons, Inbox → Comments, Undo on comment delete, and Reset that stays "nothing changed" while browsing. Deployable copy: `StraViTechOfficial/offertag-prototype` (see README "Hosting the UAT link").
+
+Not in this plan, for later: the deal-content rework (Key Practical Uses / Specifications as on the live site).
 
 ---
 

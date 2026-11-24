@@ -60,6 +60,7 @@
   function fmt(s) { // bold **x** only; links are plain text (D-149)
     return esc(trimLinks(s)).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   }
+  function author() { var u = OT.user && OT.user(); return body.classList.contains('is-admin') ? 'OfferTag' : (u && u.name) || 'You'; }   // D-153: the member's name, as other people see it
   function makeComment(text, name, admin, reply) {
     var li = document.createElement('li'); li.className = 'comment'; li.innerHTML = rel(name, admin) + '<p class="text">' + fmt(text) + '</p><div class="c-acts">' + OT.emoji.ACTS + (reply ? '' : '<button class="btn btn-ghost reply-btn" type="button"><i data-lucide="reply"></i>Reply</button>') + '<button class="btn btn-ghost c-del" type="button"><i data-lucide="trash-2"></i>Delete</button></div>' + (reply ? '' : '<ol class="replies"></ol>');
     li.querySelector('.who b').textContent = name; return li;
@@ -67,7 +68,7 @@
   function wire(root) {
     OT.emoji.wireReactions(root);   // D-147: six reactions replace the heart like
     root.querySelectorAll('.reply-btn').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { openReply(b.closest('.comment')); }); });
-    root.querySelectorAll('.c-del').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { var li = b.closest('.comment'); var isTop = li.parentNode === list; if (DB && li.dataset.cid) DB.deleteComment(li.dataset.cid); li.remove(); if (isTop) { total--; setCount(); } OT.toast('Comment deleted', 'trash-2'); }); });
+    root.querySelectorAll('.c-del').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { var li = b.closest('.comment'), host = li.parentNode, next = li.nextSibling, isTop = host === list, cid = li.dataset.cid; if (DB && cid) DB.deleteComment(cid); li.remove(); if (isTop) { total--; setCount(); } OT.toast('Comment deleted', 'trash-2', { label: 'Undo', fn: function () { if (DB && cid) DB.restoreComment(cid); host.insertBefore(li, next && next.parentNode === host ? next : null); if (isTop) { total++; setCount(); } } }); }); });
     root.querySelectorAll('.more-replies').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { b.closest('.comment').querySelectorAll('.replies > [hidden]').forEach(function (r) { r.hidden = false; }); b.remove(); }); });
     OT.icons();
   }
@@ -78,7 +79,7 @@
     var f = document.createElement('form'); f.className = 'reply-form'; f.innerHTML = '<div class="ta-wrap"><textarea class="textarea" rows="1" placeholder="Write a reply…" aria-label="Write a reply"></textarea><button type="button" class="btn btn-ghost btn-sm btn-icon ta-emoji" aria-label="Emoji"><i data-lucide="smile"></i></button></div><div class="acts"><button class="btn btn-default btn-sm" type="submit">Post</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancel</button></div>';
     li.querySelector('.replies').before(f); openForm = f; OT.icons(); OT.emoji.attach(f.querySelector('textarea'), null, f.querySelector('.ta-emoji')); f.querySelector('textarea').focus();
     f.querySelector('[data-cancel]').addEventListener('click', function () { f.remove(); openForm = null; });
-    f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; if (OT.emoji.tooLong(f.querySelector('textarea'))) { OT.toast('Keep it to 300 characters', 'circle-alert'); return; } var r = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin'), true); if (DB && DEAL) r.dataset.cid = DB.addComment({ deal: DEAL, parent: li.dataset.cid || null, name: body.classList.contains('is-admin') ? 'OfferTag' : 'You', admin: body.classList.contains('is-admin'), text: trimLinks(t) }).id; li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
+    f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; if (OT.emoji.tooLong(f.querySelector('textarea'))) { OT.toast('Keep it to 300 characters', 'circle-alert'); return; } var r = makeComment(t, author(), body.classList.contains('is-admin'), true); if (DB && DEAL) r.dataset.cid = DB.addComment({ deal: DEAL, parent: li.dataset.cid || null, name: author(), admin: body.classList.contains('is-admin'), text: trimLinks(t) }).id; li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
   }
   if (list) { wire(list); setCount(); }
   document.addEventListener('ot:react', function (e) { var li = e.detail.li; if (DB && li && li.dataset.cid) DB.setReactions(li.dataset.cid, e.detail.rx); });
@@ -96,7 +97,7 @@
       e.preventDefault(); var t = ta.value.trim(); if (!t) { ta.focus(); return; }
       if (OT.emoji.tooLong(ta)) { OT.toast('Keep it to 300 characters', 'circle-alert'); ta.focus(); return; }
       if (q.get('fail') === '1') { err.hidden = false; return; } err.hidden = true;
-      var li = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin')); if (DB && DEAL) li.dataset.cid = DB.addComment({ deal: DEAL, parent: null, name: body.classList.contains('is-admin') ? 'OfferTag' : 'You', admin: body.classList.contains('is-admin'), text: trimLinks(t) }).id; list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/300'; OT.toast('Comment posted', 'check');
+      var li = makeComment(t, author(), body.classList.contains('is-admin')); if (DB && DEAL) li.dataset.cid = DB.addComment({ deal: DEAL, parent: null, name: author(), admin: body.classList.contains('is-admin'), text: trimLinks(t) }).id; list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/300'; OT.toast('Comment posted', 'check');
     });
   }
 

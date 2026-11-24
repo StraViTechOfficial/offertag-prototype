@@ -165,6 +165,7 @@
   };
   DB.addComment = function (c) { c = Object.assign({ id: 'u' + now().toString(36), at: now(), rx: {} }, c); CM.add.push(c); setJ('comments', CM); emit('comments'); return c; };
   DB.deleteComment = function (id) { CM.del[id] = 1; setJ('comments', CM); emit('comments'); };
+  DB.restoreComment = function (id) { delete CM.del[id]; setJ('comments', CM); emit('comments'); };   // D-153: Undo after Delete
   DB.setReactions = function (id, rx) { CM.rx[id] = rx; setJ('comments', CM); emit('comments'); };
 
   // ---- inbox items sent from the public site (reports, contact, delete-account requests) ----
@@ -212,9 +213,23 @@
   window.addEventListener('storage', function (e) { if (e.key && (e.key.indexOf(P) === 0 || e.key === 'adm-blog')) { loadChanges(); COLL = {}; emit('external'); } });
 
   DB.reset = function () { resetAll(); };
+  // What the person changed. Counters the site keeps by itself while someone browses (deal views, unique views, Buy clicks,
+  // ad views and clicks) are not changes, so "Sample data, nothing changed yet" stays true after a Reset until they edit something.
+  var COUNTERS = { views: 1, uniq: 1, clicks: 1 };
+  function noCounters(v) {
+    if (Array.isArray(v)) return v.map(noCounters);
+    if (v && typeof v === 'object') { var o = {}; Object.keys(v).sort().forEach(function (k) { if (!COUNTERS[k]) o[k] = noCounters(v[k]); }); return o; }
+    return v;
+  }
   DB.changeCount = function () {
-    var n = Object.keys(getJ('deals', {})).length + (getJ('comments', { add: [] }).add || []).length;
-    try { if (LS) Object.keys(LS).forEach(function (k) { if (k.indexOf(P + 'c:') === 0) n++; }); } catch (e) {}
+    var n = 0, dc = getJ('deals', {}), cm = getJ('comments', { add: [], del: {}, rx: {} });
+    Object.keys(dc).forEach(function (id) { var c = dc[id]; if (c === null || Object.keys(c).some(function (k) { return k !== 'id' && !COUNTERS[k]; })) n++; });
+    n += (cm.add || []).length + Object.keys(cm.del || {}).length + Object.keys(cm.rx || {}).length;
+    try { if (LS) Object.keys(LS).forEach(function (k) {
+      if (k.indexOf(P + 'c:') !== 0) return;
+      var name = k.slice((P + 'c:').length);
+      if (JSON.stringify(noCounters(getJ('c:' + name, null))) !== JSON.stringify(noCounters(SEED.coll[name] === undefined ? null : SEED.coll[name]))) n++;
+    }); } catch (e) {}
     try { n += Object.keys(JSON.parse(localStorage.getItem('adm-blog') || '{}')).length; } catch (e) {}
     return n;
   };

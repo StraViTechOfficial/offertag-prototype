@@ -77,11 +77,14 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && current) closeSheet(); });
 
   // toast (Sonner): OT.toast('Link copied', 'check')
-  function toast(msg, icon) {
+  function toast(msg, icon, action) {   // action (optional): { label: 'Undo', fn: function } adds a button and keeps the toast 5 s (D-153)
     var host = document.getElementById('toaster'); if (!host) { host = document.createElement('div'); host.className = 'toaster'; host.id = 'toaster'; host.setAttribute('aria-live', 'polite'); document.body.appendChild(host); }
-    var t = document.createElement('div'); t.className = 'toast'; if (icon) { var i = document.createElement('i'); i.setAttribute('data-lucide', icon); t.appendChild(i); } var s = document.createElement('span'); s.textContent = msg; t.appendChild(s); host.appendChild(t); icons();
+    var t = document.createElement('div'); t.className = 'toast'; if (icon) { var i = document.createElement('i'); i.setAttribute('data-lucide', icon); t.appendChild(i); } var s = document.createElement('span'); s.textContent = msg; t.appendChild(s);
+    function close() { t.classList.remove('is-in'); setTimeout(function () { t.remove(); }, 200); }
+    if (action) { var b = document.createElement('button'); b.type = 'button'; b.className = 'toast-act'; b.textContent = action.label; b.addEventListener('click', function () { close(); action.fn(); }); t.appendChild(b); }
+    host.appendChild(t); icons();
     requestAnimationFrame(function () { requestAnimationFrame(function () { t.classList.add('is-in'); }); });
-    setTimeout(function () { t.classList.remove('is-in'); setTimeout(function () { t.remove(); }, 200); }, 2400);
+    setTimeout(close, action ? 5000 : 2400);
   }
 
   // dropdown menus (shadcn DropdownMenu behaviour): one open at a time, outside click / Esc close, arrow keys move

@@ -1,6 +1,9 @@
 /* admin.js — OfferTag admin prototype (S16 batch A, D-098): shell, Overview, Incoming deals, All deals.
    Standalone: the public site.js is not loaded on admin pages. Data sheet: design-system/ia/data-sheets/admin-batch-a.md */
 (function () {
+  // D-153: a blank End says so, instead of the start/end order message
+  function endMsg(f) { var e = f.end.closest('.fld') && f.end.closest('.fld').querySelector('.err'); if (e) e.textContent = !f.end.value ? 'Add an end date.' : !f.start.value ? 'Add a start date first.' : 'End must be on or after the start.'; }
+
   var html = document.documentElement, $ = function (s, r) { return (r || document).querySelector(s); }, $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   function icons() { if (window.lucide && lucide.createIcons) lucide.createIcons(); }
   var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
@@ -673,7 +676,7 @@
     });
     // + Pin a deal (always the next slot)
     var pop = $('#pick-pop');
-    var draw = picker($('[data-pick-q]'), $('[data-pick-list]'), { filter: function (d) { return d.status === 'live' && !order.some(function (x) { return x.id === d.id; }); }, onPick: function (d) { var u = snap(); order.push({ id: d.id, age: '0 min' }); closePick(); saved('Pinned to slot ' + order.length + ' (card ' + card(order.length) + ' on Fresh)', u); } });
+    var draw = picker($('[data-pick-q]'), $('[data-pick-list]'), { filter: function (d) { return d.status === 'live' && !order.some(function (x) { return x.id === d.id; }); }, onPick: function (d) { var u = snap(); order.push({ id: d.id, age: '0 min' }); closePick(); saved('Pinned to slot ' + order.length + ' (card ' + card(order.length) + ' on Top deals)', u); } });
     function openPick(btn) { var r = btn.getBoundingClientRect(); pop.style.position = 'fixed'; pop.style.top = Math.min(r.bottom + 6, innerHeight - 380) + 'px'; pop.style.left = Math.max(12, Math.min(r.left, innerWidth - 332)) + 'px'; pop.hidden = false; requestAnimationFrame(function () { pop.dataset.state = 'open'; }); $('[data-pick-q]').value = ''; draw(); $('[data-pick-q]').focus(); }
     function closePick() { pop.dataset.state = 'closed'; pop.hidden = true; }
     document.addEventListener('click', function (e) { if (!pop.hidden && !pop.contains(e.target)) closePick(); });
@@ -803,7 +806,7 @@
       var kind = $('[name="kind"]:checked', D).value, dl = null;
       if (kind === 'deal') { dl = window.ADM_POSTER_DEALS.filter(function (x) { return x.id === f.deal.value; })[0]; chk(!!dl, f.deal); }
       else { chk(!!imgs.d, $('[data-drop="d"]')); chk(!!f.title.value.trim(), f.title); chk(!!f.link.value.trim(), f.link); }
-      chk(!!f.start.value && !!f.end.value && f.end.value >= f.start.value, f.end);
+      endMsg(f); chk(!!f.start.value && !!f.end.value && f.end.value >= f.start.value, f.end);
       if (bad.length) { (bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
       var u = snap(), o = kind === 'deal' ? { kind: 'deal', deal: dl.id, title: dl.t, img: dl.img, store: dl.store, link: 'Deal page', start: f.start.value, end: f.end.value, on: f.on.checked, href: null }
         : { kind: 'custom', title: f.title.value.trim(), link: f.link.value.trim(), store: f.store.value, start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d, href: null, ends: null };
@@ -869,7 +872,7 @@
       var f = D.elements, bad = [];
       function chk(ok, node) { var e = $('.err', node.closest('.fld')); if (e) e.hidden = ok; if (!ok) bad.push(node); }
       chk(!!f.adv.value.trim(), f.adv); chk(!!imgs.d, $('[data-drop="d"]', D)); chk(!!f.title.value.trim(), f.title); chk(!!f.cta.value.trim(), f.cta);
-      chk(/^https?:\/\/\S+\.\S+/.test(f.link.value.trim()), f.link); chk(!!f.start.value && !!f.end.value && f.end.value >= f.start.value, f.end);
+      chk(/^https?:\/\/\S+\.\S+/.test(f.link.value.trim()), f.link); endMsg(f); chk(!!f.start.value && !!f.end.value && f.end.value >= f.start.value, f.end);
       if (bad.length) { (bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
       var u = snap(), o = { adv: f.adv.value.trim(), title: f.title.value.trim(), line: f.line.value.trim(), cta: f.cta.value.trim(), link: f.link.value.trim(), start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d, mimg: imgs.m };
       if (editing) Object.assign(editing, o); else { o.id = Date.now(); o.views = 0; o.clicks = 0; list.unshift(o); }

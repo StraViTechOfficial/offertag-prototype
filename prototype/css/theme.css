@@ -1123,6 +1123,7 @@ html.theme[data-theme="dark"] .rs-img { background: hsl(var(--well)); }
 /* logo on a white plate (D-039); store logos on small white chips so dark logo text stays readable */
 html.theme[data-theme="dark"] .site-header .logo img { background: #fff; border-radius: 0.5rem; padding: 0.1875rem 0.5rem; box-sizing: content-box; height: 2.5rem; }
 @media (max-width: 767px) { html.theme[data-theme="dark"] .site-header .logo img { height: 2rem; } }
+html.theme[data-theme="dark"] .auth-logo img { background: #fff; border-radius: 0.5rem; padding: 0.25rem 0.625rem; box-sizing: content-box; }   /* D-153: the logo PNG is transparent now, so the sign-in logo needs the same white plate as the header (D-039) */
 html.theme[data-theme="dark"] img.store-chip, html.theme[data-theme="dark"] .btn-buy .buy-logo, html.theme[data-theme="dark"] .td-store img { background: #fff; border-radius: 0.375rem; padding: 0.1875rem 0.375rem; box-sizing: content-box; }
 html.theme[data-theme="dark"] .buy-row img.store-chip { padding: 0.375rem 0.625rem; border-radius: 0.5rem; }
 @media (hover: hover) { html.theme[data-theme="dark"] .deal .acts .btn-buy:hover .buy-logo:not([src$='.png']) { filter: none; } }

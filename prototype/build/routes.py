@@ -43,7 +43,7 @@ for p in BLOG_ADMIN:
 # tabbed admin pages answer to one address per tab (live names where they exist)
 TABS = {
     'admin-social.html': ('data-stab', {'channels': '/admin/social', 'formats': '/admin/social/formats', 'history': '/admin/social/history'}),
-    'admin-inbox.html': ('data-itab', {'feedback': '/admin/feedback', 'reports': '/admin/reports', 'deletion': '/admin/deletion-requests'}),
+    'admin-inbox.html': ('data-itab', {'feedback': '/admin/feedback', 'reports': '/admin/reports', 'deletion': '/admin/deletion-requests', 'comments': '/admin/comments'}),
     'admin-catalogue.html': ('data-ctab', {'shops': '/admin/shop', 'categories': '/admin/category', 'dealtypes': '/admin/lookup', 'types': '/admin/type'}),
 }
 
@@ -70,10 +70,27 @@ def playground(html):
     html = _SCRIPT.sub(lambda m: f'<script type="ot/defer" data-src="{m.group(1)}"></script>', html)
     i = html.index('<script type="ot/defer"')
     return html[:i] + PLAYGROUND + html[i:]
+# S25 hosting (D-153): the shared UAT link must not be indexed, must not depend on a CDN at runtime, and needs a tab icon.
+# Libraries and the Geist font are served from /vendor (copies of the exact versions the pages used); every page gets
+# noindex + the icons. The same no-index rule is sent as a header by _headers and robots.txt (written below).
+_VENDOR = (
+    (_re.compile(r'<link rel="preconnect" href="https://fonts\.(?:googleapis|gstatic)\.com"[^>]*>\n?'), ''),
+    (_re.compile(r'<link [^>]*href="https://fonts\.googleapis\.com/css2\?family=Geist[^"]*"[^>]*>'), '<link rel="stylesheet" href="/vendor/geist/geist.css">'),
+    (_re.compile(r'https://cdn\.jsdelivr\.net/npm/lucide@0\.468\.0/dist/umd/lucide\.min\.js'), '/vendor/lucide.min.js'),
+    (_re.compile(r'https://cdn\.jsdelivr\.net/npm/embla-carousel@8\.3\.0/embla-carousel\.umd\.js'), '/vendor/embla-carousel.umd.js'),
+)
+_HEAD_TAGS = ('<meta name="robots" content="noindex, nofollow">\n<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">\n'
+              '<link rel="icon" href="/favicon.ico" sizes="any">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">\n<link rel="manifest" href="/site.webmanifest">')
+def hosting(html):
+    for pat, rep in _VENDOR: html = pat.sub(rep, html)
+    if '<head>' in html and 'name="robots" content="noindex, nofollow"' not in html:
+        html = _re.sub(r'<meta name="robots" content="[^"]*">\n?', '', html)
+        html = html.replace('<head>', '<head>\n' + _HEAD_TAGS, 1)
+    return html
 def rewrite(html):
     html = _LINK.sub(lambda m: url_for(m.group(1), m.group(2) or '', m.group(3) or '') if m.group(1) in ROUTE else m.group(0), html)
     html = _ASSET.sub(r'/\1/', html)
-    return playground(add_theme(html.replace('action="search.html"', 'action="/deals/search"')))   # D-150: theme set before the page draws
+    return playground(add_theme(hosting(html.replace('action="search.html"', 'action="/deals/search"'))))   # D-150: theme set before the page draws
 
 def out_path(route):
     if route == '/': return os.path.join(ROOT, 'index.html')
@@ -120,7 +137,7 @@ print(f'Routes: {len(set(written))} addresses from {len(flat)} pages' + (f'; NOT
 
 # ---- D-114: old address of Fresh. Live site: 301 /fresh-deals → /top-deals (dev); the prototype stands in with a redirect page ----
 os.makedirs(os.path.join(ROOT, 'fresh-deals'), exist_ok=True)
-open(os.path.join(ROOT, 'fresh-deals', 'index.html'), 'w').write('<!doctype html><meta charset="utf-8"><title>Moved to Top deals</title><link rel="canonical" href="/top-deals"><meta http-equiv="refresh" content="0; url=/top-deals"><script>location.replace("/top-deals" + location.search + location.hash)</script><p>Fresh deals is now <a href="/top-deals">Top deals</a>.</p>\n')
+open(os.path.join(ROOT, 'fresh-deals', 'index.html'), 'w').write('<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Moved to Top deals</title><link rel="canonical" href="/top-deals"><meta http-equiv="refresh" content="0; url=/top-deals"><script>location.replace("/top-deals" + location.search + location.hash)</script><p>Fresh deals is now <a href="/top-deals">Top deals</a>.</p>\n')
 
 # ---- S25 (plan.md Part B): shells for pages the playground creates (a new deal, category, store or blog post).
 # The local server (build/serve.py), Netlify / Cloudflare Pages (_redirects) and, on any other host, 404.html serve these
@@ -141,6 +158,18 @@ open(os.path.join(ROOT, '_redirects'), 'w').write(
     '/blog/*            /_shell/blog/index.html      200\n'
     '/admin/deal/*      /_shell/adm-deal/index.html  200\n'
     '/admin/blog/*      /_shell/adm-blog/index.html  200\n')
+# S25 hosting (D-153): the UAT link stays out of search engines, and the playground data is always fresh after a redeploy
+open(os.path.join(ROOT, 'robots.txt'), 'w').write('# OfferTag prototype (UAT playground): not for search engines. The live site is https://www.offertag.in\nUser-agent: *\nDisallow: /\n')
+open(os.path.join(ROOT, '_headers'), 'w').write(
+    '# Netlify / Cloudflare Pages response headers\n'
+    '/*\n  X-Robots-Tag: noindex, nofollow\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n'
+    '/data/*\n  Cache-Control: no-cache\n'
+    '/js/*\n  Cache-Control: no-cache\n'
+    '/css/*\n  Cache-Control: no-cache\n'
+    '/vendor/*\n  Cache-Control: public, max-age=31536000, immutable\n')
+json.dump({'name': 'OfferTag prototype', 'short_name': 'OfferTag', 'start_url': '/', 'display': 'browser', 'background_color': '#ffffff', 'theme_color': '#0b2a5b',
+           'icons': [{'src': '/icon-512.png', 'sizes': '512x512', 'type': 'image/png'}, {'src': '/apple-touch-icon.png', 'sizes': '180x180', 'type': 'image/png'}]},
+          open(os.path.join(ROOT, 'site.webmanifest'), 'w'), indent=1)
 _FALLBACK = ('<script>/* S25: an address the playground created (new deal, category, store, blog post) on a host without rewrites */'
              '(function(){var p=location.pathname.replace(/\\/$/,""),s=/^\\/deal\\/[^\\/]+$/.test(p)?"deal":/^\\/products\\/[^\\/]+-deals$/.test(p)?"products":/^\\/shops\\/[^\\/]+\\/[^\\/]+$/.test(p)?"combo":/^\\/shops\\/[^\\/]+$/.test(p)?"shops":/^\\/blog\\/[^\\/]+$/.test(p)?"blog":/^\\/admin\\/deal\\/[^\\/]+\\/(edit|clone)$/.test(p)?"adm-deal":/^\\/admin\\/blog\\/[^\\/]+\\/edit$/.test(p)?"adm-blog":"";'
              'if(!s)return;document.documentElement.style.visibility="hidden";fetch("/_shell/"+s+"/").then(function(r){return r.text()}).then(function(h){document.open();document.write(h);document.close();}).catch(function(){document.documentElement.style.visibility=""})})();</script>')

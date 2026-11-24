@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var PICKER_VER = '1.29.1';
-  var CDN = 'https://cdn.jsdelivr.net/npm/emoji-picker-element@' + PICKER_VER + '/';
+  var CDN = '/vendor/emoji/';   // D-153: self-hosted copy of emoji-picker-element@' + PICKER_VER + ' (its emoji data too)
   var MAX = 300;
   var REACTIONS = [['👍', 'Like'], ['❤️', 'Love'], ['😂', 'Haha'], ['😮', 'Wow'], ['🔥', 'Hot deal'], ['😢', 'Sad']];
   var LABEL = {}; REACTIONS.forEach(function (r) { LABEL[r[0]] = r[1]; });

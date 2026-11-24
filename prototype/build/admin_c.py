@@ -152,10 +152,11 @@ def build_inbox():
     body = f'''      <div class="page-h">
         <div><h1>Inbox</h1><p>Messages from the Contact form, problems reported on deal pages, and account deletion requests from the app and site.</p></div>
       </div>
-      <div class="inbox-bar">{tabs('data-itab', [('feedback', 'Feedback', un(fb)), ('reports', 'Reports', un(rp)), ('deletion', 'Deletion requests', un(dl))], 'feedback')}
+      <div class="inbox-bar">{tabs('data-itab', [('feedback', 'Feedback', un(fb)), ('reports', 'Reports', un(rp)), ('deletion', 'Deletion requests', un(dl)), ('comments', 'Comments', 0)], 'feedback')}
         {ck('data-unhandled checked', 'Unhandled only')}<span class="tag-sample">Sample</span></div>
       <ul class="ibx" data-ibx></ul>
       <p class="empty" data-ibx-empty hidden></p>
+      <p class="foot-note" data-ibx-note="comments" hidden><i data-lucide="info"></i>Every comment and reply from the deal pages, newest first. The count on the tab is comments from the last 24 hours. Delete removes it from the deal page at once.</p>
       <p class="foot-note" data-ibx-note="deletion" hidden><i data-lucide="info"></i>“Mark deleted” only records that the account was removed. Delete the account on the server first; the app promises removal within 7 days.</p>
 {OVERLAY}
 {CONFIRM}'''

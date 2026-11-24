@@ -29,7 +29,16 @@ The prototype works as a small app for the client to try: add, edit and delete d
 - Code: `prototype/js/db.js` (data), `js/render.js` (public pages drawn from the data), `js/admin-db.js` (admin reads and saves). The page scripts wait for the data (`build/routes.py` marks them `type="ot/defer"`).
 - Pages the playground creates (a new deal, category, store or blog post) have no built file: `build/serve.py`, `prototype/_redirects` (Netlify, Cloudflare Pages) and `404.html` (any other static host) serve a shell from `prototype/_shell/`.
 
-To share it as a link: upload the `prototype/` folder (after `python3 build/build.py`) to Netlify or Cloudflare Pages. Any static host works; one with `_redirects` support gives new pages clean addresses.
+### Hosting the UAT link (D-153)
+
+The deployable copy lives in the private repo `git@github.com:StraViTechOfficial/offertag-prototype.git`: the built `prototype/` folder as the repo root, without `build/` and the internal review sheets. Connect it to Cloudflare Pages or Netlify with no build command and `/` as the output folder. To update it: `python3 build/build.py`, then copy the built files over that repo and push.
+
+- Not indexed: every page carries `noindex, nofollow`; `robots.txt` blocks all crawlers; `_headers` sends `X-Robots-Tag: noindex` on every response.
+- No CDN at runtime: Lucide 0.468.0, Embla 8.3.0, emoji-picker-element 1.29.1 (with its emoji data) and the Geist font are served from `prototype/vendor/`. `build/routes.py` swaps the CDN addresses in the templates for these at build time.
+- `_headers` also marks `/data`, `/js` and `/css` `no-cache`, so a redeploy reaches people at once; a visitor's own changes survive a redeploy (they are merged over the new sample data by id).
+- Icons: `favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png`, `site.webmanifest`. The logo PNGs are transparent and sized for the header (20–40 KB, down from 0.5–0.9 MB).
+- Sample deals: 115 live deals from offertag.in (41 fetched 11 Nov, 74 fetched 24 Nov), so every store and every category page has deals. Innerwear, adult products, raw app screenshots and similar are screened out for the client demo.
+- Admin → Inbox → Comments lists every comment from the deal pages, with Delete (and Undo).
 
 ## Folders
 
