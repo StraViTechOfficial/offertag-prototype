@@ -217,11 +217,10 @@
     var latest = blogLink.dataset.latest, SEEN = 'ot-blog-seen';
     if (qs.get('blog') === 'new') set(LS, SEEN, ''); if (qs.get('blog') === 'seen') set(LS, SEEN, latest);
     if (cur === '/blog') set(LS, SEEN, latest);
-    if (get(LS, SEEN) !== latest) {
-      var pulse = !get(SS, 'ot-blog-pulsed'); set(SS, 'ot-blog-pulsed', '1');
-      document.querySelectorAll('[data-blog-new]').forEach(function (p) { p.hidden = false; if (pulse) p.classList.add('is-pulsing'); });
-      document.querySelectorAll('[data-blog-link]').forEach(function (a) { a.classList.add('has-new'); a.setAttribute('aria-label', 'Blog, new post'); });
-    }
+    // D-157: the ribbon always shows; it only pulses (once a visit) while this visitor hasn't opened the newest post
+    var unseen = get(LS, SEEN) !== latest, pulse = unseen && !get(SS, 'ot-blog-pulsed'); if (unseen) set(SS, 'ot-blog-pulsed', '1');
+    document.querySelectorAll('[data-blog-new]').forEach(function (p) { p.hidden = false; if (pulse) p.classList.add('is-pulsing'); });
+    document.querySelectorAll('[data-blog-link]').forEach(function (a) { a.classList.add('has-new'); a.setAttribute('aria-label', 'Blog, new posts'); });
   }
 
   // "New since your last visit" (Home): last visit = previous session's last page view on this device.
@@ -247,6 +246,13 @@
     var spPick = spIds[Math.floor(Math.random() * spIds.length)];
     spSlots.forEach(function (sl) { sl.querySelectorAll('[data-sp]').forEach(function (a) { a.hidden = a.dataset.sp !== spPick; }); });
   }
+  // D-158: Home → Shop by store scrolls inside its box; fades show only where there is more to see
+  var hsStores = document.querySelector('.home-side .hs-stores');
+  if (hsStores) {
+    var hsMark = function () { var t = hsStores.scrollTop, max = hsStores.scrollHeight - hsStores.clientHeight;
+      hsStores.classList.toggle('is-fits', max <= 2); hsStores.classList.toggle('is-scrolled', t > 2); hsStores.classList.toggle('is-end', t >= max - 2); };
+    hsStores.addEventListener('scroll', hsMark, { passive: true }); window.addEventListener('resize', hsMark); window.addEventListener('load', hsMark); hsMark();
+  }
   // Back-to-top dock: #to-top lives in .fstack, which rides up above the footer
   var fstack = document.querySelector('[data-fstack]');
   if (fstack) {
@@ -263,8 +269,48 @@
     document.body.appendChild(fjoin);
     var ftab = fjoin.querySelector('[data-fjoin-tab]');
     var fset = function (on) { fjoin.classList.toggle('is-open', on); ftab.setAttribute('aria-expanded', on ? 'true' : 'false'); };
-    ftab.addEventListener('click', function (e) { e.stopPropagation(); fset(!fjoin.classList.contains('is-open')); });
-    fjoin.addEventListener('mouseleave', function () { fset(false); ftab.blur(); });
+    // D-157: drag the tab up or down; the spot is kept per device as a share of the screen height. A tap (under 6 px of movement) still opens the fan.
+    var FY = 'ot-fjoin-y', dragged = false;
+    function fjRange() {   // D-158: the opened half-disc always fits between the header and the screen bottom
+      var disc = fjoin.querySelector('.fjoin-disc'), half = (disc ? disc.offsetHeight : 288) / 2 + 8;
+      var hdr = document.querySelector('.site-header'), top = hdr ? Math.max(0, hdr.getBoundingClientRect().bottom) : 0;
+      var lo = top + half, hi = innerHeight - half;
+      return lo <= hi ? [lo, hi] : [(top + innerHeight) / 2, (top + innerHeight) / 2];
+    }
+    function fjPlace(frac) {
+      if (frac == null || isNaN(frac)) return;
+      var r = fjRange(), y = Math.max(r[0], Math.min(r[1], frac * innerHeight));
+      fjoin.style.setProperty('--fj-y', y + 'px'); fjoin.classList.add('is-placed');
+    }
+    try { var fy = localStorage.getItem(FY); if (fy !== null) fjPlace(parseFloat(fy)); } catch (e) {}
+    window.addEventListener('resize', function () { try { var v = localStorage.getItem(FY); if (v !== null) fjPlace(parseFloat(v)); } catch (e) {} });
+    function fjSave(y) { try { localStorage.setItem(FY, String(y / innerHeight)); } catch (e) {} }
+    ftab.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      var startY = e.clientY, startMid = ftab.getBoundingClientRect().top + ftab.offsetHeight / 2, moving = false;
+      dragged = false; try { ftab.setPointerCapture(e.pointerId); } catch (x) {}   // D-158: capture at once, so a fast flick still drags
+      function move(ev) {
+        var dy = ev.clientY - startY;
+        if (!moving && Math.abs(dy) < 6) return;
+        if (!moving) { moving = true; fset(false); fjoin.classList.add('is-dragging'); }
+        var r = fjRange(), y = Math.max(r[0], Math.min(r[1], startMid + dy));
+        fjoin.style.setProperty('--fj-y', y + 'px'); fjoin.classList.add('is-placed'); ev.preventDefault();
+      }
+      function up() {
+        ftab.removeEventListener('pointermove', move); ftab.removeEventListener('pointerup', up); ftab.removeEventListener('pointercancel', up);
+        if (moving) { dragged = true; fjoin.classList.remove('is-dragging'); fjSave(parseFloat(fjoin.style.getPropertyValue('--fj-y'))); }
+      }
+      ftab.addEventListener('pointermove', move); ftab.addEventListener('pointerup', up); ftab.addEventListener('pointercancel', up);
+    });
+    ftab.addEventListener('keydown', function (e) {   // keyboard: arrow keys move the focused tab
+      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+      e.preventDefault(); var mid = ftab.getBoundingClientRect().top + ftab.offsetHeight / 2, r = fjRange();
+      var y = Math.max(r[0], Math.min(r[1], mid + (e.key === 'ArrowUp' ? -32 : 32)));
+      fjoin.style.setProperty('--fj-y', y + 'px'); fjoin.classList.add('is-placed'); fjSave(y);
+    });
+    ftab.setAttribute('title', 'Drag up or down to move');
+    ftab.addEventListener('click', function (e) { e.stopPropagation(); if (dragged) { dragged = false; return; } fset(!fjoin.classList.contains('is-open')); });
+    fjoin.addEventListener('mouseleave', function () { if (!fjoin.classList.contains('is-dragging')) { fset(false); ftab.blur(); } });
     document.addEventListener('click', function (e) { if (fjoin.classList.contains('is-open') && !fjoin.contains(e.target)) fset(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && fjoin.classList.contains('is-open')) { fset(false); ftab.focus(); } });
   }
