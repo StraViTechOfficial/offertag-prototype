@@ -17,6 +17,8 @@ Part A goes first so Part B builds the new card and deal page once, not twice.
 
 **Hosting (D-153), done 2026-11-24:** UAT pass (every page at phone and desktop, light and dark, plus the client flow) found every non-Amazon store and 19 categories empty, a lingerie deal, CDN-only libraries, no noindex and no favicon. Fixed: 74 more live deals (screened for the client), self-hosted libraries and font, noindex + robots.txt + `_headers`, icons, Inbox → Comments, Undo on comment delete, and Reset that stays "nothing changed" while browsing. Deployable copy: `StraViTechOfficial/offertag-prototype` (see README "Hosting the UAT link").
 
+**Adil's review (D-155), done 2026-11-24:** menu tabs Home · Top · Loot · New · Pantry; sign-in is an email code only (no Google); theme follows the device by default, no header icon (Light · Dark · Automatic stays in the side menu); the left join tab is a semicircle again and its fan has no live chat (Chat with us removed everywhere); no deal counts on stores or categories; Home lists every store (right column on desktop, a sideways row on phones) with no "All stores" detour; Incoming has no scraper, no "Approve all", no "Approved today" / "Rejected" tabs and no "Similar deal" / "Featured" badges (planned separately); Post a deal has no scheduling (blog posts and posters keep theirs). Admin sign-in still offers Google: to confirm.
+
 Not in this plan, for later: the deal-content rework (Key Practical Uses / Specifications as on the live site).
 
 ---

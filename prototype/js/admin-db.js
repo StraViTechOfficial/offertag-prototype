@@ -139,13 +139,13 @@
     var pend = $('[data-panel="pending"]');
     if (pend) {
       var site2 = DB.get('site') || {}, FP = +site2.feat_price || 10000, FPCT = +site2.feat_pct || 70;
-      var SRC = { telegram: ['Telegram', 'send'], scraper: ['Scraper', 'bot'], form: ['Quick post', 'mouse-pointer-click'] }, HOLD = { similar: 'Similar deal posted today', mrp: 'Check MRP', missing: 'Category missing' };
+      var SRC = { telegram: ['Telegram', 'send'], form: ['Quick post', 'mouse-pointer-click'] }, HOLD = { mrp: 'Check MRP', missing: 'Category missing' };
       var types = function (ts) { return ts.filter(function (t) { return t !== 'Fresh'; }).map(function (t) { return '<span class="tchip t-' + t.toLowerCase() + '">' + (t === 'Top' ? 'Top deal' : t) + '</span>'; }).join(''); };
       var inc = function (d, note) {
         var s = SRC[d.source] || SRC.form, sim = d.similar ? DB.deal(d.similar) : null;
-        var flag = d.hold ? '<span class="hold"><i data-lucide="triangle-alert"></i>' + HOLD[d.hold] + (d.hold === 'similar' && sim ? ' · <a href="' + E(sim.page) + '" target="_blank" rel="noopener">view</a>' : '') + '</span>' : '';
+        var flag = d.hold && HOLD[d.hold] ? '<span class="hold"><i data-lucide="triangle-alert"></i>' + HOLD[d.hold] + (d.hold === 'similar' && sim ? ' · <a href="' + E(sim.page) + '" target="_blank" rel="noopener">view</a>' : '') + '</span>' : '';
         var why = []; if (d.p >= FP) why.push(inr(FP) + '+'); if (d.pct && d.pct >= FPCT) why.push(FPCT + '%+ off');
-        if (why.length) flag += '<span class="feat" title="Matches the featured-deal rules in Site &amp; app"><i data-lucide="sparkles"></i>Featured · ' + why.join(' · ') + '</span>';
+        // D-155: no Featured badge on Incoming (planned as its own feature)
         var rec = d.receivedAt ? H.ago((Date.now() - d.receivedAt) / MIN) : d.agetxt;
         return '<article class="inc" data-inc data-id="' + E(d.id) + '" data-missing="' + (d.cat ? '' : '1') + '" data-pct="' + (d.pct || 0) + '" data-title="' + E(d.t) + '"' + (note ? ' data-done' : '') + '>' +
           '<label class="ck"><input type="checkbox" data-inc-check aria-label="Select ' + E(d.t.slice(0, 40)) + '"><span class="box"><i data-lucide="check"></i></span></label>' +

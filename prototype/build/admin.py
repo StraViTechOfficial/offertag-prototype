@@ -183,13 +183,13 @@ def build_overview():
 # ---------- Incoming deals (admin-deals §1; SAMPLE rows per data sheet) ----------
 INC = [  # (deal index in snapshot, source, received, hold, overrides)
     (20, 'telegram', '2 min ago', None, {}),
-    (0, 'telegram', '9 min ago', 'similar', {}),
-    (27, 'scraper', '14 min ago', 'mrp', {'m': None}),
+    (0, 'telegram', '9 min ago', None, {}),
+    (27, 'form', '14 min ago', 'mrp', {'m': None}),
     (33, 'telegram', '38 min ago', 'missing', {'cat': None}),
     (8, 'form', '1 h ago', 'mrp', {'m': 'low'}),
 ]
 FEATURED = dict(price=10000, pct=70, cap=5)  # M-07 (D-106): Site & app → Featured deals; price = the meeting's ₹10,000 example, discount 70% (meeting example; separate from the Loot line, D-117)
-SRC = {'telegram': ('Telegram', 'send'), 'scraper': ('Scraper', 'bot'), 'form': ('Quick post', 'mouse-pointer-click')}
+SRC = {'telegram': ('Telegram', 'send'), 'form': ('Quick post', 'mouse-pointer-click')}   # D-155: no scraper
 HOLD = {'similar': 'Similar deal posted today', 'mrp': 'Check MRP', 'missing': 'Category missing'}
 
 def build_incoming():
@@ -203,7 +203,6 @@ def build_incoming():
         sl, si = SRC[src]
         flag = f'<span class="hold"><i data-lucide="triangle-alert"></i>{HOLD[hold]}' + (f' · <a href="{d["page"]}" target="_blank" rel="noopener">view</a>' if hold == 'similar' else '') + '</span>' if hold else ''
         why = [f'{inr(FEATURED["price"])}+' for _ in [0] if p >= FEATURED['price']] + [f'{FEATURED["pct"]}%+ off' for _ in [0] if pct is not None and pct >= FEATURED['pct']]
-        flag += f'<span class="feat" title="Matches the featured-deal rules in Site &amp; app"><i data-lucide="sparkles"></i>Featured · {" · ".join(why)}</span>' if why else ''
         mrp = f'MRP {inr(m)}' if m else '<span class="miss">MRP —</span>'
         pct_h = f'<b class="pct">{pct}% off</b>' if pct is not None else '<span class="miss">—%</span>'
         cat_h = E(cat) if cat else '<span class="miss">Category?</span>'
@@ -223,13 +222,7 @@ def build_incoming():
           </div>
         </article>''')
     body = f'''      <div class="page-h">
-        <div><h1>Incoming deals</h1><p>Telegram and quick-post deals wait here. Scraper deals go live on their own unless something needs a check.</p></div>
-        <div class="page-h-acts"><button class="btn btn-default" type="button" data-approve-all>Approve all <span data-count="incoming">{A_INCOMING_COUNT}</span></button></div>
-      </div>
-      <div class="tabs-list adm-tabs" role="tablist">
-        <button class="tabs-trigger" role="tab" data-tab="pending" data-state="active" aria-selected="true">Pending <span class="adm-count" data-count="incoming">{A_INCOMING_COUNT}</span></button>
-        <button class="tabs-trigger" role="tab" data-tab="approved" aria-selected="false">Approved today <span class="adm-count muted" data-count="approved">0</span></button>
-        <button class="tabs-trigger" role="tab" data-tab="rejected" aria-selected="false">Rejected <span class="adm-count muted" data-count="rejected">0</span></button>
+        <div><h1>Incoming deals</h1><p>Deals from Telegram and Quick post wait here until you approve them.</p></div>
       </div>
       <div class="inc-bar" data-inc-bar>
         <label class="ck"><input type="checkbox" data-inc-all aria-label="Select all"><span class="box"><i data-lucide="check"></i></span></label>
@@ -260,7 +253,6 @@ def adm_rows():  # one list for All deals, the post form, the pinned board and a
     rows = []
     for i, d in enumerate(sorted(deals, key=lambda d: d['agemin'])):
         st = 'live'; when = d['agetxt']
-        if i == 4: st, when = 'scheduled', 'Tomorrow 9:00'   # SAMPLE statuses (data sheet A)
         if i == 17: st = 'withdrawn'
         rows.append(dict(id=d['id'], t=d['t'], store=d['store'], cat=d['cat'], p=d['p'], m=d['m'], pct=int(d['pct']),
                          types=[t for t in d['types'] if t != 'Fresh'], status=st, pin=A_PIN.get(d['file']), age=d['agemin'] if st != 'scheduled' else -1,
@@ -277,7 +269,7 @@ def build_deals():
     stores = sorted({r['store'] for r in rows}, key=lambda s: shop_by_name[s]['order'] if s in shop_by_name else 99)
     catsl = [c['name'] for c in CATS if any(r['cat'] == c['name'] for r in rows)]
     toolbar = ''.join([
-        sel('status', 'Status', [('live', 'Live'), ('scheduled', 'Scheduled'), ('pending', 'Pending'), ('rejected', 'Rejected'), ('withdrawn', 'Withdrawn')]),
+        sel('status', 'Status', [('live', 'Live'), ('pending', 'Pending'), ('rejected', 'Rejected'), ('withdrawn', 'Withdrawn')]),
         sel('type', 'Type', [('Top', 'Top deal'), ('Loot', 'Loot'), ('New', 'New'), ('Pantry', 'Pantry')]),
         sel('store', 'Store', [(s, s) for s in stores]),
         sel('cat', 'Category', [(c, c) for c in catsl]),
@@ -462,7 +454,7 @@ def build_post():
               <div class="fld"><span class="lab">Pinned</span><div class="pinrow">{ck('name="pin"', 'Pin')}{_sel('name="slot" aria-label="Slot"', ''.join(f'<option value="{x}">Slot {x}{" (next free)" if x == len(A_PIN) + 1 else ""}</option>' for x in range(1, len(A_PIN) + 2)))}</div></div>
               <div class="fld"><span class="lab">Push alert</span>{ck('name="notify"', 'Send push <small data-notify-hint>auto at 90% off</small>')}</div>
             </div>
-            <div class="fld"><span class="lab">Publish</span>
+            <div class="fld" hidden><span class="lab">Publish</span>   <!-- D-155: deals publish at once, no scheduling; kept hidden on "Now" for the form script -->
               <div class="pubrow"><label class="rad"><input type="radio" name="when" value="now" checked><span></span>Now</label><label class="rad"><input type="radio" name="when" value="later"><span></span>Schedule</label><input class="input" type="datetime-local" name="at" value="2026-11-14T09:00" disabled aria-label="Publish at"></div></div>
           </div>
           <div class="form-foot" data-foot>

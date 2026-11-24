@@ -20,7 +20,7 @@
       <a class="logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
       <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
       <nav class="hnav" aria-label="Deal types">
-        <a href="index.html">Home</a><a href="fresh.html">Top deals</a><a href="loot.html">Loot</a><a href="new.html">New</a><a href="pantry.html">Pantry</a>
+        <a href="index.html">Home</a><a href="fresh.html">Top</a><a href="loot.html">Loot</a><a href="new.html">New</a><a href="pantry.html">Pantry</a>
         <a href="blog.html" class="hnav-blog" data-blog-link>Blog<span class="new-pill" data-blog-new hidden><svg viewBox="0 0 44 44" aria-hidden="true"><path class="fold" d="M1 0H6L12 6Z"/><path class="fold" d="M44 43V38L38 32Z"/><path class="band" d="M6 0H25L44 19V38Z"/><text x="28.5" y="15.5" transform="rotate(45 28.5 15.5)">NEW</text></svg></span><span class="blog-tip" role="tooltip"><small>New on the blog</small>{{BLOG_LATEST_TITLE}}</span></a>
       </nav>
       <form class="header-search" data-search role="search">
@@ -30,11 +30,6 @@
       <div class="header-actions">
         <a class="btn btn-link nav-blog" href="blog.html" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span></a>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
-        <!-- D-150: theme menu (Light · Dark · Automatic); the icon shows the current choice -->
-        <div class="dropdown theme-menu">
-          <button class="btn btn-ghost btn-icon theme-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Theme"><i data-lucide="sun" class="tb-light"></i><i data-lucide="moon" class="tb-dark"></i><i data-lucide="sun-moon" class="tb-auto"></i></button>
-          <div class="menu theme-menu-list" role="menu" hidden data-state="closed" aria-label="Theme"><div class="menu-label">Theme</div><button type="button" role="menuitemradio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i>Light</button><button type="button" role="menuitemradio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i>Dark</button><button type="button" role="menuitemradio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i>Automatic<small>Follows your device</small></button></div>
-        </div>
         <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>Sign in</a>
         <div class="dropdown account-menu" data-when-user hidden>
           <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
@@ -91,6 +86,15 @@
   </section>
 
 
+  <!-- Shop by store (D-155): phones and tablets; every store in one sideways-scrolling row (desktop has them in the right column) -->
+  <section class="section home-stores" aria-labelledby="h-stores">
+    <div class="container">
+      <div class="section-head"><h2 id="h-stores">Shop by store</h2></div>
+      <div class="hs-row">{{STORES}}</div>
+    </div>
+  </section>
+
+
   <!-- Loot -->
   <section class="section deals" aria-labelledby="h-loot" id="loot">
     <div class="container">
@@ -113,13 +117,13 @@
   <div class="sheet-header"><div class="sheet-title" id="sheet-title">Menu</div></div>
   <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
   <nav class="sheet-nav">
-    <a href="login.html" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in with Google or email</a>
+    <a href="login.html" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in</a>
     <a href="account.html" data-when-user hidden><i data-lucide="user"></i><span data-user-name></span></a>
     <a href="admin.html" data-when-staff hidden><i data-lucide="layout-dashboard"></i>Admin panel</a>
     <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
     <div class="separator" style="margin:8px 0"></div>
     <div class="sheet-section">Deals</div>
-    <a href="fresh.html"><i data-lucide="star"></i>Top deals</a>
+    <a href="fresh.html"><i data-lucide="star"></i>Top</a>
     <a href="loot.html"><i data-lucide="tag"></i>Loot</a>
     <a href="new.html"><i data-lucide="sparkles"></i>New</a>
     <a href="pantry.html"><i data-lucide="shopping-basket"></i>Pantry</a>
@@ -129,7 +133,6 @@
     <a href="blog.html" data-blog-link><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
     <div class="sheet-section">More</div>
     <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
-    <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
     <a href="faq.html"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
     <a href="contact.html"><i data-lucide="mail"></i>Feedback</a>
     <div class="sheet-section">Theme</div>

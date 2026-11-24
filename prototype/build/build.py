@@ -130,7 +130,7 @@ def catimg(c):
 stores = [(x['name'], x['total']) for x in SHOPS]  # 14 active shops, catalogue order, live totals (catalogue.json)
 
 def nav(active):  # S16 (D-097): text only, no icons; on wide screens the same links sit in the header row (.hnav) and this row hides
-    items = [('index.html','Home'),('fresh.html','Top deals'),('loot.html','Loot'),('new.html','New'),('pantry.html','Pantry')]
+    items = [('index.html','Home'),('fresh.html','Top'),('loot.html','Loot'),('new.html','New'),('pantry.html','Pantry')]
     li = ''.join(f'<li><a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{t}</a></li>' for h, t in items)
     return f'<nav class="typenav" aria-label="Deal types"><div class="container"><ul>{li}</ul></div></nav>'
 
@@ -166,8 +166,6 @@ def signin_block(title):
     return f'''<div class="signin" data-signin>
   <div class="signin-head">{title}<p class="signin-sub" data-signin-sub>New here? Signing in creates your account.</p></div>
   <div class="signin-step" data-step="start">
-    <button class="btn btn-outline signin-google" type="button" data-google>{G_ICON}Continue with Google</button>
-    <div class="signin-or"><span>or</span></div>
     <form class="signin-form" data-email-form novalidate>
       <label class="field-label">Email<input class="input" type="email" name="email" inputmode="email" autocomplete="email" maxlength="255" placeholder="you@example.com"></label>
       <p class="form-error" data-email-error role="alert" hidden></p>
@@ -271,16 +269,16 @@ home = home.replace('{{LOOT}}', carousel(''.join(card(d) for d in PAGES['loot'][
 def store_tile(name, total):  # S16: the store's logo fills the tile; hover turns it navy and shows the count (phones always show the count)
     lg = store_logo(name)
     mark = f'<span class="store-logo"><img src="{lg}" alt=""></span><b class="visually-hidden">{E(name)}</b>' if lg else f'<span class="store-logo store-word">{E(name)}</span><b class="visually-hidden">{E(name)}</b>'
-    return f'<a class="card store has-logo" href="{store_page(name)}" aria-label="{E(name)}, {total:,} deals">{mark}<span class="store-count">{total:,} deals</span></a>'
-home = home.replace('{{STORES}}', ''.join(store_tile(s_, c_) for s_, c_ in stores))
+    return f'<a class="card store has-logo" href="{store_page(name)}" aria-label="{E(name)}">{mark}</a>'   # D-155: no deal counts
+home = home.replace('{{STORES}}', ''.join(store_tile(s_, c_) for s_, c_ in sorted(stores, key=lambda s: -s[1])))   # D-155: phone/tablet row, every store
 home = home.replace('{{COUNT}}', str(len(deals)))
 # M-10 side panel (right side, D-107): top categories and stores by live total (same rows as the strips and the index pages)
 def side_panel():
     top_c = sorted(CATS, key=lambda c: -c['total'])[:10]
-    cl = ''.join(f'<li><a href="{c["page"]}"><i data-lucide="{caticon.get(c["name"], "tag")}"></i><span>{E(CN(c["name"]))}</span><small>{c["total"]:,}</small></a></li>' for c in top_c)
-    sl = ''.join(store_tile(n_, t_) for n_, t_ in sorted(stores, key=lambda s: -s[1])[:8])  # D-107: the Home store tiles (logo, navy hover, count), 2 per row
+    cl = ''.join(f'<li><a href="{c["page"]}"><i data-lucide="{caticon.get(c["name"], "tag")}"></i><span>{E(CN(c["name"]))}</span></a></li>' for c in top_c)
+    sl = ''.join(store_tile(n_, t_) for n_, t_ in sorted(stores, key=lambda s: -s[1]))   # D-155: every store, no "All stores" link  # D-107: the Home store tiles (logo, navy hover, count), 2 per row
     return (f'<nav class="hs-box" aria-labelledby="hs-cats"><h2 id="hs-cats">Shop by category</h2><ul>{cl}</ul><a class="hs-all" href="categories.html">All categories <i data-lucide="chevron-right"></i></a></nav>'
-            f'<nav class="hs-box" aria-labelledby="hs-stores"><h2 id="hs-stores">Shop by store</h2><div class="hs-stores">{sl}</div><a class="hs-all" href="stores.html">All stores <i data-lucide="chevron-right"></i></a></nav>')
+            f'<nav class="hs-box" aria-labelledby="hs-stores"><h2 id="hs-stores">Shop by store</h2><div class="hs-stores">{sl}</div></nav>')
 # DEV-030 / D-108: paid sponsored slots. SAMPLE advertisers (fictional); the owner sells the space and adds ads in Admin → Sponsored.
 # One ad shows per page view; with more than one live, site.js picks one at random (rotation). Links are rel="sponsored nofollow" (ASCI label).
 SPONSORS = [
@@ -356,7 +354,7 @@ def build_listings():
     # category feeds (/products/{cat}-deals): one per active category; SEO title/description = old formulas (W19); About = categories.description
     for c in CATS:
         items = [d for d in sorted(deals, key=lambda d: d['agemin']) if d['cat'] == c['name']]
-        build_listing(c['page'], f"{c['name']} deals", f"All stores · {c['total']:,} listed all time", 'recommended', items, kind='category', crumbs=[('index.html', 'Home'), ('categories.html', 'Categories'), (None, c['name'])],
+        build_listing(c['page'], f"{c['name']} deals", "All stores", 'recommended', items, kind='category', crumbs=[('index.html', 'Home'), ('categories.html', 'Categories'), (None, c['name'])],
                       lock=(c['name'],), hide=('cat',), seo_title=c['title'], seo_desc=c['description'], about=about_block(c['name'], c['footer_html']), nearby_exclude=c['name'])
     print('category pages', len(CATS))
 
@@ -364,7 +362,7 @@ def build_listings():
     combos = 0
     for x in SHOPS:
         items = [d for d in sorted(deals, key=lambda d: d['agemin']) if d['store'] == x['name']]
-        build_listing(x['page'], f"{x['name']} deals", f"All categories · {x['total']:,} listed all time", 'recommended', items, kind='store', crumbs=[('index.html', 'Home'), ('stores.html', 'Stores'), (None, x['name'])],
+        build_listing(x['page'], f"{x['name']} deals", "All categories", 'recommended', items, kind='store', crumbs=[('index.html', 'Home'), ('stores.html', 'Stores'), (None, x['name'])],
                       lock=(x['name'],), hide=('store',), seo_title=x['title'], seo_desc=x['description'], about=about_block(x['name'], x['footer_html']))
         for c in CATS:
             sub = [d for d in items if d['cat'] == c['name']]
@@ -382,9 +380,9 @@ def build_listings():
     tpl_index = open(os.path.join(HERE, 'index-list.template.html')).read()
     def index_rows(rows, avatar=False):
         top = sorted(rows, key=lambda r: -r['total'])[:8]; rest = sorted([r for r in rows if r not in top], key=lambda r: r['name'].lower())
-        return ''.join(f'<li class="{"is-zero" if r["total"] == 0 else ""}"><a href="{r["page"]}">{("<span class=\"avatar\" aria-hidden=\"true\">" + E(r["name"][0]) + "</span>") if avatar else ""}<span class="nm">{E(r["name"])}</span><span class="cnt">{r["total"]:,}</span><i data-lucide="chevron-right"></i></a></li>' for r in top + rest)
-    open(os.path.join(ROOT, 'categories.html'), 'w').write(fill(tpl_index, TITLE='Categories', DESC='Every deal category on OfferTag with the number of deals listed.', RULE=f'{len(CATS)} categories', FIND='<label class="input-wrap index-find"><i data-lucide="search"></i><input class="input" type="search" id="index-find" placeholder="Find a category" aria-label="Find a category"></label>', ROWS=index_rows(CATS), NOTE='Counts are deals listed all time on offertag.in (live totals, 11 Nov 2026); the first eight are the largest, the rest A–Z. Categories with no deals stay listed so links and search results keep working.', HEADER=HEADER, NAV=nav('categories.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
-    open(os.path.join(ROOT, 'stores.html'), 'w').write(fill(tpl_index, TITLE='Stores', DESC='Every store OfferTag tracks with the number of deals listed.', RULE=f'{len(SHOPS)} stores', FIND='', ROWS=index_rows(SHOPS, avatar=True), NOTE='Counts are deals listed all time on offertag.in (live totals, 11 Nov 2026); the first eight are the largest, the rest A–Z. Store logos come from Catalogue → Shops (shop_logo); the prototype shows the initial.', HEADER=HEADER, NAV=nav('stores.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
+        return ''.join(f'<li class="{"is-zero" if r["total"] == 0 else ""}"><a href="{r["page"]}">{("<span class=\"avatar\" aria-hidden=\"true\">" + E(r["name"][0]) + "</span>") if avatar else ""}<span class="nm">{E(r["name"])}</span><i data-lucide="chevron-right"></i></a></li>' for r in top + rest)
+    open(os.path.join(ROOT, 'categories.html'), 'w').write(fill(tpl_index, TITLE='Categories', DESC='Every deal category on OfferTag.', RULE=f'{len(CATS)} categories', FIND='<label class="input-wrap index-find"><i data-lucide="search"></i><input class="input" type="search" id="index-find" placeholder="Find a category" aria-label="Find a category"></label>', ROWS=index_rows(CATS), NOTE='', HEADER=HEADER, NAV=nav('categories.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
+    open(os.path.join(ROOT, 'stores.html'), 'w').write(fill(tpl_index, TITLE='Stores', DESC='Every store OfferTag tracks.', RULE=f'{len(SHOPS)} stores', FIND='', ROWS=index_rows(SHOPS, avatar=True), NOTE='', HEADER=HEADER, NAV=nav('stores.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
     print('categories.html', len(CATS), '· stores.html', len(SHOPS))
 
     # deal index for the search sheet and header suggestions (same fields the cards carry)
@@ -671,7 +669,7 @@ def build_auth():
   <a class="btn btn-ghost btn-icon auth-back" href="index.html" data-back aria-label="Back"><i data-lucide="chevron-left"></i></a>
   {logo}
   {signin_block('<h1 class="auth-title" data-signin-title>Sign in</h1>')}
-  <p class="auth-returning"><i data-lucide="info"></i>Used OfferTag before? Sign in once more with Google or an email code. Your account and comments are safe.</p>
+  <p class="auth-returning"><i data-lucide="info"></i>Used OfferTag before? Sign in once more with a code sent to your email. Your account and comments are safe.</p>
 </div></main>'''
     relogin = f'''<main class="auth-main"><div class="auth-card auth-card-center">
   {logo}
@@ -744,7 +742,7 @@ def build_static():
   <div class="page-head"><h1>Contact</h1></div>
   <section class="card form-sec" aria-label="Ways to reach us">
     <a class="contact-mail" href="mailto:support@offertag.in"><i data-lucide="mail"></i>support@offertag.in</a>
-    <div class="contact-actions"><a class="btn btn-default" href="#chat"><i data-lucide="message-circle"></i>Chat with us</a><a class="btn btn-outline" href="#wa" target="_blank" rel="noopener">WhatsApp</a><a class="btn btn-outline" href="#tg" target="_blank" rel="noopener">Telegram</a></div>
+    <div class="contact-actions"><a class="btn btn-default" href="#wa" target="_blank" rel="noopener">WhatsApp</a><a class="btn btn-outline" href="#tg" target="_blank" rel="noopener">Telegram</a></div>
   </section>
   <form class="card form-sec" id="feedback-form" novalidate aria-labelledby="h-feedback">
     <h2 class="form-title" id="h-feedback">Send feedback</h2>
@@ -774,7 +772,7 @@ def build_static():
             ('Is there an OfferTag app?', 'Yes, on Android. Get it from Google Play using the link at the bottom of any page.'),
         ]),
         ('Your account', [
-            ('Do I need an account?', 'No. You can browse and buy without one. Sign in with Google or your email only if you want to comment on deals.'),
+            ('Do I need an account?', 'No. You can browse and buy without one. Sign in with a code sent to your email only if you want to comment on deals.'),
             ('How do I delete my account?', 'Open <a href="delete-account.html">Delete account</a>. Your account and comments are deleted within 7 days.'),
         ]),
     ]

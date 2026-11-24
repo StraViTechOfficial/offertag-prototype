@@ -193,9 +193,6 @@ def build_site():
           {row('Play Store', '', url('play', 'https://play.google.com/store/apps/details?id=app.offertag', 'https://play.google.com/…'))}
           {row('Support email', 'Shown on Contact, FAQ and the footer.', url('mail', 'support@offertag.in', 'name@offertag.in', 'email'))}
         </section>
-        <section class="panel"><div class="panel-h"><h2>Help</h2></div>
-          {row('Live chat (Tawk.to)', 'The chat bubble on every page.', sw('name="chat"', True, 'Live chat'))}
-        </section>
         <div class="savebar" data-savebar hidden><span>Changes apply to the website at once and to the app the next time it opens.</span><button class="btn btn-ghost btn-sm" type="button" data-discard>Discard</button><button class="btn btn-default btn-sm" type="submit">Save</button></div>
       </form>'''
     shell('admin-site.html', 'Site & app settings', 'site', admin_only('Site & app settings', body), after=C_AFTER)

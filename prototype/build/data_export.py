@@ -37,12 +37,12 @@ def _deal(d, row=None):
         views=int(d.get('views') or 0), uniq=r.get('uniq', 0), clicks=r.get('clicks', 0), display=r.get('display', 1),
         img=_asset(dimg(d)), lg=_asset('assets/deals/lg/' + d['file']), td=_asset(photo), tdFill=fill,
         link=d['link'], posted=d['posted'], postedIso=posted_iso(d['posted']), order=d['order'], caption=rec['caption'], coupon=rec['coupon'], terms=rec['coupon_terms'], offers=rec['offers'], note=rec['note'],
-        exc=exc, highlights=rec['highlights'], specs=rec['specs'], links=rec['links'], desc=desc, source='scraper', seed=True)
+        exc=exc, highlights=rec['highlights'], specs=rec['specs'], links=rec['links'], desc=desc, source='telegram', seed=True)
 
 D_OUT = [_deal(d, _rows.get(d['id'])) for d in sorted(deals, key=lambda d: d['agemin'])]
 D_OUT += [dict(_deal(d), status='live', detailOnly=True) for d in extras]  # the three multi-link sale posts: deal pages only, not in the feed
 # Incoming (Admin → Incoming deals): the SAMPLE rows become real pending deals; Approve publishes them on the site
-_SRC = {'telegram': 'telegram', 'scraper': 'scraper', 'form': 'form'}
+_SRC = {'telegram': 'telegram', 'form': 'form'}   # D-155: no scraper
 for n, (idx, src, rec_, hold, ov) in enumerate(INC):
     base = deals[idx]; x = _deal(base)
     m = base['m'] if 'm' not in ov else (None if ov['m'] is None else base['p'] - 1)
