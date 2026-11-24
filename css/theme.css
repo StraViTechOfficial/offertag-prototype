@@ -1282,6 +1282,9 @@ html.theme .blog-tip small, html.theme[data-theme="dark"] .blog-tip small { colo
 
 /* ---- listing title scrolls away; only the filters stay pinned ---- */
 @media (min-width: 900px) { html.theme .list-head { position: static; } }
+/* D-156: the title row scrolls away (D-151), so the Filters card pins right under the header (and the tablet tab row), not 5 rem lower,
+   and stays pinned for the whole list; it scrolls inside itself if it is taller than the screen */
+@media (min-width: 900px) { html.theme body[data-page="listing"] .listing > .filters { top: calc(var(--stick) + 1rem); max-height: calc(100vh - var(--stick) - 2rem); } }
 
 /* ---- quiet scrollbars: thin neutral grey, no gradient, no visible track ---- */
 html.theme::-webkit-scrollbar, html.theme ::-webkit-scrollbar { width: 10px; height: 10px; }
