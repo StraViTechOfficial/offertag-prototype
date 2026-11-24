@@ -19,7 +19,7 @@
   function today() { var n = new Date(); return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2); }
   function dealCount(p) { if (p.html != null) return (p.html.match(/data-deal="/g) || []).length; return (p.body || []).filter(function (b) { return b.deal; }).length; }
   function pill(s) { return s === 'published' ? '<span class="pill pill-live">Published</span>' : s === 'scheduled' ? '<span class="pill pill-scheduled">Scheduled</span>' : '<span class="pill">Draft</span>'; }
-  function publicHref(p) { return PUBLIC[p.name] && p.status === 'published' ? '/blog/' + p.name : ''; }
+  function publicHref(p) { return p.status === 'published' && p.name ? '/blog/' + p.name : ''; }   // S25 playground: every published post has its page
 
   /* =================== Blog posts list =================== */
   if ($('[data-brows]')) (function () {
@@ -116,7 +116,7 @@
     body.innerHTML = post.html != null ? hydrate(post.html) : fromBlocks(post.body);
     if (!body.innerHTML.trim()) body.innerHTML = '<p><br></p>';
     var cv = $('[data-bcover]'); function showCover() { var i = $('img', cv); i.hidden = !coverImg; if (coverImg) i.src = coverImg; cv.classList.toggle('has', !!coverImg); } showCover();
-    $('input', cv).addEventListener('change', function (e) { var f = e.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { coverImg = r.result; showCover(); touch(); }; r.readAsDataURL(f); });
+    $('input', cv).addEventListener('change', function (e) { var f = e.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { (window.OTDB ? OTDB.shrink : function (x, cb) { cb(x); })(r.result, function (u) { coverImg = u; showCover(); touch(); }, 900); }; r.readAsDataURL(f); });
 
     function slugify(t) { return t.toLowerCase().replace(/₹/g, 'rs ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70).replace(/-+$/, ''); }
     function setState() {
@@ -183,7 +183,7 @@
       var r = document.createRange(); r.setStart(el.nextSibling, 0); r.collapse(true); s.removeAllRanges(); s.addRange(r);
       A.icons(); touch(); dealsSide(); return el;
     }
-    function readImg(file, cb) { var r = new FileReader(); r.onload = function () { cb(r.result); }; r.readAsDataURL(file); }
+    function readImg(file, cb) { var r = new FileReader(); r.onload = function () { if (window.OTDB) OTDB.shrink(r.result, cb, 900); else cb(r.result); }; r.readAsDataURL(file); }
     $('[data-bimg]').addEventListener('change', function (e) { var f = e.target.files[0]; if (!f) return; readImg(f, function (src) { insertBlock(imgFig(src, f.name.replace(/\.[a-z]+$/i, '').replace(/[-_]/g, ' '))); toast('Image added. Write its description in the settings later.', { icon: 'image' }); }); e.target.value = ''; });
     body.addEventListener('paste', function (e) {
       var cd = e.clipboardData || window.clipboardData, files = cd && cd.files ? Array.prototype.slice.call(cd.files).filter(function (f) { return /^image\//.test(f.type); }) : [];
@@ -263,7 +263,7 @@
       post.status = 'scheduled'; post.date = v.slice(0, 10); post.time = v.slice(11, 16); save(); setState();
       toast('Scheduled for ' + fmtDate(post.date, post.time), { icon: 'calendar-clock', action: 'Undo', onAction: function () { Object.assign(post, prev); save(); setState(); } });
     });
-    $('[data-bpreview]').addEventListener('click', function (e) { if (!publicHref(post)) { e.preventDefault(); toast('Preview opens the post as readers see it. In this prototype only the four sample posts have public pages.', { icon: 'info', ms: 5000 }); } });
+    $('[data-bpreview]').addEventListener('click', function (e) { if (!publicHref(post)) { e.preventDefault(); toast('Publish the post first; the preview opens it as readers see it.', { icon: 'info', ms: 5000 }); } });
 
     // phone: settings as a sheet (§3)
     var side = $('[data-bside]');

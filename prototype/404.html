@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en" class="theme">
 <head>
+<script>/* S25: an address the playground created (new deal, category, store, blog post) on a host without rewrites */(function(){var p=location.pathname.replace(/\/$/,""),s=/^\/deal\/[^\/]+$/.test(p)?"deal":/^\/products\/[^\/]+-deals$/.test(p)?"products":/^\/shops\/[^\/]+\/[^\/]+$/.test(p)?"combo":/^\/shops\/[^\/]+$/.test(p)?"shops":/^\/blog\/[^\/]+$/.test(p)?"blog":/^\/admin\/deal\/[^\/]+\/(edit|clone)$/.test(p)?"adm-deal":/^\/admin\/blog\/[^\/]+\/edit$/.test(p)?"adm-blog":"";if(!s)return;document.documentElement.style.visibility="hidden";fetch("/_shell/"+s+"/").then(function(r){return r.text()}).then(function(h){document.open();document.write(h);document.close();}).catch(function(){document.documentElement.style.visibility=""})})();</script>
 <script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
 try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
 var m=window.matchMedia('(prefers-color-scheme: dark)');
@@ -303,8 +304,10 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 
 <script src="https://cdn.jsdelivr.net/npm/embla-carousel@8.3.0/embla-carousel.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-<script src="/js/deals-index.js"></script>
-<script src="/js/theme.js"></script>
-<script src="/js/site.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/admin-db.js"></script>
+<script type="ot/defer" data-src="/js/theme.js"></script>
+<script type="ot/defer" data-src="/js/site.js"></script>
 </body>
 </html>

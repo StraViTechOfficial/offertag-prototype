@@ -179,6 +179,8 @@
     var add = li.querySelector(':scope > .c-acts .rx-add');
     add.classList.toggle('has-mine', !!next); add.querySelector('.rx-add-e').textContent = next || '';
     add.setAttribute('aria-label', next ? 'Your reaction: ' + LABEL[next] + '. Change reaction' : 'React');
+    var rx = {}; REACTIONS.forEach(function (r) { if (state[r[0]] && state[r[0]].n > 0) rx[r[0]] = state[r[0]].who; });
+    document.dispatchEvent(new CustomEvent('ot:react', { detail: { li: li, rx: rx } }));   // S25 playground: detail.js saves it
     if (next && !reduce) { var p = box.querySelector('[data-e="' + next + '"]'); if (p) { p.classList.add('is-pop'); setTimeout(function () { p.classList.remove('is-pop'); }, 400); } }
     hideTip();
   }

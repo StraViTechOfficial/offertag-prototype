@@ -15,6 +15,7 @@
     $('[data-bc-meta]').textContent = 'Last changed by ' + bc.by + ' · ' + bc.at;
     $('[data-bc-alert]').hidden = !bc.on || busy;
     $('[data-bc]').classList.toggle('is-on', bc.on && !busy);
+    if (window.OTDB && !busy) OTDB.set('security', S);   // S25 playground
   }
   function set(on) {
     busy = true; paint();
@@ -40,6 +41,7 @@
     }).join('');
     $('[data-fl-empty]').hidden = rows.length > 0;
     $('[data-fl-count]').textContent = rows.filter(function (r) { return r.status === 'flag'; }).length + ' flagged';
+    if (window.OTDB) OTDB.set('security', S);
     A.icons();
   }
   $('[data-fl-rows]').addEventListener('click', function (e) {

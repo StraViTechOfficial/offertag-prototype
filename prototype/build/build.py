@@ -936,3 +936,4 @@ def build_static():
 build_static()
 exec(open(os.path.join(HERE, 'admin.py')).read())  # admin pages (S16 batch A, D-098) — builder session owns build/admin.py
 exec(open(os.path.join(HERE, 'routes.py')).read())  # S18 (D-105): every page to the folder of its real address; must run last
+exec(open(os.path.join(HERE, 'data_export.py')).read())  # S25 (plan.md Part B): seed data for the localStorage playground, data/*.json

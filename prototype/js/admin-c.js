@@ -58,6 +58,7 @@
           : '<button class="btn btn-default btn-sm" type="button" data-connect>Connect</button>';
         var sel = $('select', li); if (sel) sel.disabled = pending || !s.on;
       });
+      if (window.OTDB) OTDB.set('social', { channels: S.channels.map(function (c) { return Object.assign({}, c, { state: st[c.k].on ? 'on' : 'off', note: st[c.k].note }); }), hist: S.hist });   // S25 playground
       var n = $('[data-approval-note]'); if (n) n.classList.toggle('is-warn', pending);
     }
     $('[data-chs]').addEventListener('click', function (e) {
@@ -116,6 +117,7 @@
           + '<td data-l="Result">' + (ok ? '<span class="res ok"><i data-lucide="check"></i>Posted</span>' : '<span class="res bad"><i data-lucide="x"></i>' + esc(h.res) + '</span> <button class="btn btn-outline btn-sm" type="button" data-retry>Retry</button>') + '</td><td data-l="By">' + esc(h.by) + '</td></tr>';
       }).join('');
       $('[data-hist-empty]').hidden = rows.length > 0; A.icons();
+      if (window.OTDB) OTDB.set('social', { channels: S.channels.map(function (c) { return Object.assign({}, c, { state: st[c.k].on ? 'on' : 'off', note: st[c.k].note }); }), hist: H });
     }
     fch.addEventListener('change', renderH); fres.addEventListener('change', renderH);
     $('[data-hist]').addEventListener('click', function (e) {
@@ -163,6 +165,7 @@
       list.innerHTML = rows.map(item).join(''); var em = $('[data-ibx-empty]');
       em.hidden = rows.length > 0; em.textContent = only.checked && D[tab].length ? 'All caught up. Untick “Unhandled only” to see handled ones.' : 'Nothing here yet.';
       $('[data-ibx-note="deletion"]').hidden = tab !== 'deletion'; counts(); A.icons();
+      if (window.ADM_PG) ADM_PG.saveInbox(D);   // S25 playground
     }
     function byId(id) { return D[tab].filter(function (x) { return x.id === +id; })[0]; }
     function setDone(x, done, result, msg) {
@@ -199,6 +202,7 @@
     sf.addEventListener('submit', function (e) {
       e.preventDefault(); var bad = $$('input[type="url"], input[type="email"]', sf).filter(function (i) { return !check(i); });
       if (bad.length) { bad[0].focus(); bad[0].scrollIntoView({ block: 'center' }); return; }
+      if (window.ADM_PG) ADM_PG.saveSite(sf);   // S25 playground
       d.saved(); toast('Settings saved. The website shows them now; the app picks them up the next time it opens.');
     });
   })();
@@ -215,6 +219,7 @@
           + '<td data-l="Role"><span class="role r-' + u.role.toLowerCase().replace(/[^a-z]/g, '') + '">' + u.role + '</span></td><td class="d-when" data-l="Joined">' + u.joined + '</td><td data-l="Amazon tag"' + (staff(u) ? '' : ' class="na"') + '>' + tag + '</td></tr>';
       }).join('');
       $('[data-uempty]').hidden = rows.length > 0; $('[data-ucount]').textContent = rows.length + ' of ' + U.length; A.icons();
+      if (window.OTDB) OTDB.set('users', U);   // S25 playground
     }
     q.addEventListener('input', render); role.addEventListener('change', render);
     $('[data-uclear]').addEventListener('click', function () { q.value = ''; role.value = ''; render(); q.focus(); });
@@ -274,6 +279,7 @@
       $('[data-cat-active]').hidden = tab === 'types'; var add = $('[data-cat-add]'); add.hidden = tab === 'types'; $('[data-cat-add-l]').textContent = 'Add ' + ONE[tab];
       var tc = $('[data-tcount="' + tab + '"]'); if (tc) tc.textContent = C[tab].length;
       A.icons();
+      if (window.ADM_PG) ADM_PG.saveCatalogue(C);   // S25 playground: names, order, on/off and new ones reach the site
     }
     function byId(id) { return C[tab].filter(function (x) { return x.id === +id; })[0]; }
     tabbed('data-ctab', 'shops', function (k) { tab = k; q.value = ''; render(); });

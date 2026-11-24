@@ -3,7 +3,8 @@
   var OT = window.OT, q = new URLSearchParams(location.search), body = document.body;
 
   // ---- review states (prototype only): ?state=withdrawn · ?user=1 | admin · ?coupon=1
-  if (q.get('state') === 'withdrawn') {
+  var DB = window.OTDB, DEAL = body.dataset.dealId || null;
+  if (q.get('state') === 'withdrawn' || body.dataset.state === 'withdrawn') {
     body.classList.add('is-withdrawn'); var b = document.getElementById('withdrawn-banner'); if (b) b.hidden = false;
     document.querySelectorAll('.buy').forEach(function (a) { a.querySelector('.buy-label').textContent = 'See similar deals'; a.href = '#related'; a.removeAttribute('target'); a.removeAttribute('rel'); var ic = a.querySelector('.lucide, i'); if (ic) ic.remove(); });
   }
@@ -66,7 +67,7 @@
   function wire(root) {
     OT.emoji.wireReactions(root);   // D-147: six reactions replace the heart like
     root.querySelectorAll('.reply-btn').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { openReply(b.closest('.comment')); }); });
-    root.querySelectorAll('.c-del').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { var li = b.closest('.comment'); var isTop = li.parentNode === list; li.remove(); if (isTop) { total--; setCount(); } OT.toast('Comment deleted', 'trash-2'); }); });
+    root.querySelectorAll('.c-del').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { var li = b.closest('.comment'); var isTop = li.parentNode === list; if (DB && li.dataset.cid) DB.deleteComment(li.dataset.cid); li.remove(); if (isTop) { total--; setCount(); } OT.toast('Comment deleted', 'trash-2'); }); });
     root.querySelectorAll('.more-replies').forEach(function (b) { if (b.dataset.wired) return; b.dataset.wired = 1; b.addEventListener('click', function () { b.closest('.comment').querySelectorAll('.replies > [hidden]').forEach(function (r) { r.hidden = false; }); b.remove(); }); });
     OT.icons();
   }
@@ -77,9 +78,10 @@
     var f = document.createElement('form'); f.className = 'reply-form'; f.innerHTML = '<div class="ta-wrap"><textarea class="textarea" rows="1" placeholder="Write a reply…" aria-label="Write a reply"></textarea><button type="button" class="btn btn-ghost btn-sm btn-icon ta-emoji" aria-label="Emoji"><i data-lucide="smile"></i></button></div><div class="acts"><button class="btn btn-default btn-sm" type="submit">Post</button><button class="btn btn-ghost btn-sm" type="button" data-cancel>Cancel</button></div>';
     li.querySelector('.replies').before(f); openForm = f; OT.icons(); OT.emoji.attach(f.querySelector('textarea'), null, f.querySelector('.ta-emoji')); f.querySelector('textarea').focus();
     f.querySelector('[data-cancel]').addEventListener('click', function () { f.remove(); openForm = null; });
-    f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; if (OT.emoji.tooLong(f.querySelector('textarea'))) { OT.toast('Keep it to 300 characters', 'circle-alert'); return; } var r = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin'), true); li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
+    f.addEventListener('submit', function (e) { e.preventDefault(); var t = f.querySelector('textarea').value.trim(); if (!t) return; if (OT.emoji.tooLong(f.querySelector('textarea'))) { OT.toast('Keep it to 300 characters', 'circle-alert'); return; } var r = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin'), true); if (DB && DEAL) r.dataset.cid = DB.addComment({ deal: DEAL, parent: li.dataset.cid || null, name: body.classList.contains('is-admin') ? 'OfferTag' : 'You', admin: body.classList.contains('is-admin'), text: trimLinks(t) }).id; li.querySelector('.replies').appendChild(r); wire(r); f.remove(); openForm = null; });
   }
   if (list) { wire(list); setCount(); }
+  document.addEventListener('ot:react', function (e) { var li = e.detail.li; if (DB && li && li.dataset.cid) DB.setReactions(li.dataset.cid, e.detail.rx); });
   if (more) more.querySelector('button').addEventListener('click', function () { var hid = list.querySelectorAll(':scope > .comment[hidden]'); Array.prototype.slice.call(hid, 0, 10).forEach(function (c) { c.hidden = false; }); if (list.querySelectorAll(':scope > .comment[hidden]').length === 0) more.hidden = true; });
 
   // composer (signed in): bold wrap, counter, post
@@ -94,16 +96,18 @@
       e.preventDefault(); var t = ta.value.trim(); if (!t) { ta.focus(); return; }
       if (OT.emoji.tooLong(ta)) { OT.toast('Keep it to 300 characters', 'circle-alert'); ta.focus(); return; }
       if (q.get('fail') === '1') { err.hidden = false; return; } err.hidden = true;
-      var li = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin')); list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/300'; OT.toast('Comment posted', 'check');
+      var li = makeComment(t, body.classList.contains('is-admin') ? 'OfferTag' : 'You', body.classList.contains('is-admin')); if (DB && DEAL) li.dataset.cid = DB.addComment({ deal: DEAL, parent: null, name: body.classList.contains('is-admin') ? 'OfferTag' : 'You', admin: body.classList.contains('is-admin'), text: trimLinks(t) }).id; list.prepend(li); wire(li); total++; setCount(); ta.value = ''; chars.textContent = '0/300'; OT.toast('Comment posted', 'check');
     });
   }
 
   // ---- report a problem (DEV-013): bottom sheet on phone, dialog on desktop; feeds the feedback table as type 2 (Issue)
   var rs = document.getElementById('report-sheet'), rf = document.getElementById('report-form'), rd = document.getElementById('report-done'), ro = document.getElementById('report-open');
-  if (rs) {
+  if (rs && ro && rf) {
     ro.addEventListener('click', function () { OT.openSheet(rs); });
     if (q.get('report') === '1') setTimeout(function () { OT.openSheet(rs); }, 50);
-    rf.addEventListener('submit', function (e) { e.preventDefault(); rf.hidden = true; rs.querySelector('.sheet-footer').hidden = true; rd.hidden = false; OT.icons(); });
+    rf.addEventListener('submit', function (e) { e.preventDefault();
+      if (DB && DEAL) { var dd = DB.deal(DEAL), rr = rf.querySelector('input[name="reason"]:checked'); DB.addInbox('reports', { reason: rr ? rr.closest('.opt').querySelector('.txt').textContent : 'Something else', deal: dd ? dd.t : document.title, did: DEAL, page: dd ? dd.page : location.pathname, who: rf.elements.email.value.trim() || (OT.user() ? OT.user().email : 'Signed out'), note: rf.elements.note.value.trim() }); }   // S25 playground: Admin → Inbox → Reports
+      rf.hidden = true; rs.querySelector('.sheet-footer').hidden = true; rd.hidden = false; OT.icons(); });
     rs.addEventListener('sheet:close', function () { rf.reset(); rf.hidden = false; rs.querySelector('.sheet-footer').hidden = false; rd.hidden = true; });
   }
 })();

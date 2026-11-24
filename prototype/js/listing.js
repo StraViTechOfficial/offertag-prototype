@@ -60,7 +60,7 @@
   // D-104, D-114: on Top deals only, pinned deals fill every Nth card (N set by the admin on the Pinned board, default 3) down the whole feed,
   // in pinned-slot order; slots with no pinned deal left take the next normal deal. Applies to the default view; a sort or filter shows plain order.
   var PIN_EVERY = +(document.body.dataset.pinEvery || 0), PIN_IDS = (document.body.dataset.pins || '').split(',').filter(Boolean);
-  if (PIN_EVERY) { try { var ae = +localStorage.getItem('adm-pin-every'); if (ae >= 2) PIN_EVERY = ae; var ap = JSON.parse(localStorage.getItem('adm-pins') || 'null'); if (ap && ap.length) PIN_IDS = ap.map(String); } catch (e) {} }
+  if (PIN_EVERY && !window.OTDB) { try { var ae = +localStorage.getItem('adm-pin-every'); if (ae >= 2) PIN_EVERY = ae; var ap = JSON.parse(localStorage.getItem('adm-pins') || 'null'); if (ap && ap.length) PIN_IDS = ap.map(String); } catch (e) {} }
   function placePins(vis, s) {
     var plain = s.cat.length + s.store.length + s.type.length + s.disc + (s.price ? 1 : 0) + (s.posted ? 1 : 0) + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0) === 0;
     cards.forEach(function (c) { delete c.dataset.slot; });

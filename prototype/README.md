@@ -1,5 +1,7 @@
 # OfferTag prototype — real HTML, CSS and JS (P5, D-072 / D-073 / D-074)
 
+**S25 playground (D-152):** the prototype now works as a small app for UAT. Sample data lives in `data/*.json`; what a person changes is kept in their browser and drawn by `js/db.js`, `js/render.js` and `js/admin-db.js`. See the "UAT playground" section of `../README.md`. Run it with `python3 build/serve.py` (opening the files directly no longer works: the pages load their data).
+
 Open `index.html` in a browser. No build step, no server. From Windows: `\\wsl.localhost\Ubuntu-24.04\home\abdmuiz\stravitech\contributors\offer-tag\offertag-design\design-system\prototype\index.html`.
 
 | File | What |

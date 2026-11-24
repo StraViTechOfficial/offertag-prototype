@@ -61,10 +61,19 @@ def url_for(fname, query='', frag=''):
 
 _LINK = _re.compile(r'''(?<![\w/.-])([a-z0-9][a-z0-9_-]*\.html)(\?[^"'\s#<>)]*)?(#[^"'\s<>)]*)?''')
 _ASSET = _re.compile(r'''(?<=["'(=])(css|js|assets)/''')
+_SCRIPT = _re.compile(r'<script src="(/js/[a-z0-9-]+\.js)"></script>')
+PLAYGROUND = '<script src="/js/db.js"></script>\n<script src="/js/render.js"></script>\n<script src="/js/admin-db.js"></script>\n'
+def playground(html):
+    # S25 (plan.md Part B): the page's own scripts wait for the playground data (js/db.js starts them in order once it has drawn the page)
+    if '/js/db.js' in html or not _SCRIPT.search(html): return html
+    html = html.replace('<script src="/js/deals-index.js"></script>\n', '').replace('<script src="/js/deals-index.js"></script>', '')  # db.js sets OT_DEALS / OT_CAT from the data
+    html = _SCRIPT.sub(lambda m: f'<script type="ot/defer" data-src="{m.group(1)}"></script>', html)
+    i = html.index('<script type="ot/defer"')
+    return html[:i] + PLAYGROUND + html[i:]
 def rewrite(html):
     html = _LINK.sub(lambda m: url_for(m.group(1), m.group(2) or '', m.group(3) or '') if m.group(1) in ROUTE else m.group(0), html)
     html = _ASSET.sub(r'/\1/', html)
-    return add_theme(html.replace('action="search.html"', 'action="/deals/search"'))   # D-150: theme set before the page draws
+    return playground(add_theme(html.replace('action="search.html"', 'action="/deals/search"')))   # D-150: theme set before the page draws
 
 def out_path(route):
     if route == '/': return os.path.join(ROOT, 'index.html')
@@ -77,7 +86,7 @@ except Exception: _prev = []
 for p in _prev:
     f = out_path(p)
     if p not in ('/',) and not p.endswith('.html') and os.path.exists(f): os.remove(f)
-for top in ('admin', 'deal', 'products', 'shops', 'blog', 'user', 'deals', '_design'):   # generated trees only; never css/js/assets/build
+for top in ('admin', 'deal', 'products', 'shops', 'blog', 'user', 'deals', '_design', '_shell'):   # generated trees only; never css/js/assets/build
     t = os.path.join(ROOT, top)
     if os.path.isdir(t): _shutil.rmtree(t)
 
@@ -112,3 +121,29 @@ print(f'Routes: {len(set(written))} addresses from {len(flat)} pages' + (f'; NOT
 # ---- D-114: old address of Fresh. Live site: 301 /fresh-deals → /top-deals (dev); the prototype stands in with a redirect page ----
 os.makedirs(os.path.join(ROOT, 'fresh-deals'), exist_ok=True)
 open(os.path.join(ROOT, 'fresh-deals', 'index.html'), 'w').write('<!doctype html><meta charset="utf-8"><title>Moved to Top deals</title><link rel="canonical" href="/top-deals"><meta http-equiv="refresh" content="0; url=/top-deals"><script>location.replace("/top-deals" + location.search + location.hash)</script><p>Fresh deals is now <a href="/top-deals">Top deals</a>.</p>\n')
+
+# ---- S25 (plan.md Part B): shells for pages the playground creates (a new deal, category, store or blog post).
+# The local server (build/serve.py), Netlify / Cloudflare Pages (_redirects) and, on any other host, 404.html serve these
+# for an address that has no built page; js/render.js draws the page from the playground data. ----
+SHELLS = {'deal': ROUTE[deals[0]['page']], 'products': ROUTE[cat_page('Others')], 'shops': ROUTE[SHOPS[0]['page']], 'blog': '/blog/' + LATEST_POST['name'],
+          'adm-deal': '/admin/deal/create', 'adm-blog': '/admin/blog/create'}
+_combo = next((f"/shops/{x['slug']}/{c['slug']}" for x in SHOPS for c in CATS if any(d['store'] == x['name'] and d['cat'] == c['name'] for d in deals)), None)
+if _combo: SHELLS['combo'] = _combo
+for k, r in SHELLS.items():
+    src = open(out_path(r)).read().replace('<body ', '<body data-shell="1" ', 1)
+    os.makedirs(os.path.join(ROOT, '_shell', k), exist_ok=True); open(os.path.join(ROOT, '_shell', k, 'index.html'), 'w').write(src)
+open(os.path.join(ROOT, '_redirects'), 'w').write(
+    '# Netlify / Cloudflare Pages: addresses with no built page fall back to a playground shell (served only when no file matches)\n'
+    '/deal/*            /_shell/deal/index.html      200\n'
+    '/products/*        /_shell/products/index.html  200\n'
+    '/shops/:shop/:cat  /_shell/combo/index.html     200\n'
+    '/shops/*           /_shell/shops/index.html     200\n'
+    '/blog/*            /_shell/blog/index.html      200\n'
+    '/admin/deal/*      /_shell/adm-deal/index.html  200\n'
+    '/admin/blog/*      /_shell/adm-blog/index.html  200\n')
+_FALLBACK = ('<script>/* S25: an address the playground created (new deal, category, store, blog post) on a host without rewrites */'
+             '(function(){var p=location.pathname.replace(/\\/$/,""),s=/^\\/deal\\/[^\\/]+$/.test(p)?"deal":/^\\/products\\/[^\\/]+-deals$/.test(p)?"products":/^\\/shops\\/[^\\/]+\\/[^\\/]+$/.test(p)?"combo":/^\\/shops\\/[^\\/]+$/.test(p)?"shops":/^\\/blog\\/[^\\/]+$/.test(p)?"blog":/^\\/admin\\/deal\\/[^\\/]+\\/(edit|clone)$/.test(p)?"adm-deal":/^\\/admin\\/blog\\/[^\\/]+\\/edit$/.test(p)?"adm-blog":"";'
+             'if(!s)return;document.documentElement.style.visibility="hidden";fetch("/_shell/"+s+"/").then(function(r){return r.text()}).then(function(h){document.open();document.write(h);document.close();}).catch(function(){document.documentElement.style.visibility=""})})();</script>')
+_nf = os.path.join(ROOT, '404.html'); _h = open(_nf).read()
+if 'S25: an address' not in _h: open(_nf, 'w').write(_h.replace('<head>', '<head>\n' + _FALLBACK, 1))
+print('Playground shells:', ', '.join(SHELLS))

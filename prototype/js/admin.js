@@ -137,14 +137,16 @@
     }
     function approve(rows) {
       var ok = rows.filter(function (r) { return !r.dataset.missing; }), held = rows.length - ok.length;
-      if (!ok.length) { toast('Add a category before this deal can go live.', { icon: 'triangle-alert', action: 'Edit', href: '/admin/soon?s=Post+a+deal' + (SUB ? '&role=sub' : '') }); return; }
+      if (!ok.length) { toast('Add a category before this deal can go live.', { icon: 'triangle-alert', action: 'Edit', href: withRole(ROUTES.edit(rows[0].dataset.id)) }); return; }
       var push = ok.filter(function (r) { return +r.dataset.pct >= 90; }).length;
-      var undo = moveRows(ok, appr, 'Live now');
+      var IG = window.ADM_PG && ADM_PG.incoming, snap = IG && IG.snap(); if (IG) IG.approve(ok.map(function (r) { return r.dataset.id; }));
+      var undo0 = moveRows(ok, appr, 'Live now'), undo = function () { if (IG) IG.back(null, snap); undo0(); };
       var msg = (ok.length === 1 ? 'Deal approved, live now' : ok.length + ' deals approved, live now') + (push ? ' · push alert sent' : '') + (held ? ' · ' + held + ' needs a category' : '');
       toast(msg, { action: 'Undo', onAction: undo });
     }
     function reject(rows, reason) {
-      var undo = moveRows(rows, rej, reason ? 'Rejected: ' + reason : 'Rejected');
+      var IG = window.ADM_PG && ADM_PG.incoming, snap = IG && IG.snap(); if (IG) IG.reject(rows.map(function (r) { return r.dataset.id; }), reason);
+      var undo0 = moveRows(rows, rej, reason ? 'Rejected: ' + reason : 'Rejected'), undo = function () { if (IG) IG.back(null, snap); undo0(); };
       toast(rows.length === 1 ? 'Deal rejected' : rows.length + ' deals rejected', { action: 'Undo', onAction: undo });
     }
     document.addEventListener('click', function (e) {
@@ -236,6 +238,7 @@
     }
     var flashIds = [];
     function render() {
+      if (window.ADM_PG) ADM_PG.syncRows(model);   // S25 playground: what changed in the table is saved
       var list = model.filter(match).sort(cmp), total = list.length, pages = Math.max(1, Math.ceil(total / S.per));
       if (S.page > pages) S.page = pages;
       var start = (S.page - 1) * S.per, view = list.slice(start, start + S.per);
@@ -267,7 +270,7 @@
     function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
 
     var ACT = {
-      bump: function (ds) { var u = snapshot(); ds.forEach(function (d) { d.age = 0; d.when = 'now'; d.status = d.status === 'scheduled' ? 'live' : d.status; flashIds.push(d.id); }); S.sort = 'age'; S.dir = 1; S.page = 1; done(ds.length === 1 ? 'Bumped to the top of the feed' : plural(ds.length, 'deal') + ' bumped to the top', u); },
+      bump: function (ds) { var u = snapshot(); ds.forEach(function (d) { d.age = 0; d.when = 'now'; d.status = d.status === 'scheduled' ? 'live' : d.status; d._bump = true; flashIds.push(d.id); }); S.sort = 'age'; S.dir = 1; S.page = 1; done(ds.length === 1 ? 'Bumped to the top of the feed' : plural(ds.length, 'deal') + ' bumped to the top', u); },
       wa: function (ds) { copy(ds.map(waText).join('\n\n— — —\n\n')).then(function () { toast(ds.length === 1 ? 'Copied for WhatsApp' : plural(ds.length, 'deal') + ' copied for WhatsApp'); }); },
       link: function (ds) { copy(ds[0].link).then(function () { toast('Buy link copied'); }); },
       pin: function (ds) {
@@ -432,7 +435,7 @@
 
     // image
     function setImg(u) { state.img = u; var i = $('[data-img]'); i.src = u || ''; i.hidden = !u; $('[data-img-well]').classList.toggle('has', !!u); $('[data-img-err]').hidden = true; preview(); }
-    $('[data-img-file]').addEventListener('change', function (e) { readImg(e.target.files[0], setImg); });
+    $('[data-img-file]').addEventListener('change', function (e) { readImg(e.target.files[0], function (u) { if (window.OTDB) OTDB.shrink(u, setImg); else setImg(u); }); });
     $('[data-img-fetch]').addEventListener('click', function () {
       var m = matchLink(el('link').value);
       if (!m) { toast(el('link').value ? 'Couldn’t fetch an image from this link. Upload one instead.' : 'Paste the deal link first.', { icon: 'info' }); return; }
@@ -525,11 +528,16 @@
       el('title').value = d.t; el('store').value = d.store; el('cat').value = d.cat; el('p').value = d.p; el('m').value = d.m;
       el('caption').value = d.caption || ''; el('coupon').value = d.coupon || ''; el('terms').value = d.terms || '';
       if (d.offers && d.offers.length) openBlk('offers', d.offers);
+      if (d.highlights && d.highlights.length) openBlk('highlights', d.highlights);
+      if (d.links && d.links.length) openBlk('links', d.links.map(function (l) { return [l.label, l.url]; }));
+      if (d.note) openBlk('note', [d.note]);
+      if (d.specs && d.specs.length) openBlk('specs', d.specs.map(function (x) { return [x.label, x.value]; }));
+      if (d.desc) $('[data-desc]').innerHTML = d.desc;
       (d.exc || []).forEach(function (x) { addRow($('[data-exc]'), 'lines', x); });
       el('display').value = String(d.display || 1);
       if (d.pin) { el('pin').checked = true; el('slot').value = d.pin; }
       calc(); state.typesTouched = true; setTypes(d.types);
-      if (d.status === 'scheduled') { F.querySelector('input[name=when][value=later]').checked = true; el('at').disabled = false; }
+      if (d.status === 'scheduled') { F.querySelector('input[name=when][value=later]').checked = true; el('at').disabled = false; if (d.schedAt) { var sa = new Date(d.schedAt); el('at').value = new Date(sa - sa.getTimezoneOffset() * 6e4).toISOString().slice(0, 16); } }
       delete F.dataset.loading;
     }
     el('slot').disabled = true;
@@ -566,30 +574,63 @@
     F.addEventListener('submit', function (e) {
       e.preventDefault(); var bad = validate();
       if (bad.length) { bad[0].focus(); toast(bad.length === 1 ? 'One field needs a look.' : bad.length + ' fields need a look.', { icon: 'triangle-alert' }); return; }
-      if (EDIT) { $('[data-form-sub]').textContent = 'Last edited by Adil, just now · Live'; toast('Changes saved', { action: 'View', href: src.page }); return; }
+      var saved = window.ADM_PG ? ADM_PG.saveDeal(record()) : null;   // S25 playground: the deal is saved and shows on the site
+      if (EDIT) { $('[data-form-sub]').textContent = 'Last edited by Adil, just now · ' + (saved && saved.status !== 'live' ? saved.status[0].toUpperCase() + saved.status.slice(1) : 'Live'); toast('Changes saved', { action: 'View', href: saved ? saved.page : src.page }); return; }
       store.set(DK, '');
       var later = el('when').value === 'later', m = state.matched || DEALS[0];
       $('[data-done-title]').textContent = later ? 'Deal scheduled' : 'Deal is live';
       $('[data-done-sub]').textContent = later ? 'It goes live on ' + new Date(el('at').value).toLocaleString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + '.' : 'It’s at the top of Fresh and in its type lists' + (el('notify').checked ? ', and the push alert is on its way.' : '.');
       $('[data-done-page]').value = 'offertag.in/deal/' + el('title').value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
-      $('[data-done-open]').href = state.matched ? state.matched.page : '/top-deals';
+      $('[data-done-open]').href = saved ? saved.page : state.matched ? state.matched.page : '/top-deals';
+      if (saved) { $('[data-done-page]').value = 'offertag.in' + saved.page; m = saved; }
       $('[data-done-short]').value = shortUrl; $('[data-done-share]').href = withRole(ROUTES.edit(m.id)) + '#share'; $('[data-another]').href = withRole(ROUTES.post);
       $('[data-post]').hidden = true; $('[data-sticky]').hidden = true; $('.page-h').hidden = true; var d = $('[data-done]'); d.hidden = false; d.focus(); window.scrollTo(0, 0);
     });
     $('[data-submit-proxy]').addEventListener('click', function () { F.requestSubmit ? F.requestSubmit() : F.dispatchEvent(new Event('submit')); });
+    // S25 playground: the form as a deal record
+    function rows(k) { var b = $('[data-blk="' + k + '"]'); if (!b || b.hidden) return []; return $$('.brow', b).map(function (r) { return $$('input', r).map(function (i) { return i.value.trim(); }); }).filter(function (v) { return v.some(Boolean); }); }
+    function record() {
+      var p = num(el('p').value) || 0, m = num(el('m').value) || 0, later = el('when').value === 'later', at = later && el('at').value ? new Date(el('at').value).getTime() : null;
+      var o = { t: el('title').value.trim(), link: el('link').value.trim(), store: el('store').value, cat: el('cat').value || 'Others', p: p, m: m || p, pct: m > p ? Math.round((m - p) / m * 100) : (+el('pct').value || 0),
+        types: getTypes().filter(function (t) { return t !== 'Fresh'; }), caption: el('caption').value.trim(), coupon: el('coupon').value.trim().toUpperCase(), terms: el('terms').value.trim(),
+        offers: rows('offers').map(function (r) { return r[0]; }), highlights: rows('highlights').map(function (r) { return r[0]; }), note: (rows('note')[0] || [''])[0],
+        links: rows('links').map(function (r) { return { label: r[0] || (window.OTDB ? OTDB.H.domain(r[1]) : r[1]), url: r[1] }; }).filter(function (l) { return l.url; }),
+        specs: rows('specs').map(function (r) { return { label: r[0], value: r[1] }; }).filter(function (x) { return x.value; }),
+        exc: $$('.brow input', $('[data-exc]')).map(function (i) { return i.value.trim(); }).filter(Boolean),
+        desc: sanitize($('[data-desc]').innerHTML), display: +el('display').value || 1, pin: el('pin').checked ? +el('slot').value || 1 : null };
+      if (!o.types.length) o.types = ['New'];
+      if (state.img) o.img = window.ADM_PG ? ADM_PG.pack(state.img) : state.img;
+      if (EDIT) { o.id = src.id; if (src.status === 'scheduled' || later) { o.status = later ? 'scheduled' : 'live'; if (later) o.schedAt = at; else o.postedAt = Date.now(); } }
+      else { o.status = later ? 'scheduled' : 'live'; o.postedAt = Date.now(); if (later) o.schedAt = at; o.source = 'form'; o.views = 0; o.uniq = 0; o.clicks = 0; if (o.pin) o.pinnedAt = Date.now(); }
+      return o;
+    }
+    function sanitize(h) {  // the editor allows bold, italic, lists and links only (contract §2)
+      var t = document.createElement('div'); t.innerHTML = h;
+      $$('*', t).forEach(function (n) {
+        var tag = n.tagName.toLowerCase(), keep = { p: 1, br: 1, ul: 1, ol: 1, li: 1, strong: 1, em: 1, b: 1, i: 1, a: 1 };
+        if (!keep[tag]) { if (tag === 'div') { var p = document.createElement('p'); p.innerHTML = n.innerHTML; n.replaceWith(p); } else n.replaceWith.apply(n, Array.prototype.slice.call(n.childNodes)); return; }
+        Array.prototype.slice.call(n.attributes).forEach(function (a) { if (!(tag === 'a' && a.name === 'href')) n.removeAttribute(a.name); });
+        if (tag === 'a') { n.target = '_blank'; n.rel = 'nofollow sponsored noopener'; }
+      });
+      var out = t.innerHTML.replace(/<b>/g, '<strong>').replace(/<\/b>/g, '</strong>').replace(/<i>/g, '<em>').replace(/<\/i>/g, '</em>').trim();
+      return t.textContent.trim() ? (/^<(p|ul|ol)/.test(out) ? out : '<p>' + out + '</p>') : '';
+    }
     $('[data-copy-short]').addEventListener('click', function () { copy('https://' + shortUrl).then(function () { toast('Short link copied'); }); });
     $('[data-copy-wa]').addEventListener('click', function () { copy(shareText('fb')).then(function () { toast('Copied for WhatsApp'); }); });
-    $('[data-bump]').addEventListener('click', function () { toast('Bumped to the top of the feed', { action: 'Undo', onAction: function () {} }); });
-    $('[data-del]').addEventListener('click', function () { confirmBox('Delete this deal?', 'It leaves the site and its image files are removed. You can undo for 10 seconds on All deals.', 'Delete deal', function () { toast('Deal deleted'); setTimeout(function () { location.href = withRole('/admin/deal'); }, 900); }, true); });
+    $('[data-bump]').addEventListener('click', function () {
+      var before = src && window.OTDB ? OTDB.raw(src.id) : null; if (src && window.ADM_PG) ADM_PG.saveDeal({ id: src.id, postedAt: Date.now(), status: 'live' });
+      toast('Bumped to the top of the feed', { action: 'Undo', onAction: function () { if (before && window.OTDB) OTDB.saveDeal({ id: src.id, postedAt: before.postedAt == null ? undefined : before.postedAt, status: before.status }); } });
+    });
+    $('[data-del]').addEventListener('click', function () { confirmBox('Delete this deal?', 'It leaves the site and its image files are removed. You can undo for 10 seconds on All deals.', 'Delete deal', function () { if (src && window.ADM_PG) ADM_PG.deleteDeal(src.id); toast('Deal deleted'); setTimeout(function () { location.href = withRole('/admin/deal'); }, 900); }, true); });
   })();
 
   /* =================== Pinned board =================== */
   if ($('[data-slots]')) (function () {
     // D-104: open-ended slot list. Slot k shows on Top deals at card k × N (N = "every" setting). Last tile is always an empty "+ Pin a deal".
     var P = window.ADM_PINS, order = P.pins.slice(), every = P.every, lifted = null, dragFrom = null;
-    try { var se = +localStorage.getItem('adm-pin-every'); if (se >= 2) every = se; var sp = JSON.parse(localStorage.getItem('adm-pins-full') || 'null'); if (sp && sp.length) order = sp; } catch (e) {}
+    if (!window.ADM_PG) try { var se = +localStorage.getItem('adm-pin-every'); if (se >= 2) every = se; var sp = JSON.parse(localStorage.getItem('adm-pins-full') || 'null'); if (sp && sp.length) order = sp; } catch (e) {}
     var gapSel = $('[data-pin-every]'); gapSel.value = String(every);
-    function persist() { try { localStorage.setItem('adm-pin-every', String(every)); localStorage.setItem('adm-pins', JSON.stringify(order.map(function (x) { return x.id; }))); localStorage.setItem('adm-pins-full', JSON.stringify(order)); } catch (e) {} }
+    function persist() { if (window.ADM_PG) { ADM_PG.savePins(order, every); return; } try { localStorage.setItem('adm-pin-every', String(every)); localStorage.setItem('adm-pins', JSON.stringify(order.map(function (x) { return x.id; }))); localStorage.setItem('adm-pins-full', JSON.stringify(order)); } catch (e) {} }
     function snap() { var o = JSON.stringify(order), ev = every; return function () { order = JSON.parse(o); every = ev; gapSel.value = String(every); persist(); render(); }; }
     function saved(msg, u) { persist(); render(); toast(msg || 'Slot order saved', { action: 'Undo', onAction: u }); }
     function card(k) { return k * every; }
@@ -655,6 +696,14 @@
     document.addEventListener('click', function (e) { if (!e.target.closest('[data-al-pick]')) list.hidden = true; var x = e.target.closest('[data-al-x]'); if (x) { att = null; show(); $('[data-al-q]').value = ''; $('[data-al-q]').focus(); } });
     msg.addEventListener('input', pv);
     var pre = dealById(params.get('deal')); if (pre) attach(pre); else show();
+    (function () {  // S25 playground: alerts sent earlier in this browser
+      var al = window.OTDB && OTDB.get('alerts'); if (!al || !al.length) return; var h = $('[data-al-hist]'), day0 = new Date().setHours(0, 0, 0, 0);
+      var rowsH = al.map(function (x) { var d = new Date(x.at), tm = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); return { today: x.at >= day0, h: '<li><span class="t-time">' + (x.at >= day0 ? tm : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' ' + tm) + '</span><span class="t-title">' + esc(x.text) + '</span><span class="share-res">' + (x.web ? '<span class="ok"><i data-lucide="check"></i>Web</span>' : '') + (x.app ? '<span class="ok"><i data-lucide="check"></i>App</span>' : '') + '</span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li>' }; });
+      var first = $('.day', h), todayRows = rowsH.filter(function (r) { return r.today; }).map(function (r) { return r.h; }).join(''), older = rowsH.filter(function (r) { return !r.today; }).map(function (r) { return r.h; }).join('');
+      if (todayRows) { if (first && first.textContent === 'Today') first.insertAdjacentHTML('afterend', todayRows); else h.insertAdjacentHTML('afterbegin', '<li class="day">Today</li>' + todayRows); }
+      if (older) h.insertAdjacentHTML('beforeend', '<li class="day">Earlier in this playground</li>' + older);
+      icons();
+    })();
     $('[data-al-form]').addEventListener('submit', function (e) {
       e.preventDefault(); var w = $('[data-al-web]').checked, a = $('[data-al-app]').checked, me = $('.err', msg.closest('.fld'));
       me.hidden = !!msg.value.trim(); $('[data-al-to-err]').hidden = w || a; if (!msg.value.trim()) { msg.focus(); return; } if (!w && !a) return;
@@ -663,6 +712,7 @@
         var now = new Date(), tm = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2), h = $('[data-al-hist]'), first = $('.day', h);
         var row = '<li class="is-new"><span class="t-time">' + tm + '</span><span class="t-title">' + esc(msg.value.trim()) + '</span><span class="share-res">' + (w ? '<span class="ok"><i data-lucide="check"></i>Web</span>' : '') + (a ? '<span class="ok"><i data-lucide="check"></i>App</span>' : '') + '</span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li>';
         if (first && first.textContent === 'Today') first.insertAdjacentHTML('afterend', row); else h.insertAdjacentHTML('afterbegin', '<li class="day">Today</li>' + row);
+        if (window.OTDB) { var al = OTDB.get('alerts') || []; al.unshift({ at: Date.now(), text: msg.value.trim(), web: w, app: a }); OTDB.set('alerts', al); }   // S25 playground
         icons(); toast('Alert sent'); msg.value = ''; att = null; $('[data-al-q]').value = ''; show();
       });
     });
@@ -689,6 +739,7 @@
       if (!F.href.value.trim()) ok = err(F.href, 'Add where it opens.') && ok;
       if (F.start.value && F.end.value && F.end.value < F.start.value) ok = err(F.end, 'End must be after start.') && ok;
       if (!ok) { var b = $('[aria-invalid="true"]', F); if (b) b.focus(); return; }
+      if (window.OTDB) OTDB.set('promo', { on: F.on.checked, tag: F.tag.value.trim(), text: F.text.value.trim(), cta: F.cta.value.trim(), href: F.href.value.trim(), start: F.start.value, end: F.end.value });
       toast(F.on.checked ? 'Promo message saved. It shows on Home' + (F.start.value ? ' from ' + F.start.value : '') + '.' : 'Promo message saved and hidden from Home.');
     });
     out();
@@ -703,6 +754,7 @@
     function snap() { var s = JSON.stringify(list); return function () { list = JSON.parse(s); render(); }; }
     function render() {
       var cur = list.filter(function (p) { return status(p) !== 'ended'; }), past = list.filter(function (p) { return status(p) === 'ended'; }), show = tab === 'cur' ? cur : past;
+      if (window.ADM_PG) ADM_PG.saveList('posters', list, ['img']);   // S25 playground
       $('[data-pcount="cur"]').textContent = cur.length; $('[data-pcount="past"]').textContent = past.length;
       $('[data-posters]').innerHTML = show.length ? show.map(function (p, i) {
         var st = status(p), ord = tab === 'cur';
@@ -732,7 +784,7 @@
     // drawer
     var D = $('[data-pe]'), sheet = $('#poster-edit');
     function setDrop(k, url) { var z = $('[data-drop="' + k + '"]'), i = $('img', z); imgs[k] = url || ''; i.src = url || ''; i.hidden = !url; z.classList.toggle('has', !!url); }
-    $$('[data-drop]').forEach(function (z) { $('input', z).addEventListener('change', function (e) { readImg(e.target.files[0], function (u) { setDrop(z.dataset.drop, u); var er = $('.err', z.closest('.fld')); if (er) er.hidden = true; }); }); });
+    $$('[data-drop]').forEach(function (z) { $('input', z).addEventListener('change', function (e) { readImg(e.target.files[0], function (u0) { (window.OTDB ? OTDB.shrink : function (x, cb) { cb(x); })(u0, function (u) { setDrop(z.dataset.drop, u); var er = $('.err', z.closest('.fld')); if (er) er.hidden = true; }, 1200); }); }); });
     function openEdit(p) {
       editing = p || null; $('#pe-title').textContent = p ? 'Edit poster' : 'Add poster'; D.reset(); $$('.err', D).forEach(function (x) { x.hidden = true; });
       var kind = p ? p.kind : 'deal'; setKind(kind);
@@ -753,8 +805,8 @@
       else { chk(!!imgs.d, $('[data-drop="d"]')); chk(!!f.title.value.trim(), f.title); chk(!!f.link.value.trim(), f.link); }
       chk(!!f.start.value && !!f.end.value && f.end.value >= f.start.value, f.end);
       if (bad.length) { (bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
-      var u = snap(), o = kind === 'deal' ? { kind: 'deal', deal: dl.id, title: dl.t, img: dl.img, store: dl.store, link: 'Deal page', start: f.start.value, end: f.end.value, on: f.on.checked }
-        : { kind: 'custom', title: f.title.value.trim(), link: f.link.value.trim(), store: f.store.value, start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d };
+      var u = snap(), o = kind === 'deal' ? { kind: 'deal', deal: dl.id, title: dl.t, img: dl.img, store: dl.store, link: 'Deal page', start: f.start.value, end: f.end.value, on: f.on.checked, href: null }
+        : { kind: 'custom', title: f.title.value.trim(), link: f.link.value.trim(), store: f.store.value, start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d, href: null, ends: null };
       if (editing) Object.assign(editing, o); else { o.id = Date.now(); list.unshift(o); }
       closeSheet(); tab = status(o) === 'ended' ? 'past' : 'cur'; $$('[data-ptab]').forEach(function (x) { x.dataset.state = x.dataset.ptab === tab ? 'active' : ''; x.setAttribute('aria-selected', x.dataset.ptab === tab); });
       render(); toast(editing ? 'Poster saved' : 'Poster added' + (status(o) === 'scheduled' ? '. It shows from ' + fmt(o.start) : status(o) === 'live' ? ' and live on Home' : ''), { action: 'Undo', onAction: u });
@@ -774,6 +826,7 @@
     function snap() { var s = JSON.stringify(list); return function () { list = JSON.parse(s); render(); }; }
     function render() {
       var cur = list.filter(function (p) { return status(p) !== 'ended'; }), past = list.filter(function (p) { return status(p) === 'ended'; }), show = tab === 'cur' ? cur : past;
+      if (window.ADM_PG) ADM_PG.saveList('sponsored', list, ['img', 'mimg']);   // S25 playground
       $('[data-scount="cur"]').textContent = cur.length; $('[data-scount="past"]').textContent = past.length;
       var live = list.filter(function (p) { return status(p) === 'live'; }), v = 0, c = 0; list.forEach(function (p) { v += p.views || 0; c += p.clicks || 0; });
       $('[data-sp-stats]').innerHTML = '<div><span>Live now</span><b>' + live.length + '</b></div><div><span>Views, all ads</span><b>' + n(v) + '</b></div><div><span>Clicks, all ads</span><b>' + n(c) + '</b></div><div><span>Click rate</span><b>' + (v ? (100 * c / v).toFixed(1) + '%' : '–') + '</b></div>';
@@ -802,7 +855,7 @@
     $('[data-sp-list]').addEventListener('change', function (e) { var c = e.target.closest('[data-s-on]'); if (!c) return; var p = byId(+c.closest('[data-sid]').dataset.sid), u = snap(); p.on = c.checked; render(); toast(p.on ? 'Ad is on' : 'Ad is off. It stays here but Home won’t show it', { action: 'Undo', onAction: u }); });
     var D = $('[data-se]'), sheet = $('#sp-edit');
     function setDrop(k, url) { var z = $('[data-drop="' + k + '"]', D), i = $('img', z); imgs[k] = url || ''; i.src = url || ''; i.hidden = !url; z.classList.toggle('has', !!url); }
-    $$('[data-drop]', D).forEach(function (z) { $('input', z).addEventListener('change', function (e) { readImg(e.target.files[0], function (u) { setDrop(z.dataset.drop, u); var er = $('.err', z.closest('.fld')); if (er) er.hidden = true; }); }); });
+    $$('[data-drop]', D).forEach(function (z) { $('input', z).addEventListener('change', function (e) { readImg(e.target.files[0], function (u0) { (window.OTDB ? OTDB.shrink : function (x, cb) { cb(x); })(u0, function (u) { setDrop(z.dataset.drop, u); var er = $('.err', z.closest('.fld')); if (er) er.hidden = true; }, 1200); }); }); });
     function openEdit(p) {
       editing = p || null; $('#se-title').textContent = p ? 'Edit sponsored ad' : 'Add sponsored ad'; D.reset(); $$('.err', D).forEach(function (x) { x.hidden = true; });
       setDrop('d', p ? p.img : ''); setDrop('m', p && p.mimg ? p.mimg : '');

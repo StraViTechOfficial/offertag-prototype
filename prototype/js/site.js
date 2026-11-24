@@ -151,7 +151,7 @@
     CAT.shops.filter(function (s) { return like(s.name, ql); }).slice(0, 2).forEach(function (s) { h += '<a class="ss-row" href="' + s.page + '"><i data-lucide="store"></i><span><small>Store</small> ' + esc(s.name) + '</span><i data-lucide="chevron-right"></i></a>'; });
     CAT.cats.filter(function (c) { return like(c.name, ql); }).slice(0, 2).forEach(function (c) { h += '<a class="ss-row" href="' + c.page + '"><i data-lucide="layout-grid"></i><span><small>Category</small> ' + esc(c.name) + '</span><i data-lucide="chevron-right"></i></a>'; });
     if (hits.length) {
-      h += '<div class="ss-sec"><span>Deals</span></div>' + hits.slice(0, 3).map(function (d) { return '<a class="ss-deal" href="' + d.page + '"><img src="assets/deals/' + d.file + '" alt="" width="40" height="40" loading="lazy"><span class="t">' + esc(d.t) + '</span><b>' + inr(d.p) + '</b></a>'; }).join('');
+      h += '<div class="ss-sec"><span>Deals</span></div>' + hits.slice(0, 3).map(function (d) { return '<a class="ss-deal" href="' + d.page + '"><img src="' + (d.thumb || '/assets/deals/' + d.file) + '" alt="" width="40" height="40" loading="lazy"><span class="t">' + esc(d.t) + '</span><b>' + inr(d.p) + '</b></a>'; }).join('');
       h += '<a class="ss-row ss-all" href="' + target(q) + '" data-q="' + esc(q) + '"><span>See all ' + hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for “' + esc(q) + '”</span><i data-lucide="chevron-right"></i></a>';
     } else {
       h += '<p class="ss-none">No deals for “' + esc(q) + '”. Try a store or category above, or <a href="/top-deals">today\'s Top deals</a>.</p>';
@@ -431,6 +431,7 @@
       var c2 = derr('mobile_number', el.mobile_number.value.trim() ? '' : 'Enter your mobile number.');
       var t2 = derr('turnstile', box2.hidden || box2.querySelector('input').checked ? '' : 'Please complete the check first.');
       if (!(a && b && c2 && t2)) { var f = df.querySelector('.form-error:not([hidden])'); if (f && f.previousElementSibling) (f.previousElementSibling.querySelector('input') || f.previousElementSibling).focus(); return; }
+      if (window.OTDB) { var em = el.email.value.trim(), mo = el.mobile_number.value.trim(); OTDB.addInbox('deletion', { name: el.name.value.trim(), email: em, phone: mo.length > 4 ? mo.slice(0, 2) + 'xxxxxx' + mo.slice(-2) : mo, reason: el.reason ? el.reason.value.trim() : '' }); }   // S25 playground: Admin → Inbox → Deletion requests
       df.hidden = true; document.getElementById('delete-done').hidden = false; document.querySelector('.form-lead').hidden = true; window.scrollTo(0, 0);
     });
   }
@@ -448,6 +449,7 @@
       var b = ferr('description', el.description.value.trim() ? '' : 'Enter your message.');
       var c = ferr('turnstile', box3.hidden || box3.querySelector('input').checked ? '' : 'Please complete the check first.');
       if (!(a && b && c)) { var f = ff.querySelector('.form-error:not([hidden])'); if (f && f.previousElementSibling) (f.previousElementSibling.querySelector('input,textarea') || f.previousElementSibling).focus(); return; }
+      if (window.OTDB) { var kv = (ff.querySelector('input[name="feedback"]:checked') || {}).value; OTDB.addInbox('feedback', { kind: { '1': 'Suggestion', '2': 'Issue', '3': 'Appreciation' }[kv] || 'Issue', who: el.email.value.trim(), msg: el.description.value.trim() }); }   // S25 playground: Admin → Inbox → Feedback
       el.description.value = ''; done.hidden = false;
     });
   }

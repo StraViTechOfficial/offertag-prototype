@@ -11,7 +11,7 @@ What it is not: shared data. Each browser sees the sample data plus only its own
 ## Order
 
 1. **Part A:** bring in Adil's retail visual pass (about 1 day). **Done 2026-11-24.** A8 needed no change: the prototype toolbar already matched.
-2. **Part B:** the localStorage playground (about 5–6 days).
+2. **Part B:** the localStorage playground (about 5–6 days). **Done 2026-11-24** (D-152). Checked: every built page loads without script errors; an unchanged sample deal draws exactly as built; the 30-step client flow (post with photo → Home, lists, deal page → comment, report, contact → admin inbox → edit, approve incoming, poster, ad, pin, new category, blog post, site setting → delete → reset) passes in one browser.
 
 Part A goes first so Part B builds the new card and deal page once, not twice.
 

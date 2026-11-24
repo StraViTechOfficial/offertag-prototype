@@ -32,6 +32,13 @@ class Handler(SimpleHTTPRequestHandler):
             return ("file", f / "index.html")
         if f.is_file():
             return ("static", None)
+        # S25 playground: an address the playground created (new deal, category, store, blog post, admin edit page) has no built page;
+        # serve its shell and js/render.js draws it from the data (same rules as _redirects for Netlify / Cloudflare Pages)
+        import re
+        for pat, shell in ((r"^/deal/[^/]+$", "deal"), (r"^/products/[^/]+-deals$", "products"), (r"^/shops/[^/]+/[^/]+$", "combo"), (r"^/shops/[^/]+$", "shops"),
+                           (r"^/blog/[^/]+$", "blog"), (r"^/admin/deal/[^/]+/(edit|clone)$", "adm-deal"), (r"^/admin/blog/[^/]+/edit$", "adm-blog")):
+            if re.match(pat, p.rstrip("/")) and (ROOT / "_shell" / shell / "index.html").is_file():
+                return ("file", ROOT / "_shell" / shell / "index.html")
         return ("404", ROOT / "404.html")
 
     def _send_file(self, f, code, head=False):

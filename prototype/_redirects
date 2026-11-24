@@ -1,0 +1,8 @@
+# Netlify / Cloudflare Pages: addresses with no built page fall back to a playground shell (served only when no file matches)
+/deal/*            /_shell/deal/index.html      200
+/products/*        /_shell/products/index.html  200
+/shops/:shop/:cat  /_shell/combo/index.html     200
+/shops/*           /_shell/shops/index.html     200
+/blog/*            /_shell/blog/index.html      200
+/admin/deal/*      /_shell/adm-deal/index.html  200
+/admin/blog/*      /_shell/adm-blog/index.html  200

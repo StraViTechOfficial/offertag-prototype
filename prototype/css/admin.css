@@ -1084,3 +1084,16 @@ html.admin[data-theme="light"] .card, html.admin[data-theme="light"] .panel { bo
 .theme-seg button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 1px; }
 .side-min .adm-theme { grid-template-columns: 1fr; }
 .side-min .adm-theme span { display: none; }
+
+/* S25 playground (plan.md Part B): what the person changes is kept in this browser; Reset brings back the sample data */
+.pg-note { display: flex; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 6px; border: 1px dashed hsl(var(--border)); border-radius: 8px; font-size: 12px; line-height: 16px; }
+.pg-note > .lucide { width: 16px; height: 16px; flex: none; color: hsl(var(--muted-foreground)); }
+.pg-note > span { display: grid; flex: 1; min-width: 0; }
+.pg-note small { color: hsl(var(--muted-foreground)); font-size: 11px; }
+.pg-note .btn { flex: none; }
+.side-min .pg-note > span, .side-min .pg-note .btn { display: none; }
+.pg-modal { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .55); }
+.pg-box { width: 100%; max-width: 420px; padding: 20px; border-radius: 10px; background: hsl(var(--background)); color: hsl(var(--foreground)); border: 1px solid hsl(var(--border)); box-shadow: 0 20px 50px rgba(0, 0, 0, .3); }
+.pg-box h2 { margin: 0 0 8px; font-size: 17px; }
+.pg-box p { margin: 0 0 16px; font-size: 14px; line-height: 20px; color: hsl(var(--muted-foreground)); }
+.pg-acts { display: flex; justify-content: flex-end; gap: 8px; }
