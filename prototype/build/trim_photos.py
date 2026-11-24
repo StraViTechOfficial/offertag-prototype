@@ -6,7 +6,8 @@ out = os.path.join(ROOT,'assets','deals-trim'); os.makedirs(out, exist_ok=True)
 fill = []
 for d in deals:
     f = d['file']
-    src = next((os.path.join(ROOT,'assets',k,f) for k in ('deals-hd','deals') if os.path.exists(os.path.join(ROOT,'assets',k,f))), None)
+    # D-154: trim from the sharpest copy (the 200 px thumbnail left Home's hero photos 83-135 px wide, stretched 4-6x)
+    src = next((os.path.join(ROOT,'assets',k,f) for k in ('deals-hd','deals/lg','deals') if os.path.exists(os.path.join(ROOT,'assets',k,f))), None)
     if not src: continue
     im = Image.open(src).convert('RGB')
     w,h = im.size
@@ -20,7 +21,8 @@ for d in deals:
     edge = [c.getpixel((x, y)) for x in range(0, cw, 3) for y in (0, ch-1)] + [c.getpixel((x, y)) for y in range(0, ch, 3) for x in (0, cw-1)]
     light = sum(1 for p in edge if min(p) > 238) / len(edge)
     if light < 0.5: fill.append(os.path.splitext(f)[0] + '.jpg')
-    c.save(os.path.join(out, os.path.splitext(f)[0] + '.jpg'), quality=88)
+    if max(c.size) > 900: c.thumbnail((900, 900), Image.LANCZOS)   # D-154: big enough for the hero card on a 2x screen, no bigger
+    c.save(os.path.join(out, os.path.splitext(f)[0] + '.jpg'), quality=86, optimize=True)
     print(f, (w,h), '->', (box[2]-box[0], box[3]-box[1]), 'bg', bg)
 
 json.dump(fill, open(os.path.join(out,'fill.json'),'w'))

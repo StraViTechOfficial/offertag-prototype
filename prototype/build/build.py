@@ -252,7 +252,7 @@ def td_deal(d, **kw):
 # SAMPLE owner posters (Admin → Sale posters): one custom poster and one featured deal. The live site reads them from the poster manager.
 TD_CUSTOM = [dict(store='Flipkart', img='assets/posters/electronics.jpg', title='Big Billion Days: up to 80% off electronics', ends='Ends 8 Oct', href=store_page('Flipkart'))]
 by_views = sorted(deals, key=lambda d: (-(d.get('views') or 0), d['order']))
-TD_FEATURED = [by_views[12]]  # SAMPLE featured deal
+TD_FEATURED = [next(d for d in deals if d['file'] == '1795370797.jpg')]  # SAMPLE featured deal: Sony BRAVIA 65" (D-154: a deal with a sharp 500 px photo; the PUMA shoe's 300 px photo was blurry on Home)
 TD_TOP = [d for d in by_views if d not in TD_FEATURED][:10]  # stand-in for "most viewed, last 24 h": the snapshot has all-time views only
 TD_TRENDING = {0, 5}  # SAMPLE: live, Trending shows when views in the last 3 h ≥ 2 × the 3 h before and ≥ 50
 td_items = ''.join(td_card(x['store'], x['img'], True, x['title'], f'<b>Sale</b><em class="td-end">{E(x["ends"])}</em>', x['href'], featured=True, alt=x['title']) for x in TD_CUSTOM)
