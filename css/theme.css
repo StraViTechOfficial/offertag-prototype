@@ -1,0 +1,1335 @@
+/* theme.css — Look B (D-095): navy + three soft notes (sky, mint, peach), green saving, gold Buy on posters, motion.
+   Layered on ui.css/site.css on every page via <html class="theme">. */
+
+/* ============ Shared by all three looks ============ */
+html.theme {
+  --navy: 218 83% 18%;          /* logo navy #082454 */
+  /* D-150 theme roles: every colour that must change in dark mode goes through these (light values = the look as it was) */
+  --surface: 0 0% 100%;         /* cards, panels, sheets */
+  --well: 0 0% 100%;            /* photo and logo wells: white in both themes (photos are shot on white) */
+  --fill: var(--navy);          /* filled buttons, hover fills, active pills */
+  --on-fill: 0 0% 100%;         /* text on a fill */
+  --brand-ink: var(--navy);     /* navy text, links, rings, borders on a surface */
+  --shadow: var(--navy);        /* tint of every soft shadow */
+  --img-blend: multiply;        /* photos melt into their well; "normal" in dark */
+  --ink: 223 54% 14%;           /* #101B36 */
+  --page: 220 33% 97%;          /* #F4F6FA cool page, never cream */
+  --line: 220 25% 91%;          /* #E3E7EF */
+  --save: 151 83% 26%;          /* #0B7A45 money green */
+  --mint: 144 46% 92%;          /* #E2F4EA */
+  --sky: 220 82% 95%;           /* #E6EEFC */
+  --peach: 24 88% 93%;          /* #FDEBDF */
+  --gold: 43 100% 48%;          /* #F5B000 Buy (D-070) */
+  --loot: 357 60% 49%;          /* #C8323A Loot label only */
+  --background: 0 0% 100%;
+  --foreground: var(--ink);
+  --primary: var(--navy);
+  --primary-foreground: 0 0% 100%;
+  --muted: 220 33% 96%;
+  --muted-foreground: 221 15% 41%;
+  --secondary: 220 33% 95%;
+  --accent: 220 40% 95%;
+  --border: var(--line);
+  --input: 220 22% 86%;
+  --ring: var(--navy);
+  --radius: 0.625rem;
+}
+html.theme body { background: hsl(var(--page)); }
+html.theme .site-header { background: hsl(var(--surface) / .96); }
+html.theme .typenav { background: hsl(var(--surface)); }
+html.theme .typenav a[aria-current="page"] { color: hsl(var(--brand-ink)); border-bottom-color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .typenav .dot { background: hsl(var(--save)); box-shadow: 0 0 0 0 hsl(var(--save) / .5); animation: live 2.4s ease-out infinite; }
+@keyframes live { 0% { box-shadow: 0 0 0 0 hsl(var(--save) / .45); } 70%, 100% { box-shadow: 0 0 0 0.375rem hsl(var(--save) / 0); } }
+html.theme .banner { background: hsl(var(--sky)); border-bottom-color: hsl(var(--line)); }
+html.theme .banner a { color: hsl(var(--brand-ink)); }
+
+/* cards: white on the cool page, soft navy shadow, no hard grey border */
+html.theme .card { border-color: hsl(var(--line)); box-shadow: 0 1px 2px hsl(var(--shadow) / .04), 0 2px 0.5rem hsl(var(--shadow) / .04); border-radius: 0.875rem; }
+html.theme .deal .img { border-bottom: 0; background: hsl(var(--well)); }
+html.theme .deal .body { padding-top: 0.375rem; }
+html.theme .deal .price, html.theme .hero-card .price { color: hsl(var(--ink)); }
+html.theme .deal .save, html.theme .hero-card .save { color: hsl(var(--save)); font-weight: 600; }
+html.theme .hero-card .save b { color: hsl(var(--save)); }
+/* discount badge: green on mint, tag shape */
+html.theme .deal .img .badge, html.theme .badge-default { background: hsl(var(--mint)); color: hsl(var(--save)); border: 1px solid hsl(var(--save) / .18); border-radius: 0.375rem; font-weight: 700; }
+/* buttons */
+html.theme .deal .acts .btn-outline { border-color: hsl(var(--brand-ink) / .28); color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .deal .acts .btn-outline:hover { background: hsl(var(--fill)); color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); }
+html.theme .hero-card .acts .btn-default { background: hsl(var(--gold)); color: hsl(var(--ink)); font-weight: 600; box-shadow: 0 1px 0 hsl(38 90% 38% / .35); }
+html.theme .hero-card .acts .btn-default:hover { background: hsl(43 100% 44%); }
+html.theme .btn-default { background: hsl(var(--fill)); }
+html.theme .section-head .view-all { color: hsl(var(--brand-ink)); }
+html.theme .section-head h2 { font-weight: 700; letter-spacing: -0.02em; color: hsl(var(--ink)); }
+html.theme .site-footer { background: #fff; }
+
+/* ============ Motion (all looks; transform + opacity only; off under reduced motion) ============ */
+html.theme .deal, html.theme .hero-card, html.theme .store, html.theme .cat .tile { transition: transform .18s cubic-bezier(.2,0,0,1), box-shadow .18s, border-color .18s, background-color .18s; }
+@media (hover: hover) {
+  html.theme .deal:hover, html.theme .hero-card:hover { transform: translateY(-3px); box-shadow: 0 0.625rem 1.5rem -8px hsl(var(--shadow) / .18); border-color: hsl(var(--brand-ink) / .18); }
+  html.theme .deal:hover .img img, html.theme .hero-card:hover .img img { transform: scale(1.04); }
+  html.theme .cat:hover .tile { transform: translateY(-2px); }
+  html.theme .store:hover { transform: translateY(-2px); box-shadow: 0 0.5rem 1.125rem -8px hsl(var(--shadow) / .18); }
+}
+html.theme .deal .img img, html.theme .hero-card .img img { transition: transform .35s cubic-bezier(.2,0,0,1); }
+html.theme .deal:active, html.theme .hero-card:active { transform: scale(.985); }
+html.theme .cat:active .tile { transform: scale(.95); }
+/* entrance: cards rise in once as their row scrolls into view */
+html.theme .reveal { opacity: 0; transform: translateY(0.75rem); }
+html.theme .reveal.is-in { opacity: 1; transform: none; transition: opacity .45s cubic-bezier(.05,.7,.1,1), transform .45s cubic-bezier(.05,.7,.1,1); transition-delay: var(--d, 0ms); }
+html.theme .reveal.is-in .badge { animation: pop .32s cubic-bezier(.3,1.4,.6,1) both; animation-delay: calc(var(--d, 0ms) + 180ms); }
+@keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { html.theme .reveal { opacity: 1 !important; transform: none !important; } }
+
+/* ============ Look B ============ */
+/* hero = posters from pinned deals: tinted panel, photo on a white inset, bigger price */
+html.theme .hero .carousel-item { flex-basis: 88%; }
+@media (min-width: 640px) { html.theme .hero .carousel-item { flex-basis: 62%; } }
+@media (min-width: 1024px) { html.theme .hero .carousel-item { flex-basis: 50%; } }
+@media (min-width: 1500px) { html.theme .hero .carousel-item { flex-basis: 33.3333%; } }
+html.theme .hero-card{ border: 0; background: hsl(var(--tint, var(--sky))); grid-template-columns: 1fr 12.5rem; min-height: 14.75rem; padding: 1.375rem; border-radius: 1.125rem; box-shadow: none; }
+html.theme .hero-card .img{ width: 12.5rem; height: 12.5rem; background: hsl(var(--well)); border-radius: 0.875rem; padding: 0.875rem; box-shadow: 0 0.5rem 1.25rem -10px hsl(var(--shadow) / .25); }
+html.theme .hero-card .price{ font-size: 2.125rem; line-height: 2.375rem; font-weight: 800; }
+html.theme .hero-card h3{ font-size: 1.0625rem; }
+html.theme .hero-card .k .badge{ background: hsl(var(--fill)); color: hsl(var(--on-fill)); border: 0; }
+html.theme .hero-card .acts .btn-outline{ background: hsl(var(--surface)); border-color: transparent; }
+@media (max-width: 639px) {
+  html.theme .hero-card{ grid-template-columns: 1fr 7.5rem; padding: 1rem; min-height: 0; }
+  html.theme .hero-card .img{ width: 7.5rem; height: 7.5rem; padding: 0.5rem; }
+  html.theme .hero-card .price{ font-size: 1.625rem; line-height: 1.875rem; }
+}
+html.theme .t-sky { --tint: var(--sky); } html.theme .t-mint { --tint: var(--mint); } html.theme .t-peach { --tint: var(--peach); }
+/* category tiles rotate the three tints */
+html.theme .cat .tile { border: 0; border-radius: 1.125rem; background: hsl(var(--tint, var(--sky))); }
+html.theme .cat .tile img { mix-blend-mode: var(--img-blend); }
+html.theme .cat .tile .lucide { color: hsl(var(--brand-ink)); }
+/* section headers carry a small tinted icon chip */
+html.theme .section-head h2 { display: flex; align-items: center; }
+html.theme .sh-ico { display: inline-grid; place-items: center; flex: none; width: 1.875rem; height: 1.875rem; border-radius: 0.5625rem; margin-right: 0.625rem; background: hsl(var(--tint, var(--sky))); color: hsl(var(--brand-ink)); }
+html.theme .sh-ico .lucide { width: 1rem; height: 1rem; }
+/* Loot sits on one peach band (one band per page) */
+html.theme #loot { background: hsl(var(--peach)); margin-top: 1.75rem; padding-bottom: 1.5rem; }
+html.theme #loot .section-head p { color: hsl(20 40% 35%); }
+/* Loot badge (D-141): a small "+80% off" sticker on the heading's top-right corner, half inside and half outside it, like a
+   notification badge. It sits beside the heading, never inside it (the heading reads as the title alone); a white ring keeps it
+   clean where it crosses the title, and the room it sticks out is held on the right, so it never runs off a phone screen. */
+html.theme .loot-sup { position: relative; width: fit-content; max-width: calc(100% - 2.75rem); margin-right: 2.75rem; }
+html.theme .loot-tag { position: absolute; top: 0; right: 0; z-index: 1; transform: translate(66%, -66%); display: inline-flex; align-items: center; gap: 0.125rem; padding: 0.125rem 0.4375rem 0.125rem 0.375rem; border-radius: 62.4375rem; background: hsl(var(--loot)); color: #fff; font-size: 0.625rem; font-weight: 700; line-height: 0.875rem; letter-spacing: 0.01em; white-space: nowrap; box-shadow: 0 0 0 2px hsl(var(--surface)), 0 2px 6px hsl(var(--loot) / .35); }
+html.theme .loot-tag .lucide { width: 0.625rem; height: 0.625rem; fill: currentColor; stroke-width: 2.5; }
+@media (min-width: 768px) { html.theme .loot-tag { font-size: 0.6875rem; } }
+/* store tiles: monogram chip (placeholder until client logos arrive) */
+html.theme .store .mono { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; display: grid; place-items: center; font-weight: 800; font-size: 1.0625rem; color: hsl(var(--brand-ink)); background: hsl(var(--tint, var(--sky))); margin-bottom: 0.25rem; }
+/* join row = the one navy band */
+html.theme .join{ background: hsl(var(--navy)); color: #fff; border: 0; padding: 1.375rem 1.5rem; border-radius: 1.125rem; }
+html.theme .join .t p{ color: hsl(220 40% 85%); }
+html.theme .join .btn-outline{ background: hsl(0 0% 100% / .1); border-color: hsl(0 0% 100% / .25); color: #fff; }
+html.theme .join .btn-default{ background: hsl(var(--gold)); color: hsl(var(--ink)); }
+
+
+/* page heads on type pages carry the same icon chip as the Home sections */
+html.theme .page-head h1 { display: flex; align-items: center; font-weight: 700; color: hsl(var(--ink)); }
+
+/* ============ S16 Home round 1 (D-096) ============ */
+/* header: bigger logo with readable tagline; "New" tag sits on the Blog link's corner */
+html.theme .header-row { height: 4.5rem; }
+html.theme .site-header .logo { height: 3rem; }
+html.theme .site-header .logo img { height: 2.875rem; width: auto; }
+@media (max-width: 767px) { html.theme .header-row { height: 4rem; } html.theme .site-header .logo img { height: 2.375rem; } }
+/* Blog link + "New" pill: see the S16 header block (D-097) at the end of this file */
+
+html.theme .carousel-dots { display: flex; justify-content: center; gap: 0.375rem; margin-top: 0.875rem; }
+html.theme .carousel-dots button { width: 0.5rem; height: 0.5rem; padding: 0; border-radius: 62.4375rem; background: hsl(var(--brand-ink) / .2); transition: width .25s cubic-bezier(.2,0,0,1), background-color .25s; }
+html.theme .carousel-dots button[aria-current="true"] { width: 1.625rem; background: hsl(var(--fill)); }
+
+/* category tiles: bigger, real photos that fill the tile */
+html.theme .cats .carousel-item { flex: 0 0 auto; }
+html.theme .cat { width: 9.75rem; gap: 0.625rem; }
+html.theme .cat .tile { width: 9.75rem; height: 9.75rem; }
+html.theme .cat .tile.has-photo { padding: 0; background: hsl(var(--muted)); }
+html.theme .cat .tile.has-photo img { object-fit: cover; mix-blend-mode: normal; transition: transform .35s cubic-bezier(.2,0,0,1); }
+@media (hover: hover) { html.theme .cat:hover .tile.has-photo img { transform: scale(1.06); } }
+html.theme .cat > span:last-child { font-size: 0.875rem; font-weight: 600; color: hsl(var(--ink)); }
+@media (max-width: 639px) { html.theme .cat { width: 7rem; } html.theme .cat .tile { width: 7rem; height: 7rem; border-radius: 1rem; } html.theme .cat > span:last-child { font-size: 0.8125rem; } }
+
+/* deal cards: photo fills a soft tinted panel; short Buy button carries the store logo */
+html.theme .deal .img { margin: 0.5rem 0.5rem 0; padding: 0.5rem; border-radius: 0.625rem; background: hsl(220 33% 96%); }
+html.theme .deal .img img { mix-blend-mode: var(--img-blend); }
+html.theme .deal .acts { align-items: center; justify-content: space-between; }
+html.theme .deal .acts .btn-buy { flex: 0 1 auto; min-width: 0; gap: 0.375rem; height: 2.125rem; padding: 0 0.875rem; border-radius: 0.5625rem; font-weight: 600; }
+html.theme .btn-buy .buy-logo { height: 1.0625rem; width: auto; max-width: 4.375rem; object-fit: contain; margin-top: 2px; transition: filter .15s; }
+@media (hover: hover) { html.theme .deal .acts .btn-buy:hover .buy-logo:not([src$='.png']) { filter: brightness(0) invert(1); } }
+@media (max-width: 639px) { html.theme .deal .acts .btn-buy { padding: 0 0.625rem; height: 2rem; } html.theme .btn-buy .buy-logo { height: 0.9375rem; max-width: 3.5rem; } }
+
+/* store tiles: the logo is the tile; hover turns navy, logo white, count shows */
+html.theme .store.has-logo { position: relative; min-height: 7rem; padding: 1.125rem 0.875rem; gap: 0.375rem; background: hsl(var(--well)); transition: background-color .2s, transform .18s cubic-bezier(.2,0,0,1), box-shadow .18s; }
+html.theme .store-logo { display: grid; place-items: center; height: 2.5rem; width: 100%; }
+html.theme .store-logo img { max-height: 2.5rem; max-width: 86%; width: auto; object-fit: contain; transition: filter .2s; }
+html.theme .store-word { font-size: 1.125rem; font-weight: 800; letter-spacing: -0.02em; color: hsl(var(--brand-ink)); transition: color .2s; }
+html.theme .store.has-logo .store-count { font-size: 0.75rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
+@media (hover: hover) {
+  html.theme .store.has-logo .store-count { position: absolute; left: 0; right: 0; bottom: 0.875rem; opacity: 0; transform: translateY(0.25rem); transition: opacity .2s, transform .2s; color: #fff; }
+  html.theme .store.has-logo:hover { background: hsl(var(--fill)); border-color: hsl(var(--fill)); }
+  html.theme .store.has-logo:hover .store-logo { transform: translateY(-8px); }
+  html.theme .store.has-logo .store-logo { transition: transform .2s cubic-bezier(.2,0,0,1); }
+  html.theme .store.has-logo:hover .store-logo img:not([src$='.png']) { filter: brightness(0) invert(1); }
+  html.theme .store.has-logo:hover .store-word { color: #fff; }
+  html.theme .store.has-logo:hover .store-count { opacity: 1; transform: none; }
+}
+@media (min-width: 1500px) { html.theme .stores-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+
+/* footer: one navy block (after IndiaDesire / DesiDime structure, our colours) */
+html.theme .site-footer { background: hsl(222 70% 13%); color: hsl(220 30% 80%); border-top: 0; padding: 3rem 0 1.5rem; font-size: 0.875rem; }
+html.theme .site-footer a { color: inherit; }
+html.theme .ft-top { display: grid; gap: 1.75rem; }
+@media (min-width: 1024px) { html.theme .ft-top { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 3rem; align-items: start; } }
+html.theme .ft-logo { display: inline-flex; padding: 0.5625rem 0.875rem; border-radius: 0.75rem; background: #fff; }
+html.theme .ft-logo img { height: 2.5rem; width: auto; }
+html.theme .ft-about h3 { margin: 1.25rem 0 0.5rem; color: #fff; font-size: 1.125rem; font-weight: 700; }
+html.theme .ft-about p { margin: 0; line-height: 1.65; max-width: 70ch; }
+html.theme .ft-follow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-top: 1.375rem; }
+html.theme .ft-follow > span { color: #fff; font-weight: 600; }
+html.theme .ft-social { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+html.theme .ft-social a { width: 2.625rem; height: 2.625rem; border-radius: 62.4375rem; display: grid; place-items: center; background: hsl(0 0% 100% / .08); border: 1px solid hsl(0 0% 100% / .12); color: #fff; transition: background-color .18s, color .18s, transform .18s cubic-bezier(.2,0,0,1); }
+html.theme .ft-social svg { width: 1.125rem; height: 1.125rem; }
+html.theme .ft-social a:hover { background: #fff; color: hsl(var(--navy)); transform: translateY(-2px); }
+html.theme .ft-app { display: flex; gap: 1rem; padding: 1.375rem; border-radius: 1.125rem; background: hsl(0 0% 100% / .06); border: 1px solid hsl(0 0% 100% / .1); }
+html.theme .ft-app-ico { flex: none; width: 3.25rem; height: 3.25rem; border-radius: 0.875rem; display: grid; place-items: center; background: hsl(var(--gold)); color: hsl(var(--ink)); }
+html.theme .ft-app-ico .lucide { width: 1.5rem; height: 1.5rem; }
+html.theme .ft-app b { display: block; color: #fff; font-size: 1.0625rem; }
+html.theme .ft-app p { margin: 0.25rem 0 0.875rem; line-height: 1.5; }
+html.theme .ft-app-acts { display: flex; flex-wrap: wrap; gap: 0.625rem; }
+html.theme .ft-play { display: inline-flex; align-items: center; gap: 0.625rem; height: 2.875rem; padding: 0 1rem; border-radius: 0.625rem; background: #000; color: #fff !important; border: 1px solid hsl(0 0% 100% / .25); }
+html.theme .ft-play svg { width: 1.25rem; height: 1.25rem; }
+html.theme .ft-play span { display: grid; line-height: 1.1; font-weight: 700; font-size: 0.9375rem; }
+html.theme .ft-play small { font-size: 0.625rem; font-weight: 500; opacity: .8; text-transform: uppercase; letter-spacing: .04em; }
+html.theme .ft-alerts { display: inline-flex; align-items: center; gap: 0.5rem; height: 2.875rem; padding: 0 1rem; border-radius: 0.625rem; border: 1px solid hsl(0 0% 100% / .25); color: #fff !important; font-weight: 600; }
+html.theme .ft-alerts .lucide { width: 1rem; height: 1rem; }
+html.theme .ft-alerts:hover, html.theme .ft-play:hover { border-color: #fff; }
+html.theme .ft-disclaimer { margin: 2rem 0 0; padding: 1.125rem 0; border-top: 1px solid hsl(0 0% 100% / .1); border-bottom: 1px solid hsl(0 0% 100% / .1); font-size: 0.8125rem; line-height: 1.65; color: hsl(220 25% 72%); }
+html.theme .ft-disclaimer b { color: #fff; }
+html.theme .ft-disclaimer a, html.theme .site-footer .footer-bottom a { text-decoration: underline; text-underline-offset: 0.1875rem; color: #fff; }
+html.theme .ft-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 1.5rem; padding: 2rem 0 0.5rem; }
+@media (min-width: 768px) { html.theme .ft-cols { grid-template-columns: 1fr 1.5fr 1fr 1fr; } }
+html.theme .ft-cols h4 { margin: 0 0 0.875rem; color: #fff; font-size: 0.8125rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+html.theme .ft-cols ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.625rem; }
+html.theme .ft-stores ul { grid-template-columns: repeat(2, minmax(0, max-content)); column-gap: 2rem; }
+html.theme .ft-cols a { color: hsl(220 30% 80%); transition: color .15s; }
+html.theme .ft-cols a:hover { color: #fff; }
+html.theme .site-footer .footer-bottom { margin-top: 1.5rem; border-top-color: hsl(0 0% 100% / .1); color: hsl(220 25% 70%); }
+html.theme .site-footer .footer-bottom details summary { color: #fff; }
+html.theme .site-footer .about-text, html.theme .site-footer .about-text * { color: hsl(220 25% 75%); }
+
+/* FAQ page */
+html.theme .faq-group { margin-top: 1.25rem; }
+html.theme .faq-group h2 { margin: 0 0 0.625rem; font-size: 0.9375rem; font-weight: 700; color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: .06em; }
+html.theme .faq-item { margin-bottom: 0.625rem; overflow: hidden; }
+html.theme .faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 1rem 1.125rem; font-weight: 600; font-size: 0.9375rem; cursor: pointer; list-style: none; }
+html.theme .faq-item summary::-webkit-details-marker { display: none; }
+html.theme .faq-item summary .lucide { flex: none; width: 1.125rem; height: 1.125rem; color: hsl(var(--muted-foreground)); transition: transform .2s; }
+html.theme .faq-item[open] summary .lucide { transform: rotate(180deg); }
+html.theme .faq-item[open] summary { color: hsl(var(--brand-ink)); }
+html.theme .faq-a { padding: 0 1.125rem 1rem; line-height: 1.6; color: hsl(var(--muted-foreground)); }
+html.theme .faq-a a { color: hsl(var(--brand-ink)); text-decoration: underline; text-underline-offset: 0.1875rem; }
+html.theme .faq-more { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.875rem; margin-top: 1.5rem; background: hsl(var(--sky)); border: 0; }
+html.theme .faq-more p { margin: 2px 0 0; color: hsl(var(--muted-foreground)); }
+html.theme .store-logo img[src$=".png"] { max-height: 3.25rem; border-radius: 0.75rem; }
+
+/* ============ S16 header (D-097): one sticky row, text-only tabs, Blog "New" pill, alerts menu, community strip, since-line ============ */
+/* wide screens: type links move into the header row; the separate tab row hides */
+html.theme .hnav { display: none; }
+@media (min-width: 1200px) {
+  html.theme .hnav { display: flex; align-items: center; gap: 2px; margin-left: 0.75rem; }
+  html.theme .typenav { display: none; }
+  html.theme .header-actions .nav-blog { display: none; }
+  html.theme .header-search { flex: 1 1 16.25rem; min-width: 12.5rem; max-width: 26.25rem; margin: 0 0 0 auto; }
+  html.theme .header-actions { margin-left: 0.75rem; gap: 0.5rem; }
+}
+html.theme .hnav a { position: relative; display: inline-flex; align-items: center; height: 2.5rem; padding: 0 0.6875rem; font-size: 0.9375rem; font-weight: 500; color: hsl(var(--muted-foreground)); white-space: nowrap; border-radius: 62.4375rem; transition: color .15s, background-color .15s; }
+html.theme .hnav a:hover { color: hsl(var(--ink)); background: hsl(var(--muted)); }
+html.theme .hnav a[aria-current="page"] { color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .hnav a[aria-current="page"]::after { content: ""; position: absolute; left: 0.6875rem; right: 0.6875rem; bottom: -16px; height: 0.1875rem; border-radius: 0.1875rem 0.1875rem 0 0; background: hsl(var(--fill)); }
+html.theme .hnav-blog { margin-left: 0.375rem; }
+html.theme .hnav-blog::before { content: ""; position: absolute; left: -4px; top: 0.75rem; bottom: 0.75rem; width: 1px; background: hsl(var(--line)); }
+/* mid widths (768–1199): the tab row stays under the header while scrolling */
+@media (min-width: 768px) and (max-width: 1199px) { html.theme .typenav { position: sticky; top: 4.5rem; z-index: 39; } }
+html.theme .header-actions .nav-blog { align-items: center; gap: 0; font-weight: 600; color: hsl(var(--ink)); }
+@media (min-width: 1200px) { html.theme .header-actions .nav-blog { display: none; } }
+html.theme .site-header .logo { flex: 0 0 auto; }
+
+/* Blog "New" pill: shows until this visitor has opened the blog since the newest post; pulses 3 times once per visit */
+html.theme .new-pill { display: inline-flex; align-items: center; margin-left: 0.375rem; padding: 2px 0.4375rem; border-radius: 62.4375rem; background: hsl(var(--peach)); color: hsl(18 78% 36%); border: 1px solid hsl(20 85% 55% / .28); font-size: 0.6562rem; line-height: 0.8125rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+html.theme .new-pill[hidden] { display: none; }
+html.theme .new-pill.is-pulsing { animation: newpulse 1s cubic-bezier(.2,0,0,1) .5s 3; }
+@keyframes newpulse { 0% { box-shadow: 0 0 0 0 hsl(20 90% 55% / .5); transform: scale(1); } 30% { transform: scale(1.08); } 100% { box-shadow: 0 0 0 0.5625rem hsl(20 90% 55% / 0); transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { html.theme .new-pill.is-pulsing { animation: none; } }
+/* hover / focus preview of the newest post (desktop) */
+html.theme .blog-tip { position: absolute; top: calc(100% + 0.625rem); left: 50%; z-index: 46; width: max-content; max-width: 16.25rem; padding: 0.625rem 0.75rem; border-radius: 0.75rem; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); box-shadow: 0 0.75rem 1.75rem -10px hsl(var(--shadow) / .28); color: hsl(var(--ink)); font-size: 0.8125rem; line-height: 1.125rem; font-weight: 600; white-space: normal; opacity: 0; visibility: hidden; transform: translate(-50%, -4px); transition: opacity .15s, transform .15s, visibility .15s; pointer-events: none; }
+html.theme .blog-tip small { display: block; margin-bottom: 2px; font-size: 0.6875rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; color: hsl(18 78% 40%); }
+html.theme .hnav-blog.has-new:hover .blog-tip, html.theme .hnav-blog.has-new:focus-visible .blog-tip { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+
+/* Community strip (B09): always shown, says why; brand marks in brand colour, chips in our palette */
+html.theme .community { background: hsl(var(--sky) / .7); border-bottom: 1px solid hsl(var(--line)); font-size: 0.875rem; color: hsl(var(--ink)); }
+html.theme .community .container { display: flex; align-items: center; justify-content: center; gap: 0.875rem; min-height: 3rem; }
+html.theme .community .cm-text { font-weight: 500; }
+html.theme .community .cm-short { display: none; }
+html.theme .community .cm-acts { display: inline-flex; gap: 0.5rem; flex: 0 0 auto; }
+html.theme .community a.cm-btn { display: inline-flex; align-items: center; gap: 0.375rem; height: 2rem; padding: 0 0.75rem 0 0.625rem; border-radius: 62.4375rem; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); color: hsl(var(--ink)); font-size: 0.8125rem; font-weight: 600; text-decoration: none; box-shadow: 0 1px 2px hsl(var(--shadow) / .06); transition: border-color .15s, transform .15s; }
+html.theme .community a.cm-btn:hover { border-color: hsl(var(--brand-ink) / .3); transform: translateY(-1px); }
+html.theme .community .cm-btn svg { width: 1rem; height: 1rem; }
+html.theme .community .cm-wa svg { color: #1DA851; }
+html.theme .community .cm-tg svg { color: #229ED9; }
+@media (max-width: 767px) {
+  html.theme .community .container { justify-content: space-between; gap: 0.625rem; min-height: 2.75rem; }
+  html.theme .community .cm-long { display: none; }
+  html.theme .community .cm-short { display: inline; font-size: 0.8125rem; line-height: 1.0625rem; }
+  html.theme .community a.cm-btn { height: 1.875rem; padding: 0 0.625rem 0 0.5rem; font-size: 0.7812rem; }
+}
+/* listing pages: the same strip as a small card in the filter column (desktop) or above the feed (phone) */
+html.theme .listing > .community { flex-wrap: wrap; white-space: normal; gap: 0.625rem; padding: 0.75rem; border-radius: 0.875rem; background: hsl(var(--sky) / .7); border-color: hsl(var(--line)); }
+html.theme .listing > .community .cm-long { display: none; }
+html.theme .listing > .community .cm-short { display: block; font-size: 0.8125rem; line-height: 1.125rem; font-weight: 600; }
+@media (max-width: 899px) { html.theme .listing > .community { flex-wrap: nowrap; justify-content: space-between; padding: 0.5rem 0.5rem 0.5rem 0.75rem; } }
+
+/* "New since your last visit" line, top of Home */
+html.theme .since { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-top: 0.875rem; font-size: 0.875rem; }
+html.theme .since[hidden] { display: none; }
+html.theme .since-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.375rem 0.875rem 0.375rem 0.75rem; border-radius: 62.4375rem; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); box-shadow: 0 1px 2px hsl(var(--shadow) / .05); color: hsl(var(--ink)); font-weight: 500; transition: border-color .15s; }
+html.theme .since-link:hover { border-color: hsl(var(--save) / .45); }
+html.theme .since-link b { font-weight: 700; color: hsl(var(--save)); }
+html.theme .since-go { font-weight: 600; color: hsl(var(--brand-ink)); }
+html.theme .since-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: hsl(var(--save)); animation: live 2.4s ease-out infinite; }
+html.theme .since-meta { color: hsl(var(--muted-foreground)); font-size: 0.8125rem; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { html.theme .since-dot { animation: none; } }
+@media (max-width: 767px) { html.theme .since-meta { display: none; } html.theme .since-link { font-size: 0.8125rem; } }
+@media (min-width: 1200px) and (max-width: 1359px) { html.theme .hnav a { padding: 0 0.5rem; font-size: 0.9062rem; } html.theme .hnav a[aria-current="page"]::after { left: 0.5rem; right: 0.5rem; } html.theme .hnav { margin-left: 0.375rem; } html.theme .header-search { min-width: 10rem; } html.theme .header-actions { margin-left: 0.5rem; } }
+
+/* ============ S16 fix round (D-099): readable size, width cap, deal card, floating stack ============ */
+/* Size: every size is in rem, so one root value scales the public site. Phones keep 16 px; laptops 112.5 %; big monitors 125 % (the owner's preferred look). Admin (html.admin) keeps 16 px. */
+html.theme { font-size: 100%; }
+@media (min-width: 768px) { html.theme { font-size: 106.25%; } }
+/* Laptops and desktops scale with the screen: the base size follows the width (15px on a 1536px laptop),
+   held down on short screens by the height, and kept between 14 and 20px. */
+@media (min-width: 1024px) { html.theme { font-size: clamp(0.875rem, min(0.975vw, 2.05vh), 1.25rem); } }
+html.theme body { font-size: 1rem; line-height: 1.5; }
+/* Width: content stops growing at 1600 px on big monitors and stays centred */
+html.theme .container { max-width: 1600px; }
+/* nothing readable under 14 px on any screen */
+html.theme .deal .meta, html.theme .since-meta, html.theme .community .cm-short, html.theme .crumbs { font-size: max(0.875rem, 14px); }
+
+/* Deal card: category + time on top, store logo on the Save line, full-width bigger Buy, share on the photo */
+html.theme .deal { position: relative; }
+html.theme .deal .body { padding: 0.5rem 0.875rem 0.875rem; gap: 0.3125rem; }
+html.theme .deal .meta { color: hsl(var(--muted-foreground)); }
+html.theme .deal .title { font-size: 1rem; line-height: 1.375rem; min-height: 2.75rem; color: hsl(var(--ink)); }
+html.theme .deal .priceline { margin-top: 0.25rem; }
+html.theme .deal .price { font-size: 1.375rem; }
+html.theme .deal .was { font-size: 0.9375rem; }
+html.theme .deal .saveline { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 1.75rem; }
+html.theme .deal .save { font-size: 0.9375rem; }
+html.theme .store-chip { flex: 0 0 auto; height: 1.375rem; width: auto; max-width: 5.5rem; object-fit: contain; }
+html.theme .store-chip.is-text { height: auto; padding: 0.125rem 0.5rem; border-radius: 999px; background: hsl(var(--muted)); font-size: 0.8125rem; font-weight: 600; color: hsl(var(--ink)); }
+html.theme .deal .acts { padding-top: 0.75rem; }
+html.theme .deal .acts .btn-buy { flex: 1 1 auto; width: 100%; height: 2.875rem; padding: 0 1rem; gap: 0.5rem; border-radius: 0.75rem; font-size: 1rem; font-weight: 600; }
+html.theme .deal .acts .btn-buy .lucide { width: 1.125rem; height: 1.125rem; transition: transform .18s cubic-bezier(.2,0,0,1); }
+@media (hover: hover) { html.theme .deal:hover .acts .btn-buy .lucide { transform: translateX(0.25rem); } html.theme .deal .img img { transition: transform .35s cubic-bezier(.2,0,0,1); } html.theme .deal:hover .img img { transform: scale(1.04); } }
+html.theme .deal .img { overflow: hidden; }
+html.theme .card-share { position: absolute; top: 1rem; right: 1rem; z-index: 2; width: 2.25rem; height: 2.25rem; border-radius: 999px; background: hsl(var(--surface) / .92); border: 1px solid hsl(var(--line)); color: hsl(var(--ink)); box-shadow: 0 1px 3px hsl(var(--shadow) / .1); }
+html.theme .card-share .lucide { width: 1rem; height: 1rem; }
+html.theme .card-share:hover { background: hsl(var(--surface)); color: hsl(var(--brand-ink)); }
+@media (max-width: 639px) {
+  html.theme .deal .body { padding: 0.375rem 0.625rem 0.625rem; }
+  html.theme .deal .title { font-size: 0.9375rem; line-height: 1.3125rem; min-height: 2.625rem; }
+  html.theme .deal .price { font-size: 1.1875rem; }
+  html.theme .store-chip { height: 1.125rem; max-width: 4.25rem; }
+  html.theme .deal .acts .btn-buy { height: 2.75rem; font-size: 0.9375rem; }
+  html.theme .card-share { top: 0.75rem; right: 0.75rem; width: 2rem; height: 2rem; }
+}
+
+/* Floating join stack: brand circles bottom right; docks above the footer (site.js sets --dock) */
+/* (D-099 four-button stack replaced by the corner arc, D-106: see end of file) */
+html.theme.is-embed .fstack { display: none; }
+/* cards per row, sized for the bigger type: Home rows 2 · 3 · 4 · 5; listing grids 2 · 3 · 4 */
+html.theme .deals .carousel-item { flex-basis: 50%; }
+@media (min-width: 640px) { html.theme .deals .carousel-item { flex-basis: 33.3333%; } }
+@media (min-width: 1100px) { html.theme .deals .carousel-item { flex-basis: 25%; } }
+@media (min-width: 1280px) { html.theme .deals .carousel-item { flex-basis: 20%; } }
+html.theme .deal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) { html.theme .deal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { html.theme .deal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* store logo stays small next to the saving; the saving never breaks onto two lines */
+html.theme .deal .save { white-space: nowrap; }
+html.theme .store-chip { height: 1.0625rem; max-width: 4.5rem; opacity: .95; }
+@media (max-width: 639px) { html.theme .store-chip { height: 0.9375rem; max-width: 3.75rem; } }
+html.theme .fs-tg svg { width: 100% !important; height: 100% !important; }
+
+/* (D-106 corner arc replaced by the edge join tab, D-107: see end of file) */
+
+/* ---- Compact deal card (M-11, D-106; replaces the D-099 sizes): smaller image box, tighter text, small Buy, more per row ---- */
+html.theme .deal .img { aspect-ratio: 1; margin: 0.4375rem 0.4375rem 0; padding: 0.4375rem; border-radius: 0.5rem; }  /* D-107: square again, as before the meeting; the whole card scales, not just its height */
+html.theme .deal .img .badge { top: 0.375rem; left: 0.375rem; font-size: 0.75rem; padding: 0.0625rem 0.375rem; }
+html.theme .deal .body { padding: 0.4375rem 0.75rem 0.75rem; gap: 0.25rem; }
+html.theme .deal .meta { font-size: 0.75rem; line-height: 1rem; }
+html.theme .deal .title { font-size: 0.875rem; line-height: 1.25rem; min-height: 2.5rem; font-weight: 500; }
+html.theme .deal .priceline { margin-top: 0.25rem; gap: 0.375rem; }
+html.theme .deal .price { font-size: 1.1875rem; font-weight: 700; }
+html.theme .deal .was { font-size: 0.8125rem; }
+html.theme .deal .saveline { min-height: 1.375rem; }
+html.theme .deal .save { font-size: 0.8125rem; }
+html.theme .store-chip { height: 0.9375rem; max-width: 3.75rem; }
+html.theme .deal .acts { padding-top: 0.625rem; }
+html.theme .deal .acts .btn-buy { height: 2.375rem; padding: 0 0.75rem; gap: 0.375rem; border-radius: 0.625rem; font-size: 0.875rem; }
+html.theme .deal .acts .btn-buy .lucide { width: 0.9375rem; height: 0.9375rem; }
+html.theme .card-share { top: 0.625rem; right: 0.625rem; width: 1.875rem; height: 1.875rem; }
+html.theme .card-share .lucide { width: 0.875rem; height: 0.875rem; }
+@media (max-width: 639px) {
+  html.theme .deal .body { padding: 0.3125rem 0.5rem 0.5rem; }
+  html.theme .deal .title { font-size: 0.8125rem; line-height: 1.1875rem; min-height: 2.375rem; }
+  html.theme .deal .price { font-size: 1rem; }
+  html.theme .deal .was, html.theme .deal .save { font-size: 0.75rem; }
+  html.theme .deal .acts .btn-buy { height: 2rem; font-size: 0.8125rem; }
+  html.theme .card-share { top: 0.5rem; right: 0.5rem; width: 1.75rem; height: 1.75rem; }
+}
+/* more, smaller cards per row: Home rows 2 · 3 · 5 · 6; listing grids 2 · 3 · 4 · 5 */
+@media (min-width: 1100px) { html.theme .deals .carousel-item { flex-basis: 20%; } }
+@media (min-width: 1280px) { html.theme .deals .carousel-item { flex-basis: 16.6667%; } }
+@media (min-width: 1024px) { html.theme .deal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { html.theme .deal-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+html.theme .deal .saveline { min-width: 0; } html.theme .deal .save { min-width: 0; overflow: hidden; text-overflow: ellipsis; } html.theme .deal .store-chip { flex: none; }
+html.theme .deal .priceline { flex-wrap: nowrap; min-width: 0; } html.theme .deal .was { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* ---- Home layout (M-02, M-10, D-106): tighter sections; desktop side panel for categories and stores ---- */
+/* .home-body keeps the .container gutters (D-107) so the deal column lines up with the posters */
+html.theme .home-main { min-width: 0; }
+html.theme .home-main .container { padding-left: 0; padding-right: 0; max-width: none; }
+html.theme .home-side { display: none; }
+html.theme .home-main .section { padding-top: 1.25rem; }
+html.theme .home-main .section-head { margin-bottom: 0.5rem; }
+@media (min-width: 1200px) {
+  html.theme .home-body { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); gap: 1.75rem; align-items: start; }
+  html.theme .home-side { display: grid; gap: 1rem; position: sticky; top: 5.5rem; padding-top: 1.25rem; max-height: calc(100vh - 6.5rem); overflow-y: auto; scrollbar-width: thin; }
+  html.theme .home-main .cats, html.theme .home-main .home-stores { display: none; }
+}
+html.theme .hs-box { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: var(--radius); padding: 0.875rem 0.5rem 0.5rem; }
+html.theme .hs-box h2 { font-size: 0.875rem; font-weight: 700; letter-spacing: -0.01em; margin: 0 0.5rem 0.375rem; color: hsl(var(--ink)); }
+html.theme .hs-box ul { list-style: none; margin: 0; padding: 0; }
+html.theme .hs-box li a { display: flex; align-items: center; gap: 0.625rem; padding: 0.375rem 0.5rem; border-radius: 0.5rem; font-size: 0.875rem; color: hsl(var(--ink)); }
+html.theme .hs-box li a:hover { background: hsl(var(--sky) / .7); }
+html.theme .hs-box li a span { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.theme .hs-box li small { font-size: 0.75rem; color: hsl(var(--muted-foreground)); font-variant-numeric: tabular-nums; }
+html.theme .hs-box li .lucide { width: 1rem; height: 1rem; color: hsl(var(--brand-ink) / .75); flex: none; }
+html.theme .hs-logo { flex: none; width: 1.75rem; height: 1.25rem; display: grid; place-items: center; }
+html.theme .hs-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+html.theme .hs-word { border-radius: 0.375rem; background: hsl(var(--sky)); color: hsl(var(--brand-ink)); font-size: 0.75rem; font-weight: 700; width: 1.25rem; }
+html.theme .hs-all { display: inline-flex; align-items: center; gap: 0.25rem; margin: 0.25rem 0.5rem 0.25rem; font-size: 0.8125rem; font-weight: 600; color: hsl(var(--brand-ink)); }
+html.theme .hs-all .lucide { width: 0.875rem; height: 0.875rem; }
+
+/* (D-106 promo strip withdrawn, D-107) */
+@media (max-width: 639px) { html.theme .deal .acts .btn-buy { height: 2.125rem; } }
+
+/* ---- Deal page (M-12, M-13, D-106): every section is a white card; image fills its box; view count beside comments ---- */
+html.theme .detail-main { gap: 1rem; }
+html.theme .deal-image { height: 20rem; padding: 1rem; background: hsl(var(--well)); border: 1px solid hsl(var(--line)); border-radius: var(--radius); }
+/* the photo fills the frame inside its padding: a percentage height never resolves inside a button, so a 300px photo spilled out of a frame shorter than 300px */
+html.theme .deal-image img { position: absolute; inset: 1rem; width: calc(100% - 2rem); height: calc(100% - 2rem); max-width: none; max-height: none; object-fit: contain; }
+html.theme .deal-body > .block, html.theme .deal-body > .comments { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: var(--radius); padding: 1rem 1.125rem; margin: 0; }
+html.theme .deal-body > .block h2, html.theme .deal-body > .comments h2 { font-size: 1rem; margin: 0 0 0.5rem; }
+html.theme .deal-body > .howto { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+html.theme .deal-body > .specs table, html.theme .deal-body > .specs .spec-table { margin: 0; }
+html.theme .deal-body > .report-row { margin-top: -0.25rem; }
+html.theme .deal-stats { display: flex; align-items: center; flex-wrap: wrap; gap: 0.375rem 1rem; margin-top: 0.875rem; font-size: 0.8125rem; color: hsl(var(--muted-foreground)); }
+html.theme .deal-stats .views { display: inline-flex; align-items: center; gap: 0.375rem; font-variant-numeric: tabular-nums; }
+html.theme .deal-stats .lucide { width: 0.875rem; height: 0.875rem; }
+html.theme .deal-stats .comment-link { margin-top: 0; }
+html.theme .share-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.875rem; }
+html.theme .share-row .btn { width: 100%; justify-content: center; }
+@media (max-width: 899px) { html.theme .deal-image { height: 16rem; } html.theme .deal-body > .block, html.theme .deal-body > .comments { padding: 0.875rem; } }
+@media (min-width: 900px) { html.theme .panel-core { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: var(--radius); padding: 1.25rem; } }
+
+/* ============ S19 review fixes (D-107) ============ */
+/* 1. Home side panel on the right; scrolls with the page (no inner scrollbar, never clipped); stores as the logo tiles, 2 per row */
+@media (min-width: 1200px) {
+  html.theme .home-body { grid-template-columns: minmax(0, 1fr) 17rem; }
+  html.theme .home-side { order: 2; position: static; max-height: none; overflow: visible; }
+}
+html.theme .hs-box { padding: 0.875rem 0.625rem 0.625rem; border-radius: 1rem; box-shadow: 0 1px 2px hsl(var(--shadow) / .04); }
+html.theme .hs-stores { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; padding: 0.125rem 0.125rem 0.25rem; }
+html.theme .hs-stores .store.has-logo { min-height: 4.75rem; padding: 0.625rem 0.375rem; border-radius: 0.75rem; }
+html.theme .hs-stores .store-logo { height: 1.75rem; }
+html.theme .hs-stores .store-logo img { max-height: 1.75rem; max-width: 88%; }
+html.theme .hs-stores .store-logo img[src$=".png"] { max-height: 2.25rem; border-radius: 0.5rem; }
+html.theme .hs-stores .store-word { font-size: 0.9375rem; }
+html.theme .hs-stores .store.has-logo .store-count { font-size: 0.6875rem; }
+@media (hover: hover) {
+  html.theme .hs-stores .store.has-logo .store-count { bottom: 0.4375rem; }
+  html.theme .hs-stores .store.has-logo:hover .store-logo { transform: translateY(-0.4375rem); }
+}
+
+/* 2. Deal-row arrows sit in the section header beside View all (site.js moves them); nothing on top of the cards */
+html.theme .section-head { align-items: flex-start; }
+html.theme .section-head .view-all, html.theme .sh-end { min-height: 2rem; }
+html.theme .sh-end { display: flex; align-items: center; gap: 0.875rem; flex: none; }
+html.theme .sh-nav { display: flex; gap: 0.375rem; }
+html.theme .sh-nav[hidden] { display: none; }
+html.theme .sh-nav .carousel-prev, html.theme .sh-nav .carousel-next { position: static; transform: none; width: 2rem; height: 2rem; box-shadow: none; border-color: hsl(var(--line)); background: hsl(var(--surface)); color: hsl(var(--brand-ink)); }
+html.theme .sh-nav .carousel-prev svg, html.theme .sh-nav .carousel-next svg { width: 1rem; height: 1rem; }
+@media (hover: hover) { html.theme .sh-nav .carousel-prev:hover, html.theme .sh-nav .carousel-next:hover { background: hsl(var(--fill)); border-color: hsl(var(--fill)); color: hsl(var(--on-fill)); } }
+@media (max-width: 767px) { html.theme .sh-nav { display: none; } }
+/* home deal rows inside the main column: 4 per row (5 from 1280 px, where the type starts scaling with the screen) so the square cards keep readable type */
+@media (min-width: 1200px) { html.theme .home-main .deals .carousel-item { flex-basis: 25%; } }
+@media (min-width: 1280px) { html.theme .home-main .deals .carousel-item { flex-basis: 20%; } }
+
+/* 3. Loot band inside the column: rounded peach panel with its own padding, so icon, title, subtitle and cards line up */
+html.theme .home-main #loot { margin-top: 1.5rem; padding: 1rem 1.25rem 1.25rem; border-radius: 1.25rem; }
+html.theme .home-body { --gut: max(1rem, env(safe-area-inset-left, 0px)); }
+@media (min-width: 768px) { html.theme .home-body { --gut: 2rem; } }
+@media (min-width: 1024px) { html.theme .home-body { --gut: 3rem; } }
+@media (max-width: 1199px) { html.theme .home-main #loot { border-radius: 0; margin-left: calc(-1 * var(--gut)); margin-right: calc(-1 * var(--gut)); padding-left: var(--gut); padding-right: var(--gut); } }
+html.theme .section-head p { margin-top: 0.125rem; }
+
+/* 4. Back-to-top alone, bottom right; docks above the footer */
+html.theme .fstack { position: fixed; right: max(1rem, env(safe-area-inset-right, 0px)); bottom: max(1rem, env(safe-area-inset-bottom, 0px)); z-index: 34; transform: translateY(calc(-1 * var(--dock, 0px))); }
+html.theme .fstack .to-top { position: static; width: 2.5rem; height: 2.5rem; border-radius: 999px; box-shadow: 0 4px 12px -4px hsl(var(--shadow) / .3); }
+@media (max-width: 767px) { html.theme body[data-page="detail"] .fstack { bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)); } }
+
+/* 5. Edge join tab (D-107): half-circle tab on the left edge, halfway down; hover opens a half-circle fan */
+html.theme .fjoin { --R: 5.75rem; position: fixed; left: 0; top: 50%; z-index: 35; width: 1.75rem; height: 3.5rem; transform: translateY(-50%); }
+html.theme .fjoin-tab { position: relative; z-index: 2; width: 100%; height: 100%; padding: 0 0.25rem 0 0; border: 0; border-radius: 0 999px 999px 0; display: grid; place-items: center end; background: hsl(var(--fill)); color: hsl(var(--on-fill)); cursor: pointer; box-shadow: 2px 4px 12px -4px hsl(var(--shadow) / .5); transition: width .2s cubic-bezier(.2,0,0,1); }
+html.theme .fjoin-tab .lucide { width: 1rem; height: 1rem; }
+html.theme .fjoin-tab::after { content: ""; position: absolute; top: 0.375rem; right: 0.1875rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: #25D366; border: 2px solid hsl(var(--brand-ink)); }
+html.theme .fjoin-tab:focus-visible { outline: 2px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+/* the half-disc behind the fan; part of the hover area while open */
+html.theme .fjoin-disc { position: absolute; z-index: 0; left: 0; top: 50%; width: calc(var(--R) + 2.25rem); height: calc(2 * (var(--R) + 2.25rem)); border-radius: 0 999px 999px 0; background: hsl(var(--surface) / .97); border: 1px solid hsl(var(--line)); border-left: 0; box-shadow: 4px 8px 28px -12px hsl(var(--shadow) / .35); transform-origin: left center; transform: translateY(-50%) scale(0); opacity: 0; transition: transform .26s cubic-bezier(.2,0,0,1), opacity .18s; pointer-events: none; }
+html.theme .fjoin-items { position: absolute; z-index: 1; left: 0; top: 50%; width: 0; height: 0; }
+html.theme .fjoin-items .fs-btn { position: absolute; left: -1.25rem; top: -1.25rem; width: 2.5rem; height: 2.5rem; border-radius: 999px; border: 0; display: grid; place-items: center; box-shadow: 0 4px 12px -4px hsl(var(--shadow) / .35); opacity: 0; visibility: hidden; transform: translate(0, 0) scale(.4); transition: transform .26s cubic-bezier(.2,.8,.2,1.15), opacity .18s, visibility 0s .26s; }
+html.theme .fjoin-items .fs-btn svg { width: 1.375rem; height: 1.375rem; }
+html.theme .fjoin-items .fs-btn .lucide { width: 1.25rem; height: 1.25rem; }
+/* positions on the arc: 4 buttons at -67.5°, -22.5°, 22.5°, 67.5° from the tab */
+html.theme .fjoin-items .fs-wa  { --x: calc(var(--R) * .383); --y: calc(var(--R) * -.924); --d: 0; }
+html.theme .fjoin-items .fs-tg  { --x: calc(var(--R) * .924); --y: calc(var(--R) * -.383); --d: 1; }
+html.theme .fjoin-items .fs-app { --x: calc(var(--R) * .924); --y: calc(var(--R) * .383); --d: 2; }
+html.theme .fjoin-items .fs-ch  { --x: calc(var(--R) * .383); --y: calc(var(--R) * .924); --d: 3; }
+html.theme .fs-wa { background: #25D366; color: #fff; }
+html.theme .fs-tg { background: hsl(var(--surface)); color: #229ED9; }
+html.theme .fs-tg svg { width: 100% !important; height: 100% !important; }
+html.theme .fs-app { background: hsl(var(--ink)); color: #fff; }
+html.theme .fs-app svg { width: 1.125rem !important; height: 1.125rem !important; }
+html.theme .fs-ch { background: hsl(var(--surface)); color: hsl(var(--brand-ink)); border: 1px solid hsl(var(--line)) !important; }
+html.theme .fjoin-items .fs-tip { position: absolute; top: 50%; left: calc(100% + 0.5rem); padding: 0.25rem 0.625rem; border-radius: 999px; background: hsl(var(--ink)); color: #fff; font-size: 0.8125rem; font-weight: 600; white-space: nowrap; opacity: 0; visibility: hidden; transform: translate(-0.25rem, -50%); transition: opacity .15s, transform .15s; pointer-events: none; }
+/* open: hover (pointer), focus inside (keyboard) or .is-open (tap) */
+html.theme .fjoin.is-open .fjoin-tab, html.theme .fjoin:focus-within .fjoin-tab { width: 2rem; }
+@media (hover: hover) { html.theme .fjoin:hover .fjoin-tab { width: 2rem; } }
+html.theme .fjoin.is-open .fjoin-disc, html.theme .fjoin:focus-within .fjoin-disc { transform: translateY(-50%) scale(1); opacity: 1; pointer-events: auto; }
+html.theme .fjoin.is-open .fs-btn, html.theme .fjoin:focus-within .fs-btn { opacity: 1; visibility: visible; transform: translate(var(--x), var(--y)) scale(1); transition: transform .3s cubic-bezier(.2,.8,.2,1.15), opacity .18s, visibility 0s; transition-delay: calc(var(--d) * 40ms); }
+@media (hover: hover) {
+  html.theme .fjoin:hover .fjoin-disc { transform: translateY(-50%) scale(1); opacity: 1; pointer-events: auto; }
+  html.theme .fjoin:hover .fs-btn { opacity: 1; visibility: visible; transform: translate(var(--x), var(--y)) scale(1); transition: transform .3s cubic-bezier(.2,.8,.2,1.15), opacity .18s, visibility 0s; transition-delay: calc(var(--d) * 40ms); }
+  html.theme .fjoin-items .fs-btn:hover { box-shadow: 0 6px 16px -4px hsl(var(--shadow) / .45); }
+  html.theme .fjoin-items .fs-btn:hover .fs-tip { opacity: 1; visibility: visible; transform: translate(0, -50%); }
+}
+html.theme .fjoin-items .fs-btn:focus-visible .fs-tip { opacity: 1; visibility: visible; transform: translate(0, -50%); }
+/* phone: 3 buttons (no chat) at -50°, 0°, 50°; slimmer tab */
+@media (max-width: 767px) {
+  html.theme .fjoin { --R: 5rem; width: 1.375rem; height: 3rem; }
+  html.theme .fjoin-tab .lucide { width: 0.875rem; height: 0.875rem; }
+  html.theme .fjoin-items .fs-ch { display: none; }
+  html.theme .fjoin-items .fs-wa  { --x: calc(var(--R) * .643); --y: calc(var(--R) * -.766); }
+  html.theme .fjoin-items .fs-tg  { --x: var(--R); --y: 0px; }
+  html.theme .fjoin-items .fs-app { --x: calc(var(--R) * .643); --y: calc(var(--R) * .766); }
+  html.theme .fjoin-disc { height: calc(2 * (var(--R) + 2rem)); width: calc(var(--R) + 2rem); }
+}
+html.theme.is-embed .fjoin { display: none; }
+@media (prefers-reduced-motion: reduce) { html.theme .fjoin-disc, html.theme .fjoin-items .fs-btn, html.theme .fjoin-tab { transition: none !important; } }
+
+
+/* 7. Buy now (D-107, style D "Shine" picked D-108): hovering anywhere on the card turns the button solid navy, a light sheen crosses it once, it lifts */
+html.theme .deal .acts .btn-buy { position: relative; isolation: isolate; overflow: hidden; transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .deal .acts .btn-buy::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, hsl(0 0% 100% / .45), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
+@media (hover: hover) {
+  html.theme .deal:hover .acts .btn-buy { background: hsl(var(--fill)); color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--shadow) / .6); }
+  html.theme .deal:hover .acts .btn-buy::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  html.theme .deal:hover .acts .btn-buy .lucide { transform: none; animation: basket-tilt .6s cubic-bezier(.2,0,0,1) .05s 1; }
+  html.theme .deal .acts .btn-buy:active { transform: translateY(0) scale(.98); }
+}
+@keyframes buy-shine { from { left: -60%; } to { left: 120%; } }
+@media (prefers-reduced-motion: reduce) { html.theme .deal .acts .btn-buy { transition: none; } html.theme .deal:hover .acts .btn-buy::after { animation: none; opacity: 0; } }
+
+/* 7b. Card pops on hover (D-108): grows a little, lifts, deeper shadow; rows get room so the grown card is never clipped */
+@media (hover: hover) {
+  html.theme .deal { transition: transform .22s cubic-bezier(.2,0,0,1), box-shadow .22s, border-color .22s; }
+  html.theme .deal:hover { position: relative; z-index: 2; transform: translateY(-2px) scale(1.015); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--shadow) / .35), 0 2px 6px hsl(var(--shadow) / .06); border-color: hsl(var(--brand-ink) / .22); }
+  html.theme .deals .carousel-viewport { padding: 0.75rem 0.5rem; margin: -0.75rem -0.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .deal:hover { transform: none; } }
+
+/* 8. Sponsored slots (DEV-030, D-108): desktop = first box of the right panel; phone and tablet = one card between Top deals and Shop by store */
+html.theme .sp-slot > .sp-card[hidden] { display: none; }
+html.theme .sp-card { position: relative; display: flex; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: 1rem; overflow: hidden; color: hsl(var(--ink)); transition: box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .sp-img { display: block; background: hsl(var(--sky)) center / cover no-repeat; flex: none; }
+html.theme .sp-body { display: grid; align-content: start; gap: 0.25rem; padding: 0.75rem 0.875rem 0.875rem; min-width: 0; }
+html.theme .sp-tag { justify-self: start; font-size: 0.6875rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+html.theme .sp-sample { letter-spacing: .04em; opacity: .75; }
+html.theme .sp-title { font-size: 0.9375rem; line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; }
+html.theme .sp-line { font-size: 0.8125rem; line-height: 1.35; color: hsl(var(--muted-foreground)); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+html.theme .sp-cta { justify-self: start; display: inline-flex; align-items: center; gap: 0.375rem; margin-top: 0.375rem; height: 2rem; padding: 0 0.75rem; border-radius: 0.5rem; border: 1px solid hsl(var(--brand-ink) / .25); color: hsl(var(--brand-ink)); font-size: 0.8125rem; font-weight: 600; transition: background-color .2s, color .2s, border-color .2s; }
+html.theme .sp-cta .lucide { width: 0.875rem; height: 0.875rem; transition: transform .2s; }
+@media (hover: hover) {
+  html.theme .sp-card:hover { box-shadow: 0 12px 26px -16px hsl(var(--shadow) / .35); transform: translateY(-2px); }
+  html.theme .sp-card:hover .sp-cta { background: hsl(var(--fill)); border-color: hsl(var(--fill)); color: hsl(var(--on-fill)); }
+  html.theme .sp-card:hover .sp-cta .lucide { transform: translateX(0.1875rem); }
+}
+html.theme .sp-card:focus-visible { outline: 2px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+/* side panel: picture on top (600 × 500, 6:5) */
+html.theme .sp-side { flex-direction: column; }
+html.theme .sp-side .sp-img { aspect-ratio: 6 / 5; width: 100%; }
+/* inline (phone, tablet): picture left, text right; hidden where the side panel shows */
+html.theme .sp-inline .sp-card { flex-direction: row; }
+html.theme .sp-inline .sp-img { width: 38%; min-height: 8.5rem; }
+html.theme .sp-inline .sp-body { align-content: center; }
+@media (min-width: 1200px) { html.theme .home-main .sp-inline { display: none; } }
+@media (max-width: 1199px) { html.theme .home-side .sp-slot { display: none; } }
+@media (min-width: 640px) and (max-width: 1199px) { html.theme .sp-inline .sp-img { width: 16rem; min-height: 10rem; } html.theme .sp-inline .sp-title { font-size: 1.0625rem; } html.theme .sp-inline .sp-body { padding: 1rem 1.25rem; } }
+
+/* ============ S19 blog index cards (D-109 rev): earlier row size, 2 per row, deal-card pop, View blog = Buy now Shine ============ */
+@keyframes basket-tilt { 0% { transform: rotate(0); } 30% { transform: rotate(-14deg) translateY(-1px); } 60% { transform: rotate(9deg); } 100% { transform: rotate(0); } }
+html.theme .post-cards { display: grid; grid-template-columns: 1fr; gap: 1rem; padding-top: .25rem; }
+@media (min-width: 900px) { html.theme .post-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; } }
+html.theme .post-card { position: relative; display: flex; gap: 1rem; padding: 1rem; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: 1rem; transition: transform .22s cubic-bezier(.2,0,0,1), box-shadow .22s; }
+@media (min-width: 768px) { html.theme .post-card { padding: 1.25rem; gap: 1.25rem; } }
+html.theme .post-card .post-cover { background: hsl(var(--well)); }
+html.theme .post-card .post-cover img { transition: transform .3s cubic-bezier(.2,0,0,1); }
+html.theme .post-card .post-txt { flex: 1; }
+html.theme .post-card h2 a { color: hsl(var(--ink)); }
+html.theme .post-card h2 a::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+html.theme .post-card h2 a:hover { text-decoration: none; }
+html.theme .post-card:has(h2 a:focus-visible) { outline: 2px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+html.theme .post-card h2 a:focus-visible { outline: none; }
+html.theme .post-card .post-txt p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+html.theme .btn-view { position: relative; isolation: isolate; overflow: hidden; justify-self: start; margin-top: .375rem; height: 2.375rem; padding: 0 .875rem; gap: .375rem; border-radius: .625rem; font-size: .875rem; font-weight: 600; transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .btn-view .lucide { width: .9375rem; height: .9375rem; transition: transform .18s cubic-bezier(.2,0,0,1); }
+html.theme .btn-view::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, hsl(0 0% 100% / .45), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
+@media (max-width: 639px) { html.theme .btn-view { height: 2.125rem; font-size: .8125rem; } }
+@media (hover: hover) {
+  html.theme .post-card:hover { z-index: 2; transform: translateY(-2px) scale(1.01); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--shadow) / .35), 0 2px 6px hsl(var(--shadow) / .06); }
+  html.theme .post-card:hover .post-cover img { transform: scale(1.05); }
+  html.theme .post-card:hover h2 a { color: hsl(var(--brand-ink)); }
+  html.theme .post-card:hover .btn-view { background: hsl(var(--fill)); color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--shadow) / .6); }
+  html.theme .post-card:hover .btn-view::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  html.theme .post-card:hover .btn-view .lucide { transform: translateX(.25rem); }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .post-card, html.theme .post-card * { transition: none !important; animation: none !important; transform: none !important; } }
+
+/* ============ S19 blog post page (D-110): picture-left head, deal cards with Buy now + store logo, same pop and Shine ============ */
+html.theme .post-head { display: grid; gap: 1rem; padding: 1rem; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: 1rem; }
+html.theme .post-hero { aspect-ratio: 4 / 3; position: relative; border-radius: .75rem; background: hsl(var(--sky) / .35); }
+html.theme .post-hero img { position: absolute; inset: 1rem; width: calc(100% - 2rem); height: calc(100% - 2rem); object-fit: contain; mix-blend-mode: var(--img-blend); }
+html.theme .post-head-txt { min-width: 0; display: grid; gap: .5rem; align-content: center; }
+html.theme .post-head h1 { margin: 0; font-size: 1.5rem; line-height: 1.875rem; font-weight: 700; letter-spacing: -.02em; color: hsl(var(--ink)); }
+html.theme .post-lead { margin: .25rem 0 0; font-size: 1rem; line-height: 1.5rem; color: hsl(var(--ink) / .8); }
+html.theme .post-head .post-share { margin-top: .5rem; }
+html.theme .post-head .post-share .btn { border-radius: 999px; }
+/* D-134: from 640px the picture floats left; once the text passes the picture it carries on underneath, full width */
+@media (min-width: 640px) {
+  html.theme .post-head { display: flow-root; padding: 1.25rem; }
+  html.theme .post-hero { aspect-ratio: 1; float: left; width: 15rem; margin: 0 1.5rem .75rem 0; }
+  html.theme .post-head-txt { display: block; align-content: normal; }
+  html.theme .post-head-txt > * + * { margin-top: .5rem; }
+  html.theme .post-head .post-share { margin-top: 1rem; }
+}
+@media (min-width: 1024px) { html.theme .post-hero { width: 17.5rem; } html.theme .post-head h1 { font-size: 2rem; line-height: 2.5rem; } }
+html.theme .post-body { margin-top: 1.5rem; }
+
+/* deal cards inside the post and in the right rail */
+html.theme .deal-embed { position: relative; display: flex; gap: .875rem; align-items: center; padding: .75rem; margin: 0 0 .875rem; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: 1rem; transition: transform .22s cubic-bezier(.2,0,0,1), box-shadow .22s; }
+html.theme .deal-embed .img { flex: none; width: 6.5rem; height: 6.5rem; padding: .375rem; border-radius: .75rem; background: hsl(var(--sky) / .35); overflow: hidden; }
+html.theme .deal-embed .img img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: var(--img-blend); transition: transform .3s cubic-bezier(.2,0,0,1); }
+html.theme .deal-embed .body { flex: 1; min-width: 0; display: grid; gap: .1875rem; }
+html.theme .deal-embed .title { font-size: .9375rem; font-weight: 600; line-height: 1.25rem; color: hsl(var(--ink)); }
+html.theme .deal-embed .priceline { display: flex; align-items: baseline; gap: .5rem; }
+html.theme .deal-embed .price { font-size: 1.125rem; font-weight: 700; color: hsl(var(--ink)); }
+html.theme .deal-embed .was { font-size: .8125rem; color: hsl(var(--muted-foreground)); text-decoration: line-through; }
+html.theme .emb-acts { display: flex; align-items: center; gap: .75rem; margin-top: .375rem; }
+html.theme .emb-acts .btn-buy { position: relative; isolation: isolate; overflow: hidden; height: 2.375rem; padding: 0 1rem; gap: .375rem; border-radius: .625rem; font-size: .875rem; font-weight: 600; transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .emb-acts .btn-buy .lucide { width: .9375rem; height: .9375rem; }
+html.theme .emb-acts .btn-buy::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, hsl(0 0% 100% / .45), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
+html.theme .emb-store { height: 1.125rem; width: auto; max-width: 4.5rem; object-fit: contain; }
+html.theme .emb-store.is-text { height: auto; font-size: .8125rem; font-weight: 600; color: hsl(var(--muted-foreground)); }
+@media (min-width: 640px) { html.theme .deal-embed:not(.is-rail) .img { width: 8rem; height: 8rem; } html.theme .deal-embed:not(.is-rail) { padding: 1rem; gap: 1.25rem; } }
+html.theme .post-rail .deal-embed { padding: .625rem; gap: .75rem; margin-bottom: .75rem; }
+html.theme .post-rail .deal-embed .img { width: 5rem; height: 5rem; }
+html.theme .post-rail .deal-embed .title { font-size: .875rem; line-height: 1.1875rem; }
+html.theme .post-rail .deal-embed .price { font-size: 1rem; }
+html.theme .post-rail .emb-acts { gap: .5rem; }
+html.theme .post-rail .emb-acts .btn-buy { height: 2.125rem; padding: 0 .75rem; font-size: .8125rem; }
+html.theme .post-rail .emb-store { max-width: 3.75rem; height: 1rem; }
+html.theme .post-rail { padding: .75rem .5rem .5rem; margin: -.75rem -.5rem 0; }
+@media (hover: hover) {
+  html.theme .deal-embed:hover { z-index: 2; transform: translateY(-2px) scale(1.01); box-shadow: 0 1.25rem 2rem -1rem hsl(var(--shadow) / .35), 0 2px 6px hsl(var(--shadow) / .06); }
+  html.theme .deal-embed:hover .img img { transform: scale(1.06); }
+  html.theme .deal-embed:hover .emb-acts .btn-buy { background: hsl(var(--fill)); color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--shadow) / .6); }
+  html.theme .deal-embed:hover .emb-acts .btn-buy::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  html.theme .deal-embed:hover .emb-acts .btn-buy .lucide { animation: basket-tilt .6s cubic-bezier(.2,0,0,1) .05s 1; }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .deal-embed, html.theme .deal-embed * { transition: none !important; animation: none !important; transform: none !important; } }
+@media (min-width: 1024px) { html.theme .post-main .deals .carousel-item { flex-basis: 25%; } }
+/* D-111 (share option C): one Share button; hover / keyboard focus / tap (.is-open) slides out WhatsApp, Telegram, Copy link with brand fills */
+html.theme .sh-exp { display: inline-flex; align-items: center; gap: .375rem; justify-self: start; flex-wrap: nowrap; }
+html.theme .sh-trig { display: inline-flex; align-items: center; gap: .375rem; height: 2.5rem; padding: 0 1rem; border-radius: 999px; border: 1px solid hsl(var(--line)); background: hsl(var(--surface)); color: hsl(var(--ink)); font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; transition: background-color .18s, color .18s, border-color .18s; }
+html.theme .sh-trig .lucide { width: 1rem; height: 1rem; }
+html.theme .sh-items { display: inline-flex; gap: .375rem; }
+html.theme .sh-ic { position: relative; display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 999px; border: 1px solid hsl(var(--line)); background: hsl(var(--surface)); color: hsl(var(--ink)); cursor: pointer; opacity: 0; visibility: hidden; transform: translateX(-10px) scale(.8); transition: opacity .2s, transform .2s, visibility .2s, background-color .18s, color .18s, border-color .18s, box-shadow .18s; }
+html.theme .sh-ic svg, html.theme .sh-ic .lucide { width: 1.125rem; height: 1.125rem; }
+html.theme .sh-ic:nth-child(2) { transition-delay: .04s; } html.theme .sh-ic:nth-child(3) { transition-delay: .08s; }
+html.theme .sh-exp:hover .sh-trig, html.theme .sh-exp:focus-within .sh-trig, html.theme .sh-exp.is-open .sh-trig { background: hsl(var(--fill)); border-color: hsl(var(--fill)); color: hsl(var(--on-fill)); }
+html.theme .sh-exp:hover .sh-ic, html.theme .sh-exp:focus-within .sh-ic, html.theme .sh-exp.is-open .sh-ic { opacity: 1; visibility: visible; transform: none; }
+html.theme .sh-ic:hover, html.theme .sh-ic:focus-visible { color: #fff; transform: translateY(-2px); box-shadow: 0 8px 16px -10px hsl(var(--shadow) / .6); transition-delay: 0s; }
+html.theme .sh-wa:hover, html.theme .sh-wa:focus-visible { background: #25D366; border-color: #25D366; }
+html.theme .sh-tg:hover, html.theme .sh-tg:focus-visible { background: #229ED9; border-color: #229ED9; }
+html.theme .sh-copy:hover, html.theme .sh-copy:focus-visible, html.theme .sh-copy.is-done { background: hsl(var(--fill)); border-color: hsl(var(--fill)); color: hsl(var(--on-fill)); }
+html.theme .sh-trig:focus-visible, html.theme .sh-ic:focus-visible { outline: 2px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+html.theme .sh-ic::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translate(-50%, 4px); white-space: nowrap; font-size: .75rem; font-weight: 600; padding: .25rem .5rem; border-radius: .375rem; background: hsl(var(--ink)); color: #fff; opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; }
+html.theme .sh-ic:hover::after, html.theme .sh-ic:focus-visible::after, html.theme .sh-copy.is-done::after { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { html.theme .sh-ic, html.theme .sh-trig { transition: none; } }
+
+/* ============ S19 hover pop for list rows + Visit store (D-112) ============ */
+/* listing filter rows and Home "Shop by category" rows: lift out as a white pill with shadow, text and icon turn navy */
+html.theme .opt, html.theme .hs-box li a { position: relative; transition: transform .18s cubic-bezier(.2,0,0,1), box-shadow .18s, background-color .18s, color .18s; transform-origin: left center; }
+html.theme .opts.scroll { padding: 3px 0.5rem 3px 3px; }
+html.theme .hs-box ul { display: grid; gap: 2px; }
+@media (hover: hover) {
+  html.theme .opt:not(.is-zero):hover, html.theme .hs-box li a:hover { z-index: 1; background: hsl(var(--surface)); color: hsl(var(--brand-ink)); transform: scale(1.03); box-shadow: 0 0.5rem 1rem -0.5rem hsl(var(--shadow) / .35), 0 0 0 1px hsl(var(--shadow) / .08); }
+  html.theme .opt:not(.is-zero):hover .cnt, html.theme .hs-box li a:hover small { color: hsl(var(--brand-ink)); font-weight: 600; }
+  html.theme .hs-box li a:hover .lucide { color: hsl(var(--brand-ink)); }
+  html.theme .opt.is-zero:hover { background: transparent; }
+}
+/* Sponsored "Visit store" gets the Buy now treatment: navy fill, Shine sheen, lift, arrow forward */
+html.theme .sp-cta { position: relative; isolation: isolate; overflow: hidden; height: 2.375rem; padding: 0 0.875rem; border-radius: 0.625rem; font-size: 0.875rem; transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .sp-cta::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, hsl(0 0% 100% / .45), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
+@media (hover: hover) {
+  html.theme .sp-card:hover .sp-cta { background: hsl(var(--fill)); border-color: hsl(var(--fill)); color: hsl(var(--on-fill)); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--shadow) / .6); }
+  html.theme .sp-card:hover .sp-cta::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  html.theme .sp-card:hover .sp-cta .lucide { transform: translateX(0.25rem); }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .opt, html.theme .hs-box li a, html.theme .sp-cta { transition: none; } html.theme .sp-card:hover .sp-cta::after { animation: none; opacity: 0; } }
+
+/* 8. Hot deals today (D-113): owner posters first, then the 10 most-viewed deals of the last 24 h. Every card has the same size and the same slots;
+   only colours (store tint --cb/--cbd, the store's button colour --bb/--bf) and content change. Desktop pages of 4 (site.js topDeals); phones swipe. */
+html.theme .top-deals { padding-top: 1rem; }
+/* D-113 round 2: Embla slider. 4 in view (3 / 2 / 1-with-peek on smaller screens); arrows sit at the sides, centred on the cards */
+html.theme .td-carousel { --per: 4; --gap: 1rem; position: relative; }
+html.theme .td-viewport { overflow: hidden; padding: 0.5rem 0.375rem 1rem; margin: -0.5rem -0.375rem -1rem; }  /* room for the hover lift */
+html.theme .td-container { display: flex; touch-action: pan-y pinch-zoom; margin-left: calc(-1 * var(--gap)); }
+html.theme .td-slide { flex: 0 0 calc(100% / var(--per)); min-width: 0; padding-left: var(--gap); }
+html.theme .td-slide > .td-card { width: 100%; }
+html.theme .td-btn { position: absolute; top: calc(50% - 1.375rem); z-index: 3; width: 2.75rem; height: 2.75rem; display: grid; place-items: center; border-radius: 62.4375rem; border: 1px solid hsl(var(--border)); background: hsl(var(--surface)); color: hsl(var(--ink)); cursor: pointer; box-shadow: 0 6px 16px -6px hsl(var(--shadow) / .35); transition: border-color .15s, color .15s, transform .15s; }
+html.theme .td-prev { left: -1.375rem; } html.theme .td-next { right: -1.375rem; }
+html.theme .td-btn .lucide { width: 1.25rem; height: 1.25rem; }
+html.theme .td-btn:hover { border-color: hsl(var(--brand-ink)); color: hsl(var(--brand-ink)); transform: scale(1.06); }
+html.theme .td-btn:focus-visible { outline: 2px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+html.theme .td-btn[hidden] { display: none; }
+html.theme .td-card { display: flex; flex-direction: column; gap: 0.625rem; height: 22.625rem; min-width: 0; padding: 0.75rem; border-radius: 0.875rem; background: var(--cb); border: 1px solid var(--cbd); color: hsl(var(--ink)); text-decoration: none; position: relative; overflow: hidden; transition: transform .2s cubic-bezier(.2,0,0,1), box-shadow .2s; }
+html.theme .td-card:focus-visible { outline: 2px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+html.theme .td-photo { position: relative; flex: 0 0 11.875rem; height: 11.875rem; border-radius: 0.625rem; background: hsl(var(--well)); overflow: hidden; }
+html.theme .td-photo img { display: block; width: 100%; height: 100%; object-fit: contain; padding: 0.5rem; box-sizing: border-box; transition: transform .35s cubic-bezier(.2,0,0,1); }
+html.theme .td-photo img.fill { object-fit: cover; padding: 0; }
+html.theme .td-feat, html.theme .td-trend { position: absolute; left: 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem; height: 1.375rem; padding: 0 0.5625rem; border-radius: 62.4375rem; font-size: 0.71875rem; font-weight: 700; white-space: nowrap; }
+html.theme .td-feat { top: 0.5rem; background: hsl(var(--gold)); color: hsl(var(--brand-ink)); }
+html.theme .td-trend { bottom: 0.5rem; background: hsl(var(--surface) / .95); color: hsl(var(--brand-ink)); box-shadow: 0 1px 3px hsl(var(--shadow) / .18); }
+html.theme .td-feat svg, html.theme .td-trend svg { width: 0.75rem; height: 0.75rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+html.theme .td-txt { display: grid; grid-template-rows: 1.125rem 2.25rem 1.5rem; row-gap: 0.25rem; min-width: 0; }
+html.theme .td-store { display: flex; align-items: center; height: 1.125rem; }
+html.theme .td-st { height: 0.9375rem; width: auto; max-width: 4.5rem; object-fit: contain; object-position: left; }
+html.theme .td-st-t { font-size: 0.75rem; font-weight: 700; }
+html.theme .td-title { font-size: 0.84375rem; line-height: 1.125rem; height: 2.25rem; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+html.theme .td-price { display: flex; align-items: baseline; gap: 0.4375rem; white-space: nowrap; overflow: hidden; line-height: 1.5rem; }
+html.theme .td-price b { font-size: 1.125rem; font-weight: 800; }
+html.theme .td-price s { font-size: 0.78125rem; color: hsl(var(--muted-foreground)); }
+html.theme .td-price em { font-style: normal; font-size: 0.8125rem; font-weight: 700; color: hsl(var(--save)); }
+html.theme .td-price em.td-end { color: hsl(var(--ink)); font-weight: 600; }
+/* View deal: the store's own button colour; same behaviour as Buy now (D-108): on card hover it lifts, one Shine sweep, the basket tilts */
+html.theme .td-view { display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex: 0 0 2.5rem; height: 2.5rem; margin-top: auto; width: 100%; border-radius: 0.625rem; background: var(--bb); color: var(--bf); font-size: 0.875rem; font-weight: 700; position: relative; isolation: isolate; overflow: hidden; transition: filter .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .td-view .lucide { width: 1rem; height: 1rem; }
+html.theme .td-view::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
+@media (hover: hover) {
+  html.theme .td-card:hover { z-index: 2; transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 32px -16px hsl(var(--shadow) / .35), 0 2px 6px hsl(var(--shadow) / .06); }
+  html.theme .td-card:hover .td-photo img { transform: scale(1.05); }
+  html.theme .td-card:hover .td-view { filter: brightness(.95) saturate(1.1); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--shadow) / .55); }
+  html.theme .td-card:hover .td-view::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  html.theme .td-card:hover .td-view .lucide { animation: basket-tilt .6s cubic-bezier(.2,0,0,1) .05s 1; }
+}
+@media (max-width: 1099px) { html.theme .td-carousel { --per: 3; } }
+@media (max-width: 799px) { html.theme .td-carousel { --per: 2; } }
+@media (max-width: 1279px) { html.theme .td-prev { left: -0.75rem; } html.theme .td-next { right: -0.75rem; } }
+/* phones: one card with the next one peeking in; swipe; no arrows */
+@media (max-width: 599px) {
+  html.theme .td-carousel { --per: 1.16; --gap: 0.75rem; }
+  html.theme .td-btn { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .td-card, html.theme .td-card *, html.theme .td-card *::after { animation: none !important; transition: none !important; } }
+
+/* ============ S22 fixes ============ */
+/* hover pop (D-112) must not spill sideways out of scrolling columns: it triggered a sideways scroll that moved the row away from the pointer and shook it */
+@media (min-width: 900px) { html.theme .filters { overflow-x: hidden; scrollbar-gutter: stable; padding-right: 0.625rem; } }
+html.theme .fgroup .opts.scroll { overflow-x: hidden; }
+/* list view: the grey photo box sits inside the card with an even gap, square, no divider */
+
+/* D-121: Home. Hot deals today moves into the left column; the right column starts beside it.
+   Wide screens: 3 Hot deals in view. Smaller screens keep their slider sizes (4 / 3 / 2 / 1 with peek). No Hot deals: the section hides and Top deals moves up. */
+@media (min-width: 1200px) { html.theme .home-main .td-carousel { --per: 3; } }
+html.theme .home-main .top-deals:not(:has(.td-slide)) { display: none; }
+
+/* D-122: Home head row. "Hot deals today" on the left, the new-deals capsule beside it, "Last deal posted" at the far right of the left column.
+   Wide screens: grid rows head / (main, side), so the Hot deals cards and the ad start on the same line. No Hot deals: the heading hides, the capsule stays. */
+html.theme .home-head { align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 0.5rem 1rem; padding-top: 1.25rem; margin-bottom: 0.625rem; }
+html.theme .home-head .since { flex: 1 1 auto; min-width: 0; padding-top: 0; gap: 1rem; }
+html.theme .home-body:not(:has(.td-slide)) #h-td { display: none; }
+html.theme .home-main .top-deals { padding-top: 0; }
+@media (min-width: 1200px) {
+  html.theme .home-body { grid-template-areas: "head ." "main side"; row-gap: 0; }
+  html.theme .home-head { grid-area: head; }
+  html.theme .home-main { grid-area: main; }
+  html.theme .home-side { grid-area: side; padding-top: 0; }
+  html.theme .home-body:not(:has(.td-slide)) #fresh { padding-top: 0; }
+}
+/* D-122: between 1200 and 1379 px the left column is too narrow for heading + capsule + "Last deal posted"; the grey line gives way so the capsule stays beside the heading */
+@media (min-width: 1200px) and (max-width: 1379px) { html.theme .home-head .since-meta { display: none; } }
+/* D-123: the right-column ad's button sits centred in the card */
+html.theme .sp-side .sp-cta { justify-self: center; }
+/* D-124: no deal count above the cards on deal pages (Top deals, Loot, New, Pantry, category, store); search keeps its result count */
+html.theme body[data-page="listing"]:not([data-kind="search"]) .toolbar .count { display: none; }
+
+/* D-125: the desktop filter column sits in a white card (same look as the Home Shop by category box); groups start closed except Posted (D-135, template) */
+@media (min-width: 900px) {
+  html.theme .filters { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: 1rem; box-shadow: 0 1px 2px hsl(var(--shadow) / .04); padding: 0.375rem 0.75rem 0.25rem 1rem; }
+  html.theme .filters .fgroup:last-of-type { border-bottom: 0; }
+}
+/* D-125: while the next batch loads, the spinner area holds a screen's height so the list never "ends" under a fast scroll and the filter card stays put */
+html.theme .load-state:has(.loader) { min-height: 100vh; align-content: start; }
+/* D-135/D-136: deal pages. The heading row (title, chips, Sort, grid/list) is one block (template).
+   Phone: the toolbar wraps under the title, as before. From 900 px: one line, buttons sit on the title's bottom line so the gap above
+   the cards equals the gap above the Filters card; the row freezes under the header (and under the tab row on tablet) and the cards
+   scroll under it; the Filters card freezes just below it. Posted opens by default (template). */
+html.theme .list-head .toolbar { flex: 1 1 100%; min-width: 0; }
+@media (max-width: 899px) { html.theme .list-head { row-gap: .75rem; padding-bottom: 0; } html.theme body[data-page="listing"] .listing { padding-top: 0; } }
+@media (min-width: 900px) {
+  html.theme body[data-page="listing"] { --stick: calc(4.5rem + 1px); --gap-below: 1.75rem; }
+  html.theme .list-head { position: sticky; top: calc(var(--stick) - 1px); z-index: 1; flex-wrap: nowrap; align-items: flex-end; padding: calc(.75rem + 1px) 0 var(--gap-below); background: hsl(var(--page)); }
+  html.theme .list-head .toolbar { flex: 1 1 auto; padding-bottom: 0; }
+  html.theme body[data-page="listing"] .listing { row-gap: 0; padding-top: 0; }
+  html.theme body[data-page="listing"] .listing > .filters { top: calc(var(--stick) - 1px + var(--head-h, 5.25rem)); max-height: calc(100vh - var(--stick) + 1px - var(--head-h, 5.25rem) - 1rem); }
+}
+@media (min-width: 900px) and (max-width: 1199px) { html.theme body[data-page="listing"] { --stick: calc(7.5rem + 1px); } }
+/* the row tucks 1px under the header border: at 125% scaling the header ends at 81.8px, and a row starting at 82px let cards show through the hairline */
+/* not frozen: a hovered first-row card may lift over the row's bottom gap; frozen (listing.js adds .is-stuck): cards always go under */
+@media (min-width: 900px) { html.theme .list-head.is-stuck { z-index: 3; } }
+/* an open Sort menu floats above the cards (their share buttons sit on layer 2) */
+@media (min-width: 900px) { html.theme .list-head:has(.menu:not([hidden])) { z-index: 4; } }
+/* D-126: the join tab moves from mid-height to the lower left so it never sits on the Hot deals arrow; it stays high enough for the opened half-disc to fit above the screen bottom */
+html.theme .fjoin { top: auto; bottom: calc(var(--R) + 2.75rem - 1.75rem); transform: none; }
+
+/* ============ D-127: brand scrollbar (option 5 of scrollbar-review.html), public site only (admin keeps its own) ============
+   Blue-to-navy pill on a light track. The bar is 14 px wide with a 2 px clear edge, so the track shows 10 px and the pill 6 px,
+   and it never touches a card's border. Inside rounded boxes the track stops short of the corners (margin-block), so the radius is never cut.
+   Chrome only applies these when scrollbar-width / scrollbar-color are left on auto, so the old thin settings are reset below.
+   Firefox cannot draw rounded or gradient bars: it gets a thin navy bar on the same light track. */
+html.theme { --sb-track: #F1F4F9; --sb-a: #2C5BB8; --sb-b: hsl(var(--navy)); }
+@supports selector(::-webkit-scrollbar) {
+  html.theme .fgroup .opts.scroll, html.theme .home-side { scrollbar-width: auto; scrollbar-color: auto; }
+}
+html.theme::-webkit-scrollbar, html.theme ::-webkit-scrollbar { width: 14px; height: 14px; background: transparent; }
+html.theme::-webkit-scrollbar-track, html.theme ::-webkit-scrollbar-track { background: var(--sb-track); background-clip: padding-box; border: 2px solid transparent; border-radius: 999px; }
+html.theme::-webkit-scrollbar-thumb, html.theme ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--sb-a), var(--sb-b)); background-clip: padding-box; border: 4px solid transparent; border-radius: 999px; min-height: 2.5rem; }
+html.theme ::-webkit-scrollbar-thumb:horizontal { background: linear-gradient(90deg, var(--sb-a), var(--sb-b)); background-clip: padding-box; min-width: 2.5rem; }
+html.theme::-webkit-scrollbar-thumb:hover, html.theme ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #3B6FD6, #0B2F6E); background-clip: padding-box; }
+html.theme::-webkit-scrollbar-corner, html.theme ::-webkit-scrollbar-corner { background: transparent; }
+/* keep the track clear of rounded corners */
+html.theme .filters::-webkit-scrollbar-track { margin-block: 0.75rem; }
+html.theme .sheet::-webkit-scrollbar-track, html.theme .sheet-body::-webkit-scrollbar-track, html.theme .popover::-webkit-scrollbar-track { margin-block: 0.5rem; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-track { margin-block: 0.125rem; }
+/* filter card: the bar sits in its own reserved lane inside the card's right edge; the long lists keep their text clear of the bar */
+@media (min-width: 900px) { html.theme .filters { padding-right: 0.25rem; } }
+html.theme .fgroup .opts.scroll { margin-right: 0; padding-right: 0.5rem; }
+@supports not selector(::-webkit-scrollbar) {
+  html.theme { scrollbar-color: var(--sb-b) var(--sb-track); }
+  html.theme .filters, html.theme .fgroup .opts.scroll, html.theme .sheet, html.theme .sheet-body, html.theme .popover, html.theme .legal-toc, html.theme .post-rail { scrollbar-width: thin; }
+}
+/* D-127: the long Category / Store lists inside the filter card get a slimmer copy of the same pill (track 6 px, pill 4 px) so they read as second level next to the card's bar */
+html.theme .fgroup .opts.scroll::-webkit-scrollbar { width: 10px; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-track { background: var(--sb-track); background-clip: padding-box; border: 2px solid transparent; border-radius: 999px; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--sb-a), var(--sb-b)); background-clip: padding-box; border: 3px solid transparent; border-radius: 999px; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #3B6FD6, #0B2F6E); background-clip: padding-box; }
+
+/* ============ D-128: soft roll-down for every dropdown, thin navy ring on hover (public site) ============ */
+/* 1a. floating menus (Sort, Account) and the search suggestions unroll from their button and roll back up (site.js waits 240 ms before hiding) */
+html.theme .dropdown .menu, html.theme .popover { clip-path: inset(-1.5rem -1.5rem 100% -1.5rem); opacity: 0; transform: translateY(-0.25rem); transition: clip-path .24s cubic-bezier(.2,0,0,1), opacity .18s ease, transform .24s cubic-bezier(.2,0,0,1); }
+html.theme .dropdown .menu[data-state="open"], html.theme .popover[data-state="open"] { clip-path: inset(-1.5rem -1.5rem -1.5rem -1.5rem); opacity: 1; transform: none; }
+/* 1b. fold-out panels (filter groups, FAQ, How to get it, About text): site.js animates the height; the arrow turns in step */
+html.theme details > summary .lucide { transition: transform .26s cubic-bezier(.2,0,0,1); }
+html.theme details.is-closing > summary .lucide { transform: none !important; }
+html.theme .faq-item.is-closing summary { color: inherit; }
+@media (prefers-reduced-motion: reduce) { html.theme .dropdown .menu, html.theme .popover { transition: none; } }
+
+/* 2. thin navy ring 2 px outside anything you can click; it follows the rounded corners */
+@media (hover: hover) {
+  html.theme :where(.btn:not(.btn-link), .chip-x, .card.store, .td-btn, .carousel-prev, .carousel-next, .sheet-close, .sheet-nav-btn, .fjoin-tab, .fs-btn, .sp-cta, [aria-controls="menu-sheet"]):hover { outline: 1.5px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+  /* dark footer: navy would not show, so the ring is white there */
+  html.theme :is(.ft-play, .ft-alerts, footer .btn):hover { outline: 1.5px solid #fff; outline-offset: 2px; }
+  /* cards already lift; their own edge turns navy instead of adding a second ring */
+  html.theme :is(.deal, .post-card, .sp-card):hover { border-color: hsl(var(--brand-ink)); }
+  html.theme .td-card:hover { border-color: hsl(var(--brand-ink)); }
+  html.theme .opt:not(.is-zero):hover, html.theme .hs-box li a:hover { box-shadow: 0 0.5rem 1rem -0.5rem hsl(var(--shadow) / .35), 0 0 0 1.5px hsl(var(--brand-ink)); }
+}
+
+/* D-128 round 2 (user review): no ring on the search box, Clear all (text buttons), the grid / list switch, or the deal cards inside a blog article;
+   the blog's right-rail deal cards get the ring around the whole card instead (their Buy now no longer rings on its own) */
+@media (hover: hover) {
+  html.theme .deal-embed:not(.is-rail) .btn:hover { outline: 0; }
+  html.theme .deal-embed.is-rail:hover { outline: 1.5px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+  html.theme .deal-embed.is-rail .btn:hover { outline: 0; }
+}
+/* filter groups without their own scroll (Discount, Price, Posted, Deal type) get the same inner room as the long lists, so the hover pill stays inside the card */
+html.theme .fgroup .opts:not(.scroll) { padding: 3px 0.5rem 3px 3px; }
+
+/* D-132: side rails stick below the header (82 px), not under it, so "Deals in this post" (and the legal contents list) stay in view with even space above and below */
+@media (min-width: 1024px) {
+  html.theme .post-rail { top: 5.5rem; max-height: calc(100vh - 6.5rem); }
+  html.theme .legal-toc { top: 6.25rem; max-height: calc(100vh - 7.25rem); }
+}
+
+/* D-133: wide screens get side margins that grow with the screen (about 10% each side, as in the user's 80% zoom view).
+   The content never gets narrower than 1180 px (Home right column + 3 Hot deals still fit) and never wider than 1600 px.
+   Under 1024 px nothing changes. The header, page and footer share .container, so they stay aligned. */
+@media (min-width: 1024px) {
+  html.theme .container { max-width: none; padding-left: max(3rem, min(10vw, (100vw - 1180px) / 2), (100vw - 1600px) / 2); padding-right: max(3rem, min(10vw, (100vw - 1180px) / 2), (100vw - 1600px) / 2); }
+  html.theme .home-main .container { padding-left: 0; padding-right: 0; }
+}
+
+/* ============ S24 review fixes (D-143 to D-146) ============ */
+/* D-143: the slide-over preview has its own Buy button, so the phone buy bar never shows there */
+html.is-embed .buybar { display: none !important; }
+html.is-embed body[data-page="detail"] { padding-bottom: 0; }
+
+/* D-145: deal page share buttons carry the WhatsApp / Telegram marks; hover fills in the brand colour with white text (as the blog share) */
+html.theme .share-row .sh-btn { transition: background-color .18s, border-color .18s, color .18s, transform .18s cubic-bezier(.2,0,0,1), box-shadow .18s; }
+html.theme .share-row .sh-btn svg { width: 1rem; height: 1rem; flex: none; transition: color .18s; }
+html.theme .share-row .sh-btn-wa svg { color: #25D366; }
+html.theme .share-row .sh-btn-tg svg { color: #229ED9; }
+html.theme .share-row .sh-btn:hover, html.theme .share-row .sh-btn:focus-visible { color: #fff; transform: translateY(-2px); box-shadow: 0 8px 16px -10px hsl(var(--shadow) / .6); }
+html.theme .share-row .sh-btn:hover svg, html.theme .share-row .sh-btn:focus-visible svg { color: #fff; }
+html.theme .share-row .sh-btn-wa:hover, html.theme .share-row .sh-btn-wa:focus-visible { background: #25D366; border-color: #25D366; }
+html.theme .share-row .sh-btn-tg:hover, html.theme .share-row .sh-btn-tg:focus-visible { background: #229ED9; border-color: #229ED9; }
+html.theme .share-row .sh-btn-copy:hover, html.theme .share-row .sh-btn-copy:focus-visible { background: hsl(var(--fill)); border-color: hsl(var(--fill)); }
+@media (prefers-reduced-motion: reduce) { html.theme .share-row .sh-btn { transition: none; transform: none !important; } }
+
+/* D-146: Specs table fills the card; label column 30% (8 to 12rem); label-less rows span with a bullet; phones stack label over value */
+html.theme .specs dl { max-width: none; width: 100%; border: 1px solid hsl(var(--line)); border-radius: .75rem; font-size: .875rem; line-height: 1.375rem; }
+html.theme .specs dl > div { grid-template-columns: clamp(8rem, 30%, 12rem) minmax(0, 1fr); }
+html.theme .specs dl > div + div { border-top: 1px solid hsl(var(--line)); }
+html.theme .specs dt, html.theme .specs dd { padding: .75rem 1rem; }
+html.theme .specs dt { background: hsl(var(--muted) / .6); color: hsl(var(--muted-foreground)); font-weight: 500; border-right: 1px solid hsl(var(--line)); overflow-wrap: anywhere; }
+html.theme .specs dd { color: hsl(var(--ink)); overflow-wrap: anywhere; }
+html.theme .specs dl > div.one { grid-template-columns: 1fr; }
+html.theme .specs dl > div.one dd { display: flex; gap: .625rem; }
+html.theme .specs dl > div.one dd::before { content: ""; flex: none; width: .375rem; height: .375rem; margin-top: .5rem; border-radius: 999px; background: hsl(var(--brand-ink) / .55); }
+@media (max-width: 479px) {
+  html.theme .specs dl > div { grid-template-columns: 1fr; }
+  html.theme .specs dt { padding: .625rem .875rem .125rem; background: none; border-right: 0; font-size: .75rem; line-height: 1.125rem; }
+  html.theme .specs dd { padding: 0 .875rem .625rem; }
+  html.theme .specs dl > div.one dd { padding-top: .625rem; }
+}
+
+/* Deal page from 1024 px: the photo and its details share one card; from 1180 px related deals move to a right column and the swipe row hides */
+html.theme .related-side { display: none; }
+@media (min-width: 1024px) {
+  html.theme .deal-hero { display: grid; grid-template-columns: minmax(16rem, 2fr) minmax(0, 3fr); background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: var(--radius); overflow: hidden; }
+  html.theme .deal-hero .deal-image { height: auto; min-height: 22rem; border: 0; border-right: 1px solid hsl(var(--line)); border-radius: 0; }
+  html.theme .deal-hero .panel-core { border: 0; border-radius: 0; background: none; padding: 1.5rem; }
+  /* highlights, description, specs, how-to and comments share one card, a line between each */
+  html.theme .deal-body { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: var(--radius); overflow: hidden; }
+  html.theme .deal-body > .block, html.theme .deal-body > .comments { border: 0; border-radius: 0; background: none; padding: 1.25rem 1.5rem; }
+  html.theme .deal-body > :is(.block, .comments) + :is(.block, .comments) { border-top: 1px solid hsl(var(--line)); }
+}
+/* Below 1024 px the blocks sit in the page's one column (display: contents), with related deals before comments:
+   highlights, links, description, specs and how-to still read as one card, a line between each; comments keep their own card.
+   The pull-up equals the .detail gap (site.css). */
+@media (max-width: 1023px) {
+  html.theme .deal-body > .block { border-radius: 0; border-bottom: 0; }
+  html.theme .deal-body > .block + .block { margin-top: -1.5rem; }
+  html.theme .deal-body > .block:first-child { border-radius: var(--radius) var(--radius) 0 0; }
+  html.theme .deal-body > .block:not(:has(~ .block)) { border-bottom: 1px solid hsl(var(--line)); border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+  html.theme .deal-body > .block:first-child:not(:has(~ .block)) { border-radius: var(--radius); }
+}
+@media (min-width: 1180px) {
+  html.theme .detail { grid-template-columns: minmax(0, 1fr) 20rem; gap: 1.5rem; align-items: start; }
+  html.theme .detail .related { display: none; }
+  html.theme .related-side { display: block; background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); border-radius: 1rem; padding: 0.875rem 0.625rem 0.625rem; box-shadow: 0 1px 2px hsl(var(--shadow) / .04); }
+  html.theme .related-side h2 { margin: 0 0.5rem 0.5rem; font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; color: hsl(var(--ink)); }
+  html.theme .related-side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  html.theme .related-side li a { display: flex; gap: 0.75rem; align-items: flex-start; padding: 0.5rem; border-radius: 0.625rem; color: hsl(var(--ink)); transition: transform .18s cubic-bezier(.2,0,0,1), background-color .18s, box-shadow .18s; }
+  /* the row lifts 2 px with the navy edge every hover on the site uses; it never grows, so it stays inside the column */
+  html.theme .related-side li a:hover, html.theme .related-side li a:focus-visible { background: hsl(var(--surface)); transform: translateY(-2px); box-shadow: 0 0.5rem 1rem -0.5rem hsl(var(--shadow) / .35), 0 0 0 1.5px hsl(var(--brand-ink)); }
+  html.theme .rs-img { flex: none; width: 4.5rem; height: 4.5rem; display: grid; place-items: center; padding: 0.25rem; border-radius: 0.5rem; background: hsl(var(--muted) / .6); }
+  html.theme .rs-img img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; mix-blend-mode: var(--img-blend); }
+  html.theme .rs-body { display: grid; gap: 0.25rem; min-width: 0; }
+  html.theme .rs-title { font-size: 0.875rem; line-height: 1.25rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  html.theme .related-side li a:hover .rs-title { color: hsl(var(--brand-ink)); }
+  html.theme .rs-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.375rem; font-size: 0.9375rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  html.theme .rs-price s { font-size: 0.75rem; font-weight: 400; color: hsl(var(--muted-foreground)); }
+  html.theme .rs-price em { font-style: normal; font-size: 0.75rem; font-weight: 600; color: hsl(var(--save)); }
+  html.theme .rs-all { margin-top: 0.5rem; gap: 0.25rem; }
+  html.theme .rs-all .lucide { width: 0.875rem; height: 0.875rem; }
+}
+@media (min-width: 1180px) and (prefers-reduced-motion: reduce) { html.theme .related-side li a { transition: none; } html.theme .related-side li a:hover { transform: none; } }
+
+/* The photo's keyboard ring sits on the zoom icon, not the card edge; none at all right after the zoom closes */
+html.theme .deal-image:focus-visible { outline: 0; }
+html.theme .deal-image:focus-visible:not([data-returned]) .zoom-hint { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+
+/* Deal panel: the store's logo in the left half, Buy now in the right half, the card's Buy now look and hover */
+html.theme .buy-row { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 1rem; margin-top: 1rem; }
+html.theme .buy-row .store-chip { justify-self: center; height: 2rem; max-width: 8.5rem; opacity: 1; }
+html.theme .buy-row .store-chip.is-text { height: auto; padding: 0.375rem 0.875rem; font-size: 0.9375rem; }
+html.theme .buy-row .btn-buy { position: relative; isolation: isolate; overflow: hidden; margin-top: 0; width: 100%; height: 2.75rem; padding: 0 1rem; gap: 0.5rem; border-radius: 0.75rem; font-size: 0.9375rem; font-weight: 600; transition: background-color .2s, color .2s, border-color .2s, box-shadow .2s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .buy-row .btn-buy .lucide { width: 1.125rem; height: 1.125rem; }
+html.theme .buy-row .btn-buy::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; background: linear-gradient(100deg, transparent, hsl(0 0% 100% / .45), transparent); transform: skewX(-18deg); opacity: 0; pointer-events: none; }
+@media (hover: hover) {
+  html.theme .buy-row .btn-buy:hover { background: hsl(var(--fill)); color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); transform: translateY(-2px); box-shadow: 0 8px 18px -8px hsl(var(--shadow) / .6); }
+  html.theme .buy-row .btn-buy:hover::after { opacity: 1; animation: buy-shine .8s cubic-bezier(.2,0,0,1) .1s 1 forwards; }
+  html.theme .buy-row .btn-buy:hover .lucide { animation: basket-tilt .6s cubic-bezier(.2,0,0,1) .05s 1; }
+  html.theme .buy-row .btn-buy:active { transform: translateY(0) scale(.98); }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .buy-row .btn-buy { transition: none; } html.theme .buy-row .btn-buy:hover::after { animation: none; opacity: 0; } }
+
+/* Views, comments and Share on one line; the icons open to the left of Share inside room kept for them,
+   so they never cover the counts. When the counts grow too wide for both, Share moves to its own line (it never jumps on hover). */
+html.theme .deal-stats .sh-exp { flex-direction: row-reverse; gap: 0; margin-left: auto; pointer-events: none; }
+/* only Share opens it: the kept room is no hover target until the icons show, and the space before Share belongs to the icons, so moving onto them keeps them open */
+html.theme .deal-stats .sh-trig { pointer-events: auto; }
+html.theme .deal-stats .sh-items { padding-right: 0.375rem; }
+html.theme .deal-stats .sh-exp:is(:hover, :focus-within, .is-open) .sh-items { pointer-events: auto; }
+html.theme .deal-stats .sh-trig { height: 2.25rem; padding: 0 0.875rem; }
+html.theme .deal-stats .sh-ic { width: 2.25rem; height: 2.25rem; transform: translateX(10px) scale(.8); }
+
+/* From 1024 px the details breathe and fill the card: even space between lines, the stats line at the bottom */
+@media (min-width: 1024px) {
+  html.theme .deal-hero .panel-core { display: flex; flex-direction: column; padding: 1.75rem 2rem; }
+  html.theme .deal-hero .deal-title { margin-top: 1rem; font-size: 1.5rem; line-height: 2rem; }
+  html.theme .deal-hero .caption { margin-top: 0.75rem; align-self: flex-start; }
+  html.theme .deal-hero .pricebox { margin-top: 1.25rem; }
+  html.theme .deal-hero .price-was { margin-top: 0.625rem; }
+  html.theme .deal-hero .coupon { margin-top: 1.25rem; }
+  html.theme .deal-hero .offers { margin-top: 1rem; gap: 0.625rem; }
+  html.theme .deal-hero .buy-row { margin-top: 1.5rem; }
+  html.theme .deal-hero .note { margin-top: 1rem; }
+  html.theme .deal-hero .deal-stats { margin-top: auto; padding-top: 1.25rem; }
+}
+
+/* D-147 · Comment emoji: reaction pills, the six-reaction bar, who reacted, the emoji picker and ":" search. Built on the theme roles so dark mode follows. */
+html.theme .comment .c-acts { flex-wrap: wrap; row-gap: 0.25rem; }
+html.theme .rx-pills { display: inline-flex; flex-wrap: wrap; gap: 0.375rem; margin-left: 8px; }
+html.theme .rx-pills:empty { display: none; }
+html.theme .rx-pill { display: inline-flex; align-items: center; gap: 0.25rem; height: 1.75rem; padding: 0 0.5rem 0 0.375rem; border: 1px solid hsl(var(--line)); border-radius: 999px; background: hsl(var(--surface)); color: hsl(var(--ink)); font: inherit; font-size: 0.75rem; cursor: pointer; transition: transform .15s cubic-bezier(.2,0,0,1), border-color .15s, background-color .15s; }
+html.theme .rx-pill .rx-e { font-size: 0.9375rem; line-height: 1; }
+html.theme .rx-pill b { font-weight: 600; font-variant-numeric: tabular-nums; }
+html.theme .rx-pill:hover { border-color: hsl(var(--brand-ink) / .45); }
+html.theme .rx-pill[aria-pressed="true"] { background: hsl(var(--sky)); border-color: hsl(var(--brand-ink)); color: hsl(var(--brand-ink)); }
+html.theme .rx-pill:focus-visible, html.theme .rx-add:focus-visible { outline: 2px solid hsl(var(--brand-ink)); outline-offset: 2px; }
+html.theme .rx-pill.is-pop { animation: rx-pop .35s cubic-bezier(.2,0,0,1); }
+@keyframes rx-pop { 40% { transform: scale(1.18); } }
+html.theme .comment .c-acts .rx-add { padding: 0 0.5rem; }
+html.theme .comment .c-acts .rx-add .lucide { width: 1rem; height: 1rem; }
+html.theme .rx-add .rx-add-e:empty { display: none; }
+html.theme .rx-add.has-mine .lucide { display: none; }
+html.theme .rx-add.has-mine .rx-add-e { font-size: 0.9375rem; line-height: 1; }
+html.theme .rx-bar { position: fixed; z-index: 60; display: flex; gap: 2px; padding: 0.3125rem; border: 1px solid hsl(var(--line)); border-radius: 999px; background: hsl(var(--surface)); box-shadow: 0 0.75rem 1.75rem -0.5rem hsl(var(--shadow) / .35), 0 2px 6px hsl(var(--shadow) / .08); transform-origin: 1.5rem 100%; opacity: 0; transform: translateY(4px) scale(.92); transition: opacity .16s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .rx-bar[data-state="open"] { opacity: 1; transform: none; }
+html.theme .rx-bar button { position: relative; width: 2.5rem; height: 2.5rem; display: grid; place-items: center; border: 0; border-radius: 999px; background: none; font-size: 1.5rem; line-height: 1; cursor: pointer; transition: transform .15s cubic-bezier(.2,0,0,1), background-color .15s; }
+html.theme .rx-bar button:hover, html.theme .rx-bar button:focus-visible { transform: translateY(-4px) scale(1.22); outline: 0; }
+html.theme .rx-bar button:focus-visible { background: hsl(var(--sky)); }
+html.theme .rx-bar button[aria-checked="true"] { background: hsl(var(--sky)); }
+html.theme .rx-bar button::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); padding: 0.125rem 0.375rem; border-radius: 0.375rem; background: hsl(var(--ink)); color: hsl(var(--surface)); font-size: 0.6875rem; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .12s; }
+html.theme .rx-bar button:hover::after, html.theme .rx-bar button:focus-visible::after { opacity: 1; }
+html.theme .rx-tip { position: fixed; z-index: 61; max-width: 16rem; padding: 0.375rem 0.625rem; border-radius: 0.5rem; background: hsl(var(--ink)); color: hsl(var(--surface)); font-size: 0.75rem; line-height: 1.1rem; pointer-events: none; }
+@media (hover: none) { html.theme .rx-bar button { width: 2.75rem; height: 2.75rem; } }
+
+/* the comment count turns red past 300; an emoji counts as 1 */
+html.theme .composer-bar .chars.is-over { color: hsl(0 72% 45%); font-weight: 600; }
+/* reply box: the emoji button sits inside the text box, bottom right */
+html.theme .reply-form .ta-wrap { position: relative; flex: 1; min-width: 0; }
+html.theme .reply-form .ta-wrap .textarea { width: 100%; padding-right: 2.5rem; }
+html.theme .reply-form .ta-emoji { position: absolute; right: 0.25rem; bottom: 0.25rem; height: 2rem; width: 2rem; color: hsl(var(--muted-foreground)); }
+html.theme .reply-form .ta-emoji .lucide { width: 1rem; height: 1rem; }
+
+/* emoji picker: a popover on desktop, a bottom sheet on phones */
+html.theme .emoji-pop { position: fixed; z-index: 70; width: 22rem; border: 1px solid hsl(var(--line)); border-radius: 1rem; background: hsl(var(--surface)); box-shadow: 0 1.25rem 2.5rem -1rem hsl(var(--shadow) / .4); overflow: hidden; opacity: 0; transform: translateY(4px); transition: opacity .16s, transform .2s cubic-bezier(.2,0,0,1); }
+html.theme .emoji-pop[data-state="open"] { opacity: 1; transform: none; }
+html.theme .emoji-pop .ep-head { display: none; }
+html.theme .emoji-pop emoji-picker { width: 100%; height: 25rem; --border-size: 0; --background: hsl(var(--surface)); --input-border-color: hsl(var(--line)); --input-border-radius: 0.5rem; --input-font-color: hsl(var(--ink)); --indicator-color: hsl(var(--brand-ink)); --outline-color: hsl(var(--brand-ink)); --button-hover-background: hsl(var(--sky)); --button-active-background: hsl(var(--sky)); --category-font-color: hsl(var(--muted-foreground)); --num-columns: 8; --emoji-size: 1.375rem; }
+html.theme .emoji-pop.is-sheet { left: 0; right: 0; bottom: 0; top: auto; width: auto; border-radius: 1rem 1rem 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom, 0px); transform: translateY(100%); }
+html.theme .emoji-pop.is-sheet[data-state="open"] { transform: none; }
+html.theme .emoji-pop.is-sheet .ep-head { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.5rem 0.25rem 1rem; }
+html.theme .emoji-pop.is-sheet emoji-picker { height: min(22rem, 55vh); --num-columns: 8; --emoji-size: 1.5rem; }
+html.theme .emoji-scrim { position: fixed; inset: 0; z-index: 69; background: rgba(0,0,0,.35); }
+/* ":" search */
+html.theme .sc-pop { position: fixed; z-index: 70; width: 15rem; max-height: 16rem; overflow: auto; margin: 0; padding: 0.25rem; list-style: none; border: 1px solid hsl(var(--line)); border-radius: 0.75rem; background: hsl(var(--surface)); box-shadow: 0 0.75rem 1.75rem -0.75rem hsl(var(--shadow) / .35); }
+html.theme .sc-pop li { display: flex; align-items: center; gap: 0.5rem; height: 2.25rem; padding: 0 0.5rem; border-radius: 0.5rem; font-size: 0.8125rem; color: hsl(var(--ink)); cursor: pointer; }
+html.theme .sc-pop li[aria-selected="true"], html.theme .sc-pop li:hover { background: hsl(var(--sky)); color: hsl(var(--brand-ink)); }
+html.theme .sc-pop .sc-e { font-size: 1.125rem; width: 1.5rem; text-align: center; }
+html.theme .sc-pop .sc-n { color: inherit; opacity: .8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { html.theme .rx-bar, html.theme .emoji-pop, html.theme .rx-pill, html.theme .rx-bar button { transition: none; animation: none; } html.theme .rx-bar button:hover { transform: none; } }
+
+/* ======================= D-150 · Dark mode (public) =======================
+   Set by the head script as html[data-theme="dark"] (Light · Dark · Automatic, saved as ot-theme). Light is the default look and is unchanged.
+   Deep navy-black page, raised navy cards, off-white text; the brand navy becomes a lighter blue for text and rings, a stronger blue for fills.
+   Product photos and store logos keep white wells (shot on white); the logo sits on a white plate (D-039) until a reversed logo is supplied. */
+html.theme[data-theme="dark"] {
+  --page: 223 42% 6%;
+  --surface: 222 33% 10%;
+  --ink: 220 30% 93%;
+  --line: 222 24% 19%;
+  --fill: 217 72% 48%;
+  --on-fill: 0 0% 100%;
+  --brand-ink: 217 92% 74%;
+  --shadow: 0 0% 0%;
+  --img-blend: normal;
+  --sky: 218 42% 19%;
+  --mint: 151 32% 15%;
+  --peach: 24 38% 16%;
+  --save: 151 58% 52%;
+  --loot: 357 78% 66%;
+  --background: 222 33% 10%;
+  --card: 222 33% 10%;
+  --card-foreground: var(--ink);
+  --popover: 222 30% 13%;
+  --popover-foreground: var(--ink);
+  --primary: var(--fill);
+  --primary-foreground: 0 0% 100%;
+  --secondary: 222 26% 16%;
+  --secondary-foreground: var(--ink);
+  --muted: 222 28% 14%;
+  --muted-foreground: 220 14% 68%;
+  --accent: 222 26% 17%;
+  --accent-foreground: var(--ink);
+  --border: var(--line);
+  --input: 222 20% 28%;
+  --ring: var(--brand-ink);
+  --sb-track: #0f1626;
+  --sb-a: #3B6FD6;
+  --sb-b: #5B8DEF;
+  color-scheme: dark;
+}
+/* photos: a white well so white-shot products look intentional; no multiply on a dark card */
+html.theme[data-theme="dark"] .deal .img, html.theme[data-theme="dark"] .deal-embed .img { background: hsl(var(--well)); }
+html.theme[data-theme="dark"] .deal .img, html.theme[data-theme="dark"] .deal-image, html.theme[data-theme="dark"] .td-photo, html.theme[data-theme="dark"] .rs-img, html.theme[data-theme="dark"] .post-cover { box-shadow: inset 0 0 0 1px hsl(0 0% 100% / .06); }
+html.theme[data-theme="dark"] .rs-img { background: hsl(var(--well)); }
+/* logo on a white plate (D-039); store logos on small white chips so dark logo text stays readable */
+html.theme[data-theme="dark"] .site-header .logo img { background: #fff; border-radius: 0.5rem; padding: 0.1875rem 0.5rem; box-sizing: content-box; height: 2.5rem; }
+@media (max-width: 767px) { html.theme[data-theme="dark"] .site-header .logo img { height: 2rem; } }
+html.theme[data-theme="dark"] .auth-logo img { background: #fff; border-radius: 0.5rem; padding: 0.25rem 0.625rem; box-sizing: content-box; }   /* D-153: the logo PNG is transparent now, so the sign-in logo needs the same white plate as the header (D-039) */
+html.theme[data-theme="dark"] img.store-chip, html.theme[data-theme="dark"] .btn-buy .buy-logo, html.theme[data-theme="dark"] .td-store img { background: #fff; border-radius: 0.375rem; padding: 0.1875rem 0.375rem; box-sizing: content-box; }
+html.theme[data-theme="dark"] .buy-row img.store-chip { padding: 0.375rem 0.625rem; border-radius: 0.5rem; }
+@media (hover: hover) { html.theme[data-theme="dark"] .deal .acts .btn-buy:hover .buy-logo:not([src$='.png']) { filter: none; } }
+/* Hot deals today: the store tints become a dark card with a thin store-coloured edge; the store's own button colour stays */
+html.theme[data-theme="dark"] .td-card { background: hsl(var(--surface)); border-color: var(--cbd); box-shadow: inset 0 3px 0 var(--cbd); }
+/* text that was tuned for white */
+html.theme[data-theme="dark"] .new-pill { color: hsl(24 92% 66%); border-color: hsl(24 92% 66% / .4); background: hsl(24 60% 50% / .12); }
+html.theme[data-theme="dark"] .blog-tip small { color: hsl(24 92% 66%); }
+html.theme[data-theme="dark"] #loot .section-head p { color: hsl(24 60% 72%); }
+html.theme[data-theme="dark"] .rx-pill[aria-pressed="true"] { color: hsl(var(--ink)); }
+/* the footer is already navy: a step apart from the dark page */
+html.theme[data-theme="dark"] .site-footer { background: hsl(222 55% 9%); border-top: 1px solid hsl(var(--line)); }
+html.theme[data-theme="dark"] .join { background: hsl(222 55% 13%); border: 1px solid hsl(var(--line)); }
+/* overlays read darker on a dark page */
+html.theme[data-theme="dark"] .sheet-overlay, html.theme[data-theme="dark"] .emoji-scrim { background: rgba(0,0,0,.6); }
+
+/* D-150 · theme switch: header menu (desktop), the phone menu row, the admin sidebar row */
+html.theme .theme-btn .lucide { display: none; }
+html[data-theme-pref="light"] .theme-btn .tb-light, html[data-theme-pref="dark"] .theme-btn .tb-dark, html[data-theme-pref="auto"] .theme-btn .tb-auto, html:not([data-theme-pref]) .theme-btn .tb-auto { display: block; }
+html.theme .theme-menu-list { min-width: 13rem; right: 0; left: auto; }
+html.theme .theme-menu-list [role="menuitemradio"] { display: grid; grid-template-columns: 1rem 1fr; column-gap: 0.625rem; align-items: center; width: 100%; padding: 0.5rem 0.625rem; border: 0; border-radius: 0.375rem; background: none; color: hsl(var(--ink)); font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer; }
+html.theme .theme-menu-list [role="menuitemradio"] small { grid-column: 2; font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+html.theme .theme-menu-list [role="menuitemradio"]:hover, html.theme .theme-menu-list [role="menuitemradio"]:focus-visible { background: hsl(var(--accent)); outline: 0; }
+html.theme .theme-menu-list [aria-checked="true"] { color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .theme-menu-list [aria-checked="true"]::after { content: "✓"; position: absolute; right: 0.875rem; }
+html.theme .theme-menu-list { position: absolute; }
+html.theme .theme-menu-list [role="menuitemradio"] { position: relative; height: auto; min-height: 2.25rem; line-height: 1.25rem; }
+@media (max-width: 639px) { html.theme .theme-menu { display: none; } }
+.theme-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.25rem; padding: 0.25rem; margin: 0.25rem 0 0.5rem; border-radius: 0.75rem; background: hsl(var(--muted)); }
+.theme-seg button { display: flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2.5rem; border: 0; border-radius: 0.5rem; background: none; color: hsl(var(--muted-foreground)); font: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; }
+.theme-seg button .lucide { width: 1rem; height: 1rem; }
+.theme-seg button[aria-checked="true"] { background: hsl(var(--card)); color: hsl(var(--foreground)); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
+.theme-seg button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 1px; }
+/* dark review fixes: navy text stays on the gold Featured chip and on the white store tiles; the Loot band a quieter warm tint */
+html.theme[data-theme="dark"] .td-feat { color: hsl(var(--navy)); }
+html.theme[data-theme="dark"] .td-trend { color: hsl(var(--navy)); background: hsl(0 0% 100% / .95); }
+html.theme[data-theme="dark"] .store-word { color: hsl(var(--navy)); }
+html.theme[data-theme="dark"] .store.has-logo:hover .store-word { color: #fff; }
+html.theme[data-theme="dark"] #loot { background: hsl(12 32% 11%); border: 1px solid hsl(12 30% 18%); }
+
+/* ============ D-151: retail clean pass (Adil, website branch design/retail-pass 1abb3b3, there D-147), ported to the prototype ============
+   Final state of his trials only (card v6, ribbon v4 with larger text, clean pass). Every colour goes through the theme roles so Light · Dark · Automatic keep working.
+   New roles: --deal-green (solid tag behind white text), --save-ink (green money text), --fill-deep (Buy hover), --sb-thumb / --sb-thumb-hover (quiet scrollbars). */
+html.theme { --radius: 0.375rem; --deal-green: 151 65% 25%; --save-ink: 151 65% 25%; --fill-deep: 222 84% 10%; --sb-thumb: #B4BDCF; --sb-thumb-hover: #66738F; }
+html.theme[data-theme="dark"] { --deal-green: 151 60% 30%; --save-ink: var(--save); --fill-deep: 217 72% 40%; --sb-thumb: hsl(222 18% 30%); --sb-thumb-hover: hsl(222 16% 45%); }
+
+/* text size: 15px up to 1200px wide, growing to 18px at 1920px; no height term */
+@media (min-width: 1024px) { html.theme { font-size: clamp(0.9375rem, 0.625rem + 0.4167vw, 1.125rem); } }
+
+/* rows and grids sized to the calmer card: 3 · 4 · 5 per row; Home's main column one step behind */
+@media (min-width: 1024px) { html.theme .deal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } html.theme .deals .carousel-item, html.theme .home-main .deals .carousel-item { flex-basis: 33.3333%; } }
+@media (min-width: 1280px) { html.theme .deal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } html.theme .deals .carousel-item { flex-basis: 25%; } }
+@media (min-width: 1440px) { html.theme .home-main .deals .carousel-item { flex-basis: 25%; } }
+@media (min-width: 1600px) { html.theme .deal-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } html.theme .deals .carousel-item { flex-basis: 20%; } }
+@media (min-width: 1800px) { html.theme .home-main .deals .carousel-item { flex-basis: 20%; } }
+
+/* ---- deal card: one hairline box, photo on its well to the edges, ↓% tag top-right, age above a 2-line title, prices, Save + store logo, outline Buy ---- */
+html.theme .deal { border-radius: 0.5rem; border: 1px solid hsl(var(--line)); box-shadow: none; background: hsl(var(--surface)); }
+html.theme .deal .img { margin: 0; padding: 0.5rem; border-radius: 0; border-bottom: 0; background: hsl(var(--well)); }
+html.theme .deal .body { padding: 0.625rem 0.75rem 0.75rem; gap: 0.25rem; }
+html.theme .deal .meta { display: block; margin: 0; font-size: 0.75rem; line-height: 1rem; color: hsl(var(--muted-foreground)); }
+html.theme .deal .title { font-size: 0.875rem; line-height: 1.25rem; font-weight: 400; -webkit-line-clamp: 2; min-height: 2.5rem; }
+html.theme .deal .priceline { margin-top: auto; padding-top: 0.375rem; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.25rem 0.375rem; min-width: 0; }
+html.theme .deal .price { font-size: 1.125rem; line-height: 1.375rem; font-weight: 700; letter-spacing: -0.02em; }
+html.theme .deal .priceline .price, html.theme .deal .priceline .was { flex: none; overflow: visible; text-overflow: clip; }
+html.theme .deal .was { font-size: 0.75rem; }
+html.theme .deal .off-tag { position: absolute; top: 0.5rem; right: 0.5rem; z-index: 1; display: inline-flex; align-items: center; gap: 0.0625rem; padding: 0.1875rem 0.375rem 0.1875rem 0.25rem; border-radius: 0.25rem; background: hsl(var(--deal-green)); color: #fff; font-size: 0.8125rem; font-weight: 700; line-height: 1; }
+html.theme .deal .off-tag .lucide { width: 0.8125rem; height: 0.8125rem; stroke-width: 2.75; }
+html.theme .deal .save { color: hsl(var(--save-ink)); font-weight: 600; font-size: 0.8125rem; line-height: 1.125rem; }
+html.theme .deal .saveline { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 1.25rem; }
+html.theme .deal .saveline .store-chip { flex: 0 1 4rem; min-width: 2.5rem; height: auto; max-height: 1rem; object-fit: contain; object-position: right center; position: relative; top: 0.125rem; }
+html.theme .deal .saveline .store-chip.is-text { top: 0; max-height: none; }
+html.theme .card-share { top: 0.5rem; bottom: auto; left: 0.5rem; right: auto; }
+html.theme .deal .acts { padding-top: 0.625rem; }
+html.theme .deal .acts .btn-buy { height: 2.25rem; border-radius: 0.375rem; gap: 0.5rem; font-size: 0.875rem; font-weight: 600; overflow: hidden; transform: none; box-shadow: none;
+  color: hsl(var(--brand-ink)); border: 1.5px solid hsl(var(--brand-ink)); background: linear-gradient(hsl(var(--fill)), hsl(var(--fill))) no-repeat left / 0% 100%, hsl(var(--surface)); transition: background-size .28s cubic-bezier(.2,0,0,1), color .2s, border-color .2s; }
+html.theme .deal .acts .btn-buy .lucide { width: 0.875rem; height: 0.875rem; stroke-width: 2.25; }
+@keyframes buy-out { 0% { transform: translate(0, 0); opacity: 1; } 45% { transform: translate(0.75rem, -0.75rem); opacity: 0; } 46% { transform: translate(-0.75rem, 0.75rem); opacity: 0; } 100% { transform: translate(0, 0); opacity: 1; } }
+@media (hover: hover) {
+  html.theme .card-share { opacity: 0; transition: opacity .15s; }
+  html.theme .deal:hover .card-share, html.theme .card-share:focus-visible { opacity: 1; }
+  html.theme .deal:hover { transform: none; border-color: hsl(var(--brand-ink) / .55); box-shadow: 0 0.5rem 1.25rem -0.25rem hsl(var(--shadow) / .2); }
+  html.theme .deal:hover .img img { transform: scale(1.03); }
+  html.theme .deal:hover .acts .btn-buy { transform: none; box-shadow: none; color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); background: linear-gradient(hsl(var(--fill)), hsl(var(--fill))) no-repeat left / 100% 100%, hsl(var(--surface)); }
+  html.theme .deal:hover .acts .btn-buy::after { animation: none; opacity: 0; }
+  html.theme .deal:hover .acts .btn-buy .lucide { transform: none; animation: buy-out .5s cubic-bezier(.2,0,0,1) .05s 1; }
+}
+@media (prefers-reduced-motion: reduce) { html.theme .deal .acts .btn-buy { transition: none; } html.theme .deal:hover .acts .btn-buy .lucide { animation: none; } }
+
+/* ---- one corner scale: 8px containers, 6px controls, 4px tags; edge panels square; phone bottom sheets 12px tops ---- */
+html.theme :is(.filters, .blog-tip, .popover, .menu, .hs-box, .home-main section.deals, .td-card, .related-side, main dl, .hero-card, .cat .tile, .join, .listing > .community, .community, .sp-card, .post-card, .post-head, .deal-embed, .faq-more, .ft-app) { border-radius: 0.5rem; }
+html.theme :is(.btn:not(.btn-icon):not(.fs-btn), input:not([type="radio"]):not([type="checkbox"]), select, .header-search, .sh-ico, .card.store, .td-photo, .sh-trig, .post-head .post-share .btn, .deal-stats .btn, .deal-stats .share-btn, .zoom-hint, .specs dl, .seg, .seg span, .seg .seg-thumb, .since, .since-link) { border-radius: 0.375rem; }
+html.theme :is(.hero-card .img, .store .mono, .ft-logo, .ft-app-ico, .ft-play, .ft-alerts, .store-logo img, .hs-stores .store, .sp-cta, .related-side li a, .post-hero, .deal-embed .img) { border-radius: 0.375rem; }
+html.theme :is(.kicker .badge, .menu [role^="menuitem"]) { border-radius: 0.25rem; }
+html.theme :is(.sheet, .slideover, .qv-panel) { border-radius: 0; }
+html.theme .sheet.dialog { border-radius: 0.5rem; }
+html.theme .sheet.sheet-bottom { border-radius: 0.75rem 0.75rem 0 0; }
+html.theme .fjoin-tab { border-radius: 0 0.375rem 0.375rem 0; }
+
+/* ---- no pastel blocks: tiles, hero cards, Hot deals and Loot are plain surfaces with a hairline ---- */
+html.theme :is(.deal-embed .img, .rs-img, .post-hero) { background: hsl(var(--well)); }
+html.theme :is(.hero-card, .cat .tile, .faq-more, .listing > .community) { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); }
+html.theme :is(.store .mono, .sh-ico) { background: hsl(var(--muted)); }
+html.theme .ft-app-ico { background: hsl(var(--surface)); color: hsl(var(--brand-ink)); }
+html.theme .td-card, html.theme[data-theme="dark"] .td-card { background: hsl(var(--surface)); border: 1px solid hsl(var(--line)); box-shadow: none; }
+html.theme .td-view { background: hsl(var(--fill)); color: hsl(var(--on-fill)); border-color: hsl(var(--fill)); }
+html.theme .td-view .lucide { transition: transform .2s cubic-bezier(.2,0,0,1); }
+@media (hover: hover) { html.theme .td-card:hover .td-view .lucide { transform: translateX(0.1875rem); } }
+html.theme .td-feat, html.theme .td-trend { border-radius: 0.25rem; height: 1.375rem; padding: 0 0.4375rem; font-size: 0.75rem; }
+html.theme .td-feat, html.theme[data-theme="dark"] .td-feat { background: hsl(var(--fill)); color: hsl(var(--on-fill)); }
+html.theme .td-trend { box-shadow: none; border: 1px solid hsl(var(--line)); }
+html.theme #loot, html.theme .home-main #loot, html.theme[data-theme="dark"] #loot { background: none; border: 0; box-shadow: none; padding-left: 0; padding-right: 0; }
+html.theme .loot-tag { background: hsl(var(--deal-green)); color: #fff; border: 0; border-radius: 0.25rem; box-shadow: none; font-weight: 700; }
+
+/* ---- hovers: no rings, no pop-out; rows go grey with navy text ---- */
+@media (hover: hover) {
+  html.theme :where(.btn:not(.btn-link), .chip-x, .card.store, .td-btn, .carousel-prev, .carousel-next, .sheet-close, .sheet-nav-btn, .fjoin-tab, .fs-btn, .sp-cta, [aria-controls="menu-sheet"]):hover { outline: 0; }
+  html.theme .btn-outline:hover { border-color: hsl(var(--brand-ink)); background: hsl(var(--muted)); }
+  html.theme .opt:not(.is-zero):hover, html.theme .hs-box li a:hover, html.theme #sort-menu [role="menuitemradio"]:hover { transform: none; box-shadow: none; background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+  html.theme #sort-menu [role="menuitemradio"][aria-checked="true"]:hover::before { background: none; }
+}
+html.theme .hnav a { border-radius: 0; }
+html.theme .hnav a:hover { background: none; color: hsl(var(--brand-ink)); }
+html.theme .hnav a:not([aria-current="page"]):hover::after { content: ""; position: absolute; left: 0.6875rem; right: 0.6875rem; bottom: -16px; height: 0.1875rem; border-radius: 0.1875rem 0.1875rem 0 0; background: hsl(var(--brand-ink) / .25); }
+html.theme .hnav a.has-new:not([aria-current="page"]):hover::after { right: 1.5rem; }
+
+/* ---- menus: current page marked in the side menu, a tick on the chosen sort ---- */
+html.theme .sheet-nav a, html.theme .sheet-nav-btn { border-radius: 0.375rem; position: relative; transition: background .15s, color .15s; }
+html.theme .sheet-nav a:hover, html.theme .sheet-nav-btn:hover { background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+html.theme .sheet-nav a:hover .lucide { color: hsl(var(--brand-ink)); }
+html.theme .sheet-nav a[aria-current="page"] { background: hsl(var(--sky)); color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .sheet-nav a[aria-current="page"] .lucide { color: hsl(var(--brand-ink)); }
+html.theme .sheet-nav a[aria-current="page"]::before { content: ""; position: absolute; left: -0.75rem; top: 0.5rem; bottom: 0.5rem; width: 0.1875rem; border-radius: 0 0.1875rem 0.1875rem 0; background: hsl(var(--brand-ink)); }
+html.theme #menu-sheet { width: 18rem; max-width: 85vw; padding: 1rem 0.75rem; gap: 0.5rem; }
+html.theme #menu-sheet .sheet-header { padding-bottom: 0.25rem; }
+html.theme #menu-sheet .sheet-title { font-size: 1rem; padding-left: 0.5rem; }
+html.theme #menu-sheet .sheet-close { top: 0.75rem; right: 0.75rem; }
+html.theme #menu-sheet .sheet-nav a, html.theme #menu-sheet .sheet-nav-btn { height: 2.25rem; gap: 0.625rem; font-size: 0.875rem; }
+html.theme #menu-sheet .sheet-nav .lucide { width: 1rem; height: 1rem; }
+html.theme #menu-sheet .sheet-section { margin: 0.5rem 0 0.125rem; padding-left: 0.5rem; font-size: 0.6875rem; }
+html.theme .menu [role^="menuitem"]:hover, html.theme .menu [role^="menuitem"]:focus-visible { background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+html.theme .menu [role="menuitemradio"][aria-checked="true"] { color: hsl(var(--brand-ink)); font-weight: 600; }
+html.theme .menu [role="menuitemradio"][aria-checked="true"]::before { width: 0.3125rem; height: 0.5625rem; margin-top: -0.375rem; border-radius: 0; background: none; border: solid hsl(var(--brand-ink)); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+/* ---- Blog NEW: a navy corner ribbon on the Blog tab (SVG band, darker folds) ---- */
+html.theme .hnav a.has-new { position: relative; margin-right: 0; padding-right: 1.5rem; }
+html.theme .hnav .new-pill, html.theme[data-theme="dark"] .hnav .new-pill { position: absolute; top: 0.0625rem; right: -0.125rem; width: 2.5rem; height: 2.5rem; margin: 0; padding: 0; display: block; border: 0; border-radius: 0; clip-path: none; transform: none; background: none; overflow: visible; pointer-events: none; animation: none; }
+html.theme .hnav .new-pill[hidden] { display: none; }
+html.theme .hnav .new-pill svg { display: block; width: 100%; height: 100%; overflow: visible; }
+html.theme .hnav .new-pill .band { fill: hsl(var(--fill)); }
+html.theme .hnav .new-pill .fold { fill: hsl(var(--fill-deep)); }
+html.theme .hnav .new-pill text { fill: hsl(var(--on-fill)); font-size: 9px; font-weight: 800; letter-spacing: .06em; text-anchor: middle; dominant-baseline: central; font-family: inherit; }
+@keyframes ribbon-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+html.theme .hnav .new-pill.is-pulsing svg { animation: ribbon-in .45s cubic-bezier(.2,0,0,1) .4s 1 backwards; }
+@media (prefers-reduced-motion: reduce) { html.theme .hnav .new-pill.is-pulsing svg { animation: none; } }
+html.theme .blog-tip small, html.theme[data-theme="dark"] .blog-tip small { color: hsl(var(--brand-ink)); }
+
+/* ---- listing title scrolls away; only the filters stay pinned ---- */
+@media (min-width: 900px) { html.theme .list-head { position: static; } }
+
+/* ---- quiet scrollbars: thin neutral grey, no gradient, no visible track ---- */
+html.theme::-webkit-scrollbar, html.theme ::-webkit-scrollbar { width: 10px; height: 10px; }
+html.theme::-webkit-scrollbar-track, html.theme ::-webkit-scrollbar-track, html.theme .fgroup .opts.scroll::-webkit-scrollbar-track { background: transparent; border: 0; }
+html.theme::-webkit-scrollbar-thumb, html.theme ::-webkit-scrollbar-thumb, html.theme ::-webkit-scrollbar-thumb:horizontal, html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb { background: var(--sb-thumb); background-clip: padding-box; border: 3px solid transparent; border-radius: 999px; }
+html.theme::-webkit-scrollbar-thumb:hover, html.theme ::-webkit-scrollbar-thumb:hover, html.theme .fgroup .opts.scroll::-webkit-scrollbar-thumb:hover { background: var(--sb-thumb-hover); background-clip: padding-box; }
+html.theme .fgroup .opts.scroll::-webkit-scrollbar { width: 8px; }
+
+/* ---- deal page and quick view: same ↓% tag, saving line and Buy as the card; tighter hierarchy ---- */
+html.theme .deal-image { position: relative; padding: 0.75rem; }
+html.theme .deal-image .off-tag { position: absolute; top: 0.75rem; right: 0.75rem; left: auto; z-index: 1; display: inline-flex; align-items: center; gap: 0.125rem; padding: 0.25rem 0.5rem 0.25rem 0.375rem; border-radius: 0.25rem; background: hsl(var(--deal-green)); color: #fff; font-size: 0.875rem; font-weight: 700; line-height: 1; }
+html.theme .deal-image .off-tag .lucide { width: 0.875rem; height: 0.875rem; stroke-width: 2.75; }
+html.theme .zoom-hint { width: 2rem; height: 2rem; }
+html.theme .kicker .badge { border: 0; background: hsl(var(--muted)); color: hsl(var(--ink)); font-weight: 600; padding: 0.1875rem 0.4375rem; }
+html.theme .pricebox { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.625rem; row-gap: 0.25rem; }
+html.theme .pricebox .price-was { display: contents; }
+html.theme .pricebox .price-was .mrp { font-size: 1rem; }
+html.theme .pricebox .price-was .save { flex-basis: 100%; color: hsl(var(--save-ink)); font-weight: 600; font-size: 0.9375rem; }
+html.theme .buy-row { display: flex; flex-direction: column; align-items: stretch; gap: 0.5rem; }
+html.theme .buy-row .store-chip { align-self: flex-start; height: 1.25rem; max-width: 5rem; object-fit: contain; object-position: left center; }
+html.theme .buy-row .btn-buy { width: 100%; height: 3rem; font-size: 1rem; background: hsl(var(--fill)); color: hsl(var(--on-fill)); border: 0; border-radius: 0.375rem; overflow: hidden; transition: background .2s, box-shadow .2s; }
+@media (hover: hover) { html.theme .buy-row .btn-buy:hover { background: hsl(var(--fill-deep)); color: hsl(var(--on-fill)); box-shadow: 0 0.375rem 1rem -0.25rem hsl(var(--shadow) / .45); } html.theme .buy-row .btn-buy:hover .lucide { animation: buy-out .5s cubic-bezier(.2,0,0,1) 1; } }
+html.theme .deal-stats { flex-wrap: nowrap; }
+html.theme .deal-stats .sh-exp { margin-left: auto; }
+html.theme .deal-stats .sh-trig { height: 2.25rem; padding: 0 0.75rem; }
+html.theme .slideover { width: 34rem; }
+html.theme .so-head { justify-content: space-between; padding: 0 0.5rem; height: 3rem; }
+html.theme .so-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+html.theme #so-full { gap: 0.375rem; color: hsl(var(--ink)); font-weight: 500; }
+html.theme #so-full .lucide { width: 0.875rem; height: 0.875rem; }
+html.theme #so-full:hover, html.theme #so-close:hover { background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
+/* the saving never cuts; the store mark gives way first (down to 2.5rem) */
+html.theme .deal .saveline .save { flex: none; overflow: visible; text-overflow: clip; }
+/* Blog NEW outside the desktop nav (side menu, phone nav): a solid navy 4px tag, no peach or orange */
+html.theme :is(.sheet-nav, .nav-blog) .new-pill, html.theme[data-theme="dark"] :is(.sheet-nav, .nav-blog) .new-pill { border: 0; border-radius: 0.25rem; padding: 0.1875rem 0.375rem; background: hsl(var(--fill)); color: hsl(var(--on-fill)); font-size: 0.6875rem; font-weight: 700; letter-spacing: .04em; line-height: 1; text-transform: uppercase; }
+
+/* S25 playground: promo message on Home (Admin → Sale posters → Promo message) and the not-found state of a removed deal or post */
+html.theme .promo-msg { display: flex; align-items: center; gap: 0.625rem; margin: 1rem 0 0; padding: 0.625rem 0.875rem; border: 1px solid hsl(var(--line)); border-radius: 0.5rem; background: hsl(var(--surface)); color: hsl(var(--ink)); font-size: 0.875rem; text-decoration: none; }
+html.theme .promo-msg b { flex: none; padding: 0.125rem 0.4375rem; border-radius: 0.25rem; background: hsl(var(--fill)); color: hsl(var(--on-fill)); font-size: 0.75rem; }
+html.theme .promo-msg span:not(.promo-cta) { flex: 1; min-width: 0; }
+html.theme .promo-cta { display: inline-flex; align-items: center; gap: 0.25rem; flex: none; font-weight: 600; color: hsl(var(--brand-ink)); }
+html.theme .promo-cta .lucide { width: 0.875rem; height: 0.875rem; }
+html.theme .nf { display: grid; justify-items: start; gap: 0.75rem; padding: 2.5rem 0 1rem; }
+html.theme .nf h1 { margin: 0; font-size: 1.5rem; }
+html.theme .nf p { margin: 0; color: hsl(var(--muted-foreground)); }
+/* D-151 follow-up: on phones the one-line stats row squeezed "0 views" onto two lines and pushed Share off the edge; each item keeps one line */
+html.theme .deal-stats .views, html.theme .deal-stats .comment-link { flex: none; white-space: nowrap; }
+/* the folded share icons take no room in the row; opened, they slide out to the left of Share over the counts */
+html.theme .deal-stats .sh-exp { position: relative; flex: none; }
+html.theme .deal-stats .sh-items { position: absolute; right: 100%; top: 50%; transform: translateY(-50%); }

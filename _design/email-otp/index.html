@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head>
+<script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
+try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
+var m=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
+var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
+var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
+apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
+window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
+var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('DOMContentLoaded',apply);
+window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Your OfferTag sign-in code</title></head>
+<body style="margin:0;padding:0;background:#ffffff;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;"><tr><td align="center" style="padding:32px 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;">
+    <tr><td style="padding:0 0 24px;"><img src="/assets/logo.png" alt="OfferTag" height="32" style="display:block;height:32px;width:auto;border:0;"></td></tr>
+    <tr><td style="font-family:Jost,Arial,Helvetica,sans-serif;font-size:20px;line-height:28px;font-weight:600;color:#0a0a0a;">Your OfferTag sign-in code</td></tr>
+    <tr><td align="center" style="padding:32px 0;font-family:Jost,Arial,Helvetica,sans-serif;font-size:32px;line-height:40px;font-weight:600;letter-spacing:8px;color:#0a0a0a;">482917</td></tr>
+    <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#404040;">Valid for 10 minutes. If you did not request this, ignore this email.</td></tr>
+    <tr><td style="padding:24px 0 0;"><div style="border-top:1px solid #e5e5e5;font-size:0;line-height:0;">&nbsp;</div></td></tr>
+    <tr><td style="padding:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:18px;color:#737373;">OfferTag · <a href="mailto:support@offertag.in" style="color:#737373;">support@offertag.in</a></td></tr>
+  </table>
+</td></tr></table>
+</body></html>

@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
+try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
+var m=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
+var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
+var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
+apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
+window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
+var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('DOMContentLoaded',apply);
+window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OfferTag: Clothing Loot Deals &amp; Hot Shopping Deals Online From Amazon</title>
+<meta name="description" content="Clothing Loot Deals &amp; Hot Shopping Deals Online From Amazon. Grab Best Discount Deals &amp; Latest Discount Offers On Clothing From Amazon At OfferTag. Shop Now">
+<link rel="stylesheet" href="/vendor/geist/geist.css">
+<link rel="stylesheet" href="/css/ui.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/theme.css">
+</head>
+<body data-page="listing" data-kind="combo" data-default-sort="recommended">
+
+<header class="site-header">
+  <div class="container">
+    <div class="header-row">
+      <button class="btn btn-ghost btn-icon" id="menu-open" aria-label="Open menu" aria-controls="menu-sheet"><i data-lucide="menu"></i></button>
+      <a class="logo" href="/" aria-label="OfferTag home"><img src="/assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
+      <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
+      <nav class="hnav" aria-label="Deal types">
+        <a href="/">Home</a><a href="/top-deals">Top deals</a><a href="/loot-deals">Loot</a><a href="/new-deals">New</a><a href="/pantry-deals">Pantry</a>
+        <a href="/blog" class="hnav-blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden><svg viewBox="0 0 44 44" aria-hidden="true"><path class="fold" d="M1 0H6L12 6Z"/><path class="fold" d="M44 43V38L38 32Z"/><path class="band" d="M6 0H25L44 19V38Z"/><text x="28.5" y="15.5" transform="rotate(45 28.5 15.5)">NEW</text></svg></span><span class="blog-tip" role="tooltip"><small>New on the blog</small>Lunch boxes and tiffins worth packing this week</span></a>
+      </nav>
+      <form class="header-search" data-search role="search">
+        <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" aria-controls="search-pop" aria-expanded="false"></label>
+        <div class="popover search-pop" id="search-pop" hidden data-state="closed" role="listbox" aria-label="Suggestions"></div>
+      </form>
+      <div class="header-actions">
+        <a class="btn btn-link nav-blog" href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden>New</span></a>
+        <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
+        <!-- D-150: theme menu (Light · Dark · Automatic); the icon shows the current choice -->
+        <div class="dropdown theme-menu">
+          <button class="btn btn-ghost btn-icon theme-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Theme"><i data-lucide="sun" class="tb-light"></i><i data-lucide="moon" class="tb-dark"></i><i data-lucide="sun-moon" class="tb-auto"></i></button>
+          <div class="menu theme-menu-list" role="menu" hidden data-state="closed" aria-label="Theme"><div class="menu-label">Theme</div><button type="button" role="menuitemradio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i>Light</button><button type="button" role="menuitemradio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i>Dark</button><button type="button" role="menuitemradio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i>Automatic<small>Follows your device</small></button></div>
+        </div>
+        <a class="btn btn-outline" href="/login" data-signin-open data-when-guest>Sign in</a>
+        <div class="dropdown account-menu" data-when-user hidden>
+          <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
+          <div class="menu" role="menu" hidden data-state="closed">
+            <div class="menu-label" data-user-name></div>
+            <div class="separator"></div>
+            <a role="menuitem" href="/user/profile"><i data-lucide="user"></i>Account</a>
+            <a role="menuitem" href="/admin" data-when-staff hidden><i data-lucide="layout-dashboard"></i>Admin panel</a>
+            <button type="button" role="menuitem" data-signout><i data-lucide="log-out"></i>Sign out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form class="header-search-mobile" data-search role="search">
+      <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" data-search-sheet-trigger></label>
+    </form>
+  </div>
+</header>
+<nav class="typenav" aria-label="Deal types"><div class="container"><ul><li><a href="/">Home</a></li><li><a href="/top-deals">Top deals</a></li><li><a href="/loot-deals">Loot</a></li><li><a href="/new-deals">New</a></li><li><a href="/pantry-deals">Pantry</a></li></ul></div></nav>
+
+<main>
+  <div class="container">
+    <div class="crumbs"><a href="/">Home</a><i data-lucide="chevron-right"></i><a href="/stores">Stores</a><i data-lucide="chevron-right"></i><a href="/shops/amazon">Amazon</a><i data-lucide="chevron-right"></i><span>Clothing</span></div>
+    <div class="page-head list-head"><h1 id="page-title">Clothing deals from Amazon</h1>
+        <div class="toolbar">
+          <button class="btn btn-outline phone-only" id="open-filters" type="button"><i data-lucide="sliders-horizontal"></i>Filter <span class="badge badge-default" id="filter-count" hidden>0</span></button>
+          <button class="btn btn-outline phone-only" id="open-sort" type="button"><i data-lucide="arrow-up-down"></i><span id="sort-label-m">Sort</span></button>
+          <span class="count"><b id="count">3</b> deals</span>
+          <div class="chips locked" id="locked"><span class="chip-x is-locked"><i data-lucide="lock"></i>Amazon</span><span class="chip-x is-locked"><i data-lucide="lock"></i>Clothing</span></div>
+          <div class="chips" id="chips"></div>
+          <div class="right">
+            <div class="dropdown sort-desktop" id="sort-menu">
+              <button class="btn btn-outline" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><i data-lucide="arrow-up-down"></i><span id="sort-label">Sort</span><i data-lucide="chevron-down"></i></button>
+              <div class="menu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-sort="recommended">Recommended</button>
+                <button type="button" role="menuitemradio" data-sort="newest">Newest</button>
+                <button type="button" role="menuitemradio" data-sort="disc">Discount: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="saving">Biggest saving</button>
+                <button type="button" role="menuitemradio" data-sort="price-asc">Price: low to high</button>
+                <button type="button" role="menuitemradio" data-sort="price-desc">Price: high to low</button>
+                <button type="button" role="menuitemradio" data-sort="views">Most viewed</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="listing">
+      
+      <aside class="filters" id="filters" aria-label="Filters">
+        <div class="fhead"><span>Filters</span><button class="btn btn-link" id="clear-all" type="button">Clear all</button></div>
+        <form id="filter-form">
+          <!-- Shown once the BRD coupon field exists (D-075). Hidden in this prototype: no coupon data yet. -->
+          <label class="opt coupon-toggle" hidden><input type="checkbox" name="coupon" value="1"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Has a coupon</span></label>
+          <details class="fgroup" data-group-name="cat" hidden><summary>Category <i data-lucide="chevron-down"></i></summary>
+            <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a category" data-find="cat" aria-label="Find a category"></label>
+            <div class="opts scroll" data-group="cat"><label class="opt"><input type="checkbox" name="cat" value="Clothing" data-s="clothing"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Clothing</span></label><label class="opt"><input type="checkbox" name="cat" value="Electronics" data-s="electronics"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Electronics</span></label><label class="opt"><input type="checkbox" name="cat" value="Mobile" data-s="mobile"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Mobile</span></label><label class="opt"><input type="checkbox" name="cat" value="Recharge" data-s="recharge"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Recharge</span></label><label class="opt"><input type="checkbox" name="cat" value="Movies" data-s="movies"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Movies</span></label><label class="opt"><input type="checkbox" name="cat" value="Food &amp; Beverage" data-s="food_beverage"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Food &amp; Beverage</span></label><label class="opt"><input type="checkbox" name="cat" value="Amazon Pantry" data-s="amazon_pantry"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Amazon Pantry</span></label><label class="opt"><input type="checkbox" name="cat" value="Grocery" data-s="grocery"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Grocery</span></label><label class="opt"><input type="checkbox" name="cat" value="Beauty" data-s="beauty"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Beauty</span></label><label class="opt"><input type="checkbox" name="cat" value="Luggage" data-s="luggage"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Luggage</span></label><label class="opt"><input type="checkbox" name="cat" value="Bags" data-s="bags"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Bags</span></label><label class="opt"><input type="checkbox" name="cat" value="Kitchen" data-s="kitchen"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Kitchen</span></label><label class="opt"><input type="checkbox" name="cat" value="Footwear" data-s="footwear"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Footwear</span></label><label class="opt"><input type="checkbox" name="cat" value="Watch" data-s="watch"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Watch</span></label><label class="opt"><input type="checkbox" name="cat" value="Cab" data-s="cab"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Cab</span></label><label class="opt"><input type="checkbox" name="cat" value="TV &amp; Appliances" data-s="tv_appliances"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">TV &amp; Appliances</span></label><label class="opt"><input type="checkbox" name="cat" value="Washing Machine" data-s="washing_machine"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Washing Machine</span></label><label class="opt"><input type="checkbox" name="cat" value="AC" data-s="ac"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">AC</span></label><label class="opt"><input type="checkbox" name="cat" value="Personal Care" data-s="personal_care"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Personal Care</span></label><label class="opt"><input type="checkbox" name="cat" value="Earphones &amp; Headphones" data-s="earphones_headphones"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Earphones &amp; Headphones</span></label><label class="opt"><input type="checkbox" name="cat" value="Computers &amp; Laptops" data-s="computers_laptops"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Computers &amp; Laptops</span></label><label class="opt"><input type="checkbox" name="cat" value="Deodrants &amp; Perfumes" data-s="deodrants_perfumes"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Deodrants &amp; Perfumes</span></label><label class="opt"><input type="checkbox" name="cat" value="Speaker" data-s="speaker"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Speaker</span></label><label class="opt"><input type="checkbox" name="cat" value="Home &amp; Decore" data-s="home_decore"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Home &amp; Decore</span></label><label class="opt"><input type="checkbox" name="cat" value="Accessories" data-s="accessories"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Accessories</span></label><label class="opt"><input type="checkbox" name="cat" value="Health" data-s="health"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Health</span></label><label class="opt"><input type="checkbox" name="cat" value="Baby" data-s="baby"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Baby</span></label><label class="opt"><input type="checkbox" name="cat" value="Automotive" data-s="automotive"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Automotive</span></label><label class="opt"><input type="checkbox" name="cat" value="Books" data-s="books"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Books</span></label><label class="opt"><input type="checkbox" name="cat" value="Cashback" data-s="cashback"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Cashback</span></label><label class="opt"><input type="checkbox" name="cat" value="Others" data-s="others"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Others</span></label></div>
+          </details>
+          <details class="fgroup" data-group-name="store" hidden><summary>Store <i data-lucide="chevron-down"></i></summary>
+            <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a store" data-find="store" aria-label="Find a store"></label>
+            <div class="opts scroll" data-group="store"><label class="opt"><input type="checkbox" name="store" value="Amazon" data-s="amazon"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Amazon</span></label><label class="opt"><input type="checkbox" name="store" value="Flipkart" data-s="flipkart"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Flipkart</span></label><label class="opt"><input type="checkbox" name="store" value="Myntra" data-s="myntra"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Myntra</span></label><label class="opt"><input type="checkbox" name="store" value="Jiomart" data-s="jiomart"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Jiomart</span></label><label class="opt"><input type="checkbox" name="store" value="Ajio" data-s="ajio"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Ajio</span></label><label class="opt"><input type="checkbox" name="store" value="Bigbasket" data-s="bigbasket"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Bigbasket</span></label><label class="opt"><input type="checkbox" name="store" value="Blinkit" data-s="blinkit"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Blinkit</span></label><label class="opt"><input type="checkbox" name="store" value="Zepto" data-s="zepto"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Zepto</span></label><label class="opt"><input type="checkbox" name="store" value="Swiggy" data-s="swiggy"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Swiggy</span></label><label class="opt"><input type="checkbox" name="store" value="Paytm" data-s="paytm"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Paytm</span></label><label class="opt"><input type="checkbox" name="store" value="Shopsy" data-s="shopsy"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Shopsy</span></label><label class="opt"><input type="checkbox" name="store" value="Meesho" data-s="meesho"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Meesho</span></label><label class="opt"><input type="checkbox" name="store" value="Others" data-s="others"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Others</span></label><label class="opt"><input type="checkbox" name="store" value="Bookmyshow" data-s="bookmyshow"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Bookmyshow</span></label></div>
+          </details>
+          <details class="fgroup" data-group-name="disc"><summary>Discount <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="disc">
+              <label class="opt"><input type="radio" name="disc" value="0" checked><span class="box radio"></span><span class="txt">Any</span></label>
+              <label class="opt"><input type="radio" name="disc" value="50"><span class="box radio"></span><span class="txt">50% or more</span></label>
+              <label class="opt"><input type="radio" name="disc" value="70"><span class="box radio"></span><span class="txt">70% or more</span></label>
+              <label class="opt"><input type="radio" name="disc" value="90"><span class="box radio"></span><span class="txt">90% or more</span></label>
+            </div>
+          </details>
+          <details class="fgroup" data-group-name="price"><summary>Price <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="price">
+              <label class="opt"><input type="radio" name="price" value="" checked><span class="box radio"></span><span class="txt">Any</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-499"><span class="box radio"></span><span class="txt">Under ₹499</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-999"><span class="box radio"></span><span class="txt">Under ₹999</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-2499"><span class="box radio"></span><span class="txt">Under ₹2,499</span></label>
+              <label class="opt"><input type="radio" name="price" value="0-4999"><span class="box radio"></span><span class="txt">Under ₹4,999</span></label>
+              <label class="opt"><input type="radio" name="price" value="5000-"><span class="box radio"></span><span class="txt">₹5,000 and above</span></label>
+            </div>
+            <div class="minmax"><label><span class="visually-hidden">Minimum price</span><input class="input" type="number" inputmode="numeric" placeholder="Min" name="pmin" min="0"></label><span>–</span><label><span class="visually-hidden">Maximum price</span><input class="input" type="number" inputmode="numeric" placeholder="Max" name="pmax" min="0"></label></div>
+          </details>
+          <!-- Deal type: hidden on type pages, shown on search / category / store pages (D-075) -->
+          <details class="fgroup" data-group-name="type" ><summary>Deal type <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="type"><label class="opt"><input type="checkbox" name="type" value="Fresh" data-s="today"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Posted today</span></label><label class="opt"><input type="checkbox" name="type" value="Top" data-s="top"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Top deal</span></label><label class="opt"><input type="checkbox" name="type" value="Loot" data-s="loot"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Loot</span></label><label class="opt"><input type="checkbox" name="type" value="Pantry" data-s="pantry"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span><span class="txt">Pantry</span></label></div>
+          </details>
+          <details class="fgroup" data-group-name="posted" open><summary>Posted <i data-lucide="chevron-down"></i></summary>
+            <div class="opts" data-group="posted">
+              <label class="opt"><input type="radio" name="posted" value="" checked><span class="box radio"></span><span class="txt">Any time</span></label>
+              <label class="opt"><input type="radio" name="posted" value="1440"><span class="box radio"></span><span class="txt">Last 24 hours</span></label>
+              <label class="opt"><input type="radio" name="posted" value="10080"><span class="box radio"></span><span class="txt">Last 7 days</span></label>
+            </div>
+          </details>
+        </form>
+      </aside>
+
+      <section aria-label="Results">
+        <div class="deal-grid results" id="results"><article class="card deal" data-id="474148" data-page="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" data-q="the indian garage co men&#x27;s slim fit solid puffer jackets clothing amazon" data-cat="Clothing" data-store="Amazon" data-pct="81" data-price="990" data-save="4109" data-age="21" data-views="17" data-types="Fresh,Top,Loot,New">
+  <a class="img" href="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" aria-label="The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets"><img src="/assets/deals/lg/1794231088.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="81% off"><i data-lucide="arrow-down" aria-hidden="true"></i>81%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">21 min ago</div>
+    <a class="title" href="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" title="The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets">The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets</a>
+    <div class="priceline"><span class="price">₹990</span><span class="was">₹5,099</span></div>
+    <div class="saveline"><span class="save">Save ₹4,109</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0BNLLB2F5?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article><article class="card deal" data-id="474465" data-page="/deal/puma-men-down-474465" data-q="puma men down clothing amazon" data-cat="Clothing" data-store="Amazon" data-pct="70" data-price="4098" data-save="9597" data-age="120" data-views="8" data-types="Fresh,Top,New">
+  <a class="img" href="/deal/puma-men-down-474465" aria-label="PUMA Men Down"><img src="/assets/deals/lg/1794324132.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="70% off"><i data-lucide="arrow-down" aria-hidden="true"></i>70%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">2 h ago</div>
+    <a class="title" href="/deal/puma-men-down-474465" title="PUMA Men Down">PUMA Men Down</a>
+    <div class="priceline"><span class="price">₹4,098</span><span class="was">₹13,695</span></div>
+    <div class="saveline"><span class="save">Save ₹9,597</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0FF2QFNCM?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article><article class="card deal" data-id="474458" data-page="/deal/flat-70-80-off-on-jack-jones-clothing-474458" data-q="flat 70-80% off on jack &amp; jones clothing clothing amazon" data-cat="Clothing" data-store="Amazon" data-pct="80" data-price="400" data-save="1599" data-age="180" data-views="10" data-types="Fresh,Top,New">
+  <a class="img" href="/deal/flat-70-80-off-on-jack-jones-clothing-474458" aria-label="Flat 70-80% Off On Jack &amp; Jones Clothing"><img src="/assets/deals/lg/1794319690.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="80% off"><i data-lucide="arrow-down" aria-hidden="true"></i>80%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">3 h ago</div>
+    <a class="title" href="/deal/flat-70-80-off-on-jack-jones-clothing-474458" title="Flat 70-80% Off On Jack &amp; Jones Clothing">Flat 70-80% Off On Jack &amp; Jones Clothing</a>
+    <div class="priceline"><span class="price">₹400</span><span class="was">₹1,999</span></div>
+    <div class="saveline"><span class="save">Save ₹1,599</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/s?k=Jack+%26+Jones&amp;i=apparel&amp;rh=n%3A1571271031%2Cp_123%3A339433%2Cp_6%3AA1WYWER0W24N8S%2Cp_n_pct-off-with-tax%3A68-&amp;s=relevancerank&amp;dc=&amp;ds=v1%3AkzVcE4AxSbx8F%2BoXmUetvYiRJThP5McsweCWGgHo5Wg&amp;btn_ref=srctok-415fd0488f8d9582&amp;btn_type=ss&amp;crid=1K2D8TU7DLYWY&amp;qid=1782240262&amp;rnid=2665398031&amp;sprefix=%2Capparel%2C319&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article>
+          <div class="empty" id="empty" hidden><p id="empty-text">No deals match these filters.</p><button class="btn btn-outline" type="button" data-clear id="empty-clear">Clear all filters</button><p class="nearby">Try nearby: <a href="/products/kitchen-deals">Kitchen</a> · <a href="/products/others-deals">Others</a> · <a href="/products/beauty-deals">Beauty</a></p></div>
+        </div>
+
+        <div class="load-state" id="load-state" aria-live="polite"></div>
+        <section class="section deals empty-feed" id="empty-feed" hidden aria-labelledby="h-ef"><div class="section-head"><div><h2 id="h-ef">Top deals</h2><p>Newest first</p></div><a class="view-all" href="/top-deals">View all <i data-lucide="chevron-right"></i></a></div><div class="carousel">
+        <div class="carousel-viewport"><div class="carousel-container"><div class="carousel-item"><article class="card deal" data-id="478097" data-page="/deal/caprese-bags-upto-88-off-478097" data-q="caprese bags upto 88% off bags myntra" data-cat="Bags" data-store="Myntra" data-pct="88" data-price="371" data-save="2728" data-age="9" data-views="0" data-types="Fresh,Top,Loot,New">
+  <a class="img" href="/deal/caprese-bags-upto-88-off-478097" aria-label="Caprese Bags upto 88% Off"><img src="/assets/deals/lg/1795509846.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="88% off"><i data-lucide="arrow-down" aria-hidden="true"></i>88%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">9 min ago</div>
+    <a class="title" href="/deal/caprese-bags-upto-88-off-478097" title="Caprese Bags upto 88% Off">Caprese Bags upto 88% Off</a>
+    <div class="priceline"><span class="price">₹371</span><span class="was">₹3,099</span></div>
+    <div class="saveline"><span class="save">Save ₹2,728</span><img class="store-chip" src="/assets/stores/myntra.svg" alt="Myntra" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://myntr.it/hV44xH3" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Myntra">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474150" data-page="/deal/about-space-bed-84-x-74-inches-king-size-bed-without-storage-engineered-wooden-bed-frame-with-headboard-mdf-board-for-mattress-1-year-warranty-cot-for-bedroom-satin-weave-linen-beige-coupon-bank-offer-474150" data-q="about space bed - (84 x 74 inches) king size bed without storage home &amp; decore amazon" data-pinned="1" data-cat="Home &amp; Decore" data-store="Amazon" data-pct="74" data-price="9000" data-save="25999" data-age="10" data-views="17" data-types="Fresh,Top,New">
+  <a class="img" href="/deal/about-space-bed-84-x-74-inches-king-size-bed-without-storage-engineered-wooden-bed-frame-with-headboard-mdf-board-for-mattress-1-year-warranty-cot-for-bedroom-satin-weave-linen-beige-coupon-bank-offer-474150" aria-label="ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage"><img src="/assets/deals/lg/1794231756.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="74% off"><i data-lucide="arrow-down" aria-hidden="true"></i>74%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">10 min ago</div>
+    <a class="title" href="/deal/about-space-bed-84-x-74-inches-king-size-bed-without-storage-engineered-wooden-bed-frame-with-headboard-mdf-board-for-mattress-1-year-warranty-cot-for-bedroom-satin-weave-linen-beige-coupon-bank-offer-474150" title="ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage">ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage</a>
+    <div class="priceline"><span class="price">₹9,000</span><span class="was">₹34,999</span></div>
+    <div class="saveline"><span class="save">Save ₹25,999</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GQBSVK7M?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474149" data-page="/deal/crompton-dyna-ray-9-watt-led-bulb-cool-day-light-pack-of-1-b22-base-energy-efficient-led-bulb-for-home-office-wide-light-spread-474149" data-q="crompton dyna ray 9 watt led bulb cool day light kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="71" data-price="43" data-save="107" data-age="13" data-views="13" data-types="Fresh,Top,Pantry,New">
+  <a class="img" href="/deal/crompton-dyna-ray-9-watt-led-bulb-cool-day-light-pack-of-1-b22-base-energy-efficient-led-bulb-for-home-office-wide-light-spread-474149" aria-label="Crompton Dyna Ray 9 Watt LED Bulb Cool Day Light"><img src="/assets/deals-hd/1794231567.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="71% off"><i data-lucide="arrow-down" aria-hidden="true"></i>71%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">13 min ago</div>
+    <a class="title" href="/deal/crompton-dyna-ray-9-watt-led-bulb-cool-day-light-pack-of-1-b22-base-energy-efficient-led-bulb-for-home-office-wide-light-spread-474149" title="Crompton Dyna Ray 9 Watt LED Bulb Cool Day Light">Crompton Dyna Ray 9 Watt LED Bulb Cool Day Light</a>
+    <div class="priceline"><span class="price">₹43</span><span class="was">₹150</span></div>
+    <div class="saveline"><span class="save">Save ₹107</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0B6FJNH97?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474148" data-page="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" data-q="the indian garage co men&#x27;s slim fit solid puffer jackets clothing amazon" data-cat="Clothing" data-store="Amazon" data-pct="81" data-price="990" data-save="4109" data-age="21" data-views="17" data-types="Fresh,Top,Loot,New">
+  <a class="img" href="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" aria-label="The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets"><img src="/assets/deals/lg/1794231088.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="81% off"><i data-lucide="arrow-down" aria-hidden="true"></i>81%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">21 min ago</div>
+    <a class="title" href="/deal/the-indian-garage-co-mens-slim-fit-solid-puffer-jackets-474148" title="The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets">The Indian Garage Co Men&#x27;s Slim Fit Solid Puffer Jackets</a>
+    <div class="priceline"><span class="price">₹990</span><span class="was">₹5,099</span></div>
+    <div class="saveline"><span class="save">Save ₹4,109</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0BNLLB2F5?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474147" data-page="/deal/trustbasket-ambiance-pot-large-plastic-flower-pot-uv-resistant-decorative-planter-for-living-room-21x17x23cm-474147" data-q="trustbasket ambiance pot kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="90" data-price="292" data-save="2707" data-age="23" data-views="22" data-types="Fresh,Top,Loot,Pantry,New">
+  <a class="img" href="/deal/trustbasket-ambiance-pot-large-plastic-flower-pot-uv-resistant-decorative-planter-for-living-room-21x17x23cm-474147" aria-label="TrustBasket Ambiance Pot"><img src="/assets/deals/lg/1794230968.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="90% off"><i data-lucide="arrow-down" aria-hidden="true"></i>90%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">23 min ago</div>
+    <a class="title" href="/deal/trustbasket-ambiance-pot-large-plastic-flower-pot-uv-resistant-decorative-planter-for-living-room-21x17x23cm-474147" title="TrustBasket Ambiance Pot">TrustBasket Ambiance Pot</a>
+    <div class="priceline"><span class="price">₹292</span><span class="was">₹2,999</span></div>
+    <div class="saveline"><span class="save">Save ₹2,707</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0GWRDLBF7?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474146" data-page="/deal/diy-engineered-wood-computer-table-compact-study-desk-for-home-office-bedroom-small-spaces-75-x-80-x-45-cm-coupon-474146" data-q="diy engineered wood computer table, compact study desk for home office, bedroom &amp; small spaces (75 x 80 x 45 cm) (coupon) kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="60" data-price="1588" data-save="2411" data-age="23" data-views="9" data-types="Fresh,Top,Pantry,New">
+  <a class="img" href="/deal/diy-engineered-wood-computer-table-compact-study-desk-for-home-office-bedroom-small-spaces-75-x-80-x-45-cm-coupon-474146" aria-label="DIY Engineered Wood Computer Table, Compact Study Desk for Home Office, Bedroom &amp; Small Spaces (75 x 80 x 45 CM) (Coupon)"><img src="/assets/deals-hd/1794230961.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="60% off"><i data-lucide="arrow-down" aria-hidden="true"></i>60%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">23 min ago</div>
+    <a class="title" href="/deal/diy-engineered-wood-computer-table-compact-study-desk-for-home-office-bedroom-small-spaces-75-x-80-x-45-cm-coupon-474146" title="DIY Engineered Wood Computer Table, Compact Study Desk for Home Office, Bedroom &amp; Small Spaces (75 x 80 x 45 CM) (Coupon)">DIY Engineered Wood Computer Table, Compact Study Desk for Home Office, Bedroom &amp; Small Spaces (75 x 80 x 45 CM) (Coupon)</a>
+    <div class="priceline"><span class="price">₹1,588</span><span class="was">₹3,999</span></div>
+    <div class="saveline"><span class="save">Save ₹2,411</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0H49SZKXF?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474145" data-page="/deal/puma-mens-comfortcush-lite-running-shoe-474145" data-q="puma mens comfortcush lite running shoe footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="69" data-price="2014" data-save="4485" data-age="29" data-views="13" data-types="Fresh,Top,New">
+  <a class="img" href="/deal/puma-mens-comfortcush-lite-running-shoe-474145" aria-label="Puma Mens Comfortcush Lite Running Shoe"><img src="/assets/deals/lg/1794230597.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="69% off"><i data-lucide="arrow-down" aria-hidden="true"></i>69%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">29 min ago</div>
+    <a class="title" href="/deal/puma-mens-comfortcush-lite-running-shoe-474145" title="Puma Mens Comfortcush Lite Running Shoe">Puma Mens Comfortcush Lite Running Shoe</a>
+    <div class="priceline"><span class="price">₹2,014</span><span class="was">₹6,499</span></div>
+    <div class="saveline"><span class="save">Save ₹4,485</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0FG1QFN87?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474144" data-page="/deal/puma-unisex-adult-runningroad-running-shoe-474144" data-q="puma unisex-adult runningroad running shoe footwear amazon" data-cat="Footwear" data-store="Amazon" data-pct="69" data-price="2324" data-save="5175" data-age="29" data-views="15" data-types="Fresh,Top,New">
+  <a class="img" href="/deal/puma-unisex-adult-runningroad-running-shoe-474144" aria-label="PUMA Unisex-Adult RunningRoad Running Shoe"><img src="/assets/deals/lg/1794230591.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="69% off"><i data-lucide="arrow-down" aria-hidden="true"></i>69%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">29 min ago</div>
+    <a class="title" href="/deal/puma-unisex-adult-runningroad-running-shoe-474144" title="PUMA Unisex-Adult RunningRoad Running Shoe">PUMA Unisex-Adult RunningRoad Running Shoe</a>
+    <div class="priceline"><span class="price">₹2,324</span><span class="was">₹7,499</span></div>
+    <div class="saveline"><span class="save">Save ₹5,175</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0DJ99M1MP?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474143" data-page="/deal/samyang-xp-35mm-f12-lens-for-canon-ef-bank-offer-474143" data-q="samyang xp 35mm f1.2 lens for canon ef (bank offer) electronics amazon" data-pinned="1" data-cat="Electronics" data-store="Amazon" data-pct="76" data-price="23990" data-save="78000" data-age="41" data-views="13" data-types="Fresh,Top,New">
+  <a class="img" href="/deal/samyang-xp-35mm-f12-lens-for-canon-ef-bank-offer-474143" aria-label="Samyang XP 35mm F1.2 Lens for Canon EF (Bank Offer)"><img src="/assets/deals-hd/1794229870.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="76% off"><i data-lucide="arrow-down" aria-hidden="true"></i>76%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">41 min ago</div>
+    <a class="title" href="/deal/samyang-xp-35mm-f12-lens-for-canon-ef-bank-offer-474143" title="Samyang XP 35mm F1.2 Lens for Canon EF (Bank Offer)">Samyang XP 35mm F1.2 Lens for Canon EF (Bank Offer)</a>
+    <div class="priceline"><span class="price">₹23,990</span><span class="was">₹1,01,990</span></div>
+    <div class="saveline"><span class="save">Save ₹78,000</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B07P12NRTK?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="478088" data-page="/deal/ptron-bassbuds-vortex-clips-wireless-open-ear-earbuds-wchrome-finish-safebeats-tech-50hrs-playtime-dual-hd-mic-wai-enc-10mm-driver-pristine-sound-btv54-earclips-type-c-charging-obsidian-478088" data-q="ptron bassbuds vortex clips wireless open ear earbuds w/chrome finish, safebeats tech, 50hrs playtime, dual hd mic w/ai-enc, 10mm driver, pristine sound, btv5.4 earclips, type c charging (obsidian) earphones &amp; headphones amazon" data-cat="Earphones &amp; Headphones" data-store="Amazon" data-pct="72" data-price="799" data-save="2100" data-age="43" data-views="0" data-types="Fresh,Top,New">
+  <a class="img" href="/deal/ptron-bassbuds-vortex-clips-wireless-open-ear-earbuds-wchrome-finish-safebeats-tech-50hrs-playtime-dual-hd-mic-wai-enc-10mm-driver-pristine-sound-btv54-earclips-type-c-charging-obsidian-478088" aria-label="pTron Bassbuds Vortex Clips Wireless Open Ear Earbuds w/Chrome Finish, SafeBeats Tech, 50Hrs Playtime, Dual HD Mic w/AI-ENC, 10mm Driver, Pristine Sound, BTv5.4 Earclips, Type C Charging (Obsidian)"><img src="/assets/deals/lg/1795507886.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="72% off"><i data-lucide="arrow-down" aria-hidden="true"></i>72%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">43 min ago</div>
+    <a class="title" href="/deal/ptron-bassbuds-vortex-clips-wireless-open-ear-earbuds-wchrome-finish-safebeats-tech-50hrs-playtime-dual-hd-mic-wai-enc-10mm-driver-pristine-sound-btv54-earclips-type-c-charging-obsidian-478088" title="pTron Bassbuds Vortex Clips Wireless Open Ear Earbuds w/Chrome Finish, SafeBeats Tech, 50Hrs Playtime, Dual HD Mic w/AI-ENC, 10mm Driver, Pristine Sound, BTv5.4 Earclips, Type C Charging (Obsidian)">pTron Bassbuds Vortex Clips Wireless Open Ear Earbuds w/Chrome Finish, SafeBeats Tech, 50Hrs Playtime, Dual HD Mic w/AI-ENC, 10mm Driver, Pristine Sound, BTv5.4 Earclips, Type C Charging (Obsidian)</a>
+    <div class="priceline"><span class="price">₹799</span><span class="was">₹2,899</span></div>
+    <div class="saveline"><span class="save">Save ₹2,100</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0G7CH6Y56?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="478086" data-page="/deal/move-meant-trolley-bag-upto-84-off-478086" data-q="move-meant trolley bag upto 84% off luggage amazon" data-cat="Luggage" data-store="Amazon" data-pct="84" data-price="1599" data-save="5400" data-age="44" data-views="0" data-types="Fresh,Top,Loot,New">
+  <a class="img" href="/deal/move-meant-trolley-bag-upto-84-off-478086" aria-label="Move-Meant Trolley Bag upto 84% off"><img src="/assets/deals/lg/1795507820.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="84% off"><i data-lucide="arrow-down" aria-hidden="true"></i>84%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">44 min ago</div>
+    <a class="title" href="/deal/move-meant-trolley-bag-upto-84-off-478086" title="Move-Meant Trolley Bag upto 84% off">Move-Meant Trolley Bag upto 84% off</a>
+    <div class="priceline"><span class="price">₹1,599</span><span class="was">₹6,999</span></div>
+    <div class="saveline"><span class="save">Save ₹5,400</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/s?k=Move-Meant+Trolley+Bag&amp;crid=3I3MIU1JF4CMJ&amp;sprefix=move-meant+trolley+bag%2Caps%2C350&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div><div class="carousel-item"><article class="card deal" data-id="474141" data-page="/deal/cello-petal-bathroom-set-sturdy-and-durable-lightweight-and-rigid-easy-to-clean-and-attractive-design-small-set-of-3-dark-brown-474141" data-q="cello petal bathroom set kitchen amazon" data-cat="Kitchen" data-store="Amazon" data-pct="63" data-price="430" data-save="719" data-age="53" data-views="16" data-types="Fresh,Top,Pantry,New">
+  <a class="img" href="/deal/cello-petal-bathroom-set-sturdy-and-durable-lightweight-and-rigid-easy-to-clean-and-attractive-design-small-set-of-3-dark-brown-474141" aria-label="Cello Petal Bathroom Set"><img src="/assets/deals/lg/1794229159.jpg" alt="" loading="lazy" width="300" height="300"><span class="off-tag" aria-label="63% off"><i data-lucide="arrow-down" aria-hidden="true"></i>63%</span></a>
+  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
+  <div class="body">
+    <div class="meta">53 min ago</div>
+    <a class="title" href="/deal/cello-petal-bathroom-set-sturdy-and-durable-lightweight-and-rigid-easy-to-clean-and-attractive-design-small-set-of-3-dark-brown-474141" title="Cello Petal Bathroom Set">Cello Petal Bathroom Set</a>
+    <div class="priceline"><span class="price">₹430</span><span class="was">₹1,149</span></div>
+    <div class="saveline"><span class="save">Save ₹719</span><img class="store-chip" src="/assets/stores/amazon.svg" alt="Amazon" loading="lazy"></div>
+    <div class="acts"><a class="btn btn-buy" href="https://www.amazon.in/source=offertag.in/dp/B0CR7BLF1W?ie=UTF8&amp;keywords=offertag&amp;tag=offertag-21" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at Amazon">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>
+  </div></article></div></div></div>
+        <button class="carousel-prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="carousel-next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div></section>
+
+        <!-- Alerts opt-in card (B23, D-055): moved after the 16th card by listing.js on the second visit; ?visit=2 forces it -->
+        <div class="card alerts-card" id="alerts-card" hidden role="region" aria-label="Deal alerts">
+          <i data-lucide="bell"></i>
+          <div class="t"><b>Get loot alerts in your browser</b><p>Free, no account. Only the big ones, never more than a few a day.</p></div>
+          <button class="btn btn-default btn-sm" type="button" id="alerts-card-on">Turn on</button>
+          <button class="btn btn-ghost btn-icon btn-sm" type="button" id="alerts-card-x" aria-label="Dismiss for 30 days"><i data-lucide="x"></i></button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="ft-top">
+      <div class="ft-about">
+        <a class="ft-logo" href="/" aria-label="OfferTag home"><img src="/assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
+        <h3>What is OfferTag?</h3>
+        <p>OfferTag finds the best online deals, loot offers and price drops from Amazon, Flipkart, Myntra, Ajio, JioMart and other Indian stores, and posts them all day. Every deal shows the price, the MRP and how much you save, with a direct link to the store. Free to use, no account needed.</p>
+        <div class="ft-follow">
+          <span>Follow us on</span>
+          <div class="ft-social">
+            <a href="#wa" target="_blank" rel="noopener" aria-label="WhatsApp"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
+            <a href="#tg" target="_blank" rel="noopener" aria-label="Telegram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
+            <a href="#fb" target="_blank" rel="noopener" aria-label="Facebook"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a>
+            <a href="#x" target="_blank" rel="noopener" aria-label="X"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+            <a href="#ig" target="_blank" rel="noopener" aria-label="Instagram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+            <a href="#li" target="_blank" rel="noopener" aria-label="LinkedIn"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="ft-app">
+        <span class="ft-app-ico"><i data-lucide="smartphone"></i></span>
+        <div>
+          <b>Deals on your phone</b>
+          <p>Get an alert the moment a loot deal is posted. Download the OfferTag app.</p>
+          <div class="ft-app-acts">
+            <a class="ft-play" href="#app" target="_blank" rel="noopener"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><span><small>Get it on</small>Google Play</span></a>
+            <a class="ft-alerts" href="#alerts"><i data-lucide="bell"></i>Browser alerts</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ft-disclaimer"><b>Disclaimer:</b> OfferTag does not sell any products. Links on this site are affiliate links: when you buy through them, the store pays us a small commission at no extra cost to you. That keeps OfferTag free. Prices and stock change fast, so check the store before you buy. <a href="/disclaimer">Read more</a></p>
+
+    <div class="ft-cols">
+      <div><h4>Deals</h4><ul><li><a href="/top-deals">Top deals</a></li><li><a href="/loot-deals">Loot deals</a></li><li><a href="/new-deals">New deals</a></li><li><a href="/pantry-deals">Pantry</a></li><li><a href="/categories">All categories</a></li></ul></div>
+      <div class="ft-stores"><h4>Top stores</h4><ul><li><a href="/shops/amazon">Amazon</a></li><li><a href="/shops/flipkart">Flipkart</a></li><li><a href="/shops/myntra">Myntra</a></li><li><a href="/shops/ajio">Ajio</a></li><li><a href="/shops/jiomart">JioMart</a></li><li><a href="/shops/bigbasket">BigBasket</a></li><li><a href="/shops/blinkit">Blinkit</a></li><li><a href="/shops/meesho">Meesho</a></li><li><a href="/shops/swiggy">Swiggy</a></li><li><a href="/stores">All stores</a></li></ul></div>
+      <div><h4>Need help?</h4><ul><li><a href="/faq">FAQs</a></li><li><a href="/contact">Contact us</a></li><li><a href="#chat">Chat with us</a></li><li><a href="/contact">Send feedback</a></li><li><a href="/delete-account">Delete account</a></li></ul></div>
+      <div><h4>Privacy &amp; you</h4><ul><li><a href="/privacy">Privacy policy</a></li><li><a href="/terms">Terms of use</a></li><li><a href="/disclaimer">Disclaimer</a></li><li><a href="/blog">Blog</a></li></ul></div>
+    </div>
+
+    <div class="footer-bottom">
+      <details><summary>About Clothing from Amazon</summary><div class="about-text"><p><strong>Mens' Clothing</strong><br>Mens clothing mainly includes t-shirts, shirts, jeans, shorts, active and daily wear clothes, innerwears, winter wears like jackets and trousers. Best selling brands in India are US Polo Association, Lee, Levis, UCB (United Colors Of Benetton), Arrow, Raymond, Wrangler, Pepe (jeans), Puma, Myanmar and Jockey (innerwears).</p> <p><strong>Women clothing</strong><br>Girls and Women in India are very fond of shopping clothes. They would buy clothes on every big and small festival. Wearing different dresses on each occasion is necessary for women in India. Women's clothing includes ethnic wear, western wear, lingerie and nightwears including innerwears and sportwear.<br>Western Wear is very trending for girls and ladies of young ages and includes midi skirts, skirts, dresses (including one-piece and partywear) dresses, jeans and leggings, trousers and capris, tops, tees and what not. Ethnic wear is customary for all festivals in India and includes saree, salwar, kurtis and kurtas. Special tees, track pants, tights and leggings are also very famous for sportswear for girls. Shorts, trousers, half-pants, hot pants are also very popular among Indian girls. Major brands for women clothing includes Biba, Vero moda, Miss chase, Marks &amp; Spencer, W for Women, Harpa, Aurelia, Rangriti, Amadore, Lee, Levis' and hundreds of other brands.</p> <p><strong>Kids' Clothing</strong><br>Poeple in Indian care about their kids more than themselves. Several Kids clothing are available online like school dresses and shoes, kids shirts, pants, half-pants and trousers. You can buy almost everything you could buy for Men's and women's clothing for Kids as well.</p> <p><strong>Clothing Sizes And Colors</strong><br>Most of the products on Amazon, Flipkart, Myntra and Jabong have multiple size and color options available now-a-days. So choose your size wisely and try different color dresses while shopping online. In case the size doesn't fit or the color doesn't suit, most of the products have a 30 days return or exchange policies as well. Please confirm the same while buying products online. Go on with your shopping online.</p> <p><strong>Get Hot Clothes Shopping Deals Online</strong><br>You can get plenty of shopping deals on clothes online. Loot offers and shopping deals are available throughout all the seasons on clothes. The clothes re generally available with a discount of 30-80% off. Clothes are all about trends and keeping them in stock is useless after the trend changes. This is the reason that sales and discounts on clothes are always very high. All online retailers tend to sell as much stuffs as quickly as possible. This is why major online stores like Amazon, Flipkart, Myntra and Jabong always have an ongoing discounts on clothes. Periodically, they also offer a sale where many clothes are given an extra high discount. Extra coupon are also available in Amazon for clothes, so be careful to grab them before buying. You may have to click on apply coupon in order to get the extra discount. Also keep in mind about the general cashback offers from specific bank cards which can help you get a better deal while purchasing clothes. To ensure that you get the most out of these deals, please subscribe to our notifications through browser notifications, Whatsapp, Telegram and Facebook for best shopping deals (Click the sliders on right to get links to subscribe). Get notifications to ensure that you never miss a loot deal and save money in your clothes shopping. All the best for your shopping.</p> <p><strong>Loots Offers on Clothing</strong><br>You can grab plenty of clothing loot deals online. Major online stores like Amazon, Flipkart always have an ongoing discounts on clothes and apparels. Periodically, they also offer a sale where loot deals are available on all clothes. Also keep in mind about the general cashback offers from specific bank cards which can help you get a better deal while purchasing clothes. Clothing Loot Deals are very common with growing competition among the brands and growing online business for merchants. Subscribe to OfferTag and never miss a chance to grab clothing loot deal online.</p><p><strong>About Amazon</strong><br>Amazon is one of the Top Online Shopping website in India with over 2 crore products including Mobiles, Electronics, Computers, Kitchen, Clothing, Beauty, Sports, Baby and many more. Now you can order daily Groceries also from Amazon pantry, do mobile recharges, make payments to partner websites through Amazon pay and much more. You also get a lot of discounts and Offers when shopping with Amazon.</p> <p><strong>Get Loot Offers At Amazon On OfferTag</strong><br>Amazon provides one of the best competitive price for a wide range of products. Loot Deals and Discount Offers are generally available all the time. Periodically, major sales also happen in India. During this time, major discounts are given to the customers including Mobile accessories, Electronics, Amazon-Pantry, Apparels, Footwear, Computers, Laptops, Kitchen, Beauty, Sports, Baby and a lot more. With Amazon-Pantry, many grocery and daily use products are offered for heavy discounts. Multiple products were available for Re. 1 only for Amazon pantry.</p> <p><strong>Make the most of Amazon Loot Deals &amp; Sales</strong><br>OfferTag tracks best loot deals throughout day and night and posts deals for our members to grab them quickly. OfferTag provides notifications through browser, Whatsapp, Telegram and Facebook notifications for best shopping deals At Amazon. Generally, good discount deals don't last long and people grab them quickly. Subscribe now to make the most of Amazon loot deals &amp; Sales.</p> <p><strong>Additional Cashback Offers At Amazon</strong><br>Amazon very often introduces cashback on payments through Amazon Pay or specific bank debit or credit cards. Don't miss out on cashback offers while purchasing products on Amazon.</p> <p><strong>Why Amazon?</strong><br>Amazon provides a great customer experience. For most of the products, they provide a return policy. For many electronic products, they provide a manufacturer warranty. Amazon offers millions of products, so you can always choose through wide range of products to get you want.</p></div></details>
+      <span>© 2026 OfferTag · Bachat har shopping par</span>
+    </div>
+  </div>
+  <!-- Back-to-top dock (site.js moves #to-top in; rides above the footer) -->
+  <div class="fstack" data-fstack aria-label="Back to top"></div>
+  <!-- Edge join tab (D-107, replaces the D-106 corner button): a half-circle tab on the left edge, halfway down; hover (tap on touch) opens a half-circle fan: WhatsApp, Telegram, Get the app, Chat (desktop). Closes when the pointer leaves, on outside tap or Esc. -->
+  <div class="fjoin" data-fjoin>
+    <span class="fjoin-disc" aria-hidden="true"></span>
+    <button class="fjoin-tab" type="button" data-fjoin-tab aria-expanded="false" aria-controls="fjoin-items" aria-label="Get deals on WhatsApp, Telegram or the app"><i data-lucide="megaphone"></i></button>
+    <div class="fjoin-items" id="fjoin-items">
+      <a class="fs-btn fs-wa" href="#wa" target="_blank" rel="noopener" aria-label="Join on WhatsApp"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span class="fs-tip">WhatsApp</span></a>
+      <a class="fs-btn fs-tg" href="#tg" target="_blank" rel="noopener" aria-label="Join on Telegram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span class="fs-tip">Telegram</span></a>
+      <a class="fs-btn fs-app" href="#app" target="_blank" rel="noopener" aria-label="Download the OfferTag app"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><span class="fs-tip">Get the app</span></a>
+      <a class="fs-btn fs-ch" href="#chat" aria-label="Chat with us"><i data-lucide="message-circle"></i><span class="fs-tip">Chat with us</span></a>
+    </div>
+  </div>
+</footer>
+
+<!-- Desktop slide-over (D-050, D-065): the deal page in a 480 px panel, URL moves to the deal, Esc / ✕ / backdrop / Back close -->
+<div class="slideover-overlay" id="slideover-overlay" hidden data-state="closed"></div>
+<aside class="slideover" id="slideover" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Deal">
+  <div class="so-head"><a class="btn btn-ghost btn-sm" id="so-full" href="#"><i data-lucide="maximize-2"></i> Open full page</a><span class="so-title" id="so-title"></span><button class="btn btn-ghost btn-icon" type="button" id="so-close" aria-label="Close"><i data-lucide="x"></i></button></div>
+  <iframe id="so-frame" title="Deal" loading="eager"></iframe>
+</aside>
+
+<button class="btn btn-outline btn-icon to-top" id="to-top" aria-label="Back to top"><i data-lucide="arrow-up"></i></button>
+
+<!-- Phone sheets -->
+<div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
+<aside class="sheet" id="menu-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet-header"><div class="sheet-title" id="sheet-title">Menu</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <nav class="sheet-nav">
+    <a href="/login" data-signin-open data-when-guest><i data-lucide="user"></i>Sign in with Google or email</a>
+    <a href="/user/profile" data-when-user hidden><i data-lucide="user"></i><span data-user-name></span></a>
+    <a href="/admin" data-when-staff hidden><i data-lucide="layout-dashboard"></i>Admin panel</a>
+    <button type="button" class="sheet-nav-btn" data-signout data-when-user hidden><i data-lucide="log-out"></i>Sign out</button>
+    <div class="separator" style="margin:8px 0"></div>
+    <div class="sheet-section">Deals</div>
+    <a href="/top-deals"><i data-lucide="star"></i>Top deals</a>
+    <a href="/loot-deals"><i data-lucide="tag"></i>Loot</a>
+    <a href="/new-deals"><i data-lucide="sparkles"></i>New</a>
+    <a href="/pantry-deals"><i data-lucide="shopping-basket"></i>Pantry</a>
+    <div class="sheet-section">Browse</div>
+    <a href="/categories"><i data-lucide="layout-grid"></i>Shop by category</a>
+    <a href="/stores"><i data-lucide="store"></i>Shop by store</a>
+    <a href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing"><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
+    <div class="sheet-section">More</div>
+    <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
+    <a href="#chat"><i data-lucide="message-circle"></i>Chat with us</a>
+    <a href="/faq"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
+    <a href="/contact"><i data-lucide="mail"></i>Feedback</a>
+    <div class="sheet-section">Theme</div>
+    <div class="theme-seg" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
+  </nav>
+</aside>
+<!-- Search sheet (phone, full screen; D-064): recent · stores · categories, suggestions while typing; site.js renders the body -->
+<aside class="sheet sheet-full" id="search-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Search">
+  <form class="ss-head" data-search role="search">
+    <button class="btn btn-ghost btn-icon" type="button" data-sheet-close aria-label="Back"><i data-lucide="chevron-left"></i></button>
+    <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" name="q" id="ss-q" placeholder="Search deals, stores, categories…" autocomplete="off" enterkeyhint="search"></label>
+    <button class="btn btn-ghost btn-icon" type="button" id="ss-clear" aria-label="Clear" hidden><i data-lucide="x"></i></button>
+  </form>
+  <div class="sheet-body ss-body" id="ss-body"></div>
+</aside>
+<!-- Sign in: bottom sheet on phone, centred pop-up on desktop (D-091) -->
+<aside class="sheet sheet-bottom dialog-md" id="signin-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="signin-title">
+  <div class="handle"></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body"><div class="signin" data-signin>
+  <div class="signin-head"><div class="sheet-title" id="signin-title" data-signin-title>Sign in</div><p class="signin-sub" data-signin-sub>New here? Signing in creates your account.</p></div>
+  <div class="signin-step" data-step="start">
+    <button class="btn btn-outline signin-google" type="button" data-google><svg class="g-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.5 5.5 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9z"/></svg>Continue with Google</button>
+    <div class="signin-or"><span>or</span></div>
+    <form class="signin-form" data-email-form novalidate>
+      <label class="field-label">Email<input class="input" type="email" name="email" inputmode="email" autocomplete="email" maxlength="255" placeholder="you@example.com"></label>
+      <p class="form-error" data-email-error role="alert" hidden></p>
+      <label class="turnstile" data-turnstile hidden><input type="checkbox" data-turnstile-box><span>Verify you are human</span><small>Cloudflare Turnstile</small></label>
+      <button class="btn btn-default" type="submit">Send code</button>
+    </form>
+    <p class="signin-legal">By continuing you agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy policy</a>.</p>
+  </div>
+  <div class="signin-step" data-step="code" hidden>
+    <div class="otp" role="group" aria-label="6-digit code"><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 1" autocomplete=one-time-code><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 2" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 3" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 4" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 5" autocomplete=off><input class="input" type="text" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 6" autocomplete=off></div>
+    <p class="form-error" data-code-error role="alert" hidden></p>
+    <p class="signin-help">Valid for 10 minutes</p>
+    <button class="btn btn-link signin-resend" type="button" data-resend disabled>Resend code in 0:30</button>
+  </div>
+</div></div>
+</aside>
+<aside class="sheet sheet-bottom" id="filter-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="filter-sheet-title">
+  <div class="handle"></div>
+  <div class="sheet-header"><div class="sheet-title" id="filter-sheet-title">Filters</div><div style="font-size:13px;color:hsl(var(--muted-foreground))"><b id="sheet-count" style="color:hsl(var(--foreground))">3</b> deals match</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body" id="filter-sheet-body"></div>
+  <div class="sheet-footer"><button class="btn btn-ghost" type="button" data-clear>Clear all</button><button class="btn btn-default btn-lg" type="button" data-sheet-close id="apply-filters">Show deals</button></div>
+</aside>
+<aside class="sheet sheet-bottom" id="sort-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="sort-sheet-title">
+  <div class="handle"></div>
+  <div class="sheet-header"><div class="sheet-title" id="sort-sheet-title">Sort by</div></div>
+  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="sheet-body opts" id="sort-opts">
+    <label class="opt"><input type="radio" name="sortm" value="recommended"><span class="box radio"></span><span class="txt">Recommended<div style="font-size:12px;color:hsl(var(--muted-foreground))">Pinned first, then fresh and big discounts, mixed across categories.</div></span></label>
+    <label class="opt"><input type="radio" name="sortm" value="newest"><span class="box radio"></span><span class="txt">Newest</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="disc"><span class="box radio"></span><span class="txt">Discount: high to low</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="saving"><span class="box radio"></span><span class="txt">Biggest saving</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="price-asc"><span class="box radio"></span><span class="txt">Price: low to high</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="price-desc"><span class="box radio"></span><span class="txt">Price: high to low</span></label>
+    <label class="opt"><input type="radio" name="sortm" value="views"><span class="box radio"></span><span class="txt">Most viewed</span></label>
+  </div>
+</aside>
+
+<script src="/vendor/embla-carousel.umd.js"></script>
+<script src="/vendor/lucide.min.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/admin-db.js"></script>
+<script type="ot/defer" data-src="/js/theme.js"></script>
+<script type="ot/defer" data-src="/js/site.js"></script>
+<script type="ot/defer" data-src="/js/listing.js"></script>
+</body>
+</html>

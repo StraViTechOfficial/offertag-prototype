@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" class="admin">
+<head>
+<script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
+try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
+var m=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
+var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
+var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
+apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
+window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
+var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('DOMContentLoaded',apply);
+window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Affiliate tags · OfferTag Admin</title>
+<link rel="stylesheet" href="/vendor/geist/geist.css">
+<link rel="stylesheet" href="/css/ui.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
+<div class="adm">
+  <aside class="adm-side" id="adm-side" aria-label="Admin menu">
+    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+      <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
+    <nav class="adm-nav">
+<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
+<div class="adm-group"><div class="adm-group-h"><i data-lucide="tag"></i><span>Deals</span></div><div class="adm-sub"><a href="/admin/deal">All deals</a><a href="/admin/incoming">Incoming<span class="adm-count" data-count="incoming">5</span></a><a href="/admin/deal/create">Post a deal</a><a href="/admin/pinned" data-role="admin">Pinned board</a></div></div>
+<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="gallery-horizontal"></i><span>Sale posters</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/social" data-role="admin"><i data-lucide="share-2"></i><span>Social sharing</span></a>
+<a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
+<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="inbox"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></div><div class="adm-sub"><a href="/admin/feedback" data-role="admin">Feedback</a><a href="/admin/reports" data-role="admin">Reports</a><a href="/admin/deletion-requests" data-role="admin">Deletion requests</a><a href="/admin/comments" data-role="admin">Comments</a></div></div>
+<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="library"></i><span>Catalogue</span></div><div class="adm-sub"><a href="/admin/shop" data-role="admin">Shops</a><a href="/admin/category" data-role="admin">Categories</a><a href="/admin/lookup" data-role="admin">Deal types</a><a href="/admin/type" data-role="admin">Types</a></div></div>
+<a class="adm-link" href="/admin/users" data-role="admin"><i data-lucide="users"></i><span>Users</span></a>
+<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="settings"></i><span>Settings</span></div><div class="adm-sub"><a href="/admin/settings/tags" data-role="admin" aria-current="page">Affiliate tags</a><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></div></div>
+    </nav>
+    <div class="adm-side-foot">
+      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
+      <a class="adm-link" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
+      <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
+    </div>
+  </aside>
+  <div class="adm-overlay" data-side-close hidden></div>
+  <div class="adm-main">
+    <header class="adm-top">
+      <button class="btn btn-ghost btn-icon adm-burger" type="button" data-side-open aria-label="Open menu" aria-controls="adm-side"><i data-lucide="menu"></i></button>
+      <form class="adm-search" role="search" action="/admin/deal">
+        <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search</span><input class="input" type="search" name="q" placeholder="Search deals, links, users…" autocomplete="off" data-global-search><kbd>/</kbd></label>
+      </form>
+      <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
+      <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
+      <div class="dropdown adm-user">
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <div class="menu" role="menu" hidden data-state="closed">
+          <div class="menu-label">Signed in as Adil</div>
+          <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <div class="separator"></div>
+          <a role="menuitem" href="/admin/login?state=out"><i data-lucide="log-out"></i>Sign out</a>
+        </div>
+      </div>
+    </header>
+    <main class="adm-content" id="main">
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Affiliate tags is for admins only. Sub-admins see Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <div data-role="admin">
+      <div class="page-h">
+        <div><h1>Affiliate tags</h1><p>Which tag goes on each link, so a sale can be traced to where the visitor came from. Tags are added when a link is saved or shared; the stored deal link stays clean.</p></div>
+      </div>
+      <form data-tags novalidate>
+        <div class="tbl-wrap"><table class="tbl ltbl tags-tbl">
+          <thead><tr><th>Where the link is used</th><th>Amazon tag</th><th>Flipkart id</th><th>Used on</th></tr></thead>
+          <tbody>
+          <tr data-tag-row="web">
+            <td class="c-name"><b>Website (deal page)</b></td>
+            <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for Website (deal page)</span><input class="input q-input mono" type="text" value="offertag-21" data-tag="amz" placeholder="Required" data-req spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
+            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for Website (deal page)</span><input class="input q-input mono" type="text" value="offertag" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
+            <td class="m-used" data-l="Used on">Buy buttons</td>
+          </tr>          <tr data-tag-row="short">
+            <td class="c-name"><b>Short links and WhatsApp copies</b></td>
+            <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for Short links and WhatsApp copies</span><input class="input q-input mono" type="text" value="offertag1-21" data-tag="amz" placeholder="Required" data-req spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
+            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for Short links and WhatsApp copies</span><input class="input q-input mono" type="text" value="offertag" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
+            <td class="m-used" data-l="Used on">Copy for WhatsApp, short links</td>
+          </tr>          <tr data-tag-row="google">
+            <td class="c-name"><b>Google search visits (?source=)</b></td>
+            <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for Google search visits (?source=)</span><input class="input q-input mono" type="text" value="offertag2-21" data-tag="amz" placeholder="Required" data-req spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
+            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for Google search visits (?source=)</span><input class="input q-input mono" type="text" value="offertag" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
+            <td class="m-used" data-l="Used on">Visits from search</td>
+          </tr>          <tr data-tag-row="fb">
+            <td class="c-name"><b>Facebook (posts and ?fbclid visits)</b></td>
+            <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for Facebook (posts and ?fbclid visits)</span><input class="input q-input mono" type="text" value="offertagfb-21" data-tag="amz" placeholder="Required" data-req spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
+            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for Facebook (posts and ?fbclid visits)</span><input class="input q-input mono" type="text" value="offertag" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
+            <td class="m-used" data-l="Used on">Facebook Page posts</td>
+          </tr>          <tr data-tag-row="pin">
+            <td class="c-name"><b>Pinterest</b></td>
+            <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for Pinterest</span><input class="input q-input mono" type="text" value="" data-tag="amz" placeholder="Not set" spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
+            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for Pinterest</span><input class="input q-input mono" type="text" value="" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
+            <td class="m-used" data-l="Used on">Pinterest pins</td>
+          </tr>          <tr data-tag-row="th">
+            <td class="c-name"><b>Threads</b></td>
+            <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for Threads</span><input class="input q-input mono" type="text" value="" data-tag="amz" placeholder="Not set" spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
+            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for Threads</span><input class="input q-input mono" type="text" value="" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
+            <td class="m-used" data-l="Used on">Threads posts</td>
+          </tr>          <tr data-tag-row="app">
+            <td class="c-name"><b>Android app</b><span class="tag-check" title="The app source is not in the files we hold. Confirm with the app developer.">Check with app</span></td>
+            <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for Android app</span><input class="input q-input mono" type="text" value="offertag-21" data-tag="amz" placeholder="Required" data-req spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
+            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for Android app</span><input class="input q-input mono" type="text" value="offertag" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
+            <td class="m-used" data-l="Used on">App buy button</td>
+          </tr>
+          </tbody></table></div>
+        <p class="foot-note"><i data-lucide="user-round"></i><span>Poster tags: an admin or sub-admin can have their own Amazon tag, set in <a href="/admin/users">Users</a>. It replaces the website tag on links they share from the admin.</span></p>
+        <p class="foot-note"><i data-lucide="info"></i><span>Pinterest and Threads have no tag yet. Until you add one, their links carry the website tag. Amazon tags in India end in “-21”.</span></p>
+        <div class="savebar" data-savebar hidden><span>Unsaved changes</span><button class="btn btn-ghost btn-sm" type="button" data-discard>Discard</button><button class="btn btn-default btn-sm" type="submit">Save tags</button></div>
+      </form>
+      </div>
+    </main>
+  </div>
+</div>
+<div class="toaster" id="toaster" aria-live="polite"></div>
+<script src="/vendor/lucide.min.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/admin-db.js"></script>
+<script type="ot/defer" data-src="/js/admin.js"></script>
+<script type="ot/defer" data-src="/js/admin-c.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" class="admin">
+<head>
+<script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
+try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
+var m=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
+var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
+var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
+apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
+window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
+var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('DOMContentLoaded',apply);
+window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incoming deals · OfferTag Admin</title>
+<link rel="stylesheet" href="/vendor/geist/geist.css">
+<link rel="stylesheet" href="/css/ui.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
+<div class="adm">
+  <aside class="adm-side" id="adm-side" aria-label="Admin menu">
+    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+      <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
+    <nav class="adm-nav">
+<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
+<div class="adm-group"><div class="adm-group-h"><i data-lucide="tag"></i><span>Deals</span></div><div class="adm-sub"><a href="/admin/deal">All deals</a><a href="/admin/incoming" aria-current="page">Incoming<span class="adm-count" data-count="incoming">5</span></a><a href="/admin/deal/create">Post a deal</a><a href="/admin/pinned" data-role="admin">Pinned board</a></div></div>
+<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="gallery-horizontal"></i><span>Sale posters</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/social" data-role="admin"><i data-lucide="share-2"></i><span>Social sharing</span></a>
+<a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
+<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="inbox"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></div><div class="adm-sub"><a href="/admin/feedback" data-role="admin">Feedback</a><a href="/admin/reports" data-role="admin">Reports</a><a href="/admin/deletion-requests" data-role="admin">Deletion requests</a><a href="/admin/comments" data-role="admin">Comments</a></div></div>
+<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="library"></i><span>Catalogue</span></div><div class="adm-sub"><a href="/admin/shop" data-role="admin">Shops</a><a href="/admin/category" data-role="admin">Categories</a><a href="/admin/lookup" data-role="admin">Deal types</a><a href="/admin/type" data-role="admin">Types</a></div></div>
+<a class="adm-link" href="/admin/users" data-role="admin"><i data-lucide="users"></i><span>Users</span></a>
+<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="settings"></i><span>Settings</span></div><div class="adm-sub"><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></div></div>
+    </nav>
+    <div class="adm-side-foot">
+      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
+      <a class="adm-link" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
+      <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
+    </div>
+  </aside>
+  <div class="adm-overlay" data-side-close hidden></div>
+  <div class="adm-main">
+    <header class="adm-top">
+      <button class="btn btn-ghost btn-icon adm-burger" type="button" data-side-open aria-label="Open menu" aria-controls="adm-side"><i data-lucide="menu"></i></button>
+      <form class="adm-search" role="search" action="/admin/deal">
+        <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search</span><input class="input" type="search" name="q" placeholder="Search deals, links, users…" autocomplete="off" data-global-search><kbd>/</kbd></label>
+      </form>
+      <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
+      <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
+      <div class="dropdown adm-user">
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <div class="menu" role="menu" hidden data-state="closed">
+          <div class="menu-label">Signed in as Adil</div>
+          <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <div class="separator"></div>
+          <a role="menuitem" href="/admin/login?state=out"><i data-lucide="log-out"></i>Sign out</a>
+        </div>
+      </div>
+    </header>
+    <main class="adm-content" id="main">
+      <div class="page-h">
+        <div><h1>Incoming deals</h1><p>Telegram and quick-post deals wait here. Scraper deals go live on their own unless something needs a check.</p></div>
+        <div class="page-h-acts"><button class="btn btn-default" type="button" data-approve-all>Approve all <span data-count="incoming">5</span></button></div>
+      </div>
+      <div class="tabs-list adm-tabs" role="tablist">
+        <button class="tabs-trigger" role="tab" data-tab="pending" data-state="active" aria-selected="true">Pending <span class="adm-count" data-count="incoming">5</span></button>
+        <button class="tabs-trigger" role="tab" data-tab="approved" aria-selected="false">Approved today <span class="adm-count muted" data-count="approved">0</span></button>
+        <button class="tabs-trigger" role="tab" data-tab="rejected" aria-selected="false">Rejected <span class="adm-count muted" data-count="rejected">0</span></button>
+      </div>
+      <div class="inc-bar" data-inc-bar>
+        <label class="ck"><input type="checkbox" data-inc-all aria-label="Select all"><span class="box"><i data-lucide="check"></i></span></label>
+        <span data-inc-sel>Select all</span>
+        <span class="inc-bar-acts" hidden data-inc-bulk><button class="btn btn-default btn-sm" type="button" data-bulk-approve>Approve</button><button class="btn btn-outline btn-sm" type="button" data-bulk-reject>Reject</button></span>
+      </div>
+      <div class="inc-list" data-panel="pending">
+        <article class="inc" data-inc data-missing="" data-pct="58" data-title="RR Signature Raptor 1200mm BLDC Designer Ceiling Fan">
+          <label class="ck"><input type="checkbox" data-inc-check aria-label="Select RR Signature Raptor 1200mm BLDC Designer"><span class="box"><i data-lucide="check"></i></span></label>
+          <img class="inc-img" src="/assets/deals-hd/1794323223.jpg" alt="" loading="lazy">
+          <div class="inc-body">
+            <div class="inc-top"><span class="src src-telegram"><i data-lucide="send"></i>Telegram</span><span class="inc-time">received 2 min ago</span></div>
+            <h3>RR Signature Raptor 1200mm BLDC Designer Ceiling Fan</h3>
+            <div class="inc-meta">Amazon · Kitchen</div>
+            <div class="inc-price"><b>₹2,699</b> <span>MRP ₹6,499</span> <b class="pct">58% off</b> <span class="inc-types"><span class="tchip t-top">Top deal</span><span class="tchip t-pantry">Pantry</span><span class="tchip t-new">New</span></span></div>
+          </div>
+          <div class="inc-acts">
+            <button class="btn btn-default btn-sm" type="button" data-approve>Approve</button>
+            <a class="btn btn-outline btn-sm" href="/admin/deal/474463/edit">Edit</a>
+            <button class="btn btn-ghost btn-sm" type="button" data-reject>Reject</button>
+          </div>
+        </article>
+        <article class="inc" data-inc data-missing="" data-pct="74" data-title="ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage">
+          <label class="ck"><input type="checkbox" data-inc-check aria-label="Select ABOUT SPACE Bed - (84 x 74 inches) King "><span class="box"><i data-lucide="check"></i></span></label>
+          <img class="inc-img" src="/assets/deals/lg/1794231756.jpg" alt="" loading="lazy">
+          <div class="inc-body">
+            <div class="inc-top"><span class="src src-telegram"><i data-lucide="send"></i>Telegram</span><span class="inc-time">received 9 min ago</span><span class="hold"><i data-lucide="triangle-alert"></i>Similar deal posted today · <a href="/deal/about-space-bed-84-x-74-inches-king-size-bed-without-storage-engineered-wooden-bed-frame-with-headboard-mdf-board-for-mattress-1-year-warranty-cot-for-bedroom-satin-weave-linen-beige-coupon-bank-offer-474150" target="_blank" rel="noopener">view</a></span><span class="feat" title="Matches the featured-deal rules in Site &amp; app"><i data-lucide="sparkles"></i>Featured · 70%+ off</span></div>
+            <h3>ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage</h3>
+            <div class="inc-meta">Amazon · Home &amp; Decore</div>
+            <div class="inc-price"><b>₹9,000</b> <span>MRP ₹34,999</span> <b class="pct">74% off</b> <span class="inc-types"><span class="tchip t-top">Top deal</span><span class="tchip t-new">New</span></span></div>
+          </div>
+          <div class="inc-acts">
+            <button class="btn btn-default btn-sm" type="button" data-approve>Approve</button>
+            <a class="btn btn-outline btn-sm" href="/admin/deal/474150/edit">Edit</a>
+            <button class="btn btn-ghost btn-sm" type="button" data-reject>Reject</button>
+          </div>
+        </article>
+        <article class="inc" data-inc data-missing="" data-pct="0" data-title="Coconut Bling Typewriter Inspired 2.4GHz Retro Wireless Keyboard and Mouse Set with USB Support, Round 84 Keycaps for PC &amp; Laptop (Green)">
+          <label class="ck"><input type="checkbox" data-inc-check aria-label="Select Coconut Bling Typewriter Inspired 2.4GHz"><span class="box"><i data-lucide="check"></i></span></label>
+          <img class="inc-img" src="/assets/deals/lg/1794318432.jpg" alt="" loading="lazy">
+          <div class="inc-body">
+            <div class="inc-top"><span class="src src-scraper"><i data-lucide="bot"></i>Scraper</span><span class="inc-time">received 14 min ago</span><span class="hold"><i data-lucide="triangle-alert"></i>Check MRP</span></div>
+            <h3>Coconut Bling Typewriter Inspired 2.4GHz Retro Wireless Keyboard and Mouse Set with USB Support, Round 84 Keycaps for PC &amp; Laptop (Green)</h3>
+            <div class="inc-meta">Amazon · Others</div>
+            <div class="inc-price"><b>₹1,293</b> <span><span class="miss">MRP —</span></span> <span class="miss">—%</span> <span class="inc-types"><span class="tchip t-new">New</span></span></div>
+          </div>
+          <div class="inc-acts">
+            <button class="btn btn-default btn-sm" type="button" data-approve>Approve</button>
+            <a class="btn btn-outline btn-sm" href="/admin/deal/474456/edit">Edit</a>
+            <button class="btn btn-ghost btn-sm" type="button" data-reject>Reject</button>
+          </div>
+        </article>
+        <article class="inc" data-inc data-missing="1" data-pct="50" data-title="Treo by Milton Opalware Neuma Murel Dinner Set of 35">
+          <label class="ck"><input type="checkbox" data-inc-check aria-label="Select Treo by Milton Opalware Neuma Murel Dinn"><span class="box"><i data-lucide="check"></i></span></label>
+          <img class="inc-img" src="/assets/deals/lg/1794313647.jpg" alt="" loading="lazy">
+          <div class="inc-body">
+            <div class="inc-top"><span class="src src-telegram"><i data-lucide="send"></i>Telegram</span><span class="inc-time">received 38 min ago</span><span class="hold"><i data-lucide="triangle-alert"></i>Category missing</span></div>
+            <h3>Treo by Milton Opalware Neuma Murel Dinner Set of 35</h3>
+            <div class="inc-meta">Amazon · <span class="miss">Category?</span></div>
+            <div class="inc-price"><b>₹1,899</b> <span>MRP ₹3,795</span> <b class="pct">50% off</b> <span class="inc-types"><span class="tchip t-top">Top deal</span><span class="tchip t-pantry">Pantry</span><span class="tchip t-new">New</span></span></div>
+          </div>
+          <div class="inc-acts">
+            <button class="btn btn-default btn-sm" type="button" data-approve>Approve</button>
+            <a class="btn btn-outline btn-sm" href="/admin/deal/474449/edit">Edit</a>
+            <button class="btn btn-ghost btn-sm" type="button" data-reject>Reject</button>
+          </div>
+        </article>
+        <article class="inc" data-inc data-missing="" data-pct="0" data-title="Vishudh Clothing upto 90% Off">
+          <label class="ck"><input type="checkbox" data-inc-check aria-label="Select Vishudh Clothing upto 90% Off"><span class="box"><i data-lucide="check"></i></span></label>
+          <img class="inc-img" src="/assets/deals/lg/1795502124.jpg" alt="" loading="lazy">
+          <div class="inc-body">
+            <div class="inc-top"><span class="src src-form"><i data-lucide="mouse-pointer-click"></i>Quick post</span><span class="inc-time">received 1 h ago</span><span class="hold"><i data-lucide="triangle-alert"></i>Check MRP</span></div>
+            <h3>Vishudh Clothing upto 90% Off</h3>
+            <div class="inc-meta">Myntra · Clothing</div>
+            <div class="inc-price"><b>₹254</b> <span>MRP ₹253</span> <span class="miss">—%</span> <span class="inc-types"><span class="tchip t-new">New</span></span></div>
+          </div>
+          <div class="inc-acts">
+            <button class="btn btn-default btn-sm" type="button" data-approve>Approve</button>
+            <a class="btn btn-outline btn-sm" href="/admin/deal/478060/edit">Edit</a>
+            <button class="btn btn-ghost btn-sm" type="button" data-reject>Reject</button>
+          </div>
+        </article>
+      </div>
+      <div class="inc-list" data-panel="approved" hidden><p class="empty">Nothing approved yet today.</p></div>
+      <div class="inc-list" data-panel="rejected" hidden><p class="empty">Nothing rejected. Rejected deals stay here for 30 days.</p></div>
+      <p class="foot-note"><i data-lucide="info"></i>Approve publishes now with the deal types shown. Deals at 90% off or more also send a push alert. A deal with no store or category opens Edit instead.</p>
+      <div class="popover reject-pop" id="reject-pop" hidden data-state="closed" role="dialog" aria-label="Reject deal">
+        <label class="field-label">Reason <span>optional, only admins see it</span><input class="input" type="text" data-reject-reason placeholder="e.g. Price already back up"></label>
+        <div class="pop-acts"><button class="btn btn-ghost btn-sm" type="button" data-reject-cancel>Cancel</button><button class="btn btn-default btn-sm destructive" type="button" data-reject-go>Reject</button></div>
+      </div>
+    </main>
+  </div>
+</div>
+<div class="toaster" id="toaster" aria-live="polite"></div>
+<script src="/vendor/lucide.min.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/admin-db.js"></script>
+<script type="ot/defer" data-src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# OfferTag prototype (UAT playground): not for search engines. The live site is https://www.offertag.in
+User-agent: *
+Disallow: /

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" class="theme">
+<head>
+<script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
+try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
+var m=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
+var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
+var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
+apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
+window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
+var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('DOMContentLoaded',apply);
+window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Share card — OfferTag</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="/vendor/geist/geist.css">
+<link rel="stylesheet" href="/css/ui.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/theme.css">
+</head>
+<body data-page="share-card" class="">
+
+
+<main class="og-page"><h1>Share card</h1><p>1200 × 630, generated per deal.</p><figure class="og-wrap"><div class="og"><div class="og-img"><img src="/assets/deals/lg/1794231756.jpg" alt=""></div><div class="og-body"><img class="og-logo" src="/assets/logo.png" alt="OfferTag"><div class="og-store">Amazon</div><div class="og-title">ABOUT SPACE Bed - (84 x 74 inches) King Size Bed Without Storage</div><div class="og-price"><b>₹9,000</b><s>₹34,999</s><span>74% off</span></div></div></div><figcaption>Regular deal, long title</figcaption></figure><figure class="og-wrap"><div class="og"><div class="og-img"><img src="/assets/deals/lg/1794323983.jpg" alt=""></div><div class="og-body"><img class="og-logo" src="/assets/logo.png" alt="OfferTag"><div class="og-store">Amazon</div><div class="og-title">DYNAMOTRADE Magic Eraser Cleaning Sponge for Walls, Kitchen &amp; Shoes (1 Pcs) (Coupon)</div><div class="og-price"><b>₹24</b><s>₹499</s><span>95% off</span></div></div></div><figcaption>Small price</figcaption></figure><figure class="og-wrap"><div class="og"><div class="og-img"><img src="/assets/deals/lg/1794274997.jpg" alt=""></div><div class="og-body"><img class="og-logo" src="/assets/logo.png" alt="OfferTag"><div class="og-store">Jiomart</div><div class="og-title">Jiomart Grocery upto 99% off (Limited Locations)</div><div class="og-price"><b>Up to 100% off</b></div></div></div><figcaption>Sale post with no single price</figcaption></figure></main>
+
+
+
+<script src="/vendor/embla-carousel.umd.js"></script>
+<script src="/vendor/lucide.min.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/render.js"></script>
+<script src="/js/admin-db.js"></script>
+<script type="ot/defer" data-src="/js/theme.js"></script>
+<script type="ot/defer" data-src="/js/site.js"></script>
+</body>
+</html>
