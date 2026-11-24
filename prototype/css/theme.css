@@ -1315,3 +1315,5 @@ html.theme #so-full .lucide { width: 0.875rem; height: 0.875rem; }
 html.theme #so-full:hover, html.theme #so-close:hover { background: hsl(var(--muted)); color: hsl(var(--brand-ink)); }
 /* the saving never cuts; the store mark gives way first (down to 2.5rem) */
 html.theme .deal .saveline .save { flex: none; overflow: visible; text-overflow: clip; }
+/* Blog NEW outside the desktop nav (side menu, phone nav): a solid navy 4px tag, no peach or orange */
+html.theme :is(.sheet-nav, .nav-blog) .new-pill, html.theme[data-theme="dark"] :is(.sheet-nav, .nav-blog) .new-pill { border: 0; border-radius: 0.25rem; padding: 0.1875rem 0.375rem; background: hsl(var(--fill)); color: hsl(var(--on-fill)); font-size: 0.6875rem; font-weight: 700; letter-spacing: .04em; line-height: 1; text-transform: uppercase; }
