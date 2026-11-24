@@ -101,6 +101,7 @@
   document.addEventListener('keydown', function (e) {
     var tag = (e.target.tagName || '').toLowerCase(), typing = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable;
     if (e.key === '/' && !typing) { var s = $('[data-f="q"]') || $('[data-global-search]'); if (s) { e.preventDefault(); if (s.matches('[data-global-search]') && getComputedStyle(s.closest('.adm-search')).display === 'none') html.classList.add('search-open'); s.focus(); } }
+    if (e.key === 'Escape' && html.classList.contains('dc-open')) return;
     if (e.key === 'Escape') { if (openDD) { var t = openDD.trigger; closeDD(); t.focus(); } else if (rowMenu && !rowMenu.hidden) closeRowMenu(true); else if (rejectPop && !rejectPop.hidden) closeReject(); else if (openSheetEl) closeSheet(); else closeSide(); }
   });
 
@@ -193,8 +194,8 @@
     var model = window.ADM_DEALS.map(function (d) { return Object.assign({}, d); });
     var S = { q: params.get('q') || '', f: {}, sort: 'age', dir: 1, page: 1, per: 25, sel: new Set() };
     if (params.get('posted') === 'today') S.f.posted = 'today';
-    var LABEL = { status: { live: 'Live', scheduled: 'Scheduled', pending: 'Pending', rejected: 'Rejected', withdrawn: 'Withdrawn' }, type: { Top: 'Top deal', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }, pin: { yes: 'Pinned', no: 'Not pinned' }, display: { '1': 'Web + App', '2': 'Web only', '3': 'App only' }, posted: { today: 'Posted today', week: 'Last 7 days' } };
-    var ST_ORDER = { scheduled: 0, live: 1, pending: 2, withdrawn: 3, rejected: 4 };
+    var LABEL = { status: { live: 'Live', pending: 'Pending', rejected: 'Rejected', withdrawn: 'Withdrawn' }, type: { Top: 'Top deal', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }, pin: { yes: 'Pinned', no: 'Not pinned' }, display: { '1': 'Web + App', '2': 'Web only', '3': 'App only' }, posted: { today: 'Posted today', week: 'Last 7 days' } };
+    var ST_ORDER = { live: 1, pending: 2, withdrawn: 3, rejected: 4 };
     var byId = function (id) { return model.filter(function (d) { return d.id === id; })[0]; };
     var qIn = $('[data-f="q"]'); qIn.value = S.q;
     $$('select[data-f]').forEach(function (s) { if (S.f[s.dataset.f]) s.value = S.f[s.dataset.f]; });
@@ -222,22 +223,25 @@
     }
     function typesH(ts) { return ts.map(function (t) { return '<span class="tchip t-' + t.toLowerCase() + '">' + LABEL.type[t] + '</span>'; }).join(''); }
     function pill(s) { return '<span class="pill pill-' + s + '">' + LABEL.status[s] + '</span>'; }
+    var MAIN = ['Loot', 'Top', 'Pantry', 'New'];   // D-160: one type label per row, the strongest one
+    function mainType(ts) { for (var i = 0; i < MAIN.length; i++) if (ts.indexOf(MAIN[i]) > -1) return MAIN[i]; return ts[0]; }
     function rowH(d) {
-      var ck = S.sel.has(d.id) ? ' checked' : '';
-      var pin = d.pin ? '<span class="d-pin" title="Pinned slot ' + d.pin + '">' + d.pin + '</span>' : '<span class="d-none">—</span>';
+      var ck = S.sel.has(d.id) ? ' checked' : '', mt = mainType(d.types), t40 = esc(d.t.slice(0, 40));
+      var pin = d.pin ? ' <span class="d-pin" title="Pinned, slot ' + d.pin + ' on Top deals"><i data-lucide="pin"></i>' + d.pin + '</span>' : '';
+      var edit = withRole(ROUTES.edit(d.id));
       return '<tr data-id="' + d.id + '"' + (S.sel.has(d.id) ? ' class="is-sel"' : '') + '>' +
-        '<td class="c-ck"><label class="ck"><input type="checkbox" data-sel' + ck + ' aria-label="Select ' + esc(d.t.slice(0, 40)) + '"><span class="box"><i data-lucide="check"></i></span></label></td>' +
-        '<td class="c-deal"><div class="d-cell"><img src="' + d.img + '" alt="" loading="lazy"><div><a href="' + d.page + '" target="_blank" rel="noopener">' + esc(d.t) + '</a><span class="d-cat">' + esc(d.cat) + '</span></div></div></td>' +
-        '<td class="m">' + esc(d.store) + '</td>' +
-        '<td class="m num d-price"><b>' + rs(d.p) + '</b><s>' + rs(d.m) + '</s></td>' +
-        '<td class="m num d-pct">' + d.pct + '%</td>' +
-        '<td class="m"><span class="tcell">' + typesH(d.types) + '</span></td>' +
-        '<td class="m">' + pill(d.status) + '</td>' +
-        '<td class="m num">' + pin + '</td>' +
+        '<td class="c-ck"><label class="ck"><input type="checkbox" data-sel' + ck + ' aria-label="Select ' + t40 + '"><span class="box"><i data-lucide="check"></i></span></label></td>' +
+        '<td class="c-deal"><div class="d-cell"><img src="' + d.img + '" alt="" loading="lazy"><div><a href="' + edit + '" title="Edit this deal">' + esc(d.t) + '</a>' +
+          '<span class="d-sub">' + esc(d.store) + ' · ' + esc(d.cat) + (mt ? ' <span class="tchip t-' + mt.toLowerCase() + '">' + LABEL.type[mt] + '</span>' : '') + '</span></div></div></td>' +
+        '<td class="m num d-price"><b>' + rs(d.p) + '</b><span><s>' + rs(d.m) + '</s> <span class="d-pct">' + d.pct + '%</span></span></td>' +
+        '<td class="m d-st">' + pill(d.status) + pin + '</td>' +
         '<td class="m d-when">' + esc(d.when) + '</td>' +
         '<td class="m num" title="' + INR.format(d.views) + ' total views · ' + INR.format(d.clicks) + ' Buy clicks">' + INR.format(d.uniq) + '</td>' +
-        '<td class="c-act"><button class="btn btn-ghost btn-icon btn-sm" type="button" data-row-menu aria-haspopup="menu" aria-label="Actions for ' + esc(d.t.slice(0, 40)) + '"><i data-lucide="ellipsis"></i></button></td>' +
-        '<td class="c-meta">' + esc(d.store) + ' · <b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span> ' + pill(d.status) + (d.pin ? ' <span class="d-pin">' + d.pin + '</span>' : '') + ' <span>' + esc(d.when) + '</span></td></tr>';
+        '<td class="c-act"><div class="row-acts">' +
+          '<button class="btn btn-ghost btn-icon btn-sm q-act" type="button" data-quick="wa" title="Copy for WhatsApp" aria-label="Copy for WhatsApp: ' + t40 + '"><i data-lucide="message-circle"></i></button>' +
+          '<button class="btn btn-ghost btn-icon btn-sm q-act" type="button" data-quick="bump" title="Bump to top" aria-label="Bump to top: ' + t40 + '"><i data-lucide="arrow-up-to-line"></i></button>' +
+          '<button class="btn btn-ghost btn-icon btn-sm" type="button" data-row-menu aria-haspopup="menu" title="More actions" aria-label="More actions for ' + t40 + '"><i data-lucide="ellipsis"></i></button></div></td>' +
+        '<td class="c-meta"><b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span> ' + pill(d.status) + pin + ' <span>' + esc(d.when) + '</span></td></tr>';
     }
     var flashIds = [];
     function render() {
@@ -250,7 +254,11 @@
       $('[data-empty]').hidden = total > 0; $('[data-tbl]').hidden = total === 0;
       $('[data-count-line]').textContent = total ? (start + 1) + '–' + (start + view.length) + ' of ' + total + ' deal' + (total === 1 ? '' : 's') : '0 deals';
       // chips
-      var chips = Object.keys(S.f).filter(function (k) { return S.f[k]; }).map(function (k) { return '<button type="button" class="chip" data-chip="' + k + '">' + esc(LABEL[k] ? LABEL[k][S.f[k]] : S.f[k]) + '<i data-lucide="x"></i></button>'; });
+      var nf = Object.keys(S.f).filter(function (k) { return S.f[k] && k !== 'status'; }).length, fc = $('[data-fcount]');
+      if (fc) { fc.textContent = nf; fc.hidden = !nf; }
+      $$('[data-st]').forEach(function (b) { b.setAttribute('aria-pressed', String((S.f.status || '') === b.dataset.st)); });
+      $$('[data-st-n]').forEach(function (n) { var v = n.dataset.stN, c = model.filter(function (d) { return !v || d.status === v; }).length; n.textContent = c; });
+      var chips = Object.keys(S.f).filter(function (k) { return S.f[k] && k !== 'status'; }).map(function (k) { return '<button type="button" class="chip" data-chip="' + k + '">' + esc(LABEL[k] ? LABEL[k][S.f[k]] : S.f[k]) + '<i data-lucide="x"></i></button>'; });
       if (S.q) chips.unshift('<button type="button" class="chip" data-chip="q">“' + esc(S.q) + '”<i data-lucide="x"></i></button>');
       $('[data-chips]').innerHTML = chips.join('') + (chips.length ? '<button type="button" class="btn-link" data-clear>Clear all</button>' : '');
       $$('select[data-f]').forEach(function (s) { s.classList.toggle('is-set', !!s.value); });
@@ -273,7 +281,7 @@
     function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
 
     var ACT = {
-      bump: function (ds) { var u = snapshot(); ds.forEach(function (d) { d.age = 0; d.when = 'now'; d.status = d.status === 'scheduled' ? 'live' : d.status; d._bump = true; flashIds.push(d.id); }); S.sort = 'age'; S.dir = 1; S.page = 1; done(ds.length === 1 ? 'Bumped to the top of the feed' : plural(ds.length, 'deal') + ' bumped to the top', u); },
+      bump: function (ds) { var u = snapshot(); ds.forEach(function (d) { d.age = 0; d.when = 'now'; d._bump = true; flashIds.push(d.id); }); S.sort = 'age'; S.dir = 1; S.page = 1; done(ds.length === 1 ? 'Bumped to the top of the feed' : plural(ds.length, 'deal') + ' bumped to the top', u); },
       wa: function (ds) { copy(ds.map(waText).join('\n\n— — —\n\n')).then(function () { toast(ds.length === 1 ? 'Copied for WhatsApp' : plural(ds.length, 'deal') + ' copied for WhatsApp'); }); },
       link: function (ds) { copy(ds[0].link).then(function () { toast('Buy link copied'); }); },
       pin: function (ds) {
@@ -297,13 +305,15 @@
     var qt; qIn.addEventListener('input', function () { clearTimeout(qt); qt = setTimeout(function () { S.q = qIn.value; S.page = 1; render(); }, 120); });
     $$('select[data-f]').forEach(function (s) { s.addEventListener('change', function () { S.f[s.dataset.f] = s.value; S.page = 1; render(); }); });
     $('[data-per]').addEventListener('change', function (e) { S.per = +e.target.value; S.page = 1; render(); });
-    $('[data-filters-toggle]').addEventListener('click', function (e) { var on = $('.toolbar').classList.toggle('is-open'); e.currentTarget.setAttribute('aria-expanded', on); });
+    $('[data-filters-toggle]').addEventListener('click', function (e) { var on = $('.dl-tools').classList.toggle('is-open'); e.currentTarget.setAttribute('aria-expanded', on); });
     function clearAll() { S.q = ''; qIn.value = ''; S.f = {}; $$('select[data-f]').forEach(function (s) { s.value = ''; }); S.page = 1; render(); }
     document.addEventListener('click', function (e) {
       var c = e.target.closest('[data-chip]'); if (c) { var k = c.dataset.chip; if (k === 'q') { S.q = ''; qIn.value = ''; } else { S.f[k] = ''; $('select[data-f="' + k + '"]').value = ''; } S.page = 1; render(); return; }
       if (e.target.closest('[data-clear]')) { clearAll(); return; }
       var p = e.target.closest('[data-page]'); if (p && !p.disabled) { S.page = +p.dataset.page; render(); $('.tbl-wrap').scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
       var so = e.target.closest('[data-sort]'); if (so) { var k2 = so.dataset.sort; if (S.sort === k2) S.dir = -S.dir; else { S.sort = k2; S.dir = (k2 === 'age' || k2 === 'status') ? 1 : -1; } render(); return; }
+      var st = e.target.closest('[data-st]'); if (st) { S.f.status = st.dataset.st; S.page = 1; S.sel.clear(); render(); return; }
+      var qa = e.target.closest('[data-quick]'); if (qa) { var qd = byId(qa.closest('tr').dataset.id); if (qd) ACT[qa.dataset.quick]([qd]); return; }
       var mb = e.target.closest('[data-row-menu]'); if (mb) { e.stopPropagation(); openRowMenu(mb); return; }
       if (rowMenu && !rowMenu.hidden && !rowMenu.contains(e.target)) closeRowMenu();
     });
@@ -385,22 +395,189 @@
   function typesFor(pct, cat) { var t = []; if (pct > 25) t.push('Top'); if (pct > 80) t.push('Loot'); if (cat === 'Grocery' || cat === 'Kitchen') t.push('Pantry'); t.push('New'); return t; }  // D-117
   function num(v) { v = String(v || '').replace(/[^\d]/g, ''); return v === '' ? null : +v; }
   function readImg(file, cb) { if (!file) return; var r = new FileReader(); r.onload = function () { cb(r.result); }; r.readAsDataURL(file); }
-  function picker(input, list, opt) {  // shared deal search list (pinned board, alerts)
-    function draw() {
-      var q = input.value.trim().toLowerCase(), items = DEALS.filter(function (d) { return (!opt.filter || opt.filter(d)) && (!q || (d.t + ' ' + d.link).toLowerCase().indexOf(q) > -1); }).slice(0, 7);
-      var h = items.map(function (d) { return '<li role="option" tabindex="-1" data-pick="' + d.id + '"><img src="' + d.img + '" alt=""><span>' + esc(d.t) + '</span><b>' + rs(d.p) + '</b></li>'; }).join('');
-      if (opt.url && /^https?:\/\//i.test(q)) h = '<li role="option" tabindex="-1" data-pick-url><i data-lucide="link"></i><span>Attach this link</span></li>' + h;
-      list.innerHTML = h || '<li class="none">No deals match.</li>'; list.hidden = false; icons();
+  // D-161: one deal search for every "pick a deal" place (pinned board, alerts, sale posters). Built for a catalogue of
+  // tens of thousands: nothing is listed until it helps. Empty box = the newest few; typing = every word must match
+  // title, store, category, link or deal ID; a pasted deal link or ID finds that exact deal. Shows 8 at a time and says
+  // how many matched, so the admin narrows by typing instead of scrolling. In the build this is one search call (limit 8).
+  var LIVE_TOTAL = +(document.documentElement.dataset.totalDeals || 0);
+  function isLinkish(q) { var t = q.trim(); return /^\d{4,}$/.test(t) || /^https?:\/\/|offertag\.in|oftg\.in|\/deal\//i.test(t); }
+  function exactDeal(q, pool) {  // a pasted store link, OfferTag link, short link or deal ID → that one deal
+    var t = q.trim(); if (!t) return null;
+    if (/^\d{4,}$/.test(t)) return pool.filter(function (d) { return d.id === t; })[0] || null;
+    if (!/^https?:\/\/|offertag\.in|oftg\.in|\/deal\//i.test(t)) return null;
+    var bare = t.replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
+    return pool.filter(function (d) { var l = String(d.link || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase(), pg = String(d.page || '').toLowerCase(); return (l && (l === bare || bare.indexOf(l) > -1)) || (pg && bare.slice(-pg.length) === pg) || bare.indexOf('/' + d.id) > -1; })[0] || null;
+  }
+  function picker(input, list, opt) {
+    var LIMIT = 8, timer = null, uid = 'pk' + Math.random().toString(36).slice(2, 7);
+    if (!list.id) list.id = uid;
+    input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list'); input.setAttribute('aria-controls', list.id); input.setAttribute('aria-expanded', 'false'); input.setAttribute('autocomplete', 'off');
+    function words(q) { return q.toLowerCase().split(/\s+/).filter(Boolean); }
+    function hay(d) { return (d.t + ' ' + d.store + ' ' + (d.cat || '') + ' ' + d.id + ' ' + (d.link || '') + ' ' + (d.page || '')).toLowerCase(); }
+    var exact = exactDeal;   // D-162: shared with the full window
+    function find(q) {
+      var pool = DEALS.filter(function (d) { return !opt.filter || opt.filter(d); });
+      var newest = function (a, b) { return (a.age < 0 ? 1e9 : a.age) - (b.age < 0 ? 1e9 : b.age); };
+      if (!q.trim()) return { items: pool.slice().sort(newest).slice(0, LIMIT), total: pool.length, empty: true };
+      var hit = exact(q, pool); if (hit) return { items: [hit], total: 1, exact: true };
+      var w = words(q), m = pool.filter(function (d) { var h = hay(d); return w.every(function (x) { return h.indexOf(x) > -1; }); });
+      m.sort(function (a, b) { var at = a.t.toLowerCase().indexOf(w[0]) === 0 ? 0 : 1, bt = b.t.toLowerCase().indexOf(w[0]) === 0 ? 0 : 1; return at - bt || newest(a, b); });
+      return { items: m.slice(0, LIMIT), total: m.length };
     }
-    input.addEventListener('input', draw); input.addEventListener('focus', draw);
-    input.addEventListener('keydown', function (e) { if (e.key === 'ArrowDown') { e.preventDefault(); var f = $('[role=option]', list); if (f) f.focus(); } if (e.key === 'Enter') { e.preventDefault(); var f2 = $('[role=option]', list); if (f2) f2.click(); } });
+    function mark(text, q) {
+      var out = esc(text), w = words(q).filter(function (x) { return x.length > 1; }).map(function (x) { return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+      return w.length ? out.replace(new RegExp('(' + w.join('|') + ')', 'gi'), '<mark>$1</mark>') : out;
+    }
+    function draw() {
+      var q = input.value, r = find(q), n = r.items.length, total = LIVE_TOTAL && r.empty ? LIVE_TOTAL : r.total;
+      var head = r.empty ? 'Newest deals · type a title, store, link or deal ID to search ' + (total ? INR.format(total) + ' deals' : 'every deal')
+        : r.exact ? 'Exact match' : !n ? '' : r.total > n ? INR.format(r.total) + ' matches · showing ' + n + ', add a word to narrow' : r.total + (r.total === 1 ? ' match' : ' matches');
+      var h = r.items.map(function (d) {
+        var st = d.status && d.status !== 'live' ? ' · <span class="pk-st">' + esc(d.status[0].toUpperCase() + d.status.slice(1)) + '</span>' : '';
+        return '<li role="option" tabindex="-1" id="' + list.id + '-' + d.id + '" data-pick="' + d.id + '"><img src="' + d.img + '" alt=""><span class="pk-body"><span class="pk-t">' + mark(d.t, r.empty || r.exact ? '' : q) + '</span>' +
+          '<span class="pk-m">' + esc(d.store) + ' · <b>' + rs(d.p) + '</b>' + (d.pct ? ' · <span class="d-pct">' + d.pct + '% off</span>' : '') + ' · ' + esc(d.when || '') + st + ' · <span class="pk-id">#' + d.id + '</span></span></span></li>';
+      }).join('');
+      if (opt.url && /^https?:\/\//i.test(q.trim()) && !r.exact) h = '<li role="option" tabindex="-1" data-pick-url><i data-lucide="link"></i><span class="pk-body"><span class="pk-t">Attach this link</span><span class="pk-m">' + esc(q.trim().slice(0, 60)) + '</span></span></li>' + h;
+      list.innerHTML = (head ? '<li class="pk-head" role="presentation">' + head + '</li>' : '') + (h || '<li class="none" role="presentation">No deals match “' + esc(q.trim().slice(0, 40)) + '”. Try fewer words, the store name or paste the link.</li>') +
+        '<li role="option" tabindex="-1" class="pk-browse" data-pick-browse><i data-lucide="table-properties"></i><span>Browse all deals in a full list</span><i data-lucide="arrow-right"></i></li>';
+      list.hidden = false; input.setAttribute('aria-expanded', 'true'); icons();
+    }
+    function later() { clearTimeout(timer); timer = setTimeout(draw, 120); }
+    function close() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); }
+    input.addEventListener('input', later); input.addEventListener('focus', draw);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); if (list.hidden) draw(); var f = $('[role=option]', list); if (f) f.focus(); }
+      if (e.key === 'Enter') { e.preventDefault(); clearTimeout(timer); draw(); var f2 = $('[role=option]', list); if (f2) f2.click(); }
+      if (e.key === 'Escape' && !list.hidden) { e.stopPropagation(); close(); }
+    });
     list.addEventListener('keydown', function (e) {
       var o = $$('[role=option]', list), i = o.indexOf(document.activeElement);
       if (e.key === 'ArrowDown') { e.preventDefault(); if (o[i + 1]) o[i + 1].focus(); } if (e.key === 'ArrowUp') { e.preventDefault(); (o[i - 1] || input).focus(); } if (e.key === 'Enter') { e.preventDefault(); document.activeElement.click(); }
+      if (e.key === 'Escape') { e.stopPropagation(); close(); input.focus(); }
     });
-    list.addEventListener('click', function (e) { var li = e.target.closest('[data-pick],[data-pick-url]'); if (!li) return; if (li.hasAttribute('data-pick-url')) opt.onUrl(input.value.trim()); else opt.onPick(dealById(li.dataset.pick)); });
+    list.addEventListener('click', function (e) {
+      if (e.target.closest('[data-pick-browse]')) { var qv = input.value; close(); chooser({ q: isLinkish(qv) || qv.trim().length > 1 ? qv : '', filter: opt.filter, title: opt.title, opener: input, onUse: function (ds) { opt.onPick(ds[0]); } }); return; }
+      var li = e.target.closest('[data-pick],[data-pick-url]'); if (!li) return; if (li.hasAttribute('data-pick-url')) opt.onUrl(input.value.trim()); else opt.onPick(dealById(li.dataset.pick)); });
+    draw.close = close;
     return draw;
   }
+
+  /* =================== D-162: Choose a deal (full window) =================== */
+  // The whole catalogue in a table: search (every word), paste a link or ID, Store · Category · Posted · Sort, numbered pages,
+  // 25/50/100 per page. One deal (posters, pins, alerts) or several (blog). Selection survives paging and filters.
+  // In the build each change is one paged API call; nothing here loads the whole catalogue.
+  var CH = null;
+  function chooserEl() {
+    if (CH) return CH;
+    var opts = function (vals) { return vals.map(function (v) { return '<option value="' + esc(v) + '">' + esc(v) + '</option>'; }).join(''); };
+    var stores = [], cats = []; DEALS.forEach(function (d) { if (stores.indexOf(d.store) < 0) stores.push(d.store); if (d.cat && cats.indexOf(d.cat) < 0) cats.push(d.cat); }); cats.sort();
+    var sel = function (attr, label, first, o) { return '<label class="select"><span class="visually-hidden">' + label + '</span><select ' + attr + '><option value="">' + first + '</option>' + o + '</select><i data-lucide="chevron-down"></i></label>'; };
+    var wrap = document.createElement('div');
+    wrap.innerHTML = '<div class="dc-overlay" data-dc-close hidden></div>' +
+      '<section class="dc" role="dialog" aria-modal="true" aria-labelledby="dc-title" hidden>' +
+        '<header class="dc-h"><div><h2 id="dc-title">Choose a deal</h2><p data-dc-sub></p></div><button class="btn btn-ghost btn-icon" type="button" data-dc-close aria-label="Close"><i data-lucide="x"></i></button></header>' +
+        '<div class="dc-tools"><label class="input-wrap dc-search"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" data-dc-q placeholder="Search title, store or deal ID, or paste a deal link" autocomplete="off"></label>' +
+          '<div class="dc-sels">' + sel('data-dc-f="store"', 'Store', 'All stores', opts(stores)) + sel('data-dc-f="cat"', 'Category', 'All categories', opts(cats)) +
+          sel('data-dc-f="posted"', 'Posted', 'Posted: any time', '<option value="1440">Today</option><option value="10080">Last 7 days</option><option value="43200">Last 30 days</option>') +
+          sel('data-dc-sort', 'Sort', 'Newest first', '<option value="pct">Biggest discount</option><option value="p">Lowest price</option><option value="uniq">Most viewed</option>') + '</div></div>' +
+        '<div class="dc-note" data-dc-note hidden></div>' +
+        '<div class="dc-row"><span class="count" data-dc-count></span><label class="select per"><span class="visually-hidden">Rows per page</span><select data-dc-per><option>25</option><option>50</option><option>100</option></select><i data-lucide="chevron-down"></i></label></div>' +
+        '<div class="dc-body"><table class="tbl dc-tbl"><thead><tr><th class="c-ck"><span class="visually-hidden">Pick</span></th><th>Deal</th><th class="num">Price</th><th>Posted</th><th class="num">Views</th></tr></thead><tbody data-dc-rows></tbody></table>' +
+          '<p class="empty" data-dc-empty hidden></p></div>' +
+        '<nav class="pager dc-pager" data-dc-pager aria-label="Pages"></nav>' +
+        '<footer class="dc-f"><span class="dc-sel" data-dc-sel>Nothing picked yet</span><button class="btn btn-outline" type="button" data-dc-close>Cancel</button><button class="btn btn-default" type="button" data-dc-use disabled>Use this deal</button></footer>' +
+      '</section>';
+    document.body.appendChild(wrap);
+    var el = $('.dc', wrap), ov = $('.dc-overlay', wrap), q = $('[data-dc-q]', el), rows = $('[data-dc-rows]', el), S = null, timer = null;
+    function pool() { return DEALS.filter(function (d) { return !S.opt.filter || S.opt.filter(d); }); }
+    function results() {
+      var all = pool(), t = q.value.trim(), note = '';
+      if (t && isLinkish(t)) {
+        var hit = exactDeal(t, all);
+        if (hit) { if (!S.opt.multi) { S.picked = {}; S.order = []; } S.picked[hit.id] = hit; if (S.order.indexOf(hit.id) < 0) S.order.push(hit.id); note = '<i data-lucide="circle-check"></i><span>Found the deal for this link and picked it.</span>'; S.noteKind = 'ok'; return { list: [hit], note: note }; }
+        var anyStatus = exactDeal(t, DEALS);
+        S.noteKind = 'warn';
+        note = anyStatus ? '<i data-lucide="triangle-alert"></i><span>That deal is ' + esc(anyStatus.status) + ', so it can’t be used here. Pick a live deal.</span>'
+          : '<i data-lucide="link-2-off"></i><span>This link isn’t on OfferTag yet.</span> <a href="' + withRole(ROUTES.post) + '?link=' + encodeURIComponent(t) + '" target="_blank" rel="noopener">Post it as a deal first <i data-lucide="external-link"></i></a>';
+        return { list: [], note: note };
+      }
+      var w = t.toLowerCase().split(/\s+/).filter(Boolean), f = S.f;
+      var list = all.filter(function (d) {
+        if (f.store && d.store !== f.store) return false; if (f.cat && d.cat !== f.cat) return false; if (f.posted && !(d.age >= 0 && d.age <= +f.posted)) return false;
+        if (!w.length) return true; var h = (d.t + ' ' + d.store + ' ' + (d.cat || '') + ' ' + d.id).toLowerCase(); return w.every(function (x) { return h.indexOf(x) > -1; });
+      });
+      var k = S.sort; list.sort(function (a, b) { return k === 'pct' ? b.pct - a.pct : k === 'p' ? a.p - b.p : k === 'uniq' ? b.uniq - a.uniq : a.age - b.age; });
+      return { list: list, note: '' };
+    }
+    function mark(text) { var w = q.value.trim().toLowerCase().split(/\s+/).filter(function (x) { return x.length > 1 && !isLinkish(x); }).map(function (x) { return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }); var o = esc(text); return w.length ? o.replace(new RegExp('(' + w.join('|') + ')', 'gi'), '<mark>$1</mark>') : o; }
+    function render() {
+      var r = results(), n = S.per, total = r.list.length, pages = Math.max(1, Math.ceil(total / n)); if (S.page > pages) S.page = pages;
+      var st = (S.page - 1) * n, view = r.list.slice(st, st + n), type = S.opt.multi ? 'checkbox' : 'radio';
+      rows.innerHTML = view.map(function (d) {
+        var on = !!S.picked[d.id];
+        return '<tr data-id="' + d.id + '"' + (on ? ' class="is-sel"' : '') + '><td class="c-ck"><label class="' + (S.opt.multi ? 'ck' : 'rd') + '"><input type="' + type + '" name="dc-pick" value="' + d.id + '"' + (on ? ' checked' : '') + ' aria-label="Pick ' + esc(d.t.slice(0, 50)) + '"><span class="box"><i data-lucide="check"></i></span></label></td>' +
+          '<td class="c-deal"><div class="d-cell"><img src="' + d.img + '" alt="" loading="lazy"><div><b class="dc-t">' + mark(d.t) + '</b><span class="d-sub">' + esc(d.store) + ' · ' + esc(d.cat || '') + ' · #' + d.id + '</span></div></div></td>' +
+          '<td class="num d-price"><b>' + rs(d.p) + '</b><span><s>' + rs(d.m) + '</s> <span class="d-pct">' + d.pct + '%</span></span></td>' +
+          '<td class="d-when">' + esc(d.when) + '</td><td class="num">' + INR.format(d.uniq || 0) + '</td></tr>';
+      }).join('');
+      var note = $('[data-dc-note]', el); note.hidden = !r.note; note.className = 'dc-note' + (S.noteKind ? ' is-' + S.noteKind : ''); note.innerHTML = r.note;
+      var em = $('[data-dc-empty]', el); em.hidden = total > 0 || !!r.note; em.innerHTML = 'No deals match. <button class="btn-link" type="button" data-dc-clear>Clear search and filters</button>';
+      $('.dc-tbl', el).hidden = !total;
+      var filtered = q.value.trim() || S.f.store || S.f.cat || S.f.posted;
+      $('[data-dc-count]', el).textContent = total ? (st + 1) + '–' + (st + view.length) + ' of ' + INR.format(total) + (filtered ? ' matching' : '') + ' deal' + (total === 1 ? '' : 's') : '';
+      var pg = '';
+      if (pages > 1) {
+        pg += '<button type="button" data-dc-page="' + (S.page - 1) + '"' + (S.page === 1 ? ' disabled' : '') + ' aria-label="Previous page"><i data-lucide="chevron-left"></i></button>';
+        for (var i = 1; i <= pages; i++) if (i === 1 || i === pages || Math.abs(i - S.page) <= 1) pg += '<button type="button" data-dc-page="' + i + '"' + (i === S.page ? ' aria-current="page"' : '') + '>' + i + '</button>'; else if (Math.abs(i - S.page) === 2) pg += '<span class="pg-gap">…</span>';
+        pg += '<button type="button" data-dc-page="' + (S.page + 1) + '"' + (S.page === pages ? ' disabled' : '') + ' aria-label="Next page"><i data-lucide="chevron-right"></i></button>';
+      }
+      $('[data-dc-pager]', el).innerHTML = pg;
+      var ids = Object.keys(S.picked), use = $('[data-dc-use]', el);
+      use.disabled = !ids.length;
+      use.textContent = S.opt.multi ? (ids.length > 1 ? 'Insert ' + ids.length + ' deals' : 'Insert deal') : (S.opt.useLabel || 'Use this deal');
+      $('[data-dc-sel]', el).innerHTML = !ids.length ? 'Nothing picked yet' : ids.length === 1 ? 'Picked: <b>' + esc(S.picked[ids[0]].t.slice(0, 70)) + '</b> · ' + rs(S.picked[ids[0]].p) : '<b>' + ids.length + ' deals picked</b> · they go in this order';
+      icons();
+    }
+    function close(used) {
+      el.hidden = true; ov.hidden = true; html.classList.remove('dc-open'); var o = S && S.opt.opener; var cb = S && S.opt.onUse, picked = S && S.order.map(function (id) { return S.picked[id]; }).filter(Boolean);
+      S = null; if (used && cb) cb(picked); else if (o && o.focus) o.focus();
+    }
+    function toggle(id) {
+      var d = dealById(id); if (!d) return;
+      if (S.opt.multi) { if (S.picked[id]) { delete S.picked[id]; S.order = S.order.filter(function (x) { return x !== id; }); } else { S.picked[id] = d; S.order.push(id); } }
+      else { S.picked = {}; S.picked[id] = d; S.order = [id]; }
+      render();
+    }
+    q.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(function () { S.page = 1; S.noteKind = ''; render(); }, 150); });
+    q.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); clearTimeout(timer); S.page = 1; render(); var r1 = $('tr[data-id]', rows); if (r1 && !S.opt.multi && $$('tr[data-id]', rows).length === 1) toggle(r1.dataset.id); } });
+    $$('[data-dc-f]', el).forEach(function (x) { x.addEventListener('change', function () { S.f[x.dataset.dcF] = x.value; S.page = 1; render(); }); });
+    $('[data-dc-sort]', el).addEventListener('change', function (e) { S.sort = e.target.value; S.page = 1; render(); });
+    $('[data-dc-per]', el).addEventListener('change', function (e) { S.per = +e.target.value; S.page = 1; render(); });
+    rows.addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (!tr) return; if (e.target.matches('input')) { e.preventDefault(); } toggle(tr.dataset.id); var inp = $('tr[data-id="' + tr.dataset.id + '"] input', rows); if (inp) inp.focus(); });
+    rows.addEventListener('dblclick', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && !S.opt.multi) { S.picked = {}; S.picked[tr.dataset.id] = dealById(tr.dataset.id); S.order = [tr.dataset.id]; close(true); } });
+    rows.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.matches('input')) { e.preventDefault(); if (!S.opt.multi) { toggle(e.target.value); close(true); } } });
+    el.addEventListener('click', function (e) {
+      if (e.target.closest('[data-dc-close]')) { close(false); return; }
+      if (e.target.closest('[data-dc-use]')) { close(true); return; }
+      if (e.target.closest('[data-dc-clear]')) { q.value = ''; S.f = {}; $$('[data-dc-f]', el).forEach(function (x) { x.value = ''; }); S.page = 1; render(); q.focus(); return; }
+      var pb = e.target.closest('[data-dc-page]'); if (pb && !pb.disabled) { S.page = +pb.dataset.dcPage; render(); $('.dc-body', el).scrollTop = 0; }
+    });
+    ov.addEventListener('click', function () { close(false); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); close(false); return; }
+      if (e.key === 'Tab') { var f = $$('button:not([disabled]), input, select, a[href]', el).filter(function (x) { return x.offsetParent; }); if (!f.length) return; var a = f[0], z = f[f.length - 1]; if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } }
+    });
+    CH = { el: el, ov: ov, q: q, render: render, start: function (opt) {
+      S = { opt: opt, f: {}, sort: '', page: 1, per: 25, picked: {}, order: [], noteKind: '' };
+      $$('[data-dc-f]', el).forEach(function (x) { x.value = ''; }); $('[data-dc-sort]', el).value = ''; $('[data-dc-per]', el).value = '25';
+      (opt.selected || []).forEach(function (id) { var d = dealById(String(id)); if (d) { S.picked[d.id] = d; S.order.push(d.id); } });
+      $('#dc-title').textContent = opt.title || (opt.multi ? 'Insert deals' : 'Choose a deal');
+      $('[data-dc-sub]', el).textContent = (LIVE_TOTAL ? 'Searching ' + INR.format(LIVE_TOTAL) + ' deals on the live site · this prototype holds ' + DEALS.length : DEALS.length + ' deals') + (opt.filter ? ' · live deals only' : '') + (opt.multi ? ' · tick as many as you need' : '');
+      q.value = opt.q || ''; html.classList.add('dc-open'); ov.hidden = false; el.hidden = false; render(); q.focus(); q.select();
+    } };
+    return CH;
+  }
+  function chooser(opt) { chooserEl().start(opt || {}); }
 
   /* =================== Post / edit deal =================== */
   if ($('[data-post]')) (function () {
@@ -475,8 +652,7 @@
     el('cat').addEventListener('change', calc);
     el('notify').addEventListener('change', function () { state.notifyTouched = true; });
     el('pin').addEventListener('change', function () { el('slot').disabled = !el('pin').checked; });
-    $$('input[name=when]', F).forEach(function (r) { r.addEventListener('change', function () { el('at').disabled = el('when').value !== 'later'; label(); }); });
-    function label() { var t = EDIT ? 'Save changes' : el('when').value === 'later' ? 'Schedule' : 'Publish'; $('[data-submit]').textContent = t; $('[data-submit-proxy]').textContent = t; }
+    function label() { var t = EDIT ? 'Save changes' : 'Publish'; $('[data-submit]').textContent = t; $('[data-submit-proxy]').textContent = t; }
 
     // rich text (bold, italic, lists, links only)
     $$('[data-cmd]').forEach(function (b) { b.addEventListener('mousedown', function (e) { e.preventDefault(); }); b.addEventListener('click', function () { var c = b.dataset.cmd; if (c === 'createLink') { var u = prompt('Link address'); if (u) document.execCommand('createLink', false, u); } else document.execCommand(c); $('[data-desc]').focus(); }); });
@@ -540,7 +716,6 @@
       el('display').value = String(d.display || 1);
       if (d.pin) { el('pin').checked = true; el('slot').value = d.pin; }
       calc(); state.typesTouched = true; setTypes(d.types);
-      if (d.status === 'scheduled') { F.querySelector('input[name=when][value=later]').checked = true; el('at').disabled = false; if (d.schedAt) { var sa = new Date(d.schedAt); el('at').value = new Date(sa - sa.getTimezoneOffset() * 6e4).toISOString().slice(0, 16); } }
       delete F.dataset.loading;
     }
     el('slot').disabled = true;
@@ -549,15 +724,21 @@
       $('[data-form-title]').textContent = 'Edit deal'; $('[data-form-sub]').textContent = 'Last edited by Adil, 2 h ago · ' + (src.status === 'live' ? 'Live' : src.status[0].toUpperCase() + src.status.slice(1));
       document.title = 'Edit deal · OfferTag Admin'; $$('[data-edit-only]').forEach(function (x) { x.hidden = false; });
       $('[data-v-uniq]').textContent = INR.format(src.uniq); $('[data-v-total]').textContent = INR.format(src.views); $('[data-v-clicks]').textContent = INR.format(src.clicks);   // D-148 $('[data-open-page]').href = src.page;
-      $('[data-saved]').hidden = true; $$('.adm-sub a[aria-current]').forEach(function (a) { a.removeAttribute('aria-current'); });
-      var all = $('.adm-sub a[href="/admin/deal"], .adm-sub a[href^="/admin/deal?"]'); if (all) all.setAttribute('aria-current', 'page');
+      $('[data-saved]').hidden = true;
     } else if (src) {
       fill(src, true); $('[data-form-title]').textContent = 'Clone deal'; $('[data-form-sub]').textContent = 'Copied from “' + src.t.slice(0, 60) + '…”. Add the new link and image.';
     } else {
       try { var dr = JSON.parse(store.get(DK) || 'null'); if (dr && (dr.link || dr.title)) { F.dataset.loading = '1'; Object.keys(dr).forEach(function (k) { if (k !== 'img' && el(k)) el(k).value = dr[k]; }); if (dr.img) setImg(dr.img); delete F.dataset.loading; calc(); toast('Your unsent draft is back', { icon: 'file-text', action: 'Discard', onAction: function () { store.set(DK, ''); location.reload(); } }); } } catch (e) {}
       calc();
     }
+    if (!EDIT && !src && params.get('link')) { el('link').value = params.get('link'); el('link').dispatchEvent(new Event('input', { bubbles: true })); el('link').dispatchEvent(new Event('change', { bubbles: true })); }   // D-162: from "Post it as a deal first"
     label(); preview();
+    // D-160: "More details" opens by itself when the deal already uses any of its fields
+    (function () {
+      var more = $('[data-more]'); if (!more) return;
+      var has = ['caption', 'coupon', 'terms'].some(function (k) { return el(k).value.trim(); }) || $$('[data-blk]').some(function (b) { return !b.hidden; }) || $('[data-desc]').textContent.trim() || $$('input', $('[data-exc]')).length;
+      if (has) more.open = true;
+    })();
     if (location.hash === '#share' && EDIT) setTimeout(function () { $('#share').scrollIntoView({ block: 'start' }); }, 50);
 
     // validation + submit
@@ -580,9 +761,9 @@
       var saved = window.ADM_PG ? ADM_PG.saveDeal(record()) : null;   // S25 playground: the deal is saved and shows on the site
       if (EDIT) { $('[data-form-sub]').textContent = 'Last edited by Adil, just now · ' + (saved && saved.status !== 'live' ? saved.status[0].toUpperCase() + saved.status.slice(1) : 'Live'); toast('Changes saved', { action: 'View', href: saved ? saved.page : src.page }); return; }
       store.set(DK, '');
-      var later = el('when').value === 'later', m = state.matched || DEALS[0];
-      $('[data-done-title]').textContent = later ? 'Deal scheduled' : 'Deal is live';
-      $('[data-done-sub]').textContent = later ? 'It goes live on ' + new Date(el('at').value).toLocaleString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + '.' : 'It’s at the top of Fresh and in its type lists' + (el('notify').checked ? ', and the push alert is on its way.' : '.');
+      var m = state.matched || DEALS[0];
+      $('[data-done-title]').textContent = 'Deal is live';
+      $('[data-done-sub]').textContent = 'It’s at the top of Top deals and in its type lists' + (el('notify').checked ? ', and the push alert is on its way.' : '.');
       $('[data-done-page]').value = 'offertag.in/deal/' + el('title').value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
       $('[data-done-open]').href = saved ? saved.page : state.matched ? state.matched.page : '/top-deals';
       if (saved) { $('[data-done-page]').value = 'offertag.in' + saved.page; m = saved; }
@@ -593,7 +774,7 @@
     // S25 playground: the form as a deal record
     function rows(k) { var b = $('[data-blk="' + k + '"]'); if (!b || b.hidden) return []; return $$('.brow', b).map(function (r) { return $$('input', r).map(function (i) { return i.value.trim(); }); }).filter(function (v) { return v.some(Boolean); }); }
     function record() {
-      var p = num(el('p').value) || 0, m = num(el('m').value) || 0, later = el('when').value === 'later', at = later && el('at').value ? new Date(el('at').value).getTime() : null;
+      var p = num(el('p').value) || 0, m = num(el('m').value) || 0;
       var o = { t: el('title').value.trim(), link: el('link').value.trim(), store: el('store').value, cat: el('cat').value || 'Others', p: p, m: m || p, pct: m > p ? Math.round((m - p) / m * 100) : (+el('pct').value || 0),
         types: getTypes().filter(function (t) { return t !== 'Fresh'; }), caption: el('caption').value.trim(), coupon: el('coupon').value.trim().toUpperCase(), terms: el('terms').value.trim(),
         offers: rows('offers').map(function (r) { return r[0]; }), highlights: rows('highlights').map(function (r) { return r[0]; }), note: (rows('note')[0] || [''])[0],
@@ -603,8 +784,8 @@
         desc: sanitize($('[data-desc]').innerHTML), display: +el('display').value || 1, pin: el('pin').checked ? +el('slot').value || 1 : null };
       if (!o.types.length) o.types = ['New'];
       if (state.img) o.img = window.ADM_PG ? ADM_PG.pack(state.img) : state.img;
-      if (EDIT) { o.id = src.id; if (src.status === 'scheduled' || later) { o.status = later ? 'scheduled' : 'live'; if (later) o.schedAt = at; else o.postedAt = Date.now(); } }
-      else { o.status = later ? 'scheduled' : 'live'; o.postedAt = Date.now(); if (later) o.schedAt = at; o.source = 'form'; o.views = 0; o.uniq = 0; o.clicks = 0; if (o.pin) o.pinnedAt = Date.now(); }
+      if (EDIT) o.id = src.id;
+      else { o.status = 'live'; o.postedAt = Date.now(); o.source = 'form'; o.views = 0; o.uniq = 0; o.clicks = 0; if (o.pin) o.pinnedAt = Date.now(); }
       return o;
     }
     function sanitize(h) {  // the editor allows bold, italic, lists and links only (contract §2)
@@ -677,7 +858,7 @@
     // + Pin a deal (always the next slot)
     var pop = $('#pick-pop');
     var draw = picker($('[data-pick-q]'), $('[data-pick-list]'), { filter: function (d) { return d.status === 'live' && !order.some(function (x) { return x.id === d.id; }); }, onPick: function (d) { var u = snap(); order.push({ id: d.id, age: '0 min' }); closePick(); saved('Pinned to slot ' + order.length + ' (card ' + card(order.length) + ' on Top deals)', u); } });
-    function openPick(btn) { var r = btn.getBoundingClientRect(); pop.style.position = 'fixed'; pop.style.top = Math.min(r.bottom + 6, innerHeight - 380) + 'px'; pop.style.left = Math.max(12, Math.min(r.left, innerWidth - 332)) + 'px'; pop.hidden = false; requestAnimationFrame(function () { pop.dataset.state = 'open'; }); $('[data-pick-q]').value = ''; draw(); $('[data-pick-q]').focus(); }
+    function openPick(btn) { var r = btn.getBoundingClientRect(); pop.style.position = 'fixed'; pop.style.top = Math.min(r.bottom + 6, innerHeight - 380) + 'px'; pop.style.left = Math.max(12, Math.min(r.left, innerWidth - 412)) + 'px'; pop.hidden = false; requestAnimationFrame(function () { pop.dataset.state = 'open'; }); $('[data-pick-q]').value = ''; draw(); $('[data-pick-q]').focus(); }
     function closePick() { pop.dataset.state = 'closed'; pop.hidden = true; }
     document.addEventListener('click', function (e) { if (!pop.hidden && !pop.contains(e.target)) closePick(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) closePick(); });
@@ -792,10 +973,24 @@
       editing = p || null; $('#pe-title').textContent = p ? 'Edit poster' : 'Add poster'; D.reset(); $$('.err', D).forEach(function (x) { x.hidden = true; });
       var kind = p ? p.kind : 'deal'; setKind(kind);
       setDrop('d', p && p.kind === 'custom' ? p.img : '');
-      if (p) { if (p.kind === 'deal') D.elements.deal.value = p.deal; else { D.elements.title.value = p.title; D.elements.link.value = p.link; D.elements.store.value = p.store; } D.elements.start.value = p.start; D.elements.end.value = p.end; D.elements.on.checked = p.on; }
+      setDeal(p && p.kind === 'deal' ? p.deal : '');
+      if (p) { if (p.kind === 'deal') {} else { D.elements.title.value = p.title; D.elements.link.value = p.link; D.elements.store.value = p.store; } D.elements.start.value = p.start; D.elements.end.value = p.end; D.elements.on.checked = p.on; }
       else { D.elements.start.value = T; D.elements.end.value = ''; }
       openSheet(sheet);
     }
+    // D-161: Deal field = search box + chosen deal card (a list of every deal does not scale)
+    var dq = $('[data-dq]'), dlist = $('[data-dlist]'), dsel = $('[data-dsel]'), dpick = $('[data-dpick]');
+    function setDeal(id) {
+      var d = id ? dealById(String(id)) : null; D.elements.deal.value = d ? d.id : '';
+      dsel.hidden = !d; dpick.hidden = !!d; dq.value = ''; dlist.hidden = true;
+      if (d) dsel.innerHTML = '<img src="' + d.img + '" alt=""><span class="pk-body"><span class="pk-t">' + esc(d.t) + '</span><span class="pk-m">' + esc(d.store) + ' · <b>' + rs(d.p) + '</b>' + (d.pct ? ' · <span class="d-pct">' + d.pct + '% off</span>' : '') + ' · <span class="pk-id">#' + d.id + '</span></span></span><button type="button" class="btn btn-outline btn-sm" data-dchange>Change</button>';
+      var er = $('.err', dsel.closest('.fld')); if (er && d) er.hidden = true;
+    }
+    var dOpt = { filter: function (d) { return d.status === 'live'; }, title: 'Choose a deal for the poster', onPick: function (d) { setDeal(d.id); var c = $('[data-dchange]'); if (c) c.focus(); } };
+    picker(dq, dlist, dOpt);
+    $('[data-dbrowse]').addEventListener('click', function () { dlist.hidden = true; chooser({ q: dq.value, filter: dOpt.filter, title: dOpt.title, opener: $('[data-dbrowse]'), selected: D.elements.deal.value ? [D.elements.deal.value] : [], onUse: function (ds) { dOpt.onPick(ds[0]); } }); });
+    dsel.addEventListener('click', function (e) { if (e.target.closest('[data-dchange]')) { setDeal(''); dq.focus(); } });
+    document.addEventListener('click', function (e) { if (!e.target.closest('[data-dpick]') && !e.target.closest('[data-dchange]')) dlist.hidden = true; });
     function setKind(k) { $$('[name="kind"]', D).forEach(function (r) { r.checked = r.value === k; }); $$('[data-kind]', D).forEach(function (x) { x.hidden = x.dataset.kind !== k; }); }
     $$('[name="kind"]', D).forEach(function (r) { r.addEventListener('change', function () { setKind(r.value); }); });
     $('[data-poster-new]').addEventListener('click', function () { openEdit(null); });
@@ -804,10 +999,10 @@
       var f = D.elements, bad = [];
       function chk(ok, node) { var e = $('.err', node.closest('.fld')); if (e) e.hidden = ok; if (!ok) bad.push(node); }
       var kind = $('[name="kind"]:checked', D).value, dl = null;
-      if (kind === 'deal') { dl = window.ADM_POSTER_DEALS.filter(function (x) { return x.id === f.deal.value; })[0]; chk(!!dl, f.deal); }
+      if (kind === 'deal') { dl = window.ADM_POSTER_DEALS.filter(function (x) { return x.id === f.deal.value; })[0]; if (!dl && f.deal.value) { var dd = dealById(f.deal.value); if (dd) dl = { id: dd.id, t: dd.t, img: dd.img, store: dd.store }; } chk(!!dl, f.deal); }
       else { chk(!!imgs.d, $('[data-drop="d"]')); chk(!!f.title.value.trim(), f.title); chk(!!f.link.value.trim(), f.link); }
       endMsg(f); chk(!!f.start.value && !!f.end.value && f.end.value >= f.start.value, f.end);
-      if (bad.length) { (bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
+      if (bad.length) { (bad[0] === f.deal ? dq : bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
       var u = snap(), o = kind === 'deal' ? { kind: 'deal', deal: dl.id, title: dl.t, img: dl.img, store: dl.store, link: 'Deal page', start: f.start.value, end: f.end.value, on: f.on.checked, href: null }
         : { kind: 'custom', title: f.title.value.trim(), link: f.link.value.trim(), store: f.store.value, start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d, href: null, ends: null };
       if (editing) Object.assign(editing, o); else { o.id = Date.now(); list.unshift(o); }
@@ -886,7 +1081,7 @@
   if (matchMedia('(max-width: 899px)').matches) $$('[data-fold-phone]').forEach(function (d) { d.open = false; });
 
   /* shared helpers for admin-c.js (batch C pages) */
-  window.ADM = { routes: ROUTES, $: $, $$: $$, icons: icons, store: store, params: params, rs: rs, INR: INR, esc: esc, withRole: withRole, toast: toast, copy: copy, openSheet: openSheet, closeSheet: closeSheet, confirmBox: confirmBox, setCount: setCount, SUB: SUB };
+  window.ADM = { chooser: chooser, routes: ROUTES, $: $, $$: $$, icons: icons, store: store, params: params, rs: rs, INR: INR, esc: esc, withRole: withRole, toast: toast, copy: copy, openSheet: openSheet, closeSheet: closeSheet, confirmBox: confirmBox, setCount: setCount, SUB: SUB };
 
   icons();
 })();

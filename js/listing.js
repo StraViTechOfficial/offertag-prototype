@@ -211,13 +211,45 @@
   // alerts opt-in card (B23, D-055): after the 16th card, second visit onwards, × hides for 30 days; ?visit=2 forces it
   var alertsCard = document.getElementById('alerts-card'), visits = 0, alertsOk = false;
   try { visits = +(localStorage.getItem('ot-visits') || 0) + 1; localStorage.setItem('ot-visits', visits); var hid = +(localStorage.getItem('ot-alerts-hide') || 0); alertsOk = (visits >= 2 || new URLSearchParams(location.search).get('visit') === '2') && Date.now() > hid; } catch (e) {}
-  function placeAlerts(vis) {
-    if (!alertsCard || !alertsOk || vis.length < 16) { if (alertsCard) alertsCard.hidden = true; return; }
-    var after = vis[15]; if (after && after.parentNode === results) { after.after(alertsCard); alertsCard.hidden = false; }
+  // D-158: a side popup tied to the scroll. Once the 16th card comes into view, scrolling on draws it in from the right (scroll back and it
+  // slides back); fully out, it locks, stays 10 s (the timer line pauses while the pointer is on it), then glides back out for this page view.
+  // × hides it for 30 days; "Turn on" for a year; "Not now" just tucks it away. Reduced motion: it fades in and out instead.
+  var AC = { state: 'wait', mark: null, startY: 0, DIST: 320 }, rootEl = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (alertsCard) { document.body.appendChild(alertsCard); alertsCard.classList.add('is-pop'); alertsCard.setAttribute('role', 'dialog'); }
+  function acLift(on) { rootEl.style.setProperty('--pop-lift', on ? (alertsCard.offsetHeight + 12) + 'px' : '0px'); }
+  function acSet(p) { alertsCard.style.setProperty('--p', p.toFixed(3)); }
+  function acLock() {
+    AC.state = 'in'; acSet(1); alertsCard.classList.add('is-in'); acLift(true);
+    var timer = alertsCard.querySelector('.ac-timer');
+    if (timer) timer.addEventListener('animationend', function () { if (AC.state === 'in') acTuck(); }, { once: true });
+    else setTimeout(function () { if (AC.state === 'in') acTuck(); }, 10000);
   }
+  function acTuck() {   // back out for this page view
+    if (AC.state === 'gone') return; AC.state = 'gone'; alertsCard.classList.remove('is-in'); alertsCard.classList.add('is-out'); acLift(false);
+    setTimeout(function () { alertsCard.hidden = true; }, 500);
+  }
+  function acScroll() {
+    if (!alertsCard || AC.state === 'in' || AC.state === 'gone' || !alertsOk) return;
+    if (AC.state === 'wait') {
+      if (!AC.mark || !AC.mark.isConnected || AC.mark.getBoundingClientRect().top > innerHeight) return;
+      AC.state = 'track'; AC.startY = window.scrollY; alertsCard.hidden = false; acSet(0); acLift(true);
+      if (reduce) { acLock(); return; }
+    }
+    var p = Math.max(0, Math.min(1, (window.scrollY - AC.startY) / AC.DIST));
+    acSet(p);
+    if (p >= 1) acLock();
+  }
+  window.addEventListener('scroll', function () { requestAnimationFrame(acScroll); }, { passive: true });
+  function placeAlerts(vis) {
+    if (!alertsCard || !alertsOk || AC.state !== 'wait') return;
+    AC.mark = vis.length >= 16 ? vis[15] : null; acScroll();
+  }
+  function hideAlerts() { alertsOk = false; acTuck(); }
   if (alertsCard) {
-    document.getElementById('alertsCardX'.replace('CardX', '-card-x')).addEventListener('click', function () { alertsCard.hidden = true; alertsOk = false; try { localStorage.setItem('ot-alerts-hide', Date.now() + 30 * 864e5); } catch (e) {} });
-    document.getElementById('alerts-card-on').addEventListener('click', function () { alertsCard.hidden = true; alertsOk = false; window.OT.toast('Browser alerts on for new loot', 'bell-ring'); try { localStorage.setItem('ot-alerts-hide', Date.now() + 365 * 864e5); } catch (e) {} });
+    document.getElementById('alerts-card-x').addEventListener('click', function () { hideAlerts(); try { localStorage.setItem('ot-alerts-hide', Date.now() + 30 * 864e5); } catch (e) {} });
+    document.getElementById('alerts-card-on').addEventListener('click', function () { hideAlerts(); window.OT.toast('Browser alerts on for new loot', 'bell-ring'); try { localStorage.setItem('ot-alerts-hide', Date.now() + 365 * 864e5); } catch (e) {} });
+    var later = alertsCard.querySelector('[data-alerts-later]'); if (later) later.addEventListener('click', acTuck);
   }
 
   apply();

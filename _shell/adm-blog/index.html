@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="admin">
+<html lang="en" class="admin" data-total-deals="79664">
 <head>
 <script>(function(){var d=document.documentElement,admin=d.classList.contains('admin'),k=admin?'adm-theme':'ot-theme',def=admin?'dark':'auto',p;
 try{p=localStorage.getItem(k)}catch(e){}if(p!=='light'&&p!=='dark'&&p!=='auto')p=def;
@@ -35,19 +35,17 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<div class="adm-group"><div class="adm-group-h"><i data-lucide="tag"></i><span>Deals</span></div><div class="adm-sub"><a href="/admin/deal">All deals</a><a href="/admin/incoming">Incoming<span class="adm-count" data-count="incoming">5</span></a><a href="/admin/deal/create">Post a deal</a><a href="/admin/pinned" data-role="admin">Pinned board</a></div></div>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="gallery-horizontal"></i><span>Sale posters</span></a>
-<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
+<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
 <a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
-<a class="adm-link" href="/admin/social" data-role="admin"><i data-lucide="share-2"></i><span>Social sharing</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin" aria-current="page"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="inbox"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></div><div class="adm-sub"><a href="/admin/feedback" data-role="admin">Feedback</a><a href="/admin/reports" data-role="admin">Reports</a><a href="/admin/deletion-requests" data-role="admin">Deletion requests</a><a href="/admin/comments" data-role="admin">Comments</a></div></div>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="library"></i><span>Catalogue</span></div><div class="adm-sub"><a href="/admin/shop" data-role="admin">Shops</a><a href="/admin/category" data-role="admin">Categories</a><a href="/admin/lookup" data-role="admin">Deal types</a><a href="/admin/type" data-role="admin">Types</a></div></div>
-<a class="adm-link" href="/admin/users" data-role="admin"><i data-lucide="users"></i><span>Users</span></a>
-<div class="adm-group" data-role="admin"><div class="adm-group-h"><i data-lucide="settings"></i><span>Settings</span></div><div class="adm-sub"><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></div></div>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
+<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
+<a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
     <div class="adm-side-foot">
-      <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
       <a class="adm-link" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i><span>View site</span></a>
       <button class="adm-link adm-collapse" type="button" data-side-collapse aria-label="Collapse menu"><i data-lucide="panel-left-close"></i><span>Collapse</span></button>
     </div>
@@ -69,12 +67,15 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
           <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
           <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
           <div class="separator"></div>
+          <div class="menu-label">Theme</div>
+          <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
+          <div class="separator"></div>
           <a role="menuitem" href="/admin/login?state=out"><i data-lucide="log-out"></i>Sign out</a>
         </div>
       </div>
     </header>
     <main class="adm-content" id="main">
-      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>The blog editor is for admins only. Sub-admins see Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>The blog editor is for admins only. Sub-admins see Incoming, Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="be-top">
         <a class="btn btn-ghost btn-sm" href="/admin/blog"><i data-lucide="chevron-left"></i>Blog</a>
@@ -94,19 +95,30 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
         <div class="be-main">
           <label class="fld"><span class="lab">Title *</span><input class="input be-title" type="text" name="title" maxlength="110" placeholder="e.g. Best TWS earbuds under ₹1,500" autocomplete="off"><span class="err" hidden>Add a title.</span></label>
           <label class="fld"><span class="lab">Summary * <small>one line, shown on the blog list and when shared</small></span><textarea class="textarea" name="summary" rows="2" maxlength="160" placeholder="e.g. Five picks with live prices, and what to check before you buy."></textarea><span class="cnt"><span data-bsum-n>0</span>/160</span><span class="err" hidden>Add a one-line summary.</span></label>
-          <div class="fld"><span class="lab">Post *</span>
+          <div class="fld"><span class="lab" id="be-post-l">Post *</span>
             <div class="rte be-rte">
-              <div class="rte-bar be-bar" role="toolbar" aria-label="Formatting">
-                <button type="button" data-bcmd="bold" aria-label="Bold" title="Bold"><i data-lucide="bold"></i></button><button type="button" data-bcmd="italic" aria-label="Italic" title="Italic"><i data-lucide="italic"></i></button><span class="sep"></span>
-                <button type="button" data-bcmd="h2" aria-label="Heading" title="Heading"><i data-lucide="heading-2"></i></button><button type="button" data-bcmd="h3" aria-label="Small heading" title="Small heading"><i data-lucide="heading-3"></i></button><button type="button" data-bcmd="p" aria-label="Paragraph" title="Paragraph"><i data-lucide="pilcrow"></i></button><span class="sep"></span>
-                <button type="button" data-bcmd="insertUnorderedList" aria-label="Bullet list" title="Bullet list"><i data-lucide="list"></i></button><button type="button" data-bcmd="insertOrderedList" aria-label="Numbered list" title="Numbered list"><i data-lucide="list-ordered"></i></button><span class="sep"></span>
-                <button type="button" data-bcmd="createLink" aria-label="Link" title="Link"><i data-lucide="link"></i></button><label class="be-imgbtn" title="Image" aria-label="Add image"><i data-lucide="image"></i><input type="file" accept="image/*" hidden data-bimg></label>
-                <button class="btn btn-outline btn-sm be-add-deal" type="button" data-bdeal-btn><i data-lucide="plus"></i>Deal</button>
+              <div class="rte-bar be-bar" role="toolbar" aria-label="Formatting" data-bbar>
+                <span class="be-grp"><button type="button" data-bcmd="undo" aria-label="Undo (Ctrl+Z)" title="Undo (Ctrl+Z)"><i data-lucide="undo-2"></i></button><button type="button" data-bcmd="redo" aria-label="Redo (Ctrl+Y)" title="Redo (Ctrl+Y)"><i data-lucide="redo-2"></i></button></span>
+                <label class="select be-blk"><span class="visually-hidden">Text style</span><select data-bblock><option value="p">Paragraph</option><option value="h2">Heading</option><option value="h3">Subheading</option><option value="h4">Small heading</option><option value="blockquote">Quote</option></select><i data-lucide="chevron-down"></i></label>
+                <span class="be-grp"><button type="button" data-bcmd="bold" aria-label="Bold (Ctrl+B)" title="Bold (Ctrl+B)" aria-pressed="false"><i data-lucide="bold"></i></button><button type="button" data-bcmd="italic" aria-label="Italic (Ctrl+I)" title="Italic (Ctrl+I)" aria-pressed="false"><i data-lucide="italic"></i></button><button type="button" data-bcmd="underline" aria-label="Underline (Ctrl+U)" title="Underline (Ctrl+U)" aria-pressed="false"><i data-lucide="underline"></i></button><button type="button" data-bcmd="strike" aria-label="Strikethrough" title="Strikethrough" aria-pressed="false"><i data-lucide="strikethrough"></i></button></span>
+                <span class="be-grp"><button type="button" data-bcmd="link" aria-label="Link (Ctrl+K)" title="Link (Ctrl+K)"><i data-lucide="link"></i></button><button type="button" data-bcmd="ul" aria-label="Bullet list" title="Bullet list"><i data-lucide="list"></i></button><button type="button" data-bcmd="ol" aria-label="Numbered list" title="Numbered list"><i data-lucide="list-ordered"></i></button></span>
+                <span class="be-grp"><button type="button" data-bcmd="left" aria-label="Align left" title="Align left"><i data-lucide="align-left"></i></button><button type="button" data-bcmd="center" aria-label="Align centre" title="Align centre"><i data-lucide="align-center"></i></button><button type="button" data-bcmd="right" aria-label="Align right" title="Align right"><i data-lucide="align-right"></i></button></span>
+                <span class="be-grp"><button type="button" data-bcmd="image" aria-label="Image" title="Image"><i data-lucide="image"></i></button><button type="button" data-bcmd="table" aria-label="Table" title="Table"><i data-lucide="table"></i></button><button type="button" data-bcmd="note" aria-label="Note box" title="Note box"><i data-lucide="sticky-note"></i></button><button type="button" data-bcmd="hr" aria-label="Divider" title="Divider"><i data-lucide="minus"></i></button><button type="button" data-bcmd="video" aria-label="YouTube video" title="YouTube video"><i data-lucide="youtube"></i></button><button type="button" data-bcmd="button" aria-label="Button" title="Button"><i data-lucide="mouse-pointer-click"></i></button></span>
+                <span class="be-grp"><button type="button" data-bcmd="clear" aria-label="Clear formatting" title="Clear formatting"><i data-lucide="remove-formatting"></i></button></span>
+                <span class="be-bar-end"><button class="btn btn-outline btn-sm be-add-deal" type="button" data-bcmd="deal" data-bdeal-btn><i data-lucide="plus"></i>Deals</button>
+                  <span class="seg be-mode" role="group" aria-label="Edit or preview"><button type="button" data-bmode="edit" aria-pressed="true">Edit</button><button type="button" data-bmode="preview" aria-pressed="false">Preview</button></span></span>
+                <input type="file" accept="image/*" hidden data-bimg>
               </div>
-              <div class="rte-body be-body" contenteditable="true" data-bbody aria-label="Post text" role="textbox" aria-multiline="true"></div>
+              <div class="rte-body be-body" contenteditable="true" data-bbody aria-labelledby="be-post-l" role="textbox" aria-multiline="true"></div>
+              <div class="be-pv" data-bpv hidden>
+                <div class="be-pv-bar"><span><i data-lucide="eye"></i>Preview, as readers see it. Deal cards sit beside the post on a computer.</span><span class="seg" role="group" aria-label="Screen"><button type="button" data-bdev="desk" aria-pressed="true">Computer</button><button type="button" data-bdev="phone" aria-pressed="false">Phone</button></span></div>
+                <div class="be-pv-frame" data-bpv-frame><article class="be-pv-post" data-bpv-post></article></div>
+              </div>
+              <div class="be-status"><span data-bwords>0 words · 1 min read</span><button type="button" class="btn-link" data-boutline-btn aria-expanded="false">Outline (<span data-boutline-n>0</span>)</button><span class="be-hint">Type <kbd>/</kbd> for blocks · <kbd>##</kbd> + space for a heading · <kbd>Ctrl</kbd>+<kbd>K</kbd> for a link</span></div>
+              <ol class="be-outline" data-boutline hidden></ol>
             </div>
             <span class="err" data-bbody-err hidden>Write the post.</span>
-            <small class="hint">Paste or drop an image anywhere in the text to add it. “+ Deal” adds a live deal card.</small>
+            <small class="hint">Paste or drop images straight into the text. Pasting from Google Docs or Word keeps headings, lists, bold and links.</small>
           </div>
         </div>
         <aside class="be-side" data-bside>
@@ -121,11 +133,6 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
           </section>
           <section class="panel be-sec"><div class="be-deals-h"><b>Deals in this post <span data-bdeal-n>0</span></b></div><ul class="be-deals" data-bdeals></ul></section>
         </aside>
-      </div>
-      <div class="popover pick-pop be-pick" id="be-pick" hidden data-state="closed" role="dialog" aria-label="Insert a deal">
-        <div class="be-pick-h"><b>Insert a deal</b><button class="btn btn-ghost btn-icon btn-sm" type="button" data-bpick-close aria-label="Close"><i data-lucide="x"></i></button></div>
-        <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Title, link or store" data-bpick-q aria-label="Search deals" autocomplete="off"></label>
-        <ul class="pick-list" data-bpick-list role="listbox"></ul>
       </div>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet dialog" id="confirm" hidden data-state="closed" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-desc">

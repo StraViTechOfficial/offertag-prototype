@@ -57,8 +57,8 @@
       .replace(/(?<![\w.\/-])www\./gi, '');
   }
   OT.trimLinks = trimLinks;
-  function fmt(s) { // bold **x** only; links are plain text (D-149)
-    return esc(trimLinks(s)).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  function fmt(s) { // bold **x**, italic *x* (D-162); links are plain text (D-149)
+    return esc(trimLinks(s)).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>');
   }
   function author() { var u = OT.user && OT.user(); return body.classList.contains('is-admin') ? 'OfferTag' : (u && u.name) || 'You'; }   // D-153: the member's name, as other people see it
   function makeComment(text, name, admin, reply) {
@@ -90,7 +90,7 @@
   if (cin) {
     OT.emoji.attach(ta, chars, cin.querySelector('[data-emoji]'));   // D-147: picker, ":" search, smileys, count where an emoji is 1
     cin.querySelectorAll('[data-wrap]').forEach(function (b) { b.addEventListener('click', function () {
-      var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e) || 'text', w = '**' + sel + '**';
+      var s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e) || 'text', mk = b.getAttribute('data-wrap') || '**', w = mk + sel + mk;
       ta.setRangeText(w, s, e, 'end'); ta.focus(); ta.dispatchEvent(new Event('input'));
     }); });
     cin.addEventListener('submit', function (e) {

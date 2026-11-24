@@ -1345,3 +1345,133 @@ html.theme .hs-row .store-logo img[src$=".png"] { max-height: 2.25rem; border-ra
 @media (min-width: 1200px) { html.theme .home-main .home-stores { display: none; } }
 
 .index-note:empty { display: none; }   /* D-155 */
+
+/* ============ D-157: join tab: a nicer semicircle that can be dragged up or down (position remembered per device) ============ */
+html.theme .fjoin { width: 2rem; height: 4rem; }
+html.theme .fjoin-tab {
+  padding: 0 0.3125rem 0 0; place-items: center end; touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none;
+  background: linear-gradient(135deg, hsl(var(--fill)) 0%, hsl(221 83% 53%) 100%);
+  box-shadow: 0 0.5rem 1.25rem -0.375rem hsl(221 83% 40% / .55), inset 0 1px 0 hsl(0 0% 100% / .22), inset -1px 0 0 hsl(0 0% 100% / .08);
+  transition: width .2s cubic-bezier(.2,0,0,1), box-shadow .2s;
+}
+html.theme .fjoin-tab .lucide { width: 1.0625rem; height: 1.0625rem; filter: drop-shadow(0 1px 1px hsl(0 0% 0% / .25)); }
+/* grip: two short lines above the icon say "you can drag this" */
+html.theme .fjoin-tab::before { content: ""; position: absolute; right: 0.5rem; top: 0.6875rem; width: 0.5rem; height: 0.3125rem; border-top: 1.5px solid hsl(0 0% 100% / .55); border-bottom: 1.5px solid hsl(0 0% 100% / .55); }
+html.theme .fjoin-tab::after { top: auto; bottom: 0.5rem; right: 0.3125rem; width: 0.5rem; height: 0.5rem; border: 2px solid hsl(221 83% 47%); box-shadow: 0 0 0 0 #25D36699; animation: fj-live 2.4s ease-out infinite; }
+@keyframes fj-live { 0% { box-shadow: 0 0 0 0 #25D36699; } 70%, 100% { box-shadow: 0 0 0 0.375rem #25D36600; } }
+@media (hover: hover) { html.theme .fjoin-tab:hover { box-shadow: 0 0.75rem 1.5rem -0.375rem hsl(221 83% 40% / .65), inset 0 1px 0 hsl(0 0% 100% / .22); } }
+html.theme .fjoin.is-open .fjoin-tab, html.theme .fjoin:focus-within .fjoin-tab { width: 2.375rem; }
+@media (hover: hover) { html.theme .fjoin:hover .fjoin-tab { width: 2.375rem; } }
+/* while dragging: grabbing cursor, no fan, no width change */
+html.theme .fjoin.is-dragging .fjoin-tab { cursor: grabbing; width: 2.375rem; box-shadow: 0 1rem 2rem -0.5rem hsl(221 83% 35% / .7); }
+html.theme .fjoin.is-dragging .fjoin-disc { transform: translateY(-50%) scale(0) !important; opacity: 0 !important; }
+html.theme .fjoin.is-dragging .fs-btn { opacity: 0 !important; visibility: hidden !important; }
+/* a dragged tab is placed by its middle (site.js sets --fj-y); the fan opens around it */
+html.theme .fjoin.is-placed { top: var(--fj-y); bottom: auto; transform: translateY(-50%); }
+@media (max-width: 767px) { html.theme .fjoin { width: 1.625rem; height: 3.25rem; } html.theme .fjoin-tab::before { right: 0.375rem; top: 0.5625rem; } }
+@media (prefers-reduced-motion: reduce) { html.theme .fjoin-tab::after { animation: none; } }
+
+/* ============ D-157: browser-alerts offer as a side popup (was a full-width row that broke the grid) ============ */
+html.theme .alerts-card.is-pop {
+  position: fixed; z-index: 60; right: 1.5rem; bottom: 5rem; width: min(22rem, calc(100vw - 2rem)); margin: 0;
+  display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "ic t x" ". on on"; align-items: start; column-gap: 0.75rem; row-gap: 0.625rem;
+  padding: 1rem 0.75rem 1rem 1rem; border: 1px solid hsl(var(--line)); border-radius: 0.75rem; background: hsl(var(--surface));
+  box-shadow: 0 1.25rem 2.5rem -0.75rem hsl(var(--shadow) / .45), 0 0.25rem 0.75rem -0.25rem hsl(var(--shadow) / .2);
+  opacity: 0; transform: translateX(calc(100% + 2rem)); transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .25s;
+}
+html.theme .alerts-card.is-pop.is-in { opacity: 1; transform: none; }
+html.theme .alerts-card.is-pop > .lucide { grid-area: ic; width: 2.25rem; height: 2.25rem; padding: 0.5rem; border-radius: 999px; background: hsl(var(--fill) / .1); color: hsl(var(--brand-ink)); box-sizing: border-box; }
+html.theme .alerts-card.is-pop .t { grid-area: t; }
+html.theme .alerts-card.is-pop .t b { font-size: 0.9375rem; }
+html.theme .alerts-card.is-pop #alerts-card-on { grid-area: on; justify-self: start; margin: 0; }
+html.theme .alerts-card.is-pop #alerts-card-x { grid-area: x; margin: -0.25rem -0.125rem 0 0; }
+@media (max-width: 767px) { html.theme .alerts-card.is-pop { right: 1rem; left: 1rem; width: auto; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); transform: translateY(calc(100% + 2rem)); } }
+@media (prefers-reduced-motion: reduce) { html.theme .alerts-card.is-pop { transition: opacity .2s; transform: none; } }
+
+/* ============ D-157: Home right column → Shop by store: three rows show, the rest scroll inside the box (the column no longer hangs below the deals) ============ */
+html.theme .home-side .hs-stores {
+  max-height: 15.75rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+  padding-bottom: 1rem; scroll-padding-bottom: 1rem;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.25rem), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 1.25rem), transparent);
+}
+html.theme .home-side .hs-stores::-webkit-scrollbar { width: 6px; }
+html.theme .home-side .hs-stores::-webkit-scrollbar-thumb { background: hsl(var(--line)); border-radius: 999px; }
+
+/* ============ D-158: join tab, refined. Icon centred in the visible half, no grip lines, a calm "nudge" every few seconds ============ */
+html.theme .fjoin { width: 2.25rem; height: 4.5rem; }
+html.theme .fjoin-tab { padding: 0; place-items: center; overflow: visible; }
+html.theme .fjoin-tab::before { content: none; }
+html.theme .fjoin-tab .lucide { width: 1.25rem; height: 1.25rem; margin-left: -0.125rem; transform-origin: 30% 60%; }
+/* live dot: top-right of the half-disc, white ring so it reads on the gradient */
+html.theme .fjoin-tab::after { top: 0.5rem; bottom: auto; right: 0.375rem; width: 0.5625rem; height: 0.5625rem; border: 2px solid #fff; }
+/* soft halo that breathes behind the tab */
+html.theme .fjoin::before { content: ""; position: absolute; z-index: 1; left: 0; top: 50%; width: 100%; height: 100%; border-radius: 0 999px 999px 0; transform: translateY(-50%); background: hsl(221 83% 53% / .35); pointer-events: none; opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  html.theme .fjoin:not(.is-open):not(.is-dragging):not(:hover) .fjoin-tab { animation: fj-nudge 6s cubic-bezier(.3,0,.2,1) 2s infinite; }
+  html.theme .fjoin:not(.is-open):not(.is-dragging):not(:hover) .fjoin-tab .lucide { animation: fj-ring 6s ease-in-out 2s infinite; }
+  html.theme .fjoin:not(.is-open):not(.is-dragging):not(:hover)::before { animation: fj-halo 6s ease-out 2s infinite; }
+}
+/* every 6 s: the tab eases out 5 px and back (nudge), the megaphone gives a short shake, a halo ring spreads once */
+@keyframes fj-nudge { 0%, 8%, 100% { transform: translateX(0); } 3% { transform: translateX(5px); } 5% { transform: translateX(1px); } 6.5% { transform: translateX(3px); } }
+@keyframes fj-ring { 0%, 2%, 12%, 100% { transform: rotate(0); } 4% { transform: rotate(-16deg); } 6% { transform: rotate(12deg); } 8% { transform: rotate(-8deg); } 10% { transform: rotate(4deg); } }
+@keyframes fj-halo { 0%, 2% { opacity: .9; transform: translateY(-50%) scale(1); } 14%, 100% { opacity: 0; transform: translateY(-50%) scale(1.6, 1.35); transform-origin: left center; } }
+html.theme .fjoin::before { transform-origin: left center; }
+@media (max-width: 767px) { html.theme .fjoin { width: 1.875rem; height: 3.75rem; } html.theme .fjoin-tab .lucide { width: 1.0625rem; height: 1.0625rem; } html.theme .fjoin-tab::after { top: 0.375rem; right: 0.25rem; } }
+html.theme .fjoin.is-open .fjoin-tab, html.theme .fjoin:focus-within .fjoin-tab, html.theme .fjoin.is-dragging .fjoin-tab { width: 2.625rem; }
+@media (hover: hover) { html.theme .fjoin:hover .fjoin-tab { width: 2.625rem; } }
+
+/* ============ D-158: Home right column ends exactly where the deals end; Shop by store fills the rest and scrolls inside (no native scrollbar) ============ */
+@media (min-width: 1200px) {
+  html.theme .home-side { display: flex; flex-direction: column; gap: 1rem; align-self: stretch; }
+  html.theme .home-side > nav.hs-box:last-of-type { flex: 1 1 0; min-height: 17rem; display: flex; flex-direction: column; }
+  html.theme .home-side .hs-stores { flex: 1 1 auto; min-height: 0; max-height: none; align-content: start; }
+}
+html.theme .home-side .hs-stores { scrollbar-width: none; scroll-behavior: smooth; --fade-t: 0px; --fade-b: 1.5rem;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-t), #000 calc(100% - var(--fade-b)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-t), #000 calc(100% - var(--fade-b)), transparent 100%);
+  transition: --fade-t .2s, --fade-b .2s; }
+html.theme .home-side .hs-stores::-webkit-scrollbar { display: none; }
+/* site.js marks where the list is: the top fade shows once scrolled, the bottom fade goes at the end */
+html.theme .home-side .hs-stores.is-scrolled { --fade-t: 1.5rem; }
+html.theme .home-side .hs-stores.is-end { --fade-b: 0px; }
+html.theme .home-side .hs-stores.is-fits { --fade-t: 0px; --fade-b: 0px; }
+
+/* ============ D-158: browser-alerts popup: bottom-right corner, follows the scroll in from the side, 10 s timer line, then glides out ============ */
+html.theme .alerts-card.is-pop {
+  --p: 0; right: 1.5rem; left: auto; bottom: 1.5rem; width: min(23.5rem, calc(100vw - 2rem)); overflow: hidden;
+  grid-template-columns: auto 1fr auto; grid-template-areas: "ic t x" "ic acts acts"; column-gap: 0.875rem; row-gap: 0.25rem; align-items: start;
+  padding: 1rem 0.75rem 1.125rem 1.125rem; border-radius: 1rem; border: 1px solid hsl(var(--line)); background: hsl(var(--surface));
+  box-shadow: 0 1.5rem 3rem -1rem hsl(var(--shadow) / .5), 0 0.375rem 1rem -0.5rem hsl(var(--shadow) / .25);
+  opacity: calc(0.25 + 0.75 * var(--p)); transform: translateX(calc((1 - var(--p)) * (100% + 2.5rem)));
+  transition: transform .14s ease-out, opacity .14s ease-out; will-change: transform;
+}
+html.theme .alerts-card.is-pop::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, hsl(221 83% 53%), hsl(var(--fill))); }
+html.theme .alerts-card.is-pop.is-in { opacity: 1; transform: none; transition: transform .3s cubic-bezier(.2,.8,.2,1), opacity .2s; }
+html.theme .alerts-card.is-pop.is-out { opacity: 0; transform: translateX(calc(100% + 2.5rem)); transition: transform .45s cubic-bezier(.5,0,.75,0), opacity .4s .05s; }
+html.theme .alerts-card.is-pop .ac-ico { grid-area: ic; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 0.875rem;
+  background: linear-gradient(135deg, hsl(var(--fill)), hsl(221 83% 53%)); color: #fff; box-shadow: 0 0.5rem 1rem -0.375rem hsl(221 83% 45% / .6); }
+html.theme .alerts-card.is-pop .ac-ico .lucide { width: 1.375rem; height: 1.375rem; transform-origin: 50% 15%; }
+html.theme .alerts-card.is-pop.is-in .ac-ico .lucide { animation: ac-bell 1.1s ease-in-out .15s 2; }
+@keyframes ac-bell { 0%, 60%, 100% { transform: rotate(0); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-12deg); } 30% { transform: rotate(8deg); } 40% { transform: rotate(-5deg); } 50% { transform: rotate(2deg); } }
+html.theme .alerts-card.is-pop .t { grid-area: t; padding-top: 0.125rem; }
+html.theme .alerts-card.is-pop .t b { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; color: hsl(var(--ink)); }
+html.theme .alerts-card.is-pop .t p { margin-top: 0.25rem; font-size: 0.8125rem; line-height: 1.45; }
+html.theme .alerts-card.is-pop #alerts-card-x { grid-area: x; margin: -0.375rem -0.25rem 0 0; }
+html.theme .alerts-card.is-pop .ac-acts { grid-area: acts; display: flex; align-items: center; gap: 0.375rem; margin-top: 0.625rem; }
+html.theme .alerts-card.is-pop #alerts-card-on { grid-area: auto; margin: 0; gap: 0.375rem; }
+html.theme .alerts-card.is-pop #alerts-card-on .lucide { width: 1rem; height: 1rem; }
+/* the 10 s line along the bottom; it pauses while the pointer is on the popup */
+html.theme .alerts-card.is-pop .ac-timer { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, hsl(221 83% 53%), hsl(var(--fill))); transform-origin: left center; transform: scaleX(1); opacity: 0; }
+html.theme .alerts-card.is-pop.is-in .ac-timer { opacity: 1; animation: ac-timer 10s linear forwards; }
+html.theme .alerts-card.is-pop.is-in:hover .ac-timer, html.theme .alerts-card.is-pop.is-in:focus-within .ac-timer { animation-play-state: paused; }
+@keyframes ac-timer { to { transform: scaleX(0); } }
+/* the back-to-top button rides above the popup while it is out */
+html.theme .fstack { bottom: calc(max(1rem, env(safe-area-inset-bottom, 0px)) + var(--pop-lift, 0px)); transition: bottom .3s cubic-bezier(.2,.8,.2,1); }   /* D-158 fix: only the popup lift animates; the footer dock (transform) follows the scroll directly, or it lags and jumps */
+@media (max-width: 767px) {
+  html.theme .alerts-card.is-pop { left: auto; right: 0.75rem; width: calc(100vw - 1.5rem); bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px)); transform: translateX(calc((1 - var(--p)) * (100% + 1.5rem))); }
+  html.theme .alerts-card.is-pop.is-out { transform: translateX(calc(100% + 1.5rem)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.theme .alerts-card.is-pop, html.theme .alerts-card.is-pop.is-in, html.theme .alerts-card.is-pop.is-out { transform: none; transition: opacity .25s; }
+  html.theme .alerts-card.is-pop.is-in .ac-ico .lucide { animation: none; }
+}

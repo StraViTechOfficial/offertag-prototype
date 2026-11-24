@@ -327,11 +327,13 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div></section>
 
         <!-- Alerts opt-in card (B23, D-055): moved after the 16th card by listing.js on the second visit; ?visit=2 forces it -->
+        <!-- D-158: a side popup that slides in with the scroll once the visitor passes the 16th card, stays 10 s (paused on hover), then slides back out -->
         <div class="card alerts-card" id="alerts-card" hidden role="region" aria-label="Deal alerts">
-          <i data-lucide="bell"></i>
-          <div class="t"><b>Get loot alerts in your browser</b><p>Free, no account. Only the big ones, never more than a few a day.</p></div>
-          <button class="btn btn-default btn-sm" type="button" id="alerts-card-on">Turn on</button>
-          <button class="btn btn-ghost btn-icon btn-sm" type="button" id="alerts-card-x" aria-label="Dismiss for 30 days"><i data-lucide="x"></i></button>
+          <span class="ac-ico" aria-hidden="true"><i data-lucide="bell-ring"></i></span>
+          <div class="t"><b>Never miss a loot deal</b><p>Get a browser alert for the big drops. Free, no account, only a few a day.</p></div>
+          <button class="btn btn-ghost btn-icon btn-sm" type="button" id="alerts-card-x" aria-label="Don’t show for 30 days"><i data-lucide="x"></i></button>
+          <div class="ac-acts"><button class="btn btn-default btn-sm" type="button" id="alerts-card-on"><i data-lucide="bell-plus"></i>Turn on alerts</button><button class="btn btn-ghost btn-sm" type="button" data-alerts-later>Not now</button></div>
+          <span class="ac-timer" aria-hidden="true"></span>
         </div>
       </section>
     </div>
