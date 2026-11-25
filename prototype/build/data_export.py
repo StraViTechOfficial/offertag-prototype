@@ -32,7 +32,7 @@ def _deal(d, row=None):
     r = row or {}
     return dict(
         id=str(d['id']), page=_route(d['page']), t=d['t'], p=d['p'], m=d['m'], pct=int(d['pct']), store=d['store'], cat=d['cat'],
-        types=[t for t in (r.get('types') or d['types']) if t != 'Fresh'], status=r.get('status', 'live'), pin=r.get('pin'),
+        types=[t for t in d['types'] if t != 'Fresh'], pin=r.get('pin'), featured=bool(d.get('featured')),  # 2026-11-25: no status (changes.md A-03); types follow the rules (A-14)
         ago=d['agemin'],
         views=int(d.get('views') or 0), uniq=r.get('uniq', 0), clicks=r.get('clicks', 0), display=r.get('display', 1),
         img=_asset(dimg(d)), lg=_asset('assets/deals/lg/' + d['file']), td=_asset(photo), tdFill=fill,
@@ -40,17 +40,8 @@ def _deal(d, row=None):
         exc=exc, highlights=rec['highlights'], specs=rec['specs'], links=rec['links'], desc=desc, source='telegram', seed=True)
 
 D_OUT = [_deal(d, _rows.get(d['id'])) for d in sorted(deals, key=lambda d: d['agemin'])]
-D_OUT += [dict(_deal(d), status='live', detailOnly=True) for d in extras]  # the three multi-link sale posts: deal pages only, not in the feed
-# Incoming (Admin → Incoming deals): the SAMPLE rows become real pending deals; Approve publishes them on the site
-_SRC = {'telegram': 'telegram', 'form': 'form'}   # D-155: no scraper
-for n, (idx, src, rec_, hold, ov) in enumerate(INC):
-    base = deals[idx]; x = _deal(base)
-    m = base['m'] if 'm' not in ov else (None if ov['m'] is None else base['p'] - 1)
-    pct = round((m - base['p']) / m * 100) if m and m > base['p'] else 0
-    x.update(id=str(9000001 + n), page='/deal/' + _re2.sub(r'[^a-z0-9]+', '-', base['t'].lower()).strip('-')[:80] + '-' + str(9000001 + n),
-             status='pending', ago=_ago(rec_), m=m or 0, pct=pct, cat=(None if 'cat' in ov else base['cat']), hold=hold, source=_SRC[src],
-             types=[t for t in (base['types'] if pct else ['New']) if t != 'Fresh'], views=0, uniq=0, clicks=0, pin=None, seed=True, similar=(base['id'] if hold == 'similar' else None))
-    D_OUT.append(x)
+D_OUT += [dict(_deal(d), detailOnly=True) for d in extras]  # the three multi-link sale posts: deal pages only, not in the feed
+# 2026-11-25 (changes.md A-03): no Incoming queue; deals go straight to the site, so no pending sample deals are exported
 _out('deals.json', D_OUT)
 
 # ---------------- catalogue ----------------

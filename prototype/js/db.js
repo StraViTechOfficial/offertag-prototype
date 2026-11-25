@@ -40,7 +40,8 @@
     inr: function (v) { return '₹' + Number(v || 0).toLocaleString('en-IN'); },
     slug: function (t) { return String(t || '').toLowerCase().replace(/₹/g, 'rs ').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/, ''); },
     ago: function (min) { min = Math.max(0, Math.floor(min)); return min < 1 ? 'now' : min < 60 ? min + ' min' : min < 1440 ? Math.floor(min / 60) + ' h' : Math.floor(min / 1440) + ' d'; },
-    typesFor: function (pct, cat) { var t = []; if (pct > 25) t.push('Top'); if (pct > 80) t.push('Loot'); if (cat === 'Grocery' || cat === 'Kitchen') t.push('Pantry'); t.push('New'); return t; },  // D-117
+    // 2026-11-25 (changes.md A-14, P-07): tags come from the rules in Admin → Catalogue → Deal types; defaults = the old live site (W44)
+    typesFor: function (pct, cat) { var R = typeRules(), t = []; pct = +pct || 0; t.push(pct >= R.top ? 'Top' : 'New'); if (pct >= R.loot) t.push('Loot'); if (R.pantry.indexOf(cat) > -1) t.push('Pantry'); return t; },
     tagLink: function (href) {  // contract §4.6: strip affiliate params, add the store tag by host
       try {
         var u = new URL(href), host = u.hostname.toLowerCase().replace(/^www\./, '');
@@ -52,6 +53,13 @@
     },
     domain: function (href) { try { return new URL(href).hostname.replace(/^www\./, ''); } catch (e) { return href; } }
   };
+
+  var TYPE_RULES = { top: 25, loot: 75, pantry: ['Grocery'], push: 90 };
+  function typeRules() {
+    var v = null; try { v = DB && DB.get ? DB.get('typeRules') : null; } catch (e) {}
+    v = v || {};
+    return { top: v.top >= 0 ? +v.top : TYPE_RULES.top, loot: v.loot >= 0 ? +v.loot : TYPE_RULES.loot, pantry: Array.isArray(v.pantry) ? v.pantry : TYPE_RULES.pantry, push: v.push >= 0 ? +v.push : TYPE_RULES.push };
+  }
 
   /* ---------------- state ---------------- */
   var SEED = {}, DB = { ready: false, epoch: EPOCH, H: H, now: now, today: today, dayFromEpoch: dayFromEpoch, onFull: null };
@@ -69,11 +77,12 @@
   function resolve(d) {
     var x = Object.assign({}, d), t = now();
     if (x.postedAt == null) x.postedAt = EPOCH - (x.ago || 0) * MIN;
-    if (x.status === 'scheduled') x.status = 'live';  // D-160: deals have no scheduling; one saved as scheduled in an older playground goes live
-    x.live = x.status === 'live';
+    // 2026-11-25 (changes.md A-03): no statuses; a deal is on the site or deleted. "live" stays true for older callers.
+    x.status = 'live'; x.live = true;
     x.agemin = Math.max(0, Math.floor((t - x.postedAt) / MIN));
     x.agetxt = H.ago(x.agemin);
-    x.typesAll = (x.agemin <= 1440 ? ['Fresh'] : []).concat((x.types || []).filter(function (k) { return k !== 'Fresh'; }));
+    x.types = H.typesFor(x.pct, x.cat);
+    x.typesAll = (x.agemin <= 1440 ? ['Fresh'] : []).concat(x.types);
     x.save = x.m && x.m > x.p ? x.m - x.p : 0;
     x.sale = !(x.p > 0);
     x.img = imgSrc(x.img); x.lg = imgSrc(x.lg || x.img); x.td = imgSrc(x.td || x.lg || x.img);
@@ -84,7 +93,7 @@
   DB.deals = function (opt) {
     opt = opt || {};
     var list = rawDeals().map(resolve);
-    if (!opt.all) list = list.filter(function (d) { return d.live && !d.detailOnly; });
+    if (!opt.all) list = list.filter(function (d) { return !d.detailOnly; });
     return list.sort(function (a, b) { return b.postedAt - a.postedAt; });
   };
   DB.deal = function (id) { id = String(id); var d = rawDeals().filter(function (x) { return String(x.id) === id; })[0]; return d ? resolve(d) : null; };
@@ -202,6 +211,8 @@
 
   // ---- pins (one list for the Pinned board, All deals and Top deals) ----
   DB.pinEvery = function () { var v = DB.get('pinEvery'); return v >= 2 ? v : 3; };
+  DB.typeRules = typeRules;
+  DB.featured = function () { return DB.deals().filter(function (d) { return d.featured; }); };
   DB.pins = function () { return DB.deals().filter(function (d) { return d.pin; }).sort(function (a, b) { return a.pin - b.pin; }); };
 
   /* ---------------- change events (also across tabs: admin in one tab, the site in another) ---------------- */
@@ -251,6 +262,7 @@
     SEED = {
       deals: deals, blog: shiftBlog(blog), comments: com.comments, steps: cat.steps, rxList: com.rx,
       coll: {
+        typeRules: TYPE_RULES,
         categories: cat.categories, shops: cat.shops, combos: cat.combos, tintDefault: cat.tintDefault, btnDefault: cat.btnDefault,
         posters: dated(home.posters), sponsored: dated(home.sponsored), pinEvery: home.pinEvery, trending: home.trending, promo: home.promo, site: home.site,
         feedback: com.feedback, reports: com.reports, deletion: com.deletion, users: com.users

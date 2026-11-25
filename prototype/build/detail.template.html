@@ -16,7 +16,6 @@
 
 {{HEADER}}
 
-<div class="banner banner-withdrawn" id="withdrawn-banner" hidden role="status"><div class="container"><i data-lucide="circle-alert"></i><span>This deal is no longer available. The price and link below are kept for reference.</span><a href="#related" class="btn btn-link">See similar deals</a></div></div>
 
 <main class="detail-page">
   <div class="container narrow">
@@ -78,8 +77,6 @@
           <div class="more-row" id="comments-more" {{COMMENTS_MORE_HIDDEN}}><button class="btn btn-outline" type="button">Show more comments</button></div>
         </section>
         </div>
-
-        <div class="report-row"><button class="btn btn-link" type="button" id="report-open"><i data-lucide="flag"></i>Report a problem with this deal</button></div>
       </div>
 
       <aside class="related-side" aria-labelledby="h-related-side">
@@ -119,25 +116,6 @@
 <div class="sheet-overlay" id="sheet-overlay" hidden data-state="closed"></div>
 {{MENU_SHEET}}
 {{SEARCH_SHEET}}
-
-<!-- Report a problem: bottom sheet on phone, centred dialog on desktop (shadcn responsive Dialog/Drawer) -->
-<aside class="sheet sheet-bottom dialog-md" id="report-sheet" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="report-title">
-  <div class="handle"></div>
-  <div class="sheet-header"><div class="sheet-title" id="report-title">Report a problem</div><p class="sheet-desc">Tell us what's wrong and we'll check the deal.</p></div>
-  <button class="sheet-close" data-sheet-close aria-label="Close"><i data-lucide="x"></i></button>
-  <form class="sheet-body report-form" id="report-form">
-    <div class="opts" role="radiogroup" aria-label="Problem">
-      <label class="opt"><input type="radio" name="reason" value="link" checked><span class="box radio"></span><span class="txt">Link not working</span></label>
-      <label class="opt"><input type="radio" name="reason" value="price"><span class="box radio"></span><span class="txt">Price has changed</span></label>
-      <label class="opt"><input type="radio" name="reason" value="stock"><span class="box radio"></span><span class="txt">Out of stock</span></label>
-      <label class="opt"><input type="radio" name="reason" value="other"><span class="box radio"></span><span class="txt">Something else</span></label>
-    </div>
-    <label class="field-label">Details <span>(optional)</span><textarea class="textarea" name="note" rows="2" placeholder="e.g. Now ₹1,299 on the store page"></textarea></label>
-    <label class="field-label">Email <span>(optional, if you want a reply)</span><input class="input" type="email" name="email" placeholder="you@example.com" autocomplete="email"></label>
-  </form>
-  <div class="sheet-footer"><button class="btn btn-ghost" type="button" data-sheet-close>Cancel</button><button class="btn btn-default" type="submit" form="report-form">Send report</button></div>
-  <div class="sheet-done" id="report-done" hidden><i data-lucide="circle-check"></i><b>Thanks, we'll check it.</b><p>Reports go straight to the OfferTag team.</p><button class="btn btn-outline" type="button" data-sheet-close>Close</button></div>
-</aside>
 
 <!-- Image zoom -->
 <div class="lightbox" id="lightbox" hidden data-state="closed" role="dialog" aria-modal="true" aria-label="Image">

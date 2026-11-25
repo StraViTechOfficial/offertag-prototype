@@ -16,13 +16,59 @@
   var sortNames = { recommended: 'Recommended', newest: 'Newest', disc: 'Discount', saving: 'Biggest saving', 'price-asc': 'Price: low to high', 'price-desc': 'Price: high to low', views: 'Most viewed' };
   var sortItems = document.querySelectorAll('#sort-menu [data-sort]'), mobileSort = document.querySelectorAll('input[name="sortm"]');
 
+  /* ---- 2026-11-25 (changes.md P-03): Discount slider with stops, Amazon-style price range slider ---- */
+  var discIn = form.querySelector('input[name="disc"]'), discOut = document.getElementById('disc-val');
+  var STOPS = discIn ? discIn.dataset.stops.split(',').map(Number) : [0];
+  function discValue() { return discIn ? STOPS[+discIn.value] || 0 : 0; }
+  function discLabel() { var v = discValue(), t = v ? v + '% off or more' : 'Any discount'; if (discOut) discOut.textContent = t; if (discIn) { discIn.setAttribute('aria-valuetext', t); discIn.style.setProperty('--p', (+discIn.value / (STOPS.length - 1) * 100) + '%'); } }
+  function setDisc(v) { if (!discIn) return; var k = 0; STOPS.forEach(function (x, i) { if (v >= x) k = i; }); discIn.value = k; discLabel(); }
+  if (discIn) discIn.addEventListener('input', discLabel);
+  // price: the ends are the cheapest and the dearest deal on this page; the scale is logarithmic, so cheap items get fine steps
+  var plo = document.getElementById('plo'), phi = document.getElementById('phi'), pfill = document.getElementById('prng-fill'), pOut = document.getElementById('price-val');
+  var pminIn = form.querySelector('input[name="pmin"]'), pmaxIn = form.querySelector('input[name="pmax"]');
+  var prices = cards.map(function (c) { return +c.dataset.price; }).filter(function (v) { return v > 0; });
+  var PMIN = prices.length ? Math.min.apply(null, prices) : 0, PMAX = prices.length ? Math.max.apply(null, prices) : 0, STEPS = 1000;
+  function nice(v) { var st = v < 500 ? 10 : v < 2000 ? 50 : v < 10000 ? 100 : v < 50000 ? 500 : 1000; return Math.round(v / st) * st; }
+  function toPrice(t) { if (t <= 0) return PMIN; if (t >= STEPS) return PMAX; var lo = Math.max(1, PMIN); return Math.min(PMAX, Math.max(PMIN, nice(lo * Math.pow(PMAX / lo, t / STEPS)))); }
+  function toPos(v) { if (v == null) return null; var lo = Math.max(1, PMIN); if (v <= PMIN) return 0; if (v >= PMAX) return STEPS; return Math.round(Math.log(v / lo) / Math.log(PMAX / lo) * STEPS); }
+  function priceText(a, b) { return a == null && b == null ? 'Any price' : a == null ? 'Up to ' + inr(b) : b == null ? inr(a) + ' and above' : inr(a) + ' – ' + inr(b); }
+  function paint() {
+    if (!plo) return;
+    var a = +plo.value, b = +phi.value;
+    pfill.style.left = (a / STEPS * 100) + '%'; pfill.style.right = (100 - b / STEPS * 100) + '%';
+    var lo = a <= 0 ? null : toPrice(a), hi = b >= STEPS ? null : toPrice(b);
+    pOut.textContent = lo == null && hi == null ? inr(PMIN) + ' – ' + inr(PMAX) : (lo == null ? inr(PMIN) : inr(lo)) + ' – ' + (hi == null ? inr(PMAX) + (PMAX ? '' : '') : inr(hi));
+    plo.setAttribute('aria-valuetext', lo == null ? inr(PMIN) : inr(lo)); phi.setAttribute('aria-valuetext', hi == null ? inr(PMAX) : inr(hi));
+    plo.style.zIndex = a > STEPS - 50 ? 3 : 2;   // a handle pushed to the far right stays grabbable
+  }
+  function fromSlider(which) {
+    var a = +plo.value, b = +phi.value, gap = 10;
+    if (a > b - gap) { if (which === 'lo') { plo.value = a = Math.max(0, b - gap); } else { phi.value = b = Math.min(STEPS, a + gap); } }
+    pminIn.value = a <= 0 ? '' : toPrice(a); pmaxIn.value = b >= STEPS ? '' : toPrice(b); paint();
+  }
+  function setPrice(a, b) { pminIn.value = a == null ? '' : a; pmaxIn.value = b == null ? '' : b; if (plo) { plo.value = a == null ? 0 : toPos(a); phi.value = b == null ? STEPS : toPos(b); paint(); } }
+  function applyTyped() {
+    var a = pminIn.value === '' ? null : Math.max(0, +pminIn.value), b = pmaxIn.value === '' ? null : Math.max(0, +pmaxIn.value);
+    if (a != null && b != null && a > b) { var t = a; a = b; b = t; }
+    setPrice(a, b); reset();
+  }
+  if (plo) {
+    document.getElementById('prng-min').textContent = inr(PMIN); document.getElementById('prng-max').textContent = inr(PMAX);
+    [plo, phi].forEach(function (el) {
+      el.addEventListener('input', function () { fromSlider(el === plo ? 'lo' : 'hi'); });
+      el.addEventListener('change', function (e) { e.stopPropagation(); reset(); });   // filter on release
+    });
+    if (PMAX <= PMIN) { plo.disabled = phi.disabled = true; }
+    paint();
+  }
+  var go = document.getElementById('price-go'); if (go) go.addEventListener('click', applyTyped);
+  discLabel();
+
   function state() {
-    var s = { cat: [], store: [], disc: 0, price: null, posted: null, pmin: null, pmax: null, type: [], coupon: false };
+    var s = { cat: [], store: [], disc: 0, price: null, pmin: null, pmax: null, type: [], coupon: false };
     form.querySelectorAll('input[name="cat"]:checked').forEach(function (i) { s.cat.push(i.value); });
     form.querySelectorAll('input[name="store"]:checked').forEach(function (i) { s.store.push(i.value); });
-    var d = form.querySelector('input[name="disc"]:checked'); s.disc = d ? +d.value : 0;
-    var p = form.querySelector('input[name="price"]:checked'); s.price = p && p.value ? p.value.split('-').map(function (x) { return x === '' ? null : +x; }) : null;
-    var t = form.querySelector('input[name="posted"]:checked'); s.posted = t && t.value ? +t.value : null;
+    s.disc = discValue();
     var mn = form.querySelector('input[name="pmin"]'), mx = form.querySelector('input[name="pmax"]');
     s.pmin = mn && mn.value !== '' ? +mn.value : null; s.pmax = mx && mx.value !== '' ? +mx.value : null;
     form.querySelectorAll('input[name="type"]:checked').forEach(function (i) { s.type.push(i.value); });
@@ -40,7 +86,6 @@
       if (s.price) { if (s.price[0] !== null && pr < s.price[0]) return false; if (s.price[1] !== null && pr > s.price[1]) return false; }
       if (s.pmin !== null && pr < s.pmin) return false; if (s.pmax !== null && pr > s.pmax) return false;
     }
-    if (skip !== 'posted' && s.posted && +d.age > s.posted) return false;
     if (skip !== 'type' && s.type.length && !s.type.some(function (t) { return (d.types || '').split(',').indexOf(t) >= 0; })) return false;
     if (skip !== 'coupon' && s.coupon && !d.coupon) return false;
     return true;
@@ -62,7 +107,7 @@
   var PIN_EVERY = +(document.body.dataset.pinEvery || 0), PIN_IDS = (document.body.dataset.pins || '').split(',').filter(Boolean);
   if (PIN_EVERY && !window.OTDB) { try { var ae = +localStorage.getItem('adm-pin-every'); if (ae >= 2) PIN_EVERY = ae; var ap = JSON.parse(localStorage.getItem('adm-pins') || 'null'); if (ap && ap.length) PIN_IDS = ap.map(String); } catch (e) {} }
   function placePins(vis, s) {
-    var plain = s.cat.length + s.store.length + s.type.length + s.disc + (s.price ? 1 : 0) + (s.posted ? 1 : 0) + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0) === 0;
+    var plain = s.cat.length + s.store.length + s.type.length + s.disc + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0) === 0;
     cards.forEach(function (c) { delete c.dataset.slot; });
     if (!PIN_EVERY || !plain || QL || sortMode !== (document.body.dataset.defaultSort || 'recommended')) return vis;
     var byId = {}; vis.forEach(function (c) { byId[c.dataset.id] = c; });
@@ -82,7 +127,7 @@
     vis.forEach(function (c, i) { results.insertBefore(c, empty); c.hidden = i >= limit; });
     countEl.textContent = vis.length; if (sheetCount) sheetCount.textContent = vis.length;
     empty.hidden = vis.length > 0;
-    var nFilters = s.cat.length + s.store.length + s.type.length + (s.disc ? 1 : 0) + (s.price ? 1 : 0) + (s.posted ? 1 : 0) + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0);
+    var nFilters = s.cat.length + s.store.length + s.type.length + (s.disc ? 1 : 0) + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0);
     if (KIND === 'search' && rule) rule.textContent = Q ? vis.length + ' result' + (vis.length === 1 ? '' : 's') + ', newest first' : 'All deals, newest first';
     if (!vis.length) {
       emptyText.textContent = nFilters ? 'No deals match these filters.' : (KIND === 'search' && Q ? 'No deals for \u201c' + Q + '\u201d.' : 'No ' + (h1.textContent.replace(/ deals.*$/, '')) + ' deals right now.');
@@ -96,10 +141,8 @@
     chips.innerHTML = ''; var n = 0;
     s.cat.forEach(function (v) { n++; chips.appendChild(chip(v, function () { form.querySelector('input[name="cat"][value="' + v + '"]').checked = false; reset(); })); });
     s.store.forEach(function (v) { n++; chips.appendChild(chip(v, function () { form.querySelector('input[name="store"][value="' + v + '"]').checked = false; reset(); })); });
-    if (s.disc) { n++; chips.appendChild(chip('≥ ' + s.disc + '% off', function () { form.querySelector('input[name="disc"][value="0"]').checked = true; reset(); })); }
-    if (s.price) { n++; chips.appendChild(chip(s.price[1] === null ? inr(s.price[0]) + ' and above' : 'Under ' + inr(s.price[1]), function () { form.querySelector('input[name="price"][value=""]').checked = true; reset(); })); }
-    if (s.pmin !== null || s.pmax !== null) { n++; chips.appendChild(chip((s.pmin !== null ? inr(s.pmin) : '₹0') + ' – ' + (s.pmax !== null ? inr(s.pmax) : 'any'), function () { form.querySelector('input[name="pmin"]').value = ''; form.querySelector('input[name="pmax"]').value = ''; reset(); })); }
-    if (s.posted) { n++; chips.appendChild(chip(s.posted === 1440 ? 'Last 24 hours' : 'Last 7 days', function () { form.querySelector('input[name="posted"][value=""]').checked = true; reset(); })); }
+    if (s.disc) { n++; chips.appendChild(chip(s.disc + '% off or more', function () { setDisc(0); reset(); })); }
+    if (s.pmin !== null || s.pmax !== null) { n++; chips.appendChild(chip(priceText(s.pmin, s.pmax), function () { setPrice(null, null); reset(); })); }
     s.type.forEach(function (v) { n++; var tl = form.querySelector('input[name="type"][value="' + v + '"]'); chips.appendChild(chip(tl ? tl.closest('.opt').querySelector('.txt').textContent : v, function () { form.querySelector('input[name="type"][value="' + v + '"]').checked = false; reset(); })); });
     if (s.coupon) { n++; chips.appendChild(chip('Has a coupon', function () { form.querySelector('input[name="coupon"]').checked = false; reset(); })); }
     if (n) { var ca = document.createElement('button'); ca.type = 'button'; ca.className = 'btn btn-link btn-sm'; ca.textContent = 'Clear all'; ca.addEventListener('click', clearAll); chips.appendChild(ca); }
@@ -128,10 +171,9 @@
   function nextBatch() { limit += PAGE; batch += 1; apply(); }
 
   // D-118: the filters live in the page link. One key per group, fixed order, values sorted and comma-joined:
-  // ?q= · cat · store · type · disc · price · posted · coupon · sort · page. The path never changes; history is replaced, not pushed,
+  // ?q= · cat · store · type · disc · price · coupon · sort · page. The path never changes; history is replaced, not pushed,
   // so Back leaves the page. A filtered link points Google at the clean page (canonical) and is not indexed (noindex, follow).
   var SORT_URL = { 'price-asc': 'price-low', 'price-desc': 'price-high' }, SORT_IN = { 'price-low': 'price-asc', 'price-high': 'price-desc' };
-  var POSTED_URL = { 1440: 'today', 10080: 'week' }, POSTED_IN = { today: '1440', week: '10080' };
   function slugOf(name, v) { var i = form.querySelector('input[name="' + name + '"][value="' + v.replace(/"/g, '\\"') + '"]'); return i ? i.dataset.s : v; }
   function head(sel, make) { var el = document.head.querySelector(sel); if (!el) { el = make(); document.head.appendChild(el); } return el; }
   function writeUrl(s, nFilters) {
@@ -140,8 +182,6 @@
     ['cat', 'store', 'type'].forEach(function (g) { if (s[g].length) p.push(g + '=' + s[g].map(function (v) { return encodeURIComponent(slugOf(g, v)); }).sort().join(',')); });
     if (s.disc) p.push('disc=' + s.disc);
     if (s.pmin !== null || s.pmax !== null) p.push('price=' + (s.pmin !== null ? s.pmin : '') + '-' + (s.pmax !== null ? s.pmax : ''));
-    else if (s.price) p.push('price=' + (s.price[0] !== null ? s.price[0] : '') + '-' + (s.price[1] !== null ? s.price[1] : ''));
-    if (s.posted) p.push('posted=' + (POSTED_URL[s.posted] || s.posted));
     if (s.coupon) p.push('coupon=1');
     if (sortMode !== (document.body.dataset.defaultSort || 'recommended')) p.push('sort=' + (SORT_URL[sortMode] || sortMode));
     if (batch > 1) p.push('page=' + batch);
@@ -156,13 +196,9 @@
     ['cat', 'store', 'type'].forEach(function (g) {
       (u.get(g) || '').split(',').filter(Boolean).forEach(function (sv) { var i = form.querySelector('input[name="' + g + '"][data-s="' + sv.replace(/"/g, '') + '"]'); if (i && !i.closest('[hidden]')) i.checked = true; });
     });
-    var dv = form.querySelector('input[name="disc"][value="' + (+u.get('disc') || 0) + '"]'); if (dv) dv.checked = true;
+    setDisc(+u.get('disc') || 0);
     var pr = u.get('price');
-    if (pr && /^\d*-\d*$/.test(pr)) {
-      var pv = form.querySelector('input[name="price"][value="' + pr + '"]');
-      if (pv) pv.checked = true; else { var r = pr.split('-'); form.querySelector('input[name="pmin"]').value = r[0]; form.querySelector('input[name="pmax"]').value = r[1]; }
-    }
-    var po = form.querySelector('input[name="posted"][value="' + (POSTED_IN[u.get('posted')] || '') + '"]'); if (po) po.checked = true;
+    if (pr && /^\d*-\d*$/.test(pr)) { var r = pr.split('-'); setPrice(r[0] === '' ? null : +r[0], r[1] === '' ? null : +r[1]); }
     var cp = form.querySelector('input[name="coupon"]'); if (cp && u.get('coupon') === '1') cp.checked = true;
     var so = SORT_IN[u.get('sort')] || u.get('sort'); if (so && sortNames[so]) sortMode = so;
     var pg = +u.get('page'); if (pg > 1) { batch = pg; limit = PAGE * pg; }
@@ -181,13 +217,13 @@
   function clearAll() {
     form.querySelectorAll('input[type="checkbox"]').forEach(function (i) { i.checked = false; });
     form.querySelectorAll('input[type="radio"]').forEach(function (i) { i.checked = i.value === '' || i.value === '0'; });
-    form.querySelectorAll('input[type="number"]').forEach(function (i) { i.value = ''; });
+    setDisc(0); setPrice(null, null);
     reset();
   }
-  form.addEventListener('change', function (e) { if (e.target.type !== 'number') reset(); });
+  form.addEventListener('change', function (e) { if (e.target.type !== 'number' && !e.target.classList.contains('prng-input')) reset(); });
   form.querySelectorAll('input[type="number"]').forEach(function (i) {
-    i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); i.blur(); } });
-    i.addEventListener('change', function (e) { e.stopPropagation(); reset(); });
+    i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); applyTyped(); } });
+    i.addEventListener('change', function (e) { e.stopPropagation(); applyTyped(); });
   });
   document.getElementById('clear-all').addEventListener('click', clearAll);
   document.querySelectorAll('[data-clear]').forEach(function (b) { b.addEventListener('click', clearAll); });

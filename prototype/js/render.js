@@ -22,18 +22,18 @@
     var lg = DB.logo(store);
     return lg ? '<img class="' + (cls || 'store-chip') + '" src="' + E(lg) + '" alt="' + E(store) + '" loading="lazy">' : '<span class="' + (cls || 'store-chip') + ' is-text">' + E(store) + '</span>';
   }
-  function card(d, wrap) {  // build.py card()
-    var price = d.sale ? '<span class="price">Up to ' + d.pct + '% off</span>' : '<span class="price">' + inr(d.p) + '</span>' + (d.save ? '<span class="was">' + inr(d.m) + '</span>' : '');
-    var tag = d.pct ? '<span class="off-tag" aria-label="' + d.pct + '% off"><i data-lucide="arrow-down" aria-hidden="true"></i>' + d.pct + '%</span>' : '';
+  function card(d, wrap) {  // build.py card(); 2026-11-25 (changes.md P-01, P-02): category · age + store logo on top, price · MRP · % off on one line, saving below, Pinned chip
+    var price = d.sale ? '<span class="price">Up to ' + d.pct + '% off</span>' : '<span class="price">' + inr(d.p) + '</span>' + (d.save ? '<span class="was">' + inr(d.m) + '</span><span class="pct">' + d.pct + '% off</span>' : '');
+    var pin = d.pin ? '<span class="pin-chip"><i data-lucide="pin" aria-hidden="true"></i>Pinned</span>' : '';
     var inner = '<article class="card deal" data-id="' + E(d.id) + '" data-page="' + E(d.page) + '" data-q="' + E((d.t + ' ' + d.cat + ' ' + d.store).toLowerCase()) + '"' + (d.pin ? ' data-pinned="1"' : '') +
       ' data-cat="' + E(d.cat) + '" data-store="' + E(d.store) + '" data-pct="' + d.pct + '" data-price="' + d.p + '" data-save="' + d.save + '" data-age="' + d.agemin + '" data-views="' + (d.views || 0) + '" data-types="' + E(d.typesAll.join(',')) + '"' + (d.coupon ? ' data-coupon="1"' : '') + '>\n' +
-      '  <a class="img" href="' + E(d.page) + '" aria-label="' + E(d.t) + '"><img src="' + E(d.img) + '" alt="" loading="lazy" width="300" height="300">' + tag + '</a>\n' +
+      '  <a class="img" href="' + E(d.page) + '" aria-label="' + E(d.t) + '"><img src="' + E(d.img) + '" alt="" loading="lazy" width="300" height="300">' + pin + '</a>\n' +
       '  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>\n' +
       '  <div class="body">\n' +
-      '    <div class="meta">' + (d.agemin < 1 ? 'Just now' : E(d.agetxt) + ' ago') + '</div>\n' +
+      '    <div class="topline"><span class="meta"><span class="m-cat">' + E(d.cat || 'Others') + '</span><span class="m-dot" aria-hidden="true">·</span><span class="m-age">' + (d.agemin < 1 ? 'Just now' : E(d.agetxt) + '<span class="m-ago"> ago</span>') + '</span></span>' + storeChip(d.store) + '</div>\n' +
       '    <a class="title" href="' + E(d.page) + '" title="' + E(d.t) + '">' + E(d.t) + '</a>\n' +
       '    <div class="priceline">' + price + '</div>\n' +
-      '    <div class="saveline">' + (d.save ? '<span class="save">Save ' + inr(d.save) + '</span>' : '<span></span>') + storeChip(d.store) + '</div>\n' +
+      '    <div class="saveline">' + (d.save && !d.sale ? '<span class="save">You save ' + inr(d.save) + '</span>' : '') + '</div>\n' +
       '    <div class="acts"><a class="btn btn-buy" href="' + E(d.link || '#buy') + '" target="_blank" rel="nofollow sponsored noopener" aria-label="Buy now at ' + E(d.store) + '" data-buy-id="' + E(d.id) + '">Buy now<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div>\n' +
       '  </div></article>';
     return wrap === false ? inner : '<div class="carousel-item">' + inner + '</div>';
@@ -54,22 +54,7 @@
       '<span class="td-view">View deal<i data-lucide="arrow-right"></i></span></a></div>';
   }
   function tdDeal(d, o) { return tdCard(d.store, d.td, d.tdFill, d.t, d.sale ? '<b>Up to ' + d.pct + '% off</b>' : '<b>' + inr(d.p) + '</b><s>' + inr(d.m) + '</s><em>' + d.pct + '% off</em>', d.page, o); }
-  function dateShort(iso) { return iso ? new Date(iso + 'T00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : ''; }
   function liveByDates(x) { var t = DB.today(); return x.on && (!x.start || x.start <= t) && (!x.end || t <= x.end); }
-  function posterHref(x) {
-    if (x.href) return x.href;
-    var l = (x.link || '').trim();
-    if (/^https?:\/\//.test(l)) return l;
-    if (/^\//.test(l)) return l;
-    var s = DB.shops(true).filter(function (s) { return l.toLowerCase().indexOf(s.name.toLowerCase()) > -1; })[0];
-    if (s) return DB.shopPage(s.name);
-    var c = DB.cats(true).filter(function (c) { return l.toLowerCase().indexOf(c.name.toLowerCase()) > -1; })[0];
-    if (c) return DB.catPage(c.name);
-    if (/loot/i.test(l)) return '/loot-deals';
-    if (/pantry/i.test(l)) return '/pantry-deals';
-    if (/new/i.test(l)) return '/new-deals';
-    return x.store ? DB.shopPage(x.store) : '/top-deals';
-  }
   function sponsorCard(x, where) {  // build.py sponsor_card()
     var img = DB.imgSrc(where === 'inline' && x.mimg ? x.mimg : x.img);
     return '<a class="sp-card sp-' + where + '" href="' + E(x.link || '#') + '" target="_blank" rel="sponsored nofollow noopener" data-sp="' + E(x.id) + '" aria-label="Sponsored: ' + E(x.title) + '">' +
@@ -83,7 +68,7 @@
   var LISTS = {
     '/top-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('Top') > -1; }); },
     '/loot-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('Loot') > -1; }).sort(function (a, b) { return b.pct - a.pct; }); },
-    '/new-deals': function (all) { return all; },
+    '/new-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('New') > -1; }); },
     '/pantry-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('Pantry') > -1; }); },
     '/deals/search': function (all) { return all; }
   };
@@ -106,6 +91,8 @@
   }
   function renderListing() {
     var p = path(), all = DB.deals(), L = listFor(p, all); if (!L) return false;
+    var R = DB.typeRules(), RULE = { '/top-deals': R.top + '% off or more, newest first', '/loot-deals': R.loot + '% off or more', '/new-deals': 'Under ' + R.top + '% off, newest first', '/pantry-deals': R.pantry.join(', ') + ' essentials' };
+    if (RULE[p]) { if ($('#page-rule')) $('#page-rule').textContent = RULE[p]; var mdr = $('meta[name="description"]'); if (mdr) mdr.content = RULE[p] + '. Live prices from Amazon, Flipkart and more.'; }
     var results = $('#results'), empty = $('#empty'); if (!results || !empty) return false;
     $$('.deal', results).forEach(function (c) { c.remove(); });
     var frag = document.createElement('div'); frag.innerHTML = L.items.map(function (d) { return card(d, false); }).join('');
@@ -140,10 +127,8 @@
   function renderHome() {
     var td = $('.td-container'); if (!td) return false;
     var site = DB.get('site') || {}, all = DB.deals(), items = '', featured = {};
-    if (site.posters !== false) DB.get('posters').filter(liveByDates).forEach(function (x) {
-      if (x.kind === 'deal') { var d = DB.deal(x.deal); if (!d || !d.live) return; featured[d.id] = 1; items += tdDeal(d, { featured: true }); }
-      else items += tdCard(x.store, DB.imgSrc(x.img), true, x.title, '<b>Sale</b><em class="td-end">' + E(x.ends && !x.end ? x.ends : 'Ends ' + dateShort(x.end)) + '</em>', posterHref(x), { featured: true, alt: x.title });
-    });
+    // 2026-11-25 (changes.md P-08, A-06): the hero opens with the deals marked Featured in the admin; sale posters are gone
+    DB.featured().forEach(function (d) { featured[d.id] = 1; items += tdDeal(d, { featured: true }); });
     var trend = DB.get('trending') || [];
     all.filter(function (d) { return !featured[d.id]; }).sort(byViews).slice(0, 10).forEach(function (d, i) { items += tdDeal(d, { trending: trend.indexOf(i) > -1 }); });
     td.innerHTML = items;
@@ -169,11 +154,6 @@
       var hero = $('#hero'); if (hero) hero.insertAdjacentHTML('afterend', '<section class="section sp-inline" aria-label="Sponsored"><div class="container"><div class="sp-slot sp-slot-inline" data-sp-slot>' + sponsorCard(pick, 'inline') + '</div></div></section>');
       var list = DB.get('sponsored'); list.forEach(function (x) { if (x.id === pick.id) x.views = (x.views || 0) + 1; }); DB.set('sponsored', list);
       document.addEventListener('click', function (e) { var a = e.target.closest('[data-sp]'); if (!a) return; var l = DB.get('sponsored'); l.forEach(function (x) { if (String(x.id) === a.dataset.sp) x.clicks = (x.clicks || 0) + 1; }); DB.set('sponsored', l); });
-    }
-    // promo message (Admin → Sale posters → Promo message)
-    var pr = DB.get('promo');
-    if (pr && pr.on && pr.text && (!pr.start || pr.start <= DB.today()) && (!pr.end || DB.today() <= pr.end)) {
-      var main = $('main'); if (main) main.insertAdjacentHTML('afterbegin', '<div class="container"><a class="promo-msg" href="' + E(pr.href || '#') + '">' + (pr.tag ? '<b>' + E(pr.tag) + '</b>' : '') + '<span>' + E(pr.text) + '</span><span class="promo-cta">' + E(pr.cta || 'Open') + '<i data-lucide="arrow-right"></i></span></a></div>');
     }
     return true;
   }
@@ -235,7 +215,7 @@
     var well = $('.deal-image', main);
     if (well) well.innerHTML = '<img src="' + E(d.lg) + '" alt="' + E(d.t) + '" width="300" height="300" itemprop="image">' + (sale || !pct ? '' : '<span class="off-tag" aria-label="' + pct + '% off"><i data-lucide="arrow-down" aria-hidden="true"></i>' + pct + '%</span>') + '<span class="zoom-hint"><i data-lucide="zoom-in"></i></span>';
     var core = $('.panel-core', main);
-    if (core) core.innerHTML = '<div class="kicker">' + types.map(function (t) { return '<span class="badge badge-outline">' + t + '</span>'; }).join('') + '<span class="kstore" itemprop="brand"><i data-lucide="store"></i>' + E(store) + '</span><span class="dot">·</span><time datetime="' + postedIso + '" title="Posted ' + E(posted) + '">' + (d.agemin < 1 ? 'Just now' : E(d.agetxt) + ' ago') + '</time></div>' +
+    if (core) core.innerHTML = '<div class="kicker">' + (d.pin ? '<span class="pin-chip"><i data-lucide="pin" aria-hidden="true"></i>Pinned</span>' : '') + types.map(function (t) { return '<span class="badge badge-outline">' + t + '</span>'; }).join('') + '<span class="kstore" itemprop="brand"><i data-lucide="store"></i>' + E(store) + '</span><span class="dot">·</span><time datetime="' + postedIso + '" title="Posted ' + E(posted) + '">' + (d.agemin < 1 ? 'Just now' : E(d.agetxt) + ' ago') + '</time></div>' +
       '<h1 class="deal-title" itemprop="name">' + E(d.t) + '</h1>' +
       (d.caption ? '<div class="caption"><i data-lucide="trending-down"></i>' + E(d.caption) + '</div>' : '') +
       '<div class="pricebox" itemprop="offers" itemscope itemtype="https://schema.org/Offer"><meta itemprop="priceCurrency" content="INR"><meta itemprop="price" content="' + d.p + '">' +
@@ -272,7 +252,6 @@
       '<a class="btn btn-default buy" href="' + E(link) + '" target="_blank" rel="nofollow sponsored noopener" data-buy-id="' + E(d.id) + '"><span class="buy-label">Buy at ' + E(store) + '</span></a>';
     var lbi = $('#lightbox img'); if (lbi) { lbi.src = d.lg; lbi.alt = d.t; }
     document.body.dataset.dealId = d.id;
-    if (!d.live) document.body.dataset.state = 'withdrawn';  // withdrawn, pending or rejected: kept for reference with the banner (D-040)
     // count this view (D-148) once the page is shown; the number on the page is the one before this visit, as on the live site
     DB.bumpView(d.id);
     return true;
@@ -353,12 +332,8 @@
     $('.post-body', art).innerHTML = b.body;
     var rail = $('.post-rail .rail-list'); if (rail) rail.innerHTML = ds.map(embed).join('');
     var railBox = $('.post-rail'); if (railBox) railBox.hidden = !ds.length;
-    // More in {category} (D-110), topped up from Top deals
-    var top = LISTS['/top-deals'](DB.deals()), count = {}; ds.forEach(function (d) { count[d.cat] = (count[d.cat] || 0) + 1; });
-    var topCat = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; })[0], more = top.filter(function (d) { return d.cat === topCat && ds.indexOf(d) < 0; }).slice(0, 8), mt, ml;
-    if (more.length >= 4) { mt = 'More in ' + topCat; ml = DB.catPage(topCat); } else { more = more.concat(top.filter(function (d) { return more.indexOf(d) < 0 && !ds.some(function (x) { return x.id === d.id; }); }).slice(0, 8 - more.length)); mt = 'More deals'; ml = '/top-deals'; }
-    var ms = $('section[aria-labelledby="h-more"]');
-    if (ms) { $('#h-more', ms).textContent = mt; var va = $('.view-all', ms); if (va) va.href = ml; var t = document.createElement('div'); t.innerHTML = carousel(more.map(function (d) { return card(d); }).join('')); $('.carousel', ms).replaceWith(t.firstChild); }
+    // 2026-11-25 (changes.md P-04): no "More in {category}" deal row; the article ends with More blogs
+    var ms = $('section[aria-labelledby="h-more"]'); if (ms) ms.remove();
     var rp = $('section[aria-labelledby="h-rel"] .post-cards'); if (rp) rp.innerHTML = published().filter(function (x) { return x.name !== p.name; }).map(postCard).join('');
     return true;
   }
@@ -376,7 +351,7 @@
   /* ---------------- every public page: Site & app settings, Buy clicks ---------------- */
   function applySite() {
     var s = DB.get('site') || {}, seed = DB.seedSite || {};
-    if (s.strip === false) $$('.fjoin, [data-fjoin]').forEach(function (x) { x.remove(); });
+    // 2026-11-25 (changes.md A-16): the join / announcement buttons are always shown; no admin switch
     // D-157: the Blog ribbon always shows (no admin switch)
     ['wa', 'tg', 'fb', 'ig', 'li', 'play'].forEach(function (k) {
       var from = seed[k], to = s[k]; if (!from || from === to) return;

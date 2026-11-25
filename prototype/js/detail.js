@@ -1,13 +1,9 @@
-/* detail.js — deal detail page: review states, coupon + link copy, share, likes, replies, composer, report sheet, zoom, alerts */
+/* detail.js — deal detail page: coupon + link copy, share, likes, replies, composer, zoom, alerts */
 (function () {
   var OT = window.OT, q = new URLSearchParams(location.search), body = document.body;
 
-  // ---- review states (prototype only): ?state=withdrawn · ?user=1 | admin · ?coupon=1
+  // ---- review states (prototype only): ?user=1 | admin · ?coupon=1 (2026-11-25: no withdrawn state; a deal is on the site or deleted)
   var DB = window.OTDB, DEAL = body.dataset.dealId || null;
-  if (q.get('state') === 'withdrawn' || body.dataset.state === 'withdrawn') {
-    body.classList.add('is-withdrawn'); var b = document.getElementById('withdrawn-banner'); if (b) b.hidden = false;
-    document.querySelectorAll('.buy').forEach(function (a) { a.querySelector('.buy-label').textContent = 'See similar deals'; a.href = '#related'; a.removeAttribute('target'); a.removeAttribute('rel'); var ic = a.querySelector('.lucide, i'); if (ic) ic.remove(); });
-  }
   var user = q.get('user') || (OT.user() ? '1' : null);
   function showSignedIn() { body.classList.add('is-signed-in'); var o = document.getElementById('composer-out'), i = document.getElementById('composer-in'); if (o) o.hidden = true; if (i) i.hidden = false; return i; }
   if (user) { showSignedIn(); if (user === 'admin') body.classList.add('is-admin'); }
@@ -101,14 +97,4 @@
     });
   }
 
-  // ---- report a problem (DEV-013): bottom sheet on phone, dialog on desktop; feeds the feedback table as type 2 (Issue)
-  var rs = document.getElementById('report-sheet'), rf = document.getElementById('report-form'), rd = document.getElementById('report-done'), ro = document.getElementById('report-open');
-  if (rs && ro && rf) {
-    ro.addEventListener('click', function () { OT.openSheet(rs); });
-    if (q.get('report') === '1') setTimeout(function () { OT.openSheet(rs); }, 50);
-    rf.addEventListener('submit', function (e) { e.preventDefault();
-      if (DB && DEAL) { var dd = DB.deal(DEAL), rr = rf.querySelector('input[name="reason"]:checked'); DB.addInbox('reports', { reason: rr ? rr.closest('.opt').querySelector('.txt').textContent : 'Something else', deal: dd ? dd.t : document.title, did: DEAL, page: dd ? dd.page : location.pathname, who: rf.elements.email.value.trim() || (OT.user() ? OT.user().email : 'Signed out'), note: rf.elements.note.value.trim() }); }   // S25 playground: Admin → Inbox → Reports
-      rf.hidden = true; rs.querySelector('.sheet-footer').hidden = true; rd.hidden = false; OT.icons(); });
-    rs.addEventListener('sheet:close', function () { rf.reset(); rf.hidden = false; rs.querySelector('.sheet-footer').hidden = false; rd.hidden = true; });
-  }
 })();

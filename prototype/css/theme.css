@@ -1475,3 +1475,65 @@ html.theme .fstack { bottom: calc(max(1rem, env(safe-area-inset-bottom, 0px)) + 
   html.theme .alerts-card.is-pop, html.theme .alerts-card.is-pop.is-in, html.theme .alerts-card.is-pop.is-out { transform: none; transition: opacity .25s; }
   html.theme .alerts-card.is-pop.is-in .ac-ico .lucide { animation: none; }
 }
+
+/* ---- 2026-11-25 · changes.md P-01 / P-02: balanced deal card (layout only; hover, press and Buy effects unchanged) ----
+   Reading order: category · age with the store logo opposite → title → price, struck MRP, % off on one line → saving → Buy.
+   Every row is either full-width or a left/right pair, so no row leaves a hole on one side. The % off moves from the photo
+   corner to beside the price (green: see changes.md P-01 "Colour of the % off"). Pinned deals carry a navy "Pinned" chip. */
+html.theme .deal .topline { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 1.25rem; min-width: 0; }
+html.theme .deal .topline .meta { display: flex; align-items: center; gap: 0.3125rem; min-width: 0; flex: 1 1 auto; overflow: hidden; white-space: nowrap; font-size: 0.75rem; line-height: 1rem; color: hsl(var(--muted-foreground)); }
+html.theme .deal .topline .m-cat { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 600; color: hsl(var(--ink) / .8); }
+html.theme .deal .topline .m-age, html.theme .deal .topline .m-dot { flex: none; }
+html.theme .deal .topline .store-chip { flex: 0 1 4rem; min-width: 2.25rem; height: auto; max-height: 1rem; object-fit: contain; object-position: right center; position: static; top: auto; }
+html.theme .deal .topline .store-chip.is-text { flex: none; max-height: none; max-width: 6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0.0625rem 0.4375rem; font-size: 0.6875rem; }
+html.theme .deal .title { margin-top: 0.125rem; }
+html.theme .deal .priceline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.125rem 0.4375rem; min-width: 0; }
+html.theme .deal .priceline .pct { flex: none; font-size: 0.8125rem; line-height: 1.125rem; font-weight: 700; color: hsl(var(--save-ink)); white-space: nowrap; }
+html.theme .deal .saveline { display: block; min-height: 1.125rem; }
+html.theme .deal .saveline .save { display: block; font-size: 0.75rem; line-height: 1.125rem; font-weight: 500; color: hsl(var(--muted-foreground)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.theme .deal .card-share { top: 0.5rem; right: 0.5rem; left: auto; bottom: auto; }
+html.theme .deal .pin-chip { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 1; display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.1875rem 0.4375rem 0.1875rem 0.3125rem; border-radius: 0.25rem; background: hsl(var(--fill)); color: hsl(var(--on-fill)); font-size: 0.75rem; font-weight: 700; line-height: 1; box-shadow: 0 1px 2px hsl(var(--shadow) / .25); }
+html.theme .deal .pin-chip .lucide { width: 0.75rem; height: 0.75rem; stroke-width: 2.5; transform: rotate(35deg); }
+html.theme .deal[data-pinned] { border-color: hsl(var(--brand-ink) / .35); }
+@media (max-width: 639px) {
+  html.theme .deal .topline .meta { font-size: 0.6875rem; }
+  html.theme .deal .topline .store-chip { flex-basis: 3.25rem; max-height: 0.875rem; }
+  html.theme .deal .priceline .pct { font-size: 0.75rem; }
+  html.theme .deal .pin-chip { font-size: 0.6875rem; padding: 0.1875rem 0.375rem 0.1875rem 0.25rem; }
+}
+/* the deal page shows the same Pinned chip beside the type badges */
+html.theme .kicker .pin-chip { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.1875rem 0.4375rem; border-radius: 0.25rem; background: hsl(var(--fill)); color: hsl(var(--on-fill)); font-size: 0.75rem; font-weight: 700; }
+html.theme .kicker .pin-chip .lucide { width: 0.75rem; height: 0.75rem; transform: rotate(35deg); }
+
+/* ---- 2026-11-25 · changes.md P-03: filter sliders (Discount with stops, Price range) ---- */
+html.theme .rng, html.theme .prng { display: grid; gap: 0.5rem; padding: 0.25rem 0.25rem 0.375rem; }
+html.theme .rng-val { font-size: 0.875rem; font-weight: 600; color: hsl(var(--ink)); font-variant-numeric: tabular-nums; }
+html.theme .rng-input, html.theme .prng-input { -webkit-appearance: none; appearance: none; width: 100%; height: 1.5rem; margin: 0; background: transparent; cursor: pointer; }
+html.theme .rng-input { --p: 0%; }
+html.theme .rng-input::-webkit-slider-runnable-track { height: 0.25rem; border-radius: 999px; background: linear-gradient(to right, hsl(var(--brand-ink)) 0 var(--p), hsl(var(--line)) var(--p) 100%); }
+html.theme .rng-input::-moz-range-track { height: 0.25rem; border-radius: 999px; background: hsl(var(--line)); }
+html.theme .rng-input::-moz-range-progress { height: 0.25rem; border-radius: 999px; background: hsl(var(--brand-ink)); }
+html.theme .rng-input::-webkit-slider-thumb, html.theme .prng-input::-webkit-slider-thumb { -webkit-appearance: none; width: 1.25rem; height: 1.25rem; margin-top: -0.5rem; border-radius: 50%; background: hsl(var(--surface)); border: 2px solid hsl(var(--brand-ink)); box-shadow: 0 1px 3px hsl(var(--shadow) / .3); cursor: grab; }
+html.theme .rng-input::-moz-range-thumb, html.theme .prng-input::-moz-range-thumb { width: 1rem; height: 1rem; border-radius: 50%; background: hsl(var(--surface)); border: 2px solid hsl(var(--brand-ink)); box-shadow: 0 1px 3px hsl(var(--shadow) / .3); cursor: grab; }
+html.theme .rng-input:focus-visible::-webkit-slider-thumb, html.theme .prng-input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px hsl(var(--ring) / .35); }
+html.theme .rng-input:focus-visible::-moz-range-thumb, html.theme .prng-input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px hsl(var(--ring) / .35); }
+html.theme .rng-ticks, html.theme .prng-ends { display: flex; justify-content: space-between; font-size: 0.75rem; color: hsl(var(--muted-foreground)); font-variant-numeric: tabular-nums; }
+html.theme .rng-ticks { margin-top: -0.25rem; padding: 0 0.125rem; }
+html.theme .prng-track { position: relative; height: 1.5rem; }
+html.theme .prng-track::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 0.25rem; margin-top: -0.125rem; border-radius: 999px; background: hsl(var(--line)); }
+html.theme .prng-fill { position: absolute; top: 50%; height: 0.25rem; margin-top: -0.125rem; border-radius: 999px; background: hsl(var(--brand-ink)); left: 0; right: 0; }
+html.theme .prng-input { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+html.theme .prng-input::-webkit-slider-runnable-track { height: 0.25rem; background: transparent; }
+html.theme .prng-input::-moz-range-track { background: transparent; }
+html.theme .prng-input::-webkit-slider-thumb { pointer-events: auto; }
+html.theme .prng-input::-moz-range-thumb { pointer-events: auto; }
+html.theme .prng-input:disabled { opacity: .5; }
+html.theme .prng-ends { margin-top: -0.375rem; }
+html.theme .prng .minmax { padding: 0.25rem 0 0; }
+html.theme .prng .minmax .btn { flex: none; height: 2rem; }
+/* narrow cards keep the category readable: "ago" drops first, then the store mark shrinks */
+html.theme .deal { container-type: inline-size; container-name: dealcard; }
+@container dealcard (max-width: 15.5rem) {
+  html.theme .deal .topline .m-ago { display: none; }
+  html.theme .deal .topline .store-chip { flex-basis: 3.25rem; }
+}

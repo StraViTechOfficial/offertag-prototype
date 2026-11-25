@@ -58,35 +58,28 @@
             <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Find a store" data-find="store" aria-label="Find a store"></label>
             <div class="opts scroll" data-group="store">{{STORE_OPTS}}</div>
           </details>
-          <details class="fgroup" data-group-name="disc"><summary>Discount <i data-lucide="chevron-down"></i></summary>
-            <div class="opts" data-group="disc">
-              <label class="opt"><input type="radio" name="disc" value="0" checked><span class="box radio"></span><span class="txt">Any</span></label>
-              <label class="opt"><input type="radio" name="disc" value="50"><span class="box radio"></span><span class="txt">50% or more</span></label>
-              <label class="opt"><input type="radio" name="disc" value="70"><span class="box radio"></span><span class="txt">70% or more</span></label>
-              <label class="opt"><input type="radio" name="disc" value="90"><span class="box radio"></span><span class="txt">90% or more</span></label>
+          <!-- 2026-11-25 (changes.md P-03): Discount = one slider with stops; Price = a two-handle range slider from the cheapest to the dearest deal on the page -->
+          <details class="fgroup" data-group-name="disc" open><summary>Discount <i data-lucide="chevron-down"></i></summary>
+            <div class="rng" data-group="disc">
+              <output class="rng-val" id="disc-val" for="disc-range">Any discount</output>
+              <input class="rng-input" id="disc-range" type="range" name="disc" min="0" max="4" step="1" value="0" data-stops="0,25,50,75,90" aria-label="Minimum discount" aria-valuetext="Any discount">
+              <div class="rng-ticks" aria-hidden="true"><span>Any</span><span>25%</span><span>50%</span><span>75%</span><span>90%</span></div>
             </div>
           </details>
-          <details class="fgroup" data-group-name="price"><summary>Price <i data-lucide="chevron-down"></i></summary>
-            <div class="opts" data-group="price">
-              <label class="opt"><input type="radio" name="price" value="" checked><span class="box radio"></span><span class="txt">Any</span></label>
-              <label class="opt"><input type="radio" name="price" value="0-499"><span class="box radio"></span><span class="txt">Under ₹499</span></label>
-              <label class="opt"><input type="radio" name="price" value="0-999"><span class="box radio"></span><span class="txt">Under ₹999</span></label>
-              <label class="opt"><input type="radio" name="price" value="0-2499"><span class="box radio"></span><span class="txt">Under ₹2,499</span></label>
-              <label class="opt"><input type="radio" name="price" value="0-4999"><span class="box radio"></span><span class="txt">Under ₹4,999</span></label>
-              <label class="opt"><input type="radio" name="price" value="5000-"><span class="box radio"></span><span class="txt">₹5,000 and above</span></label>
+          <details class="fgroup" data-group-name="price" open><summary>Price <i data-lucide="chevron-down"></i></summary>
+            <div class="prng" data-group="price">
+              <output class="rng-val" id="price-val">Any price</output>
+              <div class="prng-track"><span class="prng-fill" id="prng-fill"></span>
+                <input class="prng-input" type="range" id="plo" min="0" max="1000" step="1" value="0" aria-label="Minimum price">
+                <input class="prng-input" type="range" id="phi" min="0" max="1000" step="1" value="1000" aria-label="Maximum price">
+              </div>
+              <div class="prng-ends" aria-hidden="true"><span id="prng-min"></span><span id="prng-max"></span></div>
+              <div class="minmax"><label><span class="visually-hidden">Minimum price</span><input class="input" type="number" inputmode="numeric" placeholder="Min ₹" name="pmin" min="0"></label><span>–</span><label><span class="visually-hidden">Maximum price</span><input class="input" type="number" inputmode="numeric" placeholder="Max ₹" name="pmax" min="0"></label><button class="btn btn-outline btn-sm" type="button" id="price-go">Go</button></div>
             </div>
-            <div class="minmax"><label><span class="visually-hidden">Minimum price</span><input class="input" type="number" inputmode="numeric" placeholder="Min" name="pmin" min="0"></label><span>–</span><label><span class="visually-hidden">Maximum price</span><input class="input" type="number" inputmode="numeric" placeholder="Max" name="pmax" min="0"></label></div>
           </details>
           <!-- Deal type: hidden on type pages, shown on search / category / store pages (D-075) -->
           <details class="fgroup" data-group-name="type" {{TYPE_HIDDEN}}><summary>Deal type <i data-lucide="chevron-down"></i></summary>
             <div class="opts" data-group="type">{{TYPE_OPTS}}</div>
-          </details>
-          <details class="fgroup" data-group-name="posted" open><summary>Posted <i data-lucide="chevron-down"></i></summary>
-            <div class="opts" data-group="posted">
-              <label class="opt"><input type="radio" name="posted" value="" checked><span class="box radio"></span><span class="txt">Any time</span></label>
-              <label class="opt"><input type="radio" name="posted" value="1440"><span class="box radio"></span><span class="txt">Last 24 hours</span></label>
-              <label class="opt"><input type="radio" name="posted" value="10080"><span class="box radio"></span><span class="txt">Last 7 days</span></label>
-            </div>
           </details>
         </form>
       </aside>
