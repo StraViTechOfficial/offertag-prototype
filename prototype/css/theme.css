@@ -1529,8 +1529,6 @@ html.theme .prng-input::-webkit-slider-thumb { pointer-events: auto; }
 html.theme .prng-input::-moz-range-thumb { pointer-events: auto; }
 html.theme .prng-input:disabled { opacity: .5; }
 html.theme .prng-ends { margin-top: -0.375rem; }
-html.theme .prng .minmax { padding: 0.25rem 0 0; }
-html.theme .prng .minmax .btn { flex: none; height: 2rem; }
 /* narrow cards keep the category readable: "ago" drops first, then the store mark shrinks */
 html.theme .deal { container-type: inline-size; container-name: dealcard; }
 @container dealcard (max-width: 15.5rem) {

@@ -169,7 +169,7 @@
     var de = hasDesc ? '<section class="block prose" aria-labelledby="h-desc"><h2 id="h-desc">Description</h2><div>' + desc + '</div></section>' : '';
     var sp = d.specs && d.specs.length ? '<section class="block specs" aria-labelledby="h-specs"><h2 id="h-specs">Specs</h2><dl>' + d.specs.map(function (s) { return s.label ? '<div><dt>' + E(s.label) + '</dt><dd>' + E(s.value) + '</dd></div>' : '<div class="one"><dd>' + E(s.value) + '</dd></div>'; }).join('') + '</dl></section>' : '';
     var items = exc.map(function (t) { return '<li class="exc">' + E(t) + '</li>'; }).join('') + steps.map(function (t, k) { return k === 0 ? '<li><a href="' + E(link) + '" target="_blank" rel="nofollow sponsored noopener">' + E(t) + '</a> on ' + E(d.store) + '</li>' : '<li>' + E(t) + '</li>'; }).join('');
-    var st = '<details class="block howto"' + (exc.length ? ' open' : '') + '><summary><h2>How to get it</h2><span class="hint">' + (steps.length + exc.length) + ' steps at ' + E(d.store) + '</span><i data-lucide="chevron-down"></i></summary><ol class="steps">' + items + '</ol></details>';
+    var st = '';  // 2026-11-25: no "How to get it" block on the deal page
     return hl + ln + de + sp + st;
   }
   function rxHTML(c) {

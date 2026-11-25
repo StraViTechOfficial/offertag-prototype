@@ -58,6 +58,14 @@ Screen: Image 9. Today the article pages `blog/lunch-boxes-and-tiffins-worth-pac
 - [x] The poster slider and poster images are removed.
 - [x] Sponsored ads keep their place on Home in the new simple format (A-07).
 
+### P-09 Remove "How to get it" from the deal page
+Screen: Image 26.
+- [x] Remove the "How to get it" block (store steps) from every deal page.
+
+### P-10 Price filter: slider only
+Screen: Image 25.
+- [x] Remove the Min/Max boxes and the Go button under the price slider.
+
 ### Notes from the public build (2026-11-25)
 
 **P-01 card research (what we copied and why).** Flipkart, Meesho and Ajio show the price, the struck MRP and "% off" on **one line**, read left to right. Amazon puts "-88%" before the price. Myntra puts "(88% OFF)" after the MRP. DesiDime and Slickdeals put the store and the posting time in a small top line above the title. Our card now follows that common order:
@@ -76,7 +84,7 @@ Every row is either full width or a left/right pair, so no row leaves an empty s
 - **Contrast:** the token `--save-ink` (#166941, 6.7:1 on white) passes WCAG AA for small bold text. Dark mode uses the lighter `--save` (hsl 151 58% 52%) on the dark card.
 - **Why text, not a badge:** one green element per card is enough. "You save" moved to grey so it doesn't repeat the green, and price stays the strongest element.
 
-**P-03:** the price slider's ends come from the deals on the page, e.g. ₹1 to ₹94,740 on Top deals. The scale is logarithmic, so cheap items get ₹10 steps and expensive ones ₹500 to ₹1,000 steps. The filter applies when a handle is released, or with Go after typing Min/Max. Links keep working (`?disc=75&price=-950`).
+**P-03:** the price slider's ends come from the deals on the page, e.g. ₹1 to ₹94,740 on Top deals. The scale is logarithmic, so cheap items get ₹10 steps and expensive ones ₹500 to ₹1,000 steps. The filter applies when a handle is released. There are no typed Min/Max boxes (removed at your request). Links keep working (`?disc=75&price=-950`).
 
 **P-07:** with the old-site rule, **New deals** means "under 25% off". In this sample only 1 of the 118 deals qualifies, so the New deals page is almost empty, while Top deals has 114. This is what you asked for; change the numbers in Catalogue → Deal types (A-14) if you want it different.
 

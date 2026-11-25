@@ -126,7 +126,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
                 <input class="prng-input" type="range" id="phi" min="0" max="1000" step="1" value="1000" aria-label="Maximum price">
               </div>
               <div class="prng-ends" aria-hidden="true"><span id="prng-min"></span><span id="prng-max"></span></div>
-              <div class="minmax"><label><span class="visually-hidden">Minimum price</span><input class="input" type="number" inputmode="numeric" placeholder="Min ₹" name="pmin" min="0"></label><span>–</span><label><span class="visually-hidden">Maximum price</span><input class="input" type="number" inputmode="numeric" placeholder="Max ₹" name="pmax" min="0"></label><button class="btn btn-outline btn-sm" type="button" id="price-go">Go</button></div>
+              <input type="hidden" name="pmin"><input type="hidden" name="pmax"><!-- the slider writes the range here; no typed Min/Max (2026-11-25) -->
             </div>
           </details>
           <!-- Deal type: hidden on type pages, shown on search / category / store pages (D-075) -->

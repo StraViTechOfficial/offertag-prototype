@@ -47,11 +47,6 @@
     pminIn.value = a <= 0 ? '' : toPrice(a); pmaxIn.value = b >= STEPS ? '' : toPrice(b); paint();
   }
   function setPrice(a, b) { pminIn.value = a == null ? '' : a; pmaxIn.value = b == null ? '' : b; if (plo) { plo.value = a == null ? 0 : toPos(a); phi.value = b == null ? STEPS : toPos(b); paint(); } }
-  function applyTyped() {
-    var a = pminIn.value === '' ? null : Math.max(0, +pminIn.value), b = pmaxIn.value === '' ? null : Math.max(0, +pmaxIn.value);
-    if (a != null && b != null && a > b) { var t = a; a = b; b = t; }
-    setPrice(a, b); reset();
-  }
   if (plo) {
     document.getElementById('prng-min').textContent = inr(PMIN); document.getElementById('prng-max').textContent = inr(PMAX);
     [plo, phi].forEach(function (el) {
@@ -61,7 +56,6 @@
     if (PMAX <= PMIN) { plo.disabled = phi.disabled = true; }
     paint();
   }
-  var go = document.getElementById('price-go'); if (go) go.addEventListener('click', applyTyped);
   discLabel();
 
   function state() {
@@ -220,11 +214,7 @@
     setDisc(0); setPrice(null, null);
     reset();
   }
-  form.addEventListener('change', function (e) { if (e.target.type !== 'number' && !e.target.classList.contains('prng-input')) reset(); });
-  form.querySelectorAll('input[type="number"]').forEach(function (i) {
-    i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); applyTyped(); } });
-    i.addEventListener('change', function (e) { e.stopPropagation(); applyTyped(); });
-  });
+  form.addEventListener('change', function (e) { if (!e.target.classList.contains('prng-input')) reset(); });
   document.getElementById('clear-all').addEventListener('click', clearAll);
   document.querySelectorAll('[data-clear]').forEach(function (b) { b.addEventListener('click', clearAll); });
   sortItems.forEach(function (b) { b.addEventListener('click', function () { sortMode = b.dataset.sort; reset(); }); });
