@@ -1,47 +1,37 @@
 <!-- Site footer (S16, D-096). All words live in this one file: edit here, then run build/build.py. Social links come from Site & app settings (B33); #x is waiting for the account link. -->
 <footer class="site-footer">
   <div class="container">
-    <div class="ft-top">
-      <div class="ft-about">
-        <a class="ft-logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
-        <p>Online deals from Amazon, Flipkart and more, posted all day.</p>
-        <div class="ft-follow">
-          <span>Follow us on</span>
-          <div class="ft-social">
-            <a href="#wa" target="_blank" rel="noopener" aria-label="WhatsApp">{{ICON:whatsapp}}</a>
-            <a href="#tg" target="_blank" rel="noopener" aria-label="Telegram">{{ICON:telegram}}</a>
-            <a href="#fb" target="_blank" rel="noopener" aria-label="Facebook">{{ICON:facebook}}</a>
-            <a href="#x" target="_blank" rel="noopener" aria-label="X">{{ICON:x}}</a>
-            <a href="#ig" target="_blank" rel="noopener" aria-label="Instagram">{{ICON:instagram}}</a>
-            <a href="#li" target="_blank" rel="noopener" aria-label="LinkedIn">{{ICON:linkedin}}</a>
-          </div>
-        </div>
-      </div>
-      <div class="ft-app">
-        <span class="ft-app-ico"><i data-lucide="smartphone"></i></span>
-        <div>
-          <b>OfferTag app</b>
-          <p>Deal alerts on your phone.</p>
-          <div class="ft-app-acts">
-            <a class="ft-play" href="#app" target="_blank" rel="noopener">{{ICON:googleplay}}<span><small>Get it on</small>Google Play</span></a>
-            <a class="ft-alerts" href="#alerts"><i data-lucide="bell"></i>Browser alerts</a>
-          </div>
-        </div>
-      </div>
+    <!-- P-58 (Adil): the four ways to get deals lead the footer; plain commission line; four short link groups; small follow icons by the copyright -->
+    <div class="ft-head">
+      <a class="ft-logo" href="index.html" aria-label="OfferTag home"><img src="assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
+      <p class="ft-line">Online deals from Amazon, Flipkart and more, posted all day.</p>
     </div>
 
-    <p class="ft-disclaimer"><b>Disclaimer:</b> OfferTag does not sell any products. We earn a small commission when you buy through our links, at no extra cost to you. Prices change fast, so check the store before you buy. <a href="disclaimer.html">Read more</a></p>
+    <h2 class="ft-ways-h">Get every deal, your way</h2>
+    <div class="ft-ways">
+      <a class="ft-way w-wa" href="#wa" target="_blank" rel="noopener"><span class="ft-way-ico">{{ICON:whatsapp}}</span><b>WhatsApp</b><span class="ft-way-p">Loot deals right in your chats.</span><span class="ft-way-go">Join group<i data-lucide="arrow-up-right"></i></span></a>
+      <a class="ft-way w-tg" href="#tg" target="_blank" rel="noopener"><span class="ft-way-ico">{{ICON:telegram}}</span><b>Telegram</b><span class="ft-way-p">Every deal the minute it posts.</span><span class="ft-way-go">Join channel<i data-lucide="arrow-up-right"></i></span></a>
+      <a class="ft-way w-app" href="#app" target="_blank" rel="noopener"><span class="ft-way-ico">{{ICON:googleplay}}</span><b>Android app</b><span class="ft-way-p">Alerts for the stores you like.</span><span class="ft-way-go">Get it on Google Play<i data-lucide="arrow-up-right"></i></span></a>
+      <button class="ft-way w-bell" type="button" data-browser-alerts><span class="ft-way-ico"><i data-lucide="bell-ring"></i></span><b>Browser alerts</b><span class="ft-way-p">A ping on this device for big drops.</span><span class="ft-way-go"><span>Turn on</span></span></button>
+    </div>
 
     <div class="ft-cols">
-      <div><h4>Deals</h4><ul><li><a href="fresh.html">Top deals</a></li><li><a href="loot.html">Loot deals</a></li><li><a href="new.html">New deals</a></li><li><a href="pantry.html">Pantry</a></li><li><a href="categories.html">All categories</a></li><li><a href="blog.html">Blog</a></li></ul></div>
-      <div class="ft-stores"><h4>Top stores</h4><ul><li><a href="store-amazon.html">Amazon</a></li><li><a href="store-flipkart.html">Flipkart</a></li><li><a href="store-myntra.html">Myntra</a></li><li><a href="store-ajio.html">Ajio</a></li><li><a href="store-jiomart.html">JioMart</a></li><li><a href="store-bigbasket.html">BigBasket</a></li><li><a href="store-blinkit.html">Blinkit</a></li><li><a href="store-meesho.html">Meesho</a></li><li><a href="store-swiggy.html">Swiggy</a></li><li><a href="stores.html">All stores</a></li></ul></div>
-      <div><h4>Need help?</h4><ul><li><a href="faq.html">FAQs</a></li><li><a href="contact.html">Contact us</a></li><li><a href="contact.html">Send feedback</a></li><li><a href="delete-account.html">Delete account</a></li></ul></div>
+      <div><h4>Deals</h4><ul><li><a href="fresh.html">Top deals</a></li><li><a href="loot.html">Loot deals</a></li><li><a href="new.html">New deals</a></li><li><a href="pantry.html">Pantry</a></li></ul></div>
+      <div><h4>Browse</h4><ul><li><a href="categories.html">All categories</a></li><li><a href="stores.html">All stores</a></li><li><a href="store-amazon.html">Amazon deals</a></li><li><a href="store-flipkart.html">Flipkart deals</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div><h4>Help</h4><ul><li><a href="faq.html">FAQs</a></li><li><a href="contact.html">Contact us</a></li><li><a href="delete-account.html">Delete account</a></li></ul></div>
       <div><h4>Legal</h4><ul><li><a href="privacy.html">Privacy policy</a></li><li><a href="terms.html">Terms of use</a></li><li><a href="disclaimer.html">Disclaimer</a></li></ul></div>
     </div>
+
+    <p class="ft-honest"><i data-lucide="badge-check"></i>We earn a small commission when you buy through our links. Your price stays the same, and we never sell anything ourselves. Prices change fast, so check the store before you pay.</p>
 
     <div class="footer-bottom">
       <!--ABOUT-->
       <span>© 2026 OfferTag · Bachat har shopping par</span>
+      <div class="ft-social" aria-label="Follow OfferTag">
+        <a href="#fb" target="_blank" rel="noopener" aria-label="Facebook">{{ICON:facebook}}</a>
+        <a href="#ig" target="_blank" rel="noopener" aria-label="Instagram">{{ICON:instagram}}</a>
+        <a href="#li" target="_blank" rel="noopener" aria-label="LinkedIn">{{ICON:linkedin}}</a>
+      </div>
     </div>
   </div>
   <!-- Back-to-top dock (site.js moves #to-top in; rides above the footer) -->

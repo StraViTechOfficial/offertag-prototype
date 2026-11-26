@@ -33,7 +33,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
 <div class="adm">
   <aside class="adm-side" id="adm-side" aria-label="Admin menu">
-    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
@@ -41,7 +41,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin" aria-current="page"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">4</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin" aria-current="page"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">1</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -80,15 +80,27 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <div class="page-h">
         <div><h1>Inbox</h1><p>Messages from the Contact form and account deletion requests from the app and site. Comments are on each deal's page now.</p></div>
       </div>
-      <div class="inbox-bar"><div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-itab="feedback" data-state=active aria-selected="true">Feedback <span class="adm-count muted" data-tcount="feedback">3</span></button><button class="tabs-trigger" role="tab" type="button" data-itab="deletion" aria-selected="false">Deletion requests <span class="adm-count muted" data-tcount="deletion">2</span></button></div>
-        <span class="tag-sample">Sample</span></div>
+      <div class="inbox-bar"><div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-itab="feedback" data-state=active aria-selected="true">Feedback</button><button class="tabs-trigger" role="tab" type="button" data-itab="deletion" aria-selected="false">Deletion requests <span class="adm-count muted" data-tcount="deletion">1</span></button></div>
+        </div>
       <ul class="ibx" data-ibx></ul>
       <p class="empty" data-ibx-empty hidden></p>
-      <p class="foot-note" data-ibx-note="deletion" hidden><i data-lucide="info"></i>“Mark deleted” only records that the account was removed. Delete the account on the server first; the app promises removal within 7 days.</p>
+      <p class="foot-note" data-ibx-note="deletion" hidden><i data-lucide="info"></i>Requests from the public delete-account form, for people who can’t sign in. Delete account removes it the same way as deleting from Account. Google Play expects removal within 7 days.</p>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet dialog" id="confirm" hidden data-state="closed" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-desc">
         <div class="sheet-header"><div class="sheet-title" id="cf-title"></div><p class="sheet-desc" id="cf-desc"></p></div>
         <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-confirm-go></button></div>
+      </aside>
+      <aside class="sheet sheet-right" id="fb-reply" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="fr-title">
+        <div class="sheet-header"><div class="sheet-title" id="fr-title">Message</div><p class="sheet-desc" data-fr-to></p></div>
+        <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
+        <form class="sheet-body pe" data-fr novalidate>
+          <blockquote class="fr-quote" data-fr-msg></blockquote>
+          <div class="fr-reply" data-fr-reply><h3 class="fr-h">Reply by email</h3>
+          <label class="fld"><span class="lab">Subject *</span><input class="input" type="text" name="subject" maxlength="120"><span class="err" hidden>Add a subject.</span></label>
+          <label class="fld"><span class="lab">Message *</span><textarea class="input" name="body" rows="9" maxlength="2000"></textarea><span class="err" hidden>Add a message.</span></label>
+          <p class="hint">Filled from the template for this kind of message. Edit it before sending if needed. Sent from the support email in Site &amp; app.</p></div>
+        </form>
+        <div class="sheet-footer"><span class="grow"></span><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-fr-send data-fr-reply><i data-lucide="send"></i>Send reply</button></div>
       </aside>
       </div>
     </main>
@@ -96,7 +108,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 </div>
 <div class="toaster" id="toaster" aria-live="polite"></div>
 <script src="/vendor/lucide.min.js"></script>
-<script>window.ADM_INBOX = {"feedback": [{"id": 1, "kind": "Issue", "who": "rahul@…", "when": "2 h", "msg": "Shop Now on the boAt earbuds deal opens a page that says 404.", "done": false}, {"id": 2, "kind": "Suggestion", "who": "priya@…", "when": "5 h", "msg": "Please add a dark mode to the app.", "done": false}, {"id": 3, "kind": "Appreciation", "who": "kavya@…", "when": "1 d", "msg": "Saved ₹3,000 on my TV, thanks!", "done": true}], "deletion": [{"id": 21, "name": "Arjun V.", "email": "arjun.v@…", "phone": "97xxxxxx08", "reason": "Not using it anymore", "when": "1 d", "done": false}, {"id": 22, "name": "Vikram T.", "email": "vikram@…", "phone": "90xxxxxx13", "reason": "Too many notifications", "when": "9 d", "done": true, "result": "Deleted 6 Nov"}]};</script>
+<script>window.ADM_INBOX = {"feedback": [{"id": 1, "kind": "Issue", "who": "rahul.k@gmail.com", "when": "2 h", "msg": "Shop Now on the boAt earbuds deal opens a page that says 404."}, {"id": 2, "kind": "Suggestion", "who": "priya.s@gmail.com", "when": "5 h", "msg": "Please add a dark mode to the app."}, {"id": 3, "kind": "Appreciation", "who": "kavya.m@gmail.com", "when": "1 d", "msg": "Saved ₹3,000 on my TV, thanks!"}], "deletion": [{"id": 21, "name": "Arjun V.", "email": "arjun.v@…", "phone": "97xxxxxx08", "reason": "Not using it anymore", "when": "1 d", "done": false}, {"id": 22, "name": "Vikram T.", "email": "vikram@…", "phone": "90xxxxxx13", "reason": "Too many notifications", "when": "9 d", "done": true, "result": "Deleted 6 Nov"}]};</script>
 <script src="/js/db.js"></script>
 <script src="/js/render.js"></script>
 <script src="/js/admin-db.js"></script>

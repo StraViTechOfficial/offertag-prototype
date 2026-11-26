@@ -34,54 +34,24 @@ FMT_DEFAULT = {  # D-058 share template, same text the post form's Share panel b
     'pin': '{pct}% off {title} · ₹{price} at {store}\n{short_link}',
     'th': '{pct}% off {title}\nNow ₹{price} (MRP ₹{mrp}) at {store}\n{coupon_line}\n{short_link}',
 }
-CHANNELS = [  # SAMPLE connection states (data sheet C)
-    dict(k='fb', name='Facebook Page', mark='f', acct='OfferTag.in', state='on', note='expires in 52 days', tag='offertagfb-21'),
-    dict(k='pin', name='Pinterest', mark='P', acct='board', state='on', note='', tag=''),
-    dict(k='th', name='Threads', mark='@', acct='@offertag', state='off', note='', tag=''),
+CHANNELS = [  # where deals are shared (P-44)
+    dict(k='fb', name='Facebook Page', mark='f', acct='OfferTag.in'),
+    dict(k='pin', name='Pinterest', mark='P', acct='OfferTag'),
+    dict(k='th', name='Threads', mark='@', acct='@offertag'),
 ]
 
-def build_social():
-    rows = []
-    for c in CHANNELS:
-        acct = (_sel('data-pin-board aria-label="Pinterest board"', _opts(['Loot deals', 'Top deals', 'All deals'], 'Loot deals'), 'sel-sm') if c['acct'] == 'board' else f'<span class="ch-acct">{E(c["acct"])}</span>')
-        rows.append(f'''          <li class="ch" data-ch="{c["k"]}" data-state="{c["state"]}">
-            <span class="ch-mark ch-{c["k"]}" aria-hidden="true">{c["mark"]}</span>
-            <div class="ch-main"><b>{E(c["name"])}</b>{acct}</div>
-            <span class="ch-status" data-ch-status></span>
-            <div class="ch-acts" data-ch-acts></div>
-          </li>''')
-    hist_src = [(LATEST[0], 'fb', 'ok', 'Adil'), (LATEST[0], 'th', 'Token expired', 'Adil'), (LATEST[1], 'fb', 'ok', 'Imran K.'), (LATEST[1], 'pin', 'ok', 'Imran K.'),
-                (LATEST[2], 'th', 'ok', 'Adil'), (LATEST[3], 'fb', 'ok', 'Adil'), (LATEST[4], 'pin', 'Board not found', 'Imran K.')]
-    hist = [dict(when=d['agetxt'], t=d['t'], ch=ch, res=r, by=by, page=d['page']) for d, ch, r, by in hist_src]
-    pv = ADM_ROWS[0]
-    pvd = dict(title=pv['t'], price=pv['p'], mrp=pv['m'], pct=pv['pct'], store=pv['store'], coupon=pv['coupon'] or '', img=pv['img'], short='offertag.in/v/' + str(pv['id'])[-5:])
+def build_social():  # P-44 (Adil): we set up their own apps, so nothing to connect here; just where deals go and how a post looks
+    cards = ''.join(f'''          <article class="spc" data-spc="{c["k"]}">
+            <h2><span class="ch-mark sm ch-{c["k"]}" aria-hidden="true">{c["mark"]}</span>{E(c["name"])} <small>{E(c["acct"])}</small><span class="pill pill-live spc-st">Connected</span></h2>
+            <div class="spv spv-{c["k"]}"><div class="spv-who"><span class="ch-mark sm ch-{c["k"]}" aria-hidden="true">{c["mark"]}</span><b>OfferTag</b><small>Just now</small></div><img alt="" data-spv-img><p data-spv-text></p></div>
+          </article>''' for c in CHANNELS)
     body = f'''      <div class="page-h">
-        <div><h1>Social sharing</h1><p>Share a deal to the OfferTag Facebook Page, Pinterest and Threads from the deal's page. Connect each place once here. Every post uses the same fixed text.</p></div>
+        <div><h1>Social sharing</h1><p>Deals are shared to these places from each deal’s page. Each shows whether it is connected, and how a deal looks there.</p></div>
       </div>
-      {tabs('data-stab', [('channels', 'Channels', None), ('history', 'History', None)], 'channels')}
-      <section data-spanel="channels">
-        <div class="panel"><div class="panel-h"><h2>Where deals can be shared</h2><span class="tag-sample">Sample</span></div><ul class="chs" data-chs>
-{chr(10).join(rows)}
-        </ul></div>
-        <div class="panel fixed-fmt"><div class="panel-h"><h2>What every post says</h2><small>one fixed text for every place, also used by Copy for WhatsApp</small></div>
-          <div class="spv"><img alt="" data-spv-img><p data-spv-text></p></div></div>
-        <p class="foot-note" data-approval-note><i data-lucide="info"></i>Meta (Facebook, Threads) and Pinterest must approve the OfferTag app before posting works; that is due by week 7. Until then these show “Awaiting platform approval”.</p>
-      </section>
-      <section data-spanel="history" hidden>
-        <div class="toolbar">
-          {_sel('data-hf="ch" aria-label="Platform"', '<option value="">All platforms</option><option value="fb">Facebook Page</option><option value="pin">Pinterest</option><option value="th">Threads</option>', 'tb-sel')}
-          {_sel('data-hf="res" aria-label="Result"', '<option value="">Any result</option><option value="ok">Posted</option><option value="bad">Failed</option>', 'tb-sel')}
-          <span class="tag-sample">Sample</span>
-        </div>
-        <div class="tbl-wrap"><table class="tbl ltbl">
-          <thead><tr><th>When</th><th>Deal</th><th>Platform</th><th>Result</th><th>By</th></tr></thead>
-          <tbody data-hist></tbody></table>
-          <p class="empty" data-hist-empty hidden>Nothing matches.</p></div>
-      </section>
-{OVERLAY}
-{CONFIRM}'''
-    shell('admin-social.html', 'Social sharing', 'social', admin_only('Social sharing', body),
-          scripts=f'<script>window.ADM_SOCIAL = {jdump(dict(channels=CHANNELS, hist=hist, pv=pvd, defaults=FMT_DEFAULT))};</script>\n', after=C_AFTER)
+      <div class="spcs">
+{cards}
+      </div>'''
+    shell('admin-social.html', 'Social sharing', 'social', admin_only('Social sharing', body), scripts='<script>window.ADM_SOCIAL = 1;</script>\n', after=C_AFTER)
 
 # ---------- Affiliate tags (admin-tools §3, B16) ----------
 TAG_ROWS = [  # (key, where, amazon, flipkart, used on, required, note)
@@ -95,7 +65,7 @@ TAG_ROWS = [  # (key, where, amazon, flipkart, used on, required, note)
 ]
 def build_tags():
     rows = ''.join(f'''          <tr data-tag-row="{k}">
-            <td class="c-name"><b>{E(w)}</b>{'<span class="tag-check" title="The app source is not in the files we hold. Confirm with the app developer.">Check with app</span>' if note else ''}</td>
+            <td class="c-name"><b>{E(w)}</b></td>
             <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for {E(w)}</span><input class="input q-input mono" type="text" value="{E(a)}" data-tag="amz" placeholder="{"Required" if req else "Not set"}"{" data-req" if req else ""} spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
             <td class="m-used" data-l="Used on">{E(u)}</td>
           </tr>''' for k, w, a, f, u, req, note in TAG_ROWS)
@@ -108,7 +78,6 @@ def build_tags():
           <tbody>
 {rows}
           </tbody></table></div>
-        <p class="foot-note"><i data-lucide="user-round"></i><span>Poster tags: each Super admin or Admin can have their own Amazon tag, set in <a href="admin-users.html">Users</a>. It replaces the website tag on links they share from the admin.</span></p>
         <p class="foot-note"><i data-lucide="info"></i><span>Pinterest and Threads have no tag yet. Until you add one, their links carry the website tag. Amazon tags in India end in “-21”.</span></p>
         <div class="savebar" data-savebar hidden><span>Unsaved changes</span><button class="btn btn-ghost btn-sm" type="button" data-discard>Discard</button><button class="btn btn-default btn-sm" type="submit">Save tags</button></div>
       </form>'''
@@ -117,25 +86,37 @@ def build_tags():
 # ---------- Inbox (admin-tools §4) ----------
 def build_inbox():
     R = ADM_ROWS
-    fb = [dict(id=1, kind='Issue', who='rahul@…', when='2 h', msg='Shop Now on the boAt earbuds deal opens a page that says 404.', done=False),
-          dict(id=2, kind='Suggestion', who='priya@…', when='5 h', msg='Please add a dark mode to the app.', done=False),
-          dict(id=3, kind='Appreciation', who='kavya@…', when='1 d', msg='Saved ₹3,000 on my TV, thanks!', done=True)]
+    fb = [dict(id=1, kind='Issue', who='rahul.k@gmail.com', when='2 h', msg='Shop Now on the boAt earbuds deal opens a page that says 404.'),
+          dict(id=2, kind='Suggestion', who='priya.s@gmail.com', when='5 h', msg='Please add a dark mode to the app.'),
+          dict(id=3, kind='Appreciation', who='kavya.m@gmail.com', when='1 d', msg='Saved ₹3,000 on my TV, thanks!')]
     rp = [dict(id=11, reason='Price has changed', deal=R[0]['t'], did=R[0]['id'], page=R[0]['page'], who='Signed out', when='40 min', note=f'Now {inr(round(R[0]["p"] * 1.2))}', done=False),
           dict(id=12, reason='Link not working', deal=R[5]['t'], did=R[5]['id'], page=R[5]['page'], who='rahul@…', when='3 h', note='', done=False),
           dict(id=13, reason='Out of stock', deal=R[9]['t'], did=R[9]['id'], page=R[9]['page'], who='sneha@…', when='1 d', note='', done=True)]
     dl = [dict(id=21, name='Arjun V.', email='arjun.v@…', phone='97xxxxxx08', reason='Not using it anymore', when='1 d', done=False),
           dict(id=22, name='Vikram T.', email='vikram@…', phone='90xxxxxx13', reason='Too many notifications', when='9 d', done=True, result='Deleted 6 Nov')]
-    un = lambda xs: len(xs)   # 2026-11-26: no handled / unhandled; the tab shows how many there are
+    un = lambda xs: sum(1 for x in xs if not x['done'])
     body = f'''      <div class="page-h">
         <div><h1>Inbox</h1><p>Messages from the Contact form and account deletion requests from the app and site. Comments are on each deal's page now.</p></div>
       </div>
-      <div class="inbox-bar">{tabs('data-itab', [('feedback', 'Feedback', un(fb)), ('deletion', 'Deletion requests', un(dl))], 'feedback')}
-        <span class="tag-sample">Sample</span></div>
+      <div class="inbox-bar">{tabs('data-itab', [('feedback', 'Feedback', None), ('deletion', 'Deletion requests', un(dl))], 'feedback')}
+        </div>
       <ul class="ibx" data-ibx></ul>
       <p class="empty" data-ibx-empty hidden></p>
-      <p class="foot-note" data-ibx-note="deletion" hidden><i data-lucide="info"></i>“Mark deleted” only records that the account was removed. Delete the account on the server first; the app promises removal within 7 days.</p>
+      <p class="foot-note" data-ibx-note="deletion" hidden><i data-lucide="info"></i>Requests from the public delete-account form, for people who can’t sign in. Delete account removes it the same way as deleting from Account. Google Play expects removal within 7 days.</p>
 {OVERLAY}
-{CONFIRM}'''
+{CONFIRM}
+      <aside class="sheet sheet-right" id="fb-reply" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="fr-title">
+        <div class="sheet-header"><div class="sheet-title" id="fr-title">Message</div><p class="sheet-desc" data-fr-to></p></div>
+        <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
+        <form class="sheet-body pe" data-fr novalidate>
+          <blockquote class="fr-quote" data-fr-msg></blockquote>
+          <div class="fr-reply" data-fr-reply><h3 class="fr-h">Reply by email</h3>
+          <label class="fld"><span class="lab">Subject *</span><input class="input" type="text" name="subject" maxlength="120"><span class="err" hidden>Add a subject.</span></label>
+          <label class="fld"><span class="lab">Message *</span><textarea class="input" name="body" rows="9" maxlength="2000"></textarea><span class="err" hidden>Add a message.</span></label>
+          <p class="hint">Filled from the template for this kind of message. Edit it before sending if needed. Sent from the support email in Site &amp; app.</p></div>
+        </form>
+        <div class="sheet-footer"><span class="grow"></span><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-fr-send data-fr-reply><i data-lucide="send"></i>Send reply</button></div>
+      </aside>'''
     shell('admin-inbox.html', 'Inbox', 'feedback', admin_only('Inbox', body),
           scripts=f'<script>window.ADM_INBOX = {jdump(dict(feedback=fb, deletion=dl))};</script>\n', after=C_AFTER)
 
@@ -163,29 +144,33 @@ def build_site():
 
 # ---------- Users and roles (changes.md A-13): Super admin and Admin only; add, edit, turn off, delete; a page per person with an activity log ----------
 # The public site's users (28,880 sign-ups) are only a number on Overview (changes.md A-12).
-USERS = [  # SAMPLE (id, name, email, phone, role, joined, Amazon tag, active, last sign-in)
-    ('Adil', 'adil@offertag.in', '98xxxxxx01', 'Super admin', '2019-06', 'offertag-21', True, 'today'),
-    ('Imran K.', 'imran@offertag.in', '', 'Admin', '2025-01', 'offertag3-21', True, 'today'),
-    ('Neha P.', 'neha.p@offertag.in', '', 'Admin', '2025-08', '', True, 'yesterday'),
-    ('Farhan A.', 'farhan@offertag.in', '', 'Admin', '2024-04', 'offertag4-21', False, '3 months ago'),
+USERS = [  # SAMPLE (name, email, phone, role, joined, active, last sign-in); P-43: no per-user Amazon tag (Adil, 26 Nov)
+    ('Adil', 'adil@offertag.in', '98xxxxxx01', 'Super admin', '2019-06', True, 'today'),
+    ('Imran K.', 'imran@offertag.in', '', 'Admin', '2025-01', True, 'today'),
+    ('Neha P.', 'neha.p@offertag.in', '', 'Admin', '2025-08', True, 'yesterday'),
+    ('Farhan A.', 'farhan@offertag.in', '', 'Admin', '2024-04', False, '3 months ago'),
 ]
-ROLE_NOTE = '<b>Super admin</b> can do everything. <b>Admin</b> can post, edit and delete deals, but can’t change categories or stores.'
+_Y, _N = '<i data-lucide="check" class="mx-y" aria-label="Yes"></i>', '<span class="mx-n" aria-label="No">—</span>'
+ROLE_MX = '<table class="tbl mx-tbl"><thead><tr><th>Area</th><th>Super admin</th><th>Admin</th><th>User</th></tr></thead><tbody>' + ''.join(f'<tr><td>{a}</td><td>{_Y}</td><td>{_Y if x else _N}</td><td>{_N}</td></tr>' for a, x in [
+    ('Overview', 1), ('Deals: post, edit, delete, share', 1), ('Pinned board', 1), ('Alerts', 1), ('Sponsored', 0), ('Blog', 0), ('Inbox', 0), ('Catalogue: shops, categories, deal types', 0),
+    ('Settings: site and app, affiliate tags, social sharing', 0), ('Users: add, edit, turn off, delete', 0)]) + f'<tr><td>Website and app: view deals, edit own profile</td><td>{_Y}</td><td>{_Y}</td><td>{_Y}</td></tr></tbody></table><p class="mx-note">Users are the people who sign in on the website or app. They never open the admin and are not listed here.</p>'   # P-51: same as admin_only() pages
 def build_users():
-    data = [dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, tag=t, active=a, last=l) for i, (n, e, p, r, j, t, a, l) in enumerate(USERS)]
+    data = [dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, active=a, last=l) for i, (n, e, p, r, j, a, l) in enumerate(USERS)]
     body = f'''      <div class="page-h">
-        <div><h1>Users</h1><p>The people who run OfferTag. Each can have their own Amazon tag for the links they share.</p></div>
+        <div><h1>Users</h1><p>The people who run OfferTag.</p></div>
         <div class="page-h-acts"><button class="btn btn-default" type="button" data-unew><i data-lucide="user-plus"></i>Add user</button></div>
       </div>
-      <p class="role-line"><i data-lucide="shield"></i><span>{ROLE_NOTE}</span></p>
+      <details class="panel role-mx"><summary><i data-lucide="shield"></i>What each role can do</summary>{ROLE_MX}</details>
       <div class="toolbar">
         <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search users</span><input class="input" type="search" placeholder="Name or email" data-uq></label>
         {_sel('data-urole aria-label="Role"', '<option value="">Everyone</option><option>Super admin</option><option>Admin</option>', 'tb-sel')}
         <span class="count" data-ucount></span>
       </div>
       <div class="tbl-wrap"><table class="tbl ltbl users-tbl">
-        <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last signed in</th><th>Amazon tag</th><th class="c-act"><span class="visually-hidden">Actions</span></th></tr></thead>
+        <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last signed in</th><th class="c-act"><span class="visually-hidden">Actions</span></th></tr></thead>
         <tbody data-urows></tbody></table>
         <p class="empty" data-uempty hidden>No users match. <button class="btn-link" type="button" data-uclear>Clear search</button></p></div>
+{SAVEBAR}
 {OVERLAY}
 {USER_FORM}
 {CONFIRM}'''
@@ -202,7 +187,6 @@ USER_FORM = '''      <aside class="sheet sheet-right" id="user-edit" hidden data
               <label class="role-opt"><input type="radio" name="role" value="Admin" checked><span><b>Admin</b><small>Posts, edits and deletes deals. Can’t change categories or stores.</small></span></label>
               <label class="role-opt"><input type="radio" name="role" value="Super admin"><span><b>Super admin</b><small>Everything.</small></span></label>
             </div></div>
-          <label class="fld"><span class="lab">Amazon tag <small>optional; used on links this person shares</small></span><input class="input mono" type="text" name="tag" placeholder="e.g. offertag5-21" spellcheck="false" autocomplete="off"><span class="err" hidden>Amazon tags in India end in “-21”.</span></label>
           <label class="ckl"><span class="ck"><input type="checkbox" name="active" checked><span class="box"><i data-lucide="check"></i></span></span><span>Active <small>can sign in</small></span></label>
         </form>
         <div class="sheet-footer"><button class="btn btn-ghost danger" type="button" data-ue-del hidden><i data-lucide="trash-2"></i>Delete</button><span class="grow"></span><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ue-save>Save</button></div>
@@ -232,11 +216,13 @@ def build_user_page():  # /admin/users/{id}
 {OVERLAY}
 {USER_FORM}
 {CONFIRM}'''
-    shell('admin-user.html', 'User', 'users', admin_only('Users', body), scripts=f'<script>window.ADM_USERS = {jdump([dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, tag=t, active=a, last=l) for i, (n, e, p, r, j, t, a, l) in enumerate(USERS)])};</script>\n', after=C_AFTER)
+    shell('admin-user.html', 'User', 'users', admin_only('Users', body), scripts=f'<script>window.ADM_USERS = {jdump([dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, active=a, last=l) for i, (n, e, p, r, j, a, l) in enumerate(USERS)])};</script>\n', after=C_AFTER)
 
 # ---------- Catalogue (admin-tools §7) ----------
 def build_catalogue():
-    shops = [dict(id=s['id'], name=s['name'], label=s['name'][:13], slug=s['slug'], aff=s['affiliate'].strip(), order=s['order'], n=s['total'], on=True,
+    amz_ids = [dict(label=l, id=i) for l, i in (('web', 'offertag-21'), ('short', 'offertag1-21'), ('google', 'offertag2-21'), ('fb', 'offertagfb-21'))]  # label = where the ID is used (fixed list in admin-c.js AFF_USE)  # P-47: sample, the Amazon tags already used on Affiliate tags
+    def affs(s): return amz_ids if s['name'] == 'Amazon' else ([dict(label='web', id=s['affiliate'].strip())] if s['affiliate'].strip() else [])
+    shops = [dict(id=s['id'], name=s['name'], label=s['name'][:13], slug=s['slug'], aff=s['affiliate'].strip(), affs=affs(s), order=s['order'], n=s['total'], on=True,
                   logo=store_logo(s['name']) or '', steps=SHOP_STEPS.get(s['name'], SHOP_STEPS['*']), seo=s['description']) for s in SHOPS]
     cats = []
     for c in CATS:
@@ -260,6 +246,7 @@ def build_catalogue():
       <div class="tbl-wrap"><table class="tbl ltbl cat-tbl" data-ctbl><thead data-chead></thead><tbody data-crows></tbody></table>
         <p class="empty" data-cempty hidden>Nothing matches. <button class="btn-link" type="button" data-cclear>Clear search</button></p></div>
       <p class="foot-note" data-cnote></p>
+{SAVEBAR}
 {OVERLAY}
       <aside class="sheet sheet-right" id="cat-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="ce-title">
         <div class="sheet-header"><div class="sheet-title" id="ce-title">Edit</div><p class="sheet-desc" data-ce-sub></p></div>

@@ -206,6 +206,149 @@ About 30 categories fit on one screen, so the "Find a category" box is gone. Eac
 - Also corrected in Part C above: "Flipkart uses affid=offertag" describes the old site only.
 - Backend: docs/features/short-links-and-tags.md and migration-cutover.md updated; the import still copies Flipkart's id (offertag-backend db/import/load.sql:58) and needs a one-line fix there.
 
+### P-38 · Inbox: no handled step; deletion requests are acted on (26 Nov)
+- Feedback is a plain list, newest first, with Delete (and Undo) on each message. No Handled switch, no "Unhandled only" tick, no count.
+- Deletion requests (from the public delete-account form, for people who can't sign in) show only open ones, each with Delete account (confirm; removes it the same way as deleting from Account, backend #23 `deleteAccount()`) and Dismiss (Undo). Was: "Mark deleted", which only recorded it.
+- Counts: only open deletion requests are counted (tab, sidebar, Overview tile now "Deletion requests"). A signed-in user deleting from Account never reaches the Inbox.
+- Files: js/admin-c.js, js/db.js (inboxOpen), build/admin_c.py, build/admin.py.
+
+### P-39 · Filter chips at the top, no second Clear all (26 Nov)
+- What you picked (category, store, "80% off or more", price range, coupon) shows as chips above the deal list, each with an x to remove it. The Clear all that sat beside the chips is gone; the filter panel's Clear all (and the phone sheet's) is the one place (Adil: chips yes, Clear all once, as Amazon and Flipkart do).
+- Files: js/listing.js.
+
+### P-40 · Alerts page: 90% push is a pre-tick, not an automatic send (26 Nov)
+- The Alerts intro said deals at 90%+ "send one on their own". On the old site the posting form only pre-ticks Send notification at 90%+ (DealsController.php:1236) and the admin saves it. Text now says so (build/admin.py). Show on (Web + App / Web only / App only) stays: signed scope v3.18 ("website only / app only" deal setting) and the old site's deal_display_type.
+
+### P-41 · Admin Deals list: Move to top instead of drag; smarter pager (26 Nov)
+- Adil: with thousands of deals nobody drags rows, but Bump to top is needed. The drag handle, the "drag to move" hint and keyboard move are gone (reverses A-02's drag part). Each row has a Move to top icon, and the bulk bar has Move to top for ticked deals. The list shows the site order: newest first, with moved deals on top. Posted, Price and Views still sort.
+- Pager shows the first 3, the last 3 and the pages around the current one: 1 2 3 … 49 50 51 … 98 99 100. The deal picker's pager uses the same rule.
+- Files: js/admin.js (pageNums, pagerHtml, ACT.top), build/admin.py.
+
+### P-43 · Users: no per-person Amazon tag (26 Nov)
+- Adil: the admins don't need their own Amazon tag. Removed from the Users list, the edit form and the person page, and the "Poster tags" note on Affiliate tags. Links use the tags on the Affiliate tags page only.
+- Backend: drop the per-user tag field from the users table and the link builder, if it was planned.
+- Files: build/admin_c.py, build/data_export.py, js/admin-c.js.
+
+### P-44 · Social sharing: just the platforms and a sample post (26 Nov)
+- Adil: we set up OfferTag's own Meta and Pinterest apps for them, so the admin has nothing to connect. Removed Connect / Disconnect / Reconnect, the Pinterest board picker, the "What every post says" panel, the approval note and the History tab (and its /admin/social/history page).
+- The page now lists Facebook Page, Pinterest and Threads, each with the sample deal shown as a post there (same share text as Copy for WhatsApp).
+- Files: build/admin_c.py, build/routes.py, js/admin-c.js, js/admin-db.js, css/admin.css.
+
+### P-45 · Header: proper Sign in button and a clear light/dark switch (26 Nov)
+- Adil: the outline "Sign in" looked small and generic; the lone sun was too faint. Sign in is now a filled navy pill with a user icon (white in dark mode). The theme button is a sun/moon switch with both icons always visible and a knob on the current one.
+- Files: build/home.template.html (header source for every page), css/theme.css.
+
+### P-46 · Footer: bolder look, same content (26 Nov)
+- Adil: footer felt plain. Added the big "Bachat har shopping par." tagline (gold "shopping"), social icons in their brand colours, a gold rule under each column head, a soft glow on the navy, and a large faint OfferTag wordmark above the copyright line. Links and wording unchanged.
+- Files: build/footer.html, css/theme.css.
+
+### P-47 · Catalogue: a store keeps several affiliate IDs (26 Nov)
+- Adil: a store like Amazon can have many IDs; let the admin store all of them. Each row is "Used for" (fixed list: Website buy buttons, WhatsApp and short links, Google search visits, Facebook, Pinterest, Threads, Android app, Spare) + ID, no free-text names; one ID per place; Website buy buttons is the default. Rows, Add ID and remove; empty IDs and duplicates are refused. Affiliate tags still decides which ID goes on each link. Sample: Amazon has Website, WhatsApp, Google and Facebook IDs.
+- Backend: shops need a list of IDs (shop_affiliate_ids: shop_id, label, value), not one affiliate_value; the first is the default.
+- Files: build/admin_c.py, js/admin-c.js, js/admin-db.js, css/admin.css.
+
+### P-42 · Admin pages wait for Save (26 Nov)
+- Adil: admin changes must not save on their own. Pinned board ("every N" and slot order), Sponsored "Show on Home", the Users "can sign in" switch, and Catalogue order now use the same Unsaved changes · Discard · Save bar, with a leave warning. Unpin, Pin a deal, sheets with their own Save, and the one-click buttons on a user's page stay instant with Undo. A published blog post no longer autosaves (Update or Cmd+S); drafts still autosave because there is no Save draft button.
+- Files: js/admin.js (ADM.saveBar), js/admin-c.js, js/admin-d.js, build/admin.py (SAVEBAR), build/admin_c.py.
+
+### P-48 · Pantry rule: categories as chips (26 Nov)
+- Adil: the Pantry rule list wasted space. All categories now show as compact chips in the sheet (no inner scroll box); picked ones are highlighted.
+- Files: css/admin.css.
+
+### P-49 · Inbox feedback: Done and Reply thanks; no Sample tags (26 Nov)
+- Adil: deleting feedback had no use. Each message now has Reply thanks (opens a mail to the sender with a short thank-you that fits Issue, Suggestion or Appreciation, which the user picks on the website form) and Done (hides it, with Undo; kept, not deleted).
+- All "Sample" tags removed from admin pages; the Playground box already says it is a demo. The ADMIN badge stays.
+- Per-user Amazon tag stays removed (P-43, Adil confirmed).
+- Files: js/admin-c.js, build/admin_c.py, build/admin.py, build/admin_d.py.
+
+### P-50 · Security: flagged clicks keep our tag; no Let back in (26 Nov)
+- Adil: dropping our Amazon tag is not safe (shared mobile IPs mean real buyers) and nobody can ask to be let back in. A flagged IP (over 300 Shop Now clicks in 10 min) now only stops counting as views; its clicks keep our tag and nothing is blocked. The flag clears after a day, so the page is a read-only list.
+- Backend: changes X.5 (break test 6): flagged IPs must get the tagged link; only preview bots stay untagged, pending backend-ot.
+- Files: build/admin_e.py, js/admin-e.js.
+
+### P-51 · Social sharing shows Connected; Users has a role table (26 Nov)
+- Social sharing: each platform card shows a Connected status next to the account (sample: all connected). Backend: needs a per-platform status (connected / token expired) from the posting app setup.
+- Users: "What each role can do", a collapsible tick table of Super admin, Admin and User (website/app: view deals, edit own profile; no admin access), brought back in place of the one-line note (matches the pages admin_only() locks).
+- Files: build/admin_c.py, css/admin.css.
+
+### P-52 · Footer toned down (26 Nov)
+- Adil: P-46 was too much. Removed the big tagline, the giant faint wordmark, the glow and the brand-coloured social circles; the footer is back to the plain layout with only a small gold rule under each column title.
+- Files: build/footer.html, css/theme.css.
+
+### P-53 · Header: plain Sign in + tiny theme icon (26 Nov)
+- Adil: the filled Sign in button and sun/moon pill looked busy and like competitors. Sign in is now a plain text link; theme is one tiny icon: a moon in light mode, a sun in dark mode (Adil tried an on/off switch and preferred the plain icon). The menu keeps Light / Dark / Auto.
+- Files: build/home.template.html, build/theme_head.py, css/theme.css.
+
+### P-54 · Admin Sponsored: each ad its own card (26 Nov)
+- Two ads sat in one box with only a line between them; now separate cards with a 12px gap.
+- Files: css/admin.css.
+
+### P-55 · No "Check with app" label (26 Nov)
+- Removed the "Check with app" tag beside Android app rows in admin.
+- Files: build/admin_c.py.
+
+### P-56 · Contact: no WhatsApp / Telegram buttons (26 Nov)
+- They pointed at the one-way deal group and channel, so a support message would never reach the team. Contact now has the support email and the feedback form (goes to admin Inbox). The footer still links both channels for deal alerts.
+- Files: build/build.py.
+
+### P-57 · Admin sidebar: no "Admin" chip (26 Nov)
+- The chip beside the logo said "Admin" even for a Super admin. Removed it; the role already shows under the name at the top right. The admin sign-in page keeps its "Admin" label.
+- Files: build/admin.py.
+
+### P-58 · Footer redesign (26 Nov)
+- After a look at CashKaro, GrabOn, DealsHeaven, FreeKaaMaal and DealsMagnet (all: logo + 3–4 link columns + grey icon row): ours leads with "Get every deal, your way", four cards (WhatsApp, Telegram, Android app, Browser alerts), each with one line and one action. Then four short link groups (Deals, Browse, Help, Legal; no duplicate Contact, store list cut to Amazon and Flipkart), a plain commission line, and small Facebook / Instagram / LinkedIn icons beside the copyright. X dropped (no setting in admin).
+- Same day, Adil: the rounded cards looked AI-made. The four ways are now flat columns split by thin lines, with small squarer icons; the commission line has no box. Browser alerts shows its state: "On for this device · Turn off" (green dot) once on, and tapping again turns it off. The real site reads this from the browser's notification permission and push subscription, so it stays correct per device.
+- The Android app icon box was dark navy and blended into the footer; it is now Google Play green (#01875f).
+- Files also: js/site.js.
+- Files: build/footer.html, css/theme.css.
+
+### P-59 · Sponsored: one slot, one live ad (26 Nov)
+- Adil: Home has one ad slot, so showing a random one of several live ads made no sense. Admin tabs are now Live · Scheduled · Ended. Two switched-on ads can't share a day: saving or switching on an ad whose dates overlap another shows "Another ad runs 23 Nov – 13 Dec. One ad shows at a time, so pick dates outside that, or switch that ad off." Sample HomeNest ad now starts after Sharma's ends.
+- Backend needs the same overlap check on save (sponsored table), not only the screen.
+- Files: build/admin.py, build/build.py (seed dates), js/admin.js.
+
+### P-60 · Security tab hidden; old sponsored copies reset (26 Nov)
+- Adil: the flagged-IP page caused confusion (flagged sounded like blocked). The Security tab is out of the admin menu until the backend and website are done; the page file stays for later. Role table row no longer lists security.
+- Browsers that saved the old sample ads (two live at once) drop that copy once, so the one-slot list from P-59 shows.
+- Files: build/admin.py, build/admin_c.py, js/db.js.
+
+### P-61 · Feedback: reply by email, nothing removed (26 Nov)
+- Adil: keep every feedback message; no Done step. Each message with an email gets Reply, which opens a sheet filled from a ready template for its kind (Issue, Suggestion, Appreciation), editable, then Send reply. The row stays and shows "Replied 26 Nov" with Reply again.
+- Templates follow the usual support pattern (thank, say what happens next; for issues ask for a screenshot or deal link). Backend: send through SES from the support email in Site & app; store `replied_at` on the feedback row.
+- Files: build/admin_c.py, js/admin-c.js, css/admin.css.
+
+### P-62 · Alerts: Send alert and History tabs (26 Nov)
+- Adil: sent alerts are history and can grow long, so they get their own tab with a search box, newest first. Default picked: history kept 90 days, older rows load as you scroll (backend: paged list).
+- Files: build/admin.py, js/admin.js, css/admin.css.
+
+### P-63 · Admin buttons plainer (26 Nov)
+- Adil: buttons looked like an AI template. Main action is now solid brand blue with white text (was near-white), 6 px corners, no icon in front of text on main and outline buttons, no press shrink. Icon-only buttons unchanged. Confirm titles no longer end in a question mark ("Delete this deal", "Send a push alert").
+- Files: css/admin.css, js/admin.js, js/admin-c.js.
+
+### P-64 · Feedback: Open and reply (26 Nov)
+- Adil: long messages need opening. List cuts each message to two lines; every row has Open and reply (Open when there is no email). The sheet shows the kind, sender, time and full message, then the reply form with the template.
+- Files: build/admin_c.py, js/admin-c.js, css/admin.css.
+
+### P-65 · Admin template look, deeper pass (26 Nov)
+- Adil: still looked like an AI template. Deal rows: 9 icon buttons cut to Copy for WhatsApp, Edit and More; More lists Share, Pin, Feature, Move to top, Send push alert, Open public page, Delete as words. In-page tabs are underlined text (were pill boxes). Overview links have no arrows. Feedback rows: Open, plus Reply with a mail icon (P-63 had hidden it).
+- Files: js/admin.js, js/admin-c.js, build/admin.py, css/admin.css.
+
+### P-66 · Admin main button is Buy gold (26 Nov)
+- Adil picked option 3 of four brand colours (white, sky, gold, navy). Main button: gold #F5B000 with dark text, 4 px corners, weight 500. Small row actions (Edit, Open, Reply, Reset) are underlined text with no box. Merged Muiz's 307a793 (no handled state on feedback) before this; my P-38/P-61 already cover it, so my side was kept.
+- Files: css/admin.css.
+
+### P-67 · Feedback Reply is a boxed button (26 Nov)
+- Adil could not see Reply once P-66 made small actions plain text. Reply (mail icon) has a border again and turns gold on hover; Open stays as text.
+- Files: css/admin.css.
+
+### P-68 · Feedback: one Reply button, always (26 Nov)
+- Adil saw only "Open" in his browser: Reply was shown only when the sender looked like an email, and his saved playground data failed that check. Back to the simple row: one Reply button (mail icon) on every message; it opens the full message with the reply below. The Contact form requires an email, so every message can be answered.
+- Files: js/admin-c.js.
+
+### P-69 · Pinned board wording (26 Nov)
+- Adil found "Slot 1 · card 3" and the four-line intro confusing. Intro is one line: new deals keep coming in at the top of Top deals; pinned deals stay in place between them. Cards say "Spot 1, 2, 3" (no card number); summary reads "8 pinned deals, one after every 2 new deals". Logic unchanged.
+- Files: build/admin.py, js/admin.js.
+
 ### Notes from the public build (2026-11-25)
 
 **P-01 card research (what we copied and why).** Flipkart, Meesho and Ajio show the price, the struck MRP and "% off" on **one line**, read left to right. Amazon puts "-88%" before the price. Myntra puts "(88% OFF)" after the MRP. DesiDime and Slickdeals put the store and the posting time in a small top line above the title. Our card now follows that common order:

@@ -32,7 +32,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
 <div class="adm">
   <aside class="adm-side" id="adm-side" aria-label="Admin menu">
-    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
@@ -40,7 +40,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">4</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">1</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -76,7 +76,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     <main class="adm-content" id="main">
       <nav class="sec-tabs" aria-label="Deals"><a href="/admin/deal">All deals</a><a href="/admin/pinned" aria-current="page">Pinned board</a></nav>
       <div class="page-h">
-        <div><h1>Pinned board</h1><p>Pinned deals show on the Top deals page only, in a repeating slot every few cards, all the way down the feed. Slot 1 is the first pinned spot, slot 2 the next, and so on. <span class="desk-only">Drag a card to change the order; dropping on another card swaps the two.</span><span class="phone-only">Change the order with the slot menu on each card; picking a filled slot swaps the two.</span> When pinned deals run out, the rest of the slots show normal fresh deals.</p></div>
+        <div><h1>Pinned board</h1><p>New deals keep coming in at the top of Top deals; pinned deals stay in place between them. <span class="desk-only">Drag to change the order.</span><span class="phone-only">Change the order with the menu on each card.</span></p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="/top-deals" target="_blank" rel="noopener"><i data-lucide="external-link"></i>Preview on Top deals</a></div>
       </div>
       <section class="panel pin-gap">
@@ -84,6 +84,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
         <p class="pin-gap-h" data-pin-gap-h></p>
       </section>
       <div class="slots" data-slots role="list"></div>
+      <div class="savebar" data-savebar hidden><span>Unsaved changes</span><button class="btn btn-ghost btn-sm" type="button" data-discard>Discard</button><button class="btn btn-default btn-sm" type="button" data-save>Save</button></div>
       <p class="foot-note"><i data-lucide="keyboard"></i>Keyboard: focus a card, press Space to pick it up, arrow keys to move, Space to drop. On a phone, use the slot menu on each card.</p>
       <div class="popover pick-pop" id="pick-pop" hidden data-state="closed" role="dialog" aria-label="Pin a deal">
         <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Search title or paste link" data-pick-q aria-label="Search deals"></label>

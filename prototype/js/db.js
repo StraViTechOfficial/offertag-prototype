@@ -169,6 +169,7 @@
 
   // ---- whole-list collections (posters, sponsored, catalogue, inbox, users, settings …): seed until first change, then a full copy ----
   var COLL = {};
+  if (!get('mig-p59')) { del('c:sponsored'); set('mig-p59', '1'); }  // P-59: drop old saved ads that had two live at once
   DB.get = function (name) { if (!(name in COLL)) COLL[name] = getJ('c:' + name, undefined); var v = COLL[name]; return clone(v === undefined ? SEED.coll[name] : v); };
   DB.set = function (name, val) { COLL[name] = clone(val); setJ('c:' + name, val); emit(name); };
   DB.changed = function (name) { return getJ('c:' + name, undefined) !== undefined; };
@@ -192,7 +193,7 @@
     var list = DB.get(kind) || [];
     item = Object.assign({ id: now(), at: now(), done: false }, item); list.unshift(item); DB.set(kind, list); return item;
   };
-  DB.inboxOpen = function () { return (DB.get('feedback') || []).length + (DB.get('deletion') || []).filter(function (r) { return !r.done; }).length; };   // feedback has no handled state (2026-11-26)
+  DB.inboxOpen = function () { return (DB.get('deletion') || []).filter(function (r) { return !r.done; }).length; };   // P-38: only open deletion requests are counted
   DB.whenOf = function (r) { var at = r.at != null ? r.at : EPOCH - (r.ago || 0) * MIN; return H.ago((now() - at) / MIN); };
 
   // ---- catalogue (Admin → Catalogue writes here; the public pages read names, order and on/off) ----

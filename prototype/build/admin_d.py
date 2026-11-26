@@ -45,7 +45,6 @@ def build_blog_list():
       <div class="toolbar">
         {tabs('data-btab', [('all', 'All', len(BLOG_ADMIN)), ('draft', 'Drafts', n('draft')), ('scheduled', 'Scheduled', n('scheduled')), ('published', 'Published', n('published'))], 'all')}
         <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search posts</span><input class="input" type="search" placeholder="Search titles" data-bq></label>
-        <span class="tag-sample">Sample</span>
       </div>
       <div class="tbl-wrap"><table class="tbl ltbl blog-tbl">
         <thead><tr><th>Post</th><th>Status</th><th>Date</th><th class="num">Deals</th><th class="c-act"><span class="visually-hidden">Actions</span></th></tr></thead>

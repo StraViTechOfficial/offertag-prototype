@@ -100,6 +100,6 @@ for k in ('feedback', 'deletion'):
 _out('community.json', dict(
     comments=_cm, rx=[dict(e=e, label=l) for e, l in RX], rxNames=RX_NAMES,
     feedback=_inbox['feedback'], deletion=_inbox['deletion'],
-    users=[dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, tag=t, active=ac, last=l) for i, (n, e, p, r, j, t, ac, l) in enumerate(USERS)],
+    users=[dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, active=ac, last=l) for i, (n, e, p, r, j, ac, l) in enumerate(USERS)],
 ))
 print('data/: deals', len(D_OUT), '· comments', len(_cm), '· sponsored', len(_spons), '· blog', len(BLOG_ADMIN))

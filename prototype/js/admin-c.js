@@ -40,65 +40,11 @@
   function tagFor(k) { var t = TAGS && TAGS[k] && TAGS[k].amz; if (t) return t; return { fb: 'offertagfb-21' }[k] || ''; }
 
   /* =================== Social sharing =================== */
-  if (window.ADM_SOCIAL) (function () {
-    var S = window.ADM_SOCIAL, pending = A.params.get('approval') === 'pending';
-    var NAMES = { fb: 'Facebook Page', pin: 'Pinterest', th: 'Threads' }, LIMIT = { pin: 500, th: 500 };
-    var st = {}; S.channels.forEach(function (c) { st[c.k] = { on: c.state === 'on', note: c.note }; });
-    var panels = $$('[data-spanel]');
-    tabbed('data-stab', 'channels', function (k) { panels.forEach(function (p) { p.hidden = p.dataset.spanel !== k; }); });
-
-    function renderCh() {
-      $$('[data-ch]').forEach(function (li) {
-        var k = li.dataset.ch, s = st[k]; li.dataset.state = pending ? 'wait' : s.on ? 'on' : 'off';
-        $('[data-ch-status]', li).innerHTML = pending ? '<span class="pill pill-pending">Awaiting platform approval</span>'
-          : s.on ? '<span class="pill pill-live">Connected</span>' + (s.note ? '<small>' + esc(s.note) + '</small>' : '') : '<span class="pill">Not connected</span>';
-        $('[data-ch-acts]', li).innerHTML = pending ? '<button class="btn btn-outline btn-sm" type="button" disabled>Connect</button>'
-          : s.on ? (k === 'fb' ? '<button class="btn btn-outline btn-sm" type="button" data-reconnect>Reconnect</button>' : '') + '<button class="btn btn-ghost btn-sm" type="button" data-disconnect>Disconnect</button>'
-          : '<button class="btn btn-default btn-sm" type="button" data-connect>Connect</button>';
-        var sel = $('select', li); if (sel) sel.disabled = pending || !s.on;
-      });
-      if (window.OTDB) OTDB.set('social', { channels: S.channels.map(function (c) { return Object.assign({}, c, { state: st[c.k].on ? 'on' : 'off', note: st[c.k].note }); }), hist: S.hist });   // S25 playground
-      var n = $('[data-approval-note]'); if (n) n.classList.toggle('is-warn', pending);
-    }
-    $('[data-chs]').addEventListener('click', function (e) {
-      var b = e.target.closest('button'); if (!b) return; var li = b.closest('[data-ch]'), k = li.dataset.ch, s = st[k];
-      if (b.matches('[data-connect]')) { s.on = true; s.note = k === 'fb' ? 'expires in 60 days' : ''; renderCh(); toast(NAMES[k] + ' connected. Deals can be shared there now.'); }
-      else if (b.matches('[data-reconnect]')) { s.note = 'expires in 60 days'; renderCh(); toast('Facebook Page reconnected for 60 days'); }
-      else if (b.matches('[data-disconnect]')) A.confirmBox('Disconnect ' + NAMES[k] + '?', 'Deals stop sharing there until you connect again. Posts already shared stay up.', 'Disconnect', function () {
-        var was = { on: s.on, note: s.note }; s.on = false; s.note = ''; renderCh();
-        toast(NAMES[k] + ' disconnected', { icon: 'unplug', action: 'Undo', onAction: function () { s.on = was.on; s.note = was.note; renderCh(); } });
-      }, true);
-    });
-    var board = $('[data-pin-board]'); if (board) board.addEventListener('change', function () { toast('Pins now go to the “' + board.value + '” board'); });
-    renderCh();
-
-    /* changes.md A-15: one fixed text for every post (db.js H.shareText), shown here; nothing to edit */
-    (function () {
-      var d = window.OTDB ? OTDB.deals()[0] : null, t = $('[data-spv-text]'), im = $('[data-spv-img]'); if (!t || !d) return;
-      t.innerHTML = esc(OTDB.H.shareText(d)).replace(/\n/g, '<br>'); im.src = d.img;
-    })();
-
-    /* history */
-    var H = S.hist, fch = $('[data-hf="ch"]'), fres = $('[data-hf="res"]');
-    function renderH() {
-      var rows = H.filter(function (h) { return (!fch.value || h.ch === fch.value) && (!fres.value || (fres.value === 'ok') === (h.res === 'ok')); });
-      $('[data-hist]').innerHTML = rows.map(function (h) {
-        var i = H.indexOf(h), ok = h.res === 'ok';
-        return '<tr data-h="' + i + '"><td class="d-when" data-l="When">' + esc(h.when) + '</td><td class="c-title" data-l="Deal"><a href="' + h.page + '" target="_blank" rel="noopener">' + esc(h.t) + '</a></td><td data-l="Platform"><span class="ch-mark ch-' + h.ch + ' sm" aria-hidden="true">' + { fb: 'f', pin: 'P', th: '@' }[h.ch] + '</span>' + NAMES[h.ch] + '</td>'
-          + '<td data-l="Result">' + (ok ? '<span class="res ok"><i data-lucide="check"></i>Posted</span>' : '<span class="res bad"><i data-lucide="x"></i>' + esc(h.res) + '</span> <button class="btn btn-outline btn-sm" type="button" data-retry>Retry</button>') + '</td><td data-l="By">' + esc(h.by) + '</td></tr>';
-      }).join('');
-      $('[data-hist-empty]').hidden = rows.length > 0; A.icons();
-      if (window.OTDB) OTDB.set('social', { channels: S.channels.map(function (c) { return Object.assign({}, c, { state: st[c.k].on ? 'on' : 'off', note: st[c.k].note }); }), hist: H });
-    }
-    fch.addEventListener('change', renderH); fres.addEventListener('change', renderH);
-    $('[data-hist]').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-retry]'); if (!b) return; var h = H[+b.closest('tr').dataset.h];
-      if (!st[h.ch].on || pending) { toast(NAMES[h.ch] + ' is not connected. Connect it in Channels first.', { icon: 'info' }); return; }
-      b.disabled = true; b.textContent = 'Retrying…';
-      setTimeout(function () { h.res = 'ok'; h.when = 'now'; renderH(); flash($('[data-h="' + H.indexOf(h) + '"]')); toast('Posted to ' + NAMES[h.ch]); }, 700);
-    });
-    renderH();
+  if (window.ADM_SOCIAL) (function () {   // P-44: one sample deal shown as a post on each platform
+    var d = window.OTDB ? OTDB.deals()[0] : null; if (!d) return;
+    $$('[data-spc]').forEach(function (c) { $('[data-spv-img]', c).src = d.img; $('[data-spv-text]', c).innerHTML = esc(OTDB.H.shareText(d)).replace(/\n/g, '<br>'); });
   })();
+
 
   /* =================== Affiliate tags =================== */
   var tf = $('[data-tags]');
@@ -117,59 +63,62 @@
   })();
 
   /* =================== Inbox =================== */
+  // P-61: Feedback stays listed and gets Reply (email template); Deletion requests show only open ones, with Delete account and Dismiss
   if (window.ADM_INBOX) (function () {
-    // 2026-11-26: no handled / unhandled state on feedback; the Inbox just lists the messages
-    var D = window.ADM_INBOX, tab = 'feedback', only = { checked: false, closest: function () { return null; }, addEventListener: function () {} }, list = $('[data-ibx]');
+    var D = window.ADM_INBOX, tab = 'feedback', list = $('[data-ibx]');
     var KIND = { Issue: 'k-issue', Suggestion: 'k-sugg', Appreciation: 'k-thanks' };
-    // D-153 (plan.md B5): comments from the deal pages, seed + what people post in this browser. Kept apart from D: they need no "handled" step.
-    var DAYMS = 864e5;
-    function comments() {
-      if (!window.OTDB) return [];
-      return OTDB.comments().map(function (c) { var d = OTDB.deal(c.deal); return Object.assign({}, c, { dealT: d ? d.t : 'Deal removed', dealPage: d ? d.page : '' }); })
-        .sort(function (a, b) { return b.at - a.at; });
+    function open(k) { return k === 'feedback' ? D[k] : D[k].filter(function (x) { return !x.done; }); }  // P-61: feedback is never removed
+    function counts() {
+      var n = open('deletion').length, c = $('[data-tcount="deletion"]');
+      if (c) { c.textContent = n; c.toggleAttribute('data-zero', !n); }
+      A.setCount('inbox', n);
     }
-    function counts() { var tot = 0; Object.keys(D).forEach(function (k) { var n = k === 'feedback' ? D[k].length : D[k].filter(function (x) { return !x.done; }).length; tot += n; var c = $('[data-tcount="' + k + '"]'); if (c) { c.textContent = n; c.toggleAttribute('data-zero', !n); } }); A.setCount('inbox', tot); var cc = $('[data-tcount="comments"]'), nc = comments().filter(function (c) { return Date.now() - c.at < DAYMS; }).length; if (cc) { cc.textContent = nc; cc.toggleAttribute('data-zero', !nc); } }
+    var TPL = {  // P-61: one ready reply per kind; the backend sends it by email (SES)
+      Issue: ['We got your report', 'Hi,\n\nThanks for letting us know about this. We have passed it to the team and are checking it now.\n\nIf you can, reply with a screenshot or the deal link; it helps us fix it faster. We will write again once it is sorted.\n\nTeam OfferTag'],
+      Suggestion: ['Thanks for the idea', 'Hi,\n\nThanks for taking the time to share this idea. We have added it to our list for upcoming updates. Ideas from people who use OfferTag every day shape what we build next.\n\nHappy saving,\nTeam OfferTag'],
+      Appreciation: ['Thank you!', 'Hi,\n\nThank you for the kind words, it made our day. Keep an eye on the Loot deals for your next big saving.\n\nHappy saving,\nTeam OfferTag'] };
     function item(x) {
-      var h = '<li class="ib' + (x.done && tab !== 'feedback' ? ' is-done' : '') + '" data-id="' + x.id + '">';
-      if (tab === 'comments') return '<li class="ib ib-cm" data-cid="' + esc(String(x.id)) + '"><div class="ib-top"><b class="ib-name">' + esc(x.name || 'Member') + '</b>' + (x.admin ? '<span class="kind k-sugg">OfferTag</span>' : '') + '<span class="ib-who">' + (x.parent ? 'Reply · ' : '') + esc(x.when) + '</span></div><p class="ib-msg">' + esc(x.text) + '</p><div class="ib-acts">' + (x.dealPage ? '<a class="btn btn-outline btn-sm" href="' + x.dealPage + '#comments" target="_blank" rel="noopener"><i data-lucide="external-link"></i>' + esc(x.dealT.length > 48 ? x.dealT.slice(0, 47) + '…' : x.dealT) + '</a>' : '<span class="pill">' + esc(x.dealT) + '</span>') + '<button class="btn btn-ghost btn-sm danger" type="button" data-cdel><i data-lucide="trash-2"></i>Delete</button></div></li>';
-      if (tab === 'feedback') h += '<div class="ib-top"><span class="kind ' + KIND[x.kind] + '">' + x.kind + '</span><span class="ib-who">' + esc(x.who) + ' · ' + esc(x.when) + '</span></div><p class="ib-msg">' + esc(x.msg) + '</p>';
+      var h = '<li class="ib" data-id="' + x.id + '">';
+      if (tab === 'feedback') h += '<div class="ib-top"><span class="kind ' + (KIND[x.kind] || 'k-sugg') + '">' + esc(x.kind) + '</span><span class="ib-who">' + esc(x.who) + ' · ' + esc(x.when) + '</span></div><p class="ib-msg">' + esc(x.msg) + '</p><div class="ib-acts">' + (x.replied ? '<span class="fr-sent"><i data-lucide="check"></i>Replied ' + esc(x.replied) + '</span>' : '') + '<button class="btn btn-outline btn-sm keep-ic" type="button" data-fb-reply><i data-lucide="mail"></i>' + (x.replied ? 'Reply again' : 'Reply') + '</button></div>';   // P-61: reply by email from here; the row stays
       else h += '<div class="ib-top"><b class="ib-name">' + esc(x.name) + '</b><span class="ib-who">' + esc(x.email) + ' · ' + esc(x.phone) + ' · ' + esc(x.when) + '</span></div><p class="ib-msg">“' + esc(x.reason || 'No reason given') + '”</p><div class="ib-acts">'
-        + (x.done ? '<span class="pill' + (x.result && x.result.indexOf('Deleted') === 0 ? ' pill-live' : '') + '">' + esc(x.result || 'Handled') + '</span><button class="btn btn-ghost btn-sm" type="button" data-reopen>Reopen</button>'
-          : '<button class="btn btn-default btn-sm" type="button" data-mark-del>Mark deleted</button><button class="btn btn-ghost btn-sm" type="button" data-dismiss>Dismiss</button>') + '</div>';
+        + '<button class="btn destructive btn-sm" type="button" data-acc-del><i data-lucide="user-x"></i>Delete account</button><button class="btn btn-ghost btn-sm" type="button" data-dismiss>Dismiss</button></div>';
       return h + '</li>';
     }
     function render() {
-      var cm = tab === 'comments', ol = only.closest('label'); if (ol) ol.hidden = cm;
       var notes = document.querySelectorAll('[data-ibx-note]');
       for (var i = 0; i < notes.length; i++) notes[i].hidden = notes[i].getAttribute('data-ibx-note') !== tab;
-      if (cm) { var all = comments(), who = (A.params.get('q') || '').trim().toLowerCase(); if (who) all = all.filter(function (c) { return (c.name || '').toLowerCase().indexOf(who) === 0; }); list.innerHTML = (who ? '<li class="ib-filter">Comments by <b>' + esc(A.params.get('q')) + '</b> · <a href="' + A.withRole('/admin/comments') + '">Show all comments</a></li>' : '') + all.map(item).join(''); var e0 = $('[data-ibx-empty]'); e0.hidden = all.length > 0; e0.textContent = 'No comments yet.'; counts(); A.icons(); return; }
-      var rows = D[tab].filter(function (x) { return !only.checked || !x.done; });
+      var rows = open(tab);
       list.innerHTML = rows.map(item).join(''); var em = $('[data-ibx-empty]');
-      em.hidden = rows.length > 0; em.textContent = 'Nothing here yet.';
+      em.hidden = rows.length > 0; em.textContent = tab === 'deletion' ? 'No open requests.' : 'All caught up.';
       counts(); A.icons();
       if (window.ADM_PG) ADM_PG.saveInbox(D);   // S25 playground
     }
     function byId(id) { return D[tab].filter(function (x) { return x.id === +id; })[0]; }
-    function setDone(x, done, result, msg) {
-      var was = { done: x.done, result: x.result }, li = $('[data-id="' + x.id + '"]', list);
-      x.done = done; x.result = result;
-      if (li && only.checked && done) { li.classList.add('is-out'); setTimeout(render, 200); } else render();
-      toast(msg, { action: 'Undo', onAction: function () { x.done = was.done; x.result = was.result; render(); } });
-    }
+    function leave(li, then) { li.classList.add('is-out'); setTimeout(function () { then(); render(); }, 200); }
     tabbed('data-itab', 'feedback', function (k) { tab = k; render(); });
-    only.addEventListener('change', render);
-    list.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-cdel]'); if (!b || !window.OTDB) return;
-      var li = b.closest('[data-cid]'), id = li.dataset.cid; OTDB.deleteComment(id); li.classList.add('is-out'); setTimeout(render, 200);
-      toast('Comment deleted from the deal page', { action: 'Undo', onAction: function () { OTDB.restoreComment(id); render(); } });
+    var rx = null;
+    $('[data-fr-send]').addEventListener('click', function () {
+      var F = $('[data-fr]'), bad = [F.subject, F.body].filter(function (i) { var e = $('.err', i.closest('.fld')); e.hidden = !!i.value.trim(); return !e.hidden; });
+      if (bad.length) { bad[0].focus(); return; }
+      rx.replied = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }); A.closeSheet(); render(); toast('Reply sent to ' + rx.who);
     });
-    if (window.OTDB && OTDB.on) OTDB.on(function (w) { if (tab === 'comments' && (w === 'comments' || w === 'external')) render(); });
     list.addEventListener('click', function (e) {
-      var b = e.target.closest('button'), row = b && b.closest('[data-id]'); if (!row) return; var x = byId(row.dataset.id);   // D-153: comment rows (data-cid) have their own handler
-      var day = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-      if (b.matches('[data-mark-del]')) A.confirmBox('Record ' + x.name + '’s account as deleted?', 'Do this after the account is removed on the server. This button records it; it does not delete anything.', 'Record as deleted', function () { setDone(x, true, 'Deleted ' + day, 'Recorded as deleted'); });
-      else if (b.matches('[data-dismiss]')) setDone(x, true, 'Dismissed ' + day, 'Request dismissed');
-      else if (b.matches('[data-reopen]')) setDone(x, false, null, 'Request reopened');
+      var b = e.target.closest('button'), li = b && b.closest('[data-id]'); if (!li) return; var x = byId(li.dataset.id); if (!x) return;
+      var k = tab, day = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      if (b.matches('[data-fb-reply]')) {
+        var t = TPL[x.kind] || TPL.Issue, F = $('[data-fr]'); rx = x;
+        $('[data-fr-to]').textContent = x.kind + ' from ' + x.who + ' · ' + x.when + (x.replied ? ' · replied ' + x.replied : ''); $('[data-fr-msg]').textContent = x.msg;
+        F.subject.value = t[0]; F.body.value = t[1]; $$('.err', F).forEach(function (e) { e.hidden = true; });
+        A.openSheet($('#fb-reply'));  // P-68: one Reply button on every message; the sheet shows the full message above the reply
+      } else if (b.matches('[data-acc-del]')) {
+        A.confirmBox('Delete ' + x.name + '’s account', 'The account with ' + x.email + ' is removed and signed out everywhere, the same as deleting it from Account. If no account uses this email, the request just closes. This can’t be undone.', 'Delete account', function () {
+          leave(li, function () { x.done = true; x.result = 'Deleted ' + day; });
+          toast('Account deleted');
+        }, true);
+      } else if (b.matches('[data-dismiss]')) {
+        leave(li, function () { x.done = true; x.result = 'Dismissed ' + day; });
+        toast('Request dismissed', { action: 'Undo', onAction: function () { x.done = false; x.result = null; render(); } });
+      }
     });
   })();
 
@@ -200,7 +149,7 @@
     U = U.filter(function (u) { return u.role !== 'Member'; }).map(function (u) {   // older playground copies used Admin / Sub-admin
       var x = Object.assign({ active: true, last: '' }, u); if (x.role === 'Sub-admin') x.role = 'Admin'; else if (x.role === 'Admin' && x.id === 1) x.role = 'Super admin'; return x;
     });
-    var ME = A.SUB ? 2 : 1, sheet = $('#user-edit'), F = $('[data-ue]'), cur = null;
+    var ME = A.SUB ? 2 : 1, sheet = $('#user-edit'), F = $('[data-ue]'), cur = null, pend = {}, ubar = null;   // pend: on/off switches on the list, kept until Save
     function byId(id) { return U.filter(function (u) { return u.id === +id; })[0]; }
     function persist() { if (window.OTDB) OTDB.set('users', U); }
     function log(text, uid) { if (window.ADM_PG && ADM_PG.log) ADM_PG.log('settings', text, null, uid); }
@@ -214,28 +163,28 @@
       cur = u || null; F.reset(); $$('.err', F).forEach(function (x) { x.hidden = true; });
       $('#ue-title').textContent = u ? 'Edit ' + u.name : 'Add user';
       $('[data-ue-sub]').textContent = u ? 'Joined ' + u.joined : 'They sign in with a code sent to this email.';
-      if (u) { F.elements.name.value = u.name; F.elements.email.value = u.email; F.elements.tag.value = u.tag || ''; F.elements.active.checked = u.active; $$('input[name="role"]', F).forEach(function (r) { r.checked = r.value === u.role; }); }
+      if (u) { F.elements.name.value = u.name; F.elements.email.value = u.email; F.elements.active.checked = u.active; $$('input[name="role"]', F).forEach(function (r) { r.checked = r.value === u.role; }); }
       $('[data-ue-del]').hidden = !u || u.id === ME;
       A.openSheet(sheet);
     }
     function err(name, on) { var e = $('.err', F.elements[name].closest('.fld')); if (e) e.hidden = !on; return on; }
     $('[data-ue-save]').addEventListener('click', function () {
-      var f = F.elements, name = f.name.value.trim(), email = f.email.value.trim(), tag = f.tag.value.trim(), role = $('input[name="role"]:checked', F).value, active = f.active.checked, bad = false;
+      var f = F.elements, name = f.name.value.trim(), email = f.email.value.trim(), role = $('input[name="role"]:checked', F).value, active = f.active.checked, bad = false;
       bad = err('name', !name) || bad;
       bad = err('email', !/^\S+@\S+\.\S+$/.test(email) || U.some(function (x) { return x !== cur && x.email.toLowerCase() === email.toLowerCase(); })) || bad;
-      bad = err('tag', !!tag && !/^[a-z0-9][a-z0-9-]*-21$/i.test(tag)) || bad;
       if (bad) { var first = $('.err:not([hidden])', F); if (first) first.closest('.fld').querySelector('input').focus(); return; }
       if (cur && cur.role === 'Super admin' && (role !== 'Super admin' || !active) && supers().length === 1 && supers()[0] === cur) { A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
       var snap = JSON.stringify(U);
       if (cur) {
         if (cur.role !== role) log((role === 'Super admin' ? 'Made ' : 'Changed ') + cur.name + (role === 'Super admin' ? ' a Super admin' : ' to Admin'));
         if (cur.active !== active) log((active ? 'Turned on ' : 'Turned off ') + cur.name);
-        if (cur.name !== name || cur.email !== email || (cur.tag || '') !== tag) log('Edited ' + name + '’s details');
-        Object.assign(cur, { name: name, email: email, tag: tag, role: role, active: active });
+        if (cur.name !== name || cur.email !== email) log('Edited ' + name + '’s details');
+        Object.assign(cur, { name: name, email: email, role: role, active: active });
       } else {
-        var u = { id: U.reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1, name: name, email: email, phone: '', role: role, joined: new Date().toISOString().slice(0, 7), tag: tag, active: active, last: 'never' };
+        var u = { id: U.reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1, name: name, email: email, phone: '', role: role, joined: new Date().toISOString().slice(0, 7), active: active, last: 'never' };
         U.push(u); log('Added ' + name + ' as ' + role);
       }
+      if (cur) delete pend[cur.id];
       persist(); A.closeSheet(); draw();
       A.toast(cur ? 'Saved' : name + ' added. They get a sign-in code at ' + email + '.', { action: 'Undo', onAction: function () { U = JSON.parse(snap); persist(); draw(); } });
     });
@@ -244,7 +193,7 @@
       if (u.id === ME) { A.toast('You can’t delete yourself.', { icon: 'info' }); return; }
       if (u.role === 'Super admin' && supers().length === 1 && supers()[0] === u) { A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
       A.confirmBox('Delete ' + u.name + '?', 'They can’t sign in any more. The deals they posted stay on the site.', 'Delete user', function () {
-        var snap = JSON.stringify(U); U = U.filter(function (x) { return x !== u; }); log('Deleted user ' + u.name); persist();
+        var snap = JSON.stringify(U); U = U.filter(function (x) { return x !== u; }); delete pend[u.id]; log('Deleted user ' + u.name); persist();
         if (after) after(); else draw();
         A.toast(u.name + ' deleted', { action: 'Undo', onAction: function () { U = JSON.parse(snap); persist(); draw(); } });
       }, true);
@@ -258,24 +207,30 @@
       draw = function () {
         var s = q.value.trim().toLowerCase(), rows = U.filter(function (u) { return (!role.value || u.role === role.value) && (!s || (u.name + ' ' + u.email).toLowerCase().indexOf(s) > -1); });
         body.innerHTML = rows.map(function (u) {
-          return '<tr data-u="' + u.id + '"' + (u.active ? '' : ' class="is-off"') + '><td class="c-title" data-l="Name"><a class="u-name" href="' + userHref(u) + '"><span class="avatar">' + esc(u.name.charAt(0)) + '</span><span><b>' + esc(u.name) + (u.id === ME ? ' <small>(you)</small>' : '') + '</b><small>' + esc(u.email) + '</small></span></a></td>' +
+          var on = u.id in pend ? pend[u.id] : u.active;
+          return '<tr data-u="' + u.id + '"' + (on ? '' : ' class="is-off"') + '><td class="c-title" data-l="Name"><a class="u-name" href="' + userHref(u) + '"><span class="avatar">' + esc(u.name.charAt(0)) + '</span><span><b>' + esc(u.name) + (u.id === ME ? ' <small>(you)</small>' : '') + '</b><small>' + esc(u.email) + '</small></span></a></td>' +
             '<td data-l="Role">' + badge(u) + '</td>' +
-            '<td data-l="Status"><label class="switch" title="' + (u.active ? 'Turn off' : 'Turn on') + '"><input type="checkbox" data-uact' + (u.active ? ' checked' : '') + (u.id === ME ? ' disabled' : '') + ' aria-label="' + esc(u.name) + ' can sign in"><span></span></label></td>' +
+            '<td data-l="Status"><label class="switch" title="' + (on ? 'Turn off' : 'Turn on') + '"><input type="checkbox" data-uact' + (on ? ' checked' : '') + (u.id === ME ? ' disabled' : '') + ' aria-label="' + esc(u.name) + ' can sign in"><span></span></label></td>' +
             '<td class="d-when" data-l="Last signed in">' + esc(u.last || '—') + '</td>' +
-            '<td data-l="Amazon tag">' + (u.tag ? '<span class="mono">' + esc(u.tag) + '</span>' : '<span class="d-none">website tag</span>') + '</td>' +
             '<td class="c-act"><a class="btn btn-ghost btn-sm" href="' + userHref(u) + '">Open</a><button class="btn btn-ghost btn-icon btn-sm" type="button" data-uedit aria-label="Edit ' + esc(u.name) + '"><i data-lucide="pencil"></i></button></td></tr>';
         }).join('');
         $('[data-uempty]').hidden = rows.length > 0; $('[data-ucount]').textContent = rows.length + ' of ' + U.length; A.icons();
+        ubar.set(Object.keys(pend).length);
       };
+      ubar = A.saveBar({
+        save: function () { Object.keys(pend).forEach(function (k) { var u = byId(k); if (u) { u.active = pend[k]; log((u.active ? 'Turned on ' : 'Turned off ') + u.name); } }); pend = {}; persist(); draw(); A.toast('Saved. Users turned off can’t sign in now; their deals stay.'); },
+        discard: function () { pend = {}; draw(); }
+      });
       q.addEventListener('input', draw); role.addEventListener('change', draw);
       $('[data-uclear]').addEventListener('click', function () { q.value = ''; role.value = ''; draw(); q.focus(); });
       $('[data-unew]').addEventListener('click', function () { openForm(null); });
       body.addEventListener('click', function (e) { var b = e.target.closest('[data-uedit]'); if (b) openForm(byId(b.closest('tr').dataset.u)); });
       body.addEventListener('change', function (e) {
         var c = e.target.closest('[data-uact]'); if (!c) return; var u = byId(c.closest('tr').dataset.u);
-        if (!c.checked && u.role === 'Super admin' && supers().length === 1) { c.checked = true; A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
-        u.active = c.checked; log((u.active ? 'Turned on ' : 'Turned off ') + u.name); persist(); draw();
-        A.toast(u.active ? u.name + ' can sign in again' : u.name + ' can’t sign in now. Their deals stay.', { action: 'Undo', onAction: function () { u.active = !u.active; persist(); draw(); } });
+        var onSupers = U.filter(function (x) { return x.role === 'Super admin' && (x.id in pend ? pend[x.id] : x.active); });
+        if (!c.checked && u.role === 'Super admin' && onSupers.length === 1) { c.checked = true; A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
+        if (c.checked === u.active) delete pend[u.id]; else pend[u.id] = c.checked;
+        draw();
       });
       draw();
     }
@@ -289,7 +244,7 @@
         document.title = u.name + ' · OfferTag Admin';
         $('[data-up-av]').textContent = u.name.charAt(0); $('[data-up-name]').textContent = u.name + (u.id === ME ? ' (you)' : '');
         $('[data-up-sub]').textContent = u.email + (u.phone ? ' · ' + u.phone : '') + ' · joined ' + u.joined + ' · last signed in ' + (u.last || '—');
-        $('[data-up-badges]').innerHTML = badge(u) + status(u) + (u.tag ? '<span class="tchip mono">' + esc(u.tag) + '</span>' : '<span class="tchip">website tag</span>');
+        $('[data-up-badges]').innerHTML = badge(u) + status(u);
         var rb = $('[data-up="role"]'), ab = $('[data-up="active"]');
         $('span', rb).textContent = u.role === 'Super admin' ? 'Make Admin' : 'Make Super admin';
         $('span', ab).textContent = u.active ? 'Turn off' : 'Turn on';
@@ -357,6 +312,17 @@
       else r += '<td class="c-title" data-l="Name"><b>' + esc(x.name) + '</b></td><td data-l="Alias"><span class="mono">' + esc(x.alias) + '</span></td><td class="c-act"><span class="d-none">Read-only</span></td>';
       return r + '</tr>';
     }
+    var TABS = ['shops', 'categories', 'dealtypes'], baseOrd = {};   // saved order; dragging waits for Save
+    TABS.forEach(function (t) { baseOrd[t] = {}; (C[t] || []).forEach(function (x) { baseOrd[t][x.id] = x.order; }); });
+    function commit() {
+      if (!window.ADM_PG) return; var c2 = Object.assign({}, C);
+      TABS.forEach(function (t) { c2[t] = (C[t] || []).map(function (x) { return x.id in baseOrd[t] ? Object.assign({}, x, { order: baseOrd[t][x.id] }) : x; }); });
+      ADM_PG.saveCatalogue(c2);
+    }
+    var cbar = A.saveBar({
+      save: function () { TABS.forEach(function (t) { (C[t] || []).forEach(function (x) { baseOrd[t][x.id] = x.order; }); }); commit(); toast('Order saved', { icon: 'check' }); },
+      discard: function () { TABS.forEach(function (t) { (C[t] || []).forEach(function (x) { if (x.id in baseOrd[t]) x.order = baseOrd[t][x.id]; }); }); render(); }
+    });
     function sorted() { return C[tab].slice().sort(function (a, b) { return (a.order || 0) - (b.order || 0) || a.name.localeCompare(b.name); }); }
     function render() {
       var s = q.value.trim().toLowerCase(), all = sorted(), rows = all.filter(function (x) { return (!s || x.name.toLowerCase().indexOf(s) > -1) && (tab === 'types' || !only.checked || x.on); });
@@ -367,7 +333,7 @@
       $('[data-cat-active]').hidden = true;  var add = $('[data-cat-add]'); add.hidden = tab === 'types' || tab === 'dealtypes'; $('[data-cat-add-l]').textContent = 'Add ' + ONE[tab];  // P-24/P-25: no 'Active only' filter; Show on site lives in the edit sheet
       var tc = $('[data-tcount="' + tab + '"]'); if (tc) tc.textContent = C[tab].length;
       A.icons();
-      if (window.ADM_PG) ADM_PG.saveCatalogue(C);   // S25 playground: names, order, on/off and new ones reach the site
+      commit(); cbar.set(TABS.some(function (t) { return (C[t] || []).some(function (x) { return x.id in baseOrd[t] && baseOrd[t][x.id] !== x.order; }); }));   // S25 playground: names, saved order, on/off and new ones reach the site
     }
     function byId(id) { return C[tab].filter(function (x) { return x.id === +id; })[0]; }
     tabbed('data-ctab', 'shops', function (k) { tab = k; q.value = ''; render(); });
@@ -389,6 +355,8 @@
       return '<label class="fld"><span class="lab">' + label + req + (o.hint ? ' <small>' + o.hint + '</small>' : '') + '</span><input class="input' + (o.mono ? ' mono' : '') + '" type="' + (o.type || 'text') + '" name="' + name + '" id="' + id + '" value="' + esc(val == null ? '' : val) + '"' + (o.max ? ' maxlength="' + o.max + '"' : '') + (o.ro ? ' readonly' : '') + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.type === 'number' ? ' min="1" step="1" inputmode="numeric"' : '') + ' autocomplete="off">' + (o.cnt ? '<span class="cnt"><span data-cnt="' + name + '">' + (val || '').length + '</span>/' + o.max + '</span>' : '') + '<span class="err" hidden></span></label>';
     }
     var logoImg = null;
+    var AFF_USE = [['web', 'Website buy buttons'], ['short', 'WhatsApp and short links'], ['google', 'Google search visits'], ['fb', 'Facebook'], ['pin', 'Pinterest'], ['th', 'Threads'], ['app', 'Android app'], ['', 'Spare, not used yet']];   // P-47: fixed places, no free text
+    function affRow(a) { a = a || {}; var u = a.label != null && AFF_USE.some(function (x) { return x[0] === a.label; }) ? a.label : ''; return '<div class="aff-row"><label class="select"><select data-aff-l aria-label="Used for">' + AFF_USE.map(function (x) { return '<option value="' + x[0] + '"' + (x[0] === u ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select><i data-lucide="chevron-down"></i></label><input class="input mono" type="text" data-aff-id value="' + esc(a.id || '') + '" placeholder="e.g. offertag-21" spellcheck="false" aria-label="Affiliate ID"><button class="btn btn-ghost btn-icon btn-sm" type="button" data-aff-del aria-label="Remove this ID"><i data-lucide="x"></i></button></div>'; }   // P-47
     function openEdit(x) {
       editing = x; var n = !x; x = x || { name: '', label: '', aff: '', order: sorted().reduce(function (m, y) { return Math.max(m, y.order || 0); }, 0) + 1, on: true, steps: [], seo: '', slug: '', title: '', rule: '', n: 0, logo: '' };
       $('#ce-title').textContent = n ? 'Add ' + ONE[tab] : 'Edit ' + x.name;
@@ -398,7 +366,8 @@
         logoImg = x.logo || null;
         h = fld('name', 'Name', x.name, n ? { req: 1 } : { fixed: 'can’t be changed: its page is ranked in search' }) + fld('label', 'Card label', x.label, { req: 1, max: 13, cnt: 1, hint: 'on deal cards' })
           + '<div class="fld"><span class="lab">Logo <small>square or wide, on a white or clear background</small></span><div class="logo-row"><span class="lg big" data-logo-pv>' + (x.logo ? '<img src="' + x.logo + '" alt="">' : '<i data-lucide="image"></i>') + '</span><label class="btn btn-outline btn-sm">' + (x.logo ? 'Replace' : 'Upload') + '<input type="file" accept="image/*" hidden data-logo-in></label></div></div>'
-          + '<div class="grid2">' + '<input type="hidden" name="order" value="' + x.order + '">' + '<div class="fld"><span class="lab">Affiliate tag</span><small class="hint">Set in <a href="' + A.withRole('/admin/settings/tags') + '">Settings → Affiliate tags</a></small></div></div>'
+          + '<input type="hidden" name="order" value="' + x.order + '">'
+          + '<div class="fld"><span class="lab">Affiliate IDs <small>each ID is used only where you set it; Website buy buttons is the default for everything else</small></span><div class="aff-list" data-affs>' + (x.affs || []).map(affRow).join('') + '</div><button class="btn btn-outline btn-sm aff-add" type="button" data-aff-add><i data-lucide="plus"></i>Add ID</button><span class="err" hidden></span></div>'   // P-47
           + '<label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on !== false ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Show on site <small>untick to hide it without deleting it</small></span></label>'  // P-25: the old site's Active, as one tick
           + fld('seo', 'SEO description', x.seo, { area: 1, rows: 3, hint: 'shop page, search results' });
       } else if (tab === 'categories') {
@@ -416,6 +385,9 @@
       }
       form.innerHTML = h; A.icons();  // P-24: the four tabs are pages; they can't be deleted. P-35: categories and shops can't be deleted either (their page links and old deals depend on them); Show on site hides one
       var li = $('[data-logo-in]', form); if (li) li.addEventListener('change', function () { var file = li.files[0]; if (!file) return; var r = new FileReader(); r.onload = function () { logoImg = r.result; $('[data-logo-pv]', form).innerHTML = '<img src="' + r.result + '" alt="">'; }; r.readAsDataURL(file); });
+      var al = $('[data-affs]', form);
+      if (al) $('[data-aff-add]', form).addEventListener('click', function () { al.insertAdjacentHTML('beforeend', affRow()); A.icons(); al.lastElementChild.querySelector('input').focus(); });
+      if (al) al.addEventListener('click', function (e) { var d = e.target.closest('[data-aff-del]'); if (d) al.removeChild(d.closest('.aff-row')); });
       var lab = form.elements.label; if (lab) lab.addEventListener('input', function () { $('[data-cnt="label"]', form).textContent = lab.value.length; });
       if (n && tab === 'categories') form.elements.name.addEventListener('input', function () { form.elements.slug.value = form.elements.name.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''); });
       A.openSheet(sheet);
@@ -424,7 +396,7 @@
     $('[data-crows]').addEventListener('click', function (e) { if (e.target.closest('[data-cedit]')) openEdit(byId(e.target.closest('tr').dataset.c)); });
     $('[data-cat-add]').addEventListener('click', function () { openEdit(null); });
     // P-24: reorder by the 9-dot handle (pointer drag works with mouse and touch; arrow keys on the handle move one step)
-    function saveOrder() { $$('[data-crows] tr').forEach(function (tr, i) { var x = byId(tr.dataset.c); if (x) x.order = i + 1; }); render(); toast('Order saved', { icon: 'check' }); }
+    function saveOrder() { $$('[data-crows] tr').forEach(function (tr, i) { var x = byId(tr.dataset.c); if (x) x.order = i + 1; }); render(); }
     var tb = $('[data-crows]'), dr = null;
     tb.addEventListener('pointerdown', function (e) {
       var h = e.target.closest('[data-cdrag]'); if (!h || h.disabled || e.button > 0) return;
@@ -452,7 +424,14 @@
       $$('.err', form).forEach(function (e) { e.hidden = true; }); $$('[aria-invalid]', form).forEach(function (i) { i.removeAttribute('aria-invalid'); });
       if (bad.length) { bad.forEach(function (b) { fieldErr(b[0], b[1]); }); bad[0][0].focus(); return; }
       var o = { name: name, order: ord, on: F.on ? F.on.checked : true };
-      if (tab === 'shops') { o.label = F.label.value.trim(); o.seo = F.seo.value.trim(); o.logo = logoImg || ''; }
+      if (tab === 'shops') {
+        o.label = F.label.value.trim(); o.seo = F.seo.value.trim(); o.logo = logoImg || '';
+        o.affs = $$('.aff-row', form).map(function (r) { return { label: $('[data-aff-l]', r).value.trim(), id: $('[data-aff-id]', r).value.trim() }; }).filter(function (a) { return a.id || a.label; });   // P-47
+        var ids = o.affs.map(function (a) { return a.id.toLowerCase(); }), afe = $('[data-affs]', form).parentNode.querySelector('.err');
+        var amsg = o.affs.some(function (a) { return !a.id; }) ? 'Each row needs an ID.' : ids.some(function (v, i) { return ids.indexOf(v) !== i; }) ? 'This ID is listed twice.' : o.affs.some(function (a, i) { return a.label && o.affs.findIndex(function (b) { return b.label === a.label; }) !== i; }) ? 'Each place can use only one ID.' : '';
+        afe.textContent = amsg; afe.hidden = !amsg; if (amsg) return;
+        var web = o.affs.filter(function (a) { return a.label === 'web'; })[0]; o.aff = web ? web.id : (o.affs.length ? o.affs[0].id : '');
+      }
       if (tab === 'categories') { o.icon = (form.querySelector('input[name="icon"]:checked') || {}).value || 'tag'; o.title = F.title.value.trim(); o.seo = F.seo.value.trim(); if (!editing) o.slug = F.slug.value.trim(); }
       if (tab === 'dealtypes') {
         var R0 = rules(), R1 = JSON.parse(JSON.stringify(R0)), k1 = keyOf(editing);
@@ -465,7 +444,7 @@
         }
       }
       var t = tab, target = editing, prev = target ? JSON.parse(JSON.stringify(target)) : null, made;
-      if (target) Object.assign(target, o); else { made = Object.assign({ id: Date.now(), n: 0 }, o); C[t].push(made); }
+      if (target) Object.assign(target, o); else { made = Object.assign({ id: Date.now(), n: 0 }, o); C[t].push(made); baseOrd[t][made.id] = made.order; }
       A.closeSheet(); render(); flash($('[data-c="' + (target || made).id + '"]'));
       toast(target ? name + ' saved' : name + ' added', { action: 'Undo', onAction: function () { if (target) Object.assign(target, prev); else C[t].splice(C[t].indexOf(made), 1); render(); } });
     }

@@ -10,17 +10,16 @@ SEC_IPS = [  # SAMPLE: GET /admin/flagged-ips
 
 def build_security():
     body = f'''      <div class="page-h">
-        <div><h1>Security</h1><p>IPs the click counter flagged. Let one back in if real shoppers were caught.</p></div>
+        <div><h1>Security</h1><p>IPs the click counter flagged. Nothing to do here; this is for your information.</p></div>
       </div>
       <section class="panel fl-panel" data-fl>
         <div class="panel-h"><h2>Flagged IPs</h2><span class="fl-count" data-fl-count></span></div>
-        <p class="fl-intro">An IP with over 300 Shop Now clicks in 10 minutes is flagged. It still reaches the store, but without our Amazon tag, and its clicks don’t count as views. Nothing is blocked. A flag clears itself after a day.</p>
+        <p class="fl-intro">An IP with over 300 Shop Now clicks in 10 minutes is flagged. Its clicks still go to the store with our Amazon tag, so sales are never lost; they just don’t count as views. Nothing is blocked, and the flag clears itself after a day.</p>
         <div class="tbl-wrap"><table class="tbl ltbl fl-tbl">
-          <thead><tr><th>IP</th><th>Status</th><th>Added</th><th>Until</th><th><span class="visually-hidden">Action</span></th></tr></thead>
+          <thead><tr><th>IP</th><th>Status</th><th>Added</th><th>Until</th></tr></thead>
           <tbody data-fl-rows></tbody></table>
           <p class="empty" data-fl-empty hidden>No flagged IPs. A visitor with over 300 Shop Now clicks in 10 minutes shows up here.</p></div>
       </section>
-      <p class="foot-note"><i data-lucide="info"></i><span>Many mobile users in India share one IP, so one flagged IP can be hundreds of real people. Let an IP back in when real shoppers are caught by mistake.</span></p>
 {OVERLAY}
 {CONFIRM}'''
     shell('admin-security.html', 'Security', 'security', admin_only('Security', body),

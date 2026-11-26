@@ -32,7 +32,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
 <div class="adm">
   <aside class="adm-side" id="adm-side" aria-label="Admin menu">
-    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
@@ -40,7 +40,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">4</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">1</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin" aria-current="page"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -74,23 +74,24 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin" aria-current="page">Users</a><a href="/admin/security" data-role="admin">Security</a></nav>
+      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin" aria-current="page">Users</a></nav>
       <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Users is for Super admins only. Admins post, edit and delete deals, and see Overview, Deals and Alerts. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="page-h">
-        <div><h1>Users</h1><p>The people who run OfferTag. Each can have their own Amazon tag for the links they share.</p></div>
+        <div><h1>Users</h1><p>The people who run OfferTag.</p></div>
         <div class="page-h-acts"><button class="btn btn-default" type="button" data-unew><i data-lucide="user-plus"></i>Add user</button></div>
       </div>
-      <p class="role-line"><i data-lucide="shield"></i><span><b>Super admin</b> can do everything. <b>Admin</b> can post, edit and delete deals, but can’t change categories or stores.</span></p>
+      <details class="panel role-mx"><summary><i data-lucide="shield"></i>What each role can do</summary><table class="tbl mx-tbl"><thead><tr><th>Area</th><th>Super admin</th><th>Admin</th><th>User</th></tr></thead><tbody><tr><td>Overview</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Deals: post, edit, delete, share</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Pinned board</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Alerts</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Sponsored</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Blog</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Inbox</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Catalogue: shops, categories, deal types</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Settings: site and app, affiliate tags, social sharing</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Users: add, edit, turn off, delete</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><span class="mx-n" aria-label="No">—</span></td><td><span class="mx-n" aria-label="No">—</span></td></tr><tr><td>Website and app: view deals, edit own profile</td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td><td><i data-lucide="check" class="mx-y" aria-label="Yes"></i></td></tr></tbody></table><p class="mx-note">Users are the people who sign in on the website or app. They never open the admin and are not listed here.</p></details>
       <div class="toolbar">
         <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search users</span><input class="input" type="search" placeholder="Name or email" data-uq></label>
         <label class="select tb-sel"><select data-urole aria-label="Role"><option value="">Everyone</option><option>Super admin</option><option>Admin</option></select><i data-lucide="chevron-down"></i></label>
         <span class="count" data-ucount></span>
       </div>
       <div class="tbl-wrap"><table class="tbl ltbl users-tbl">
-        <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last signed in</th><th>Amazon tag</th><th class="c-act"><span class="visually-hidden">Actions</span></th></tr></thead>
+        <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last signed in</th><th class="c-act"><span class="visually-hidden">Actions</span></th></tr></thead>
         <tbody data-urows></tbody></table>
         <p class="empty" data-uempty hidden>No users match. <button class="btn-link" type="button" data-uclear>Clear search</button></p></div>
+      <div class="savebar" data-savebar hidden><span>Unsaved changes</span><button class="btn btn-ghost btn-sm" type="button" data-discard>Discard</button><button class="btn btn-default btn-sm" type="button" data-save>Save</button></div>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="user-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="ue-title">
         <div class="sheet-header"><div class="sheet-title" id="ue-title">Add user</div><p class="sheet-desc" data-ue-sub>They sign in with a code sent to this email.</p></div>
@@ -103,7 +104,6 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
               <label class="role-opt"><input type="radio" name="role" value="Admin" checked><span><b>Admin</b><small>Posts, edits and deletes deals. Can’t change categories or stores.</small></span></label>
               <label class="role-opt"><input type="radio" name="role" value="Super admin"><span><b>Super admin</b><small>Everything.</small></span></label>
             </div></div>
-          <label class="fld"><span class="lab">Amazon tag <small>optional; used on links this person shares</small></span><input class="input mono" type="text" name="tag" placeholder="e.g. offertag5-21" spellcheck="false" autocomplete="off"><span class="err" hidden>Amazon tags in India end in “-21”.</span></label>
           <label class="ckl"><span class="ck"><input type="checkbox" name="active" checked><span class="box"><i data-lucide="check"></i></span></span><span>Active <small>can sign in</small></span></label>
         </form>
         <div class="sheet-footer"><button class="btn btn-ghost danger" type="button" data-ue-del hidden><i data-lucide="trash-2"></i>Delete</button><span class="grow"></span><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ue-save>Save</button></div>
@@ -118,7 +118,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 </div>
 <div class="toaster" id="toaster" aria-live="polite"></div>
 <script src="/vendor/lucide.min.js"></script>
-<script>window.ADM_USERS = [{"id": 1, "name": "Adil", "email": "adil@offertag.in", "phone": "98xxxxxx01", "role": "Super admin", "joined": "2019-06", "tag": "offertag-21", "active": true, "last": "today"}, {"id": 2, "name": "Imran K.", "email": "imran@offertag.in", "phone": "", "role": "Admin", "joined": "2025-01", "tag": "offertag3-21", "active": true, "last": "today"}, {"id": 3, "name": "Neha P.", "email": "neha.p@offertag.in", "phone": "", "role": "Admin", "joined": "2025-08", "tag": "", "active": true, "last": "yesterday"}, {"id": 4, "name": "Farhan A.", "email": "farhan@offertag.in", "phone": "", "role": "Admin", "joined": "2024-04", "tag": "offertag4-21", "active": false, "last": "3 months ago"}];</script>
+<script>window.ADM_USERS = [{"id": 1, "name": "Adil", "email": "adil@offertag.in", "phone": "98xxxxxx01", "role": "Super admin", "joined": "2019-06", "active": true, "last": "today"}, {"id": 2, "name": "Imran K.", "email": "imran@offertag.in", "phone": "", "role": "Admin", "joined": "2025-01", "active": true, "last": "today"}, {"id": 3, "name": "Neha P.", "email": "neha.p@offertag.in", "phone": "", "role": "Admin", "joined": "2025-08", "active": true, "last": "yesterday"}, {"id": 4, "name": "Farhan A.", "email": "farhan@offertag.in", "phone": "", "role": "Admin", "joined": "2024-04", "active": false, "last": "3 months ago"}];</script>
 <script src="/js/db.js"></script>
 <script src="/js/render.js"></script>
 <script src="/js/admin-db.js"></script>

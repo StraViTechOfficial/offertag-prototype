@@ -169,9 +169,9 @@
     }
     function tick() { var el = $('[data-bsaved]'); if (dirty && !savedAt) { el.textContent = 'Unsaved changes'; return; } if (!savedAt) return; var s = Math.round((Date.now() - savedAt) / 1000); el.textContent = dirty ? 'Unsaved changes' : s < 5 ? 'Saved just now' : s < 60 ? 'Saved ' + s + ' s ago' : 'Saved ' + Math.round(s / 60) + ' min ago'; }
     function touch() { dirty = true; tick(); }
-    setInterval(function () { if (dirty && (F.title.value.trim() || body.textContent.trim())) save(true); else tick(); }, 10000);
+    setInterval(function () { if (dirty && post.status !== 'published' && (F.title.value.trim() || body.textContent.trim())) save(true); else tick(); }, 10000);   // a live post changes only with Update
     setInterval(tick, 1000);
-    window.addEventListener('beforeunload', function (e) { if (dirty) { save(true); } });
+    window.addEventListener('beforeunload', function (e) { if (!dirty) return; if (post.status === 'published') { e.preventDefault(); e.returnValue = ''; } else save(true); });
     $('[data-bsaved]').textContent = isNew ? 'Not saved yet' : post.status === 'draft' ? 'Draft, edited ' + (post.edited || 'earlier') : 'Saved';
 
     F.title.addEventListener('input', function () { if (!slugTouched && post.status !== 'published') F.slug.value = slugify(F.title.value); clearErr(F.title); touch(); });

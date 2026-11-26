@@ -4,7 +4,8 @@
 import datetime as _dt
 
 TODAY = _dt.date(2026, 11, 13)
-A_INBOX_COUNT = 4      # SAMPLE: 3 feedback messages + 1 open deletion request (no handled state on feedback)
+SAVEBAR = '      <div class="savebar" data-savebar hidden><span>Unsaved changes</span><button class="btn btn-ghost btn-sm" type="button" data-discard>Discard</button><button class="btn btn-default btn-sm" type="button" data-save>Save</button></div>'  # same bar as Settings; js saveBar() in admin.js
+A_INBOX_COUNT = 1      # SAMPLE: open deletion requests only; feedback has no count (changes.md P-38)
 # D-104: pinned slots are an open list (slot 1, 2, 3…); on Fresh, slot k sits at card k × PIN_EVERY (build.py, admin sets N)
 A_PIN = {d['file']: i + 1 for i, d in enumerate(pinned)}  # the 8 SAMPLE pinned deals the public site uses, in slot order
 
@@ -27,7 +28,7 @@ NAV = [
 _SEC = {
     'deals': [('all', 'All deals', 'admin-deals.html', 'all'), ('pinned', 'Pinned board', 'admin-pinned.html', 'all')],
     'settings': [('site', 'Site & app', 'admin-site.html', 'admin'), ('tags', 'Affiliate tags', 'admin-tags.html', 'admin'), ('social', 'Social sharing', 'admin-social.html', 'admin'),
-                 ('users', 'Users', 'admin-users.html', 'admin'), ('security', 'Security', 'admin-security.html', 'admin')],   # Roles merged into Users (changes.md A-13)
+                 ('users', 'Users', 'admin-users.html', 'admin')],   # Roles merged into Users (changes.md A-13); P-60: Security tab hidden until backend and website are done
 }
 SECTION_OF = {k: sec for sec, tabs in _SEC.items() for k, *_ in tabs}
 SECTION_OF.update({'post': 'deals', 'feedback': 'inbox', 'shops': 'catalogue', 'sponsored': 'promote'})   # Post a deal and the tabbed Inbox / Catalogue pages
@@ -68,7 +69,7 @@ def shell(fname, title, active, body, scripts='', after=''):
 <!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
 <div class="adm">
   <aside class="adm-side" id="adm-side" aria-label="Admin menu">
-    <div class="adm-brand"><a href="admin.html" aria-label="OfferTag admin home"><img src="assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+    <div class="adm-brand"><a href="admin.html" aria-label="OfferTag admin home"><img src="assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 {sidebar(active)}
@@ -118,17 +119,16 @@ def shell(fname, title, active, body, scripts='', after=''):
 def types_html(ts): return ''.join(f'<span class="tchip t-{t.lower()}">{"Top deal" if t == "Top" else t}</span>' for t in ts if t not in ('Fresh', 'Top'))
 
 # ---------- Overview (admin-tools §8) ----------
-INBOX_UNHANDLED = dict(feedback=2, deletion=1)   # matches build_inbox() SAMPLE rows (admin_c.py); total = A_INBOX_COUNT
 
 def build_overview():  # D-160: four counts, then what is live and what is pinned. Nothing repeated, no sample panels.
     today = [d for d in deals if d['agemin'] <= 1440]
     latest = sorted(deals, key=lambda d: d['agemin'])[:6]
     kpis = [
         ('Posted today', len(today), 'admin-deals.html?posted=today', 'View deals', 'today'),
-        ('Inbox', A_INBOX_COUNT, 'admin-inbox.html?tab=feedback', 'Open inbox', 'inbox'),
+        ('Deletion requests', A_INBOX_COUNT, 'admin-inbox.html?tab=deletion', 'Open requests', 'inbox'),
         ('Pinned on Top deals', len(A_PIN), 'admin-pinned.html', 'Pinned board', 'pinned'),
     ]
-    k = ''.join(f'<a class="kpi" href="{h}" data-kpi="{key}"><span class="kpi-l">{l}</span><b class="kpi-n">{v}</b><span class="kpi-a">{a} <i data-lucide="arrow-right"></i></span></a>' for l, v, h, a, key in kpis)
+    k = ''.join(f'<a class="kpi" href="{h}" data-kpi="{key}"><span class="kpi-l">{l}</span><b class="kpi-n">{v}</b><span class="kpi-a">{a}</span></a>' for l, v, h, a, key in kpis)
     # changes.md A-12: one Users tile, just the number (28,880 sign-ups, BRD p.1); not a link, no names anywhere
     k += '<div class="kpi kpi-static" data-kpi="users"><span class="kpi-l">Users</span><b class="kpi-n">28,880</b><span class="kpi-a">People with an account on the site or app</span></div>'
     rows = ''.join(f'<li><span class="t-time">{d["agetxt"]}</span><img src="{dimg(d)}" alt="" loading="lazy"><a class="t-title" href="{d["page"]}" target="_blank" rel="noopener">{E(d["t"])}</a><span class="t-meta">{E(d["store"])}</span>{types_html(d["types"][:1] if d["types"][0] != "Fresh" else d["types"][1:2])}</li>' for d in latest)
@@ -139,8 +139,8 @@ def build_overview():  # D-160: four counts, then what is live and what is pinne
       <div>
         <div class="kpis kpis-4">{k}</div>
         <div class="two-col ov-cols">
-          <section class="panel" data-ov-latest><div class="panel-h"><h2>Latest live deals</h2><a href="admin-deals.html">All deals <i data-lucide="chevron-right"></i></a></div><ul class="tlist">{rows}</ul></section>
-          <section class="panel" data-ov-pins><div class="panel-h"><h2>Pinned on Top deals</h2><a href="admin-pinned.html">Pinned board <i data-lucide="chevron-right"></i></a></div>
+          <section class="panel" data-ov-latest><div class="panel-h"><h2>Latest live deals</h2><a href="admin-deals.html">All deals</a></div><ul class="tlist">{rows}</ul></section>
+          <section class="panel" data-ov-pins><div class="panel-h"><h2>Pinned on Top deals</h2><a href="admin-pinned.html">Pinned board</a></div>
             <p class="pin-sum"><b>{len(pinned)}</b> pinned, one every <b>{PIN_EVERY}</b> cards on Top deals.</p>
             <ul class="tlist">{pins}</ul></section>
         </div>
@@ -170,8 +170,8 @@ ADM_ROWS = adm_rows()
 def adm_data(): return json.dumps(ADM_ROWS, ensure_ascii=False).replace('</', '<\\/')
 
 def build_deals():
-    # 2026-11-25 (changes.md A-01–A-03): no statuses; every action sits in the row as an icon; drag the grip (one row, or all ticked rows)
-    # to move deals up or down on the site; Clone, Copy buy link, Bump to top and Change status are gone; the menu keeps Delete only.
+    # 2026-11-25 (changes.md A-01–A-03): no statuses; every action sits in the row as an icon; Clone, Copy buy link, Bump to top and Change status are gone; the menu keeps Delete only.
+    # P-41: no drag order; Move to top (row icon and bulk) lifts deals to the top of the site; pager shows first, nearby and last pages.
     rows = ADM_ROWS
     sel = lambda name, label, opts: f'<label class="select tb-sel"><span class="visually-hidden">{label}</span><select data-f="{name}"><option value="">{label}</option>{"".join(f"<option value={chr(34)}{E(v)}{chr(34)}>{E(t)}</option>" for v, t in opts)}</select><i data-lucide="chevron-down"></i></label>'
     stores = sorted({r['store'] for r in rows}, key=lambda s: shop_by_name[s]['order'] if s in shop_by_name else 99)
@@ -197,13 +197,11 @@ def build_deals():
       </div>
       <div class="chips-row"><div class="chips" data-chips></div><span class="count" data-count-line></span>
         <label class="select per"><span class="visually-hidden">Rows per page</span><select data-per><option>25</option><option>50</option><option>100</option></select><i data-lucide="chevron-down"></i></label></div>
-      <p class="order-hint" data-order-hint><i data-lucide="grip-vertical"></i><span>Drag a row by its handle to move the deal up or down on the site. Tick several rows to move them together.</span></p>
       <div class="tbl-wrap">
         <table class="tbl dl-tbl" data-tbl>
           <thead><tr>
-            <th class="c-drag"><span class="visually-hidden">Move</span></th>
             <th class="c-ck"><label class="ck"><input type="checkbox" data-all aria-label="Select all on this page"><span class="box"><i data-lucide="check"></i></span></label></th>
-            <th class="c-deal"><button type="button" data-sort="pos" aria-sort="descending" title="The order deals show on the site">Deal</button></th>
+            <th class="c-deal">Deal</th>
             <th class="num"><button type="button" data-sort="p">Price</button></th>
             <th><button type="button" data-sort="age">Posted</button></th>
             <th class="num"><button type="button" data-sort="uniq" title="Each visitor counted once per deal">Views</button></th>
@@ -304,7 +302,7 @@ def build_deal_view():
         </section>
         <section class="dv-stats" aria-label="How this deal is doing" data-dv-stats></section>
         <div class="dv-grid">
-          <section class="panel dv-sec"><div class="panel-h"><h2>Shares</h2><span class="tag-sample">Sample</span></div><ul class="dv-shares" data-dv-shares></ul></section>
+          <section class="panel dv-sec"><div class="panel-h"><h2>Shares</h2></div><ul class="dv-shares" data-dv-shares></ul></section>
           <section class="panel dv-sec"><div class="panel-h"><h2>Links</h2></div><div class="dv-links" data-dv-links></div></section>
         </div>
         <section class="panel dv-sec" id="comments"><div class="panel-h"><h2>Comments <span class="adm-count muted" data-dv-ccount>0</span></h2><a class="side-a" href="#" target="_blank" rel="noopener" data-dv-cpage>See them on the deal page</a></div>
@@ -458,7 +456,7 @@ def build_pinned():
     data = [dict(id=r['id'], age=ages[i % len(ages)]) for i, r in enumerate(pins)]
     gaps = ''.join(f'<option value="{n}"{" selected" if n == PIN_EVERY else ""}>{n}</option>' for n in range(2, 11))
     body = f'''      <div class="page-h">
-        <div><h1>Pinned board</h1><p>Pinned deals show on the Top deals page only, in a repeating slot every few cards, all the way down the feed. Slot 1 is the first pinned spot, slot 2 the next, and so on. <span class="desk-only">Drag a card to change the order; dropping on another card swaps the two.</span><span class="phone-only">Change the order with the slot menu on each card; picking a filled slot swaps the two.</span> When pinned deals run out, the rest of the slots show normal fresh deals.</p></div>
+        <div><h1>Pinned board</h1><p>New deals keep coming in at the top of Top deals; pinned deals stay in place between them. <span class="desk-only">Drag to change the order.</span><span class="phone-only">Change the order with the menu on each card.</span></p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="fresh.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>Preview on Top deals</a></div>
       </div>
       <section class="panel pin-gap">
@@ -466,6 +464,7 @@ def build_pinned():
         <p class="pin-gap-h" data-pin-gap-h></p>
       </section>
       <div class="slots" data-slots role="list"></div>
+{SAVEBAR}
       <p class="foot-note"><i data-lucide="keyboard"></i>Keyboard: focus a card, press Space to pick it up, arrow keys to move, Space to drop. On a phone, use the slot menu on each card.</p>
       <div class="popover pick-pop" id="pick-pop" hidden data-state="closed" role="dialog" aria-label="Pin a deal">
         <label class="input-wrap"><i data-lucide="search"></i><input class="input" type="search" placeholder="Search title or paste link" data-pick-q aria-label="Search deals"></label>
@@ -488,8 +487,9 @@ def build_alerts():
         res = lambda ok, lab: f'<span class="{"ok" if ok == "ok" else "bad"}"><i data-lucide="{"check" if ok == "ok" else "x"}"></i>{lab}</span>'
         act = '<button class="btn btn-ghost btn-sm" type="button" data-retry>Retry app</button>' if a == 'bad' else '<button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button>'
         rows += f'<li><span class="t-time">{tm}</span><span class="t-title">{E(txt)}</span><span class="share-res">{res(w, "Web")}{res(a, "App")}</span>{act}</li>'
-    body = f'''      <div class="page-h"><div><h1>Alerts</h1><p>A push alert goes to everyone who turned on alerts on the website or in the app. Deals at 90% off or more send one on their own when published.</p></div></div>
-      <div class="two-col al">
+    body = f'''      <div class="page-h"><div><h1>Alerts</h1><p>A push alert goes to everyone who turned on alerts on the website or in the app. For deals at 90% off or more, Send push is ticked for you on the posting form; untick it to skip the alert.</p></div></div>
+      <div class="tabs-list adm-tabs al-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-altab="send" data-state="active" aria-selected="true">Send alert</button><button class="tabs-trigger" role="tab" type="button" data-altab="hist" aria-selected="false">History</button></div><!-- P-62: history is its own tab -->
+      <div class="two-col al" data-alpane="send">
         <section class="panel"><div class="panel-h"><h2>New alert</h2></div>
           <form class="al-form" data-al-form novalidate>
             <div class="fld"><span class="lab">Deal *</span>
@@ -503,7 +503,7 @@ def build_alerts():
         <details class="panel al-pv" open data-fold-phone><summary class="panel-h"><h2>Preview <small>as a phone shows it</small></h2><i data-lucide="chevron-down"></i></summary>
           <div class="notif-wrap"><div class="notif"><div class="notif-h"><span class="notif-ico">OT</span><b>OfferTag</b><small>now</small></div><b class="notif-t" data-nt>The deal title shows here</b><span class="notif-b" data-nb></span><img alt="" data-ni hidden></div></div></details>
       </div>
-      <section class="panel sent"><div class="panel-h"><h2>Sent</h2><span class="tag-sample">Sample</span></div><ul class="tlist" data-al-hist>{rows}</ul></section>
+      <section class="panel sent" data-alpane="hist" hidden><div class="panel-h al-hist-h"><h2>Sent alerts <small>newest first</small></h2><label class="input-wrap al-hq"><i data-lucide="search"></i><input class="input" type="search" placeholder="Search sent alerts" data-al-hq aria-label="Search sent alerts" autocomplete="off"></label></div><ul class="tlist" data-al-hist>{rows}</ul><p class="empty" data-al-hempty hidden>No sent alert matches.</p><p class="hint al-hnote">Older alerts load as you scroll. History keeps 90 days.</p></section>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet dialog" id="confirm" hidden data-state="closed" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-desc">
         <div class="sheet-header"><div class="sheet-title" id="cf-title"></div><p class="sheet-desc" id="cf-desc"></p></div>
@@ -518,11 +518,12 @@ def build_sponsored():
                start=x['start'], end=x['end'], on=x['on'], views=x['views'], clicks=x['clicks']) for x in SPONSORS]  # same records Home uses
     sp.append(dict(id=3, adv='FitZone Gym, Powai', title='FitZone: 3 months for the price of 2', line='Opening offer at our Powai branch.', cta='Join now', link='https://example.com/ad-3', img='assets/posters/festive.jpg', start='2026-10-01', end='2026-10-31', on=True, views=24980, clicks=511))
     body = f'''      <div class="page-h">
-        <div><h1>Sponsored</h1><p>A business sends you a picture; you add it with one button. It shows on Home, labelled "Sponsored". With more than one on, each visit shows one at random.</p></div>
+        <div><h1>Sponsored</h1><p>A business sends you a picture; you add it with one button. It shows on Home, labelled "Sponsored". There is one ad slot, so one ad runs at a time; schedule the next one for after it ends.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="index.html" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-sp-new><i data-lucide="plus"></i>Add sponsored ad</button></div>
       </div>
-      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-stab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-scount="cur"></span></button><button class="tabs-trigger" role="tab" data-stab="past" aria-selected="false">Ended <span class="adm-count muted" data-scount="past"></span></button></div>
+      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-stab="live" data-state="active" aria-selected="true">Live <span class="adm-count muted" data-scount="live"></span></button><button class="tabs-trigger" role="tab" data-stab="cur" aria-selected="false">Scheduled <span class="adm-count muted" data-scount="cur"></span></button><button class="tabs-trigger" role="tab" data-stab="past" aria-selected="false">Ended <span class="adm-count muted" data-scount="past"></span></button></div>
       <ol class="posters sp-list" data-sp-list></ol>
+{SAVEBAR}
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="sp-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="se-title">
         <div class="sheet-header"><div class="sheet-title" id="se-title">Add sponsored ad</div><p class="sheet-desc">A picture and one button. That’s all.</p></div>

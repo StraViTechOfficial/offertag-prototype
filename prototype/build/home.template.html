@@ -31,8 +31,8 @@
         <a class="btn btn-link nav-blog" href="blog.html" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span></a>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
         <!-- P-15: one-tap light/dark in the header; the menu keeps Light / Dark / Auto -->
-        <button class="btn btn-ghost btn-icon theme-flip" type="button" data-theme-flip aria-label="Switch to dark theme"><i data-lucide="sun" class="tf-sun"></i><i data-lucide="moon" class="tf-moon"></i></button>
-        <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>Sign in</a>
+        <a class="signin-link" href="login.html" data-signin-open data-when-guest>Sign in</a><!-- P-53: plain text link, then a tiny theme icon -->
+        <button class="theme-flip" type="button" data-theme-flip aria-label="Switch to dark theme"><i data-lucide="moon" class="tf-moon"></i><i data-lucide="sun" class="tf-sun"></i></button><!-- P-53: one tiny icon, moon in light, sun in dark -->
         <div class="dropdown account-menu" data-when-user hidden>
           <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
           <div class="menu" role="menu" hidden data-state="closed">

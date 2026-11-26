@@ -321,7 +321,13 @@
     } } catch (e) {}
   }
   // Browser alerts (prototype: the real site asks the browser for permission first)
-  document.querySelectorAll('[data-browser-alerts]').forEach(function (b) { b.addEventListener('click', function () { set(LS, 'ot-alerts', '1'); OT.toast('Browser alerts on for this device', 'check'); }); });
+  function alertsOn() { try { return localStorage.getItem('ot-alerts') === '1'; } catch (e) { return false; } }
+  function alertsShow() { document.querySelectorAll('.w-bell').forEach(function (b) { var on = alertsOn(); b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); var g = b.querySelector('.ft-way-go span'); if (g) g.textContent = on ? 'On for this device · Turn off' : 'Turn on'; }); }
+  document.querySelectorAll('[data-browser-alerts]').forEach(function (b) { b.addEventListener('click', function () {
+    var off = b.classList.contains('w-bell') && alertsOn();  // P-58: the footer card turns alerts off again
+    set(LS, 'ot-alerts', off ? '0' : '1'); OT.toast(off ? 'Browser alerts off for this device' : 'Browser alerts on for this device', off ? 'bell-off' : 'check'); alertsShow();
+  }); });
+  alertsShow();
 
   // hero = the BRD hottest-deals carousel (B02); admin off → ?hero=0 (Q-038)
   if (new URLSearchParams(location.search).get('hero') === '0') { var hero = document.getElementById('hero'); if (hero) hero.hidden = true; }

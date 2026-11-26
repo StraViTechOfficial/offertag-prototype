@@ -32,7 +32,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
 <div class="adm">
   <aside class="adm-side" id="adm-side" aria-label="Admin menu">
-    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
@@ -40,7 +40,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications" aria-current="page"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">4</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">1</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -74,8 +74,9 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <div class="page-h"><div><h1>Alerts</h1><p>A push alert goes to everyone who turned on alerts on the website or in the app. Deals at 90% off or more send one on their own when published.</p></div></div>
-      <div class="two-col al">
+      <div class="page-h"><div><h1>Alerts</h1><p>A push alert goes to everyone who turned on alerts on the website or in the app. For deals at 90% off or more, Send push is ticked for you on the posting form; untick it to skip the alert.</p></div></div>
+      <div class="tabs-list adm-tabs al-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-altab="send" data-state="active" aria-selected="true">Send alert</button><button class="tabs-trigger" role="tab" type="button" data-altab="hist" aria-selected="false">History</button></div><!-- P-62: history is its own tab -->
+      <div class="two-col al" data-alpane="send">
         <section class="panel"><div class="panel-h"><h2>New alert</h2></div>
           <form class="al-form" data-al-form novalidate>
             <div class="fld"><span class="lab">Deal *</span>
@@ -89,7 +90,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
         <details class="panel al-pv" open data-fold-phone><summary class="panel-h"><h2>Preview <small>as a phone shows it</small></h2><i data-lucide="chevron-down"></i></summary>
           <div class="notif-wrap"><div class="notif"><div class="notif-h"><span class="notif-ico">OT</span><b>OfferTag</b><small>now</small></div><b class="notif-t" data-nt>The deal title shows here</b><span class="notif-b" data-nb></span><img alt="" data-ni hidden></div></div></details>
       </div>
-      <section class="panel sent"><div class="panel-h"><h2>Sent</h2><span class="tag-sample">Sample</span></div><ul class="tlist" data-al-hist><li class="day">Today</li><li><span class="t-time">14:02</span><span class="t-title">74% off ABOUT SPACE Bed - (84 x 74 inches) King Size Bed</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="ok"><i data-lucide="check"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li><li><span class="t-time">11:40</span><span class="t-title">69% off Puma Mens Comfortcush Lite Running Shoe</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="bad"><i data-lucide="x"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-retry>Retry app</button></li><li class="day">Yesterday</li><li><span class="t-time">21:15</span><span class="t-title">Lakme Fluid SPF 50 PA++++ In-Vivo tested Sunscreen With 1% N · ₹104</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="ok"><i data-lucide="check"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li><li><span class="t-time">09:30</span><span class="t-title">72% off pTron Bassbuds Vortex Clips Wireless Open Ear Ea</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="ok"><i data-lucide="check"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li></ul></section>
+      <section class="panel sent" data-alpane="hist" hidden><div class="panel-h al-hist-h"><h2>Sent alerts <small>newest first</small></h2><label class="input-wrap al-hq"><i data-lucide="search"></i><input class="input" type="search" placeholder="Search sent alerts" data-al-hq aria-label="Search sent alerts" autocomplete="off"></label></div><ul class="tlist" data-al-hist><li class="day">Today</li><li><span class="t-time">14:02</span><span class="t-title">74% off ABOUT SPACE Bed - (84 x 74 inches) King Size Bed</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="ok"><i data-lucide="check"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li><li><span class="t-time">11:40</span><span class="t-title">69% off Puma Mens Comfortcush Lite Running Shoe</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="bad"><i data-lucide="x"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-retry>Retry app</button></li><li class="day">Yesterday</li><li><span class="t-time">21:15</span><span class="t-title">Lakme Fluid SPF 50 PA++++ In-Vivo tested Sunscreen With 1% N · ₹104</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="ok"><i data-lucide="check"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li><li><span class="t-time">09:30</span><span class="t-title">72% off pTron Bassbuds Vortex Clips Wireless Open Ear Ea</span><span class="share-res"><span class="ok"><i data-lucide="check"></i>Web</span><span class="ok"><i data-lucide="check"></i>App</span></span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li></ul><p class="empty" data-al-hempty hidden>No sent alert matches.</p><p class="hint al-hnote">Older alerts load as you scroll. History keeps 90 days.</p></section>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet dialog" id="confirm" hidden data-state="closed" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-desc">
         <div class="sheet-header"><div class="sheet-title" id="cf-title"></div><p class="sheet-desc" id="cf-desc"></p></div>

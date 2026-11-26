@@ -295,7 +295,7 @@ def side_panel():
 # One ad shows per page view; with more than one live, site.js picks one at random (rotation). Links are rel="sponsored nofollow" (ASCI label).
 SPONSORS = [
     dict(id=1, adv='Sharma Electronics, Andheri', img='electronics', title='Sharma Electronics: up to 40% off headphones', line='Walk-in store deals this week. Free delivery across Mumbai.', cta='Visit store', href='#sponsored-1', start='2026-11-10', end='2026-11-30', on=True, views=18420, clicks=402),
-    dict(id=2, adv='HomeNest Interiors', img='home', title='HomeNest: modular kitchens from ₹89,000', line='Free design visit and 10-year warranty. Book this month.', cta='Book a visit', href='#sponsored-2', start='2026-11-12', end='2026-12-14', on=True, views=6210, clicks=97),
+    dict(id=2, adv='HomeNest Interiors', img='home', title='HomeNest: modular kitchens from ₹89,000', line='Free design visit and 10-year warranty. Book this month.', cta='Book a visit', href='#sponsored-2', start='2026-12-01', end='2026-12-31', on=True, views=6210, clicks=97),
 ]
 def sponsor_card(x, where):
     return (f'<a class="sp-card sp-{where}" href="{x["href"]}" target="_blank" rel="sponsored nofollow noopener" data-sp="{x["id"]}" aria-label="Sponsored: {E(x["title"])}">'
@@ -765,7 +765,6 @@ def build_static():
   <div class="page-head"><h1>Contact</h1></div>
   <section class="card form-sec" aria-label="Ways to reach us">
     <a class="contact-mail" href="mailto:support@offertag.in"><i data-lucide="mail"></i>support@offertag.in</a>
-    <div class="contact-actions"><a class="btn btn-default" href="#wa" target="_blank" rel="noopener">WhatsApp</a><a class="btn btn-outline" href="#tg" target="_blank" rel="noopener">Telegram</a></div>
   </section>
   <form class="card form-sec" id="feedback-form" novalidate aria-labelledby="h-feedback">
     <h2 class="form-title" id="h-feedback">Send feedback</h2>

@@ -80,6 +80,18 @@
     return new Promise(function (res, rej) { var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') ? res() : rej(); } catch (e) { rej(e); } ta.remove(); });
   }
 
+  /* ---------- save bar for lists (order, switches): same look as dirtyForm in admin-c.js; nothing is stored until Save ---------- */
+  function saveBar(o) {
+    var bar = $('[data-savebar]'), dirty = false;
+    function set(d) { dirty = !!d; if (bar) bar.hidden = !dirty; }
+    if (bar) {
+      $('[data-discard]', bar).addEventListener('click', function () { o.discard(); set(false); toast('Changes discarded', { icon: 'undo-2' }); });
+      $('[data-save]', bar).addEventListener('click', function () { o.save(); set(false); });
+    }
+    window.addEventListener('beforeunload', function (e) { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+    return { set: set };
+  }
+
   /* ---------- sheets: drawer + confirm dialog ---------- */
   var sheetOverlay = $('[data-overlay]'), openSheetEl = null, sheetFocus = null;
   function openSheet(el) {
@@ -158,9 +170,22 @@
   /* =================== All deals (changes.md A-01–A-03) =================== */
   var rowMenu = $('#row-menu'), menuId = null, menuBtn = null;
   function closeRowMenu(refocus) { if (!rowMenu || rowMenu.hidden) return; rowMenu.dataset.state = 'closed'; setTimeout(function () { rowMenu.hidden = true; }, 120); if (refocus && menuBtn) menuBtn.focus(); menuBtn = null; }
+  // P-41: pager shows the first 3, the last 3 and the pages around the current one, with … between (1 2 3 … 9 10 11 … 98 99 100)
+  function pageNums(cur, n) {
+    var out = [], last = 0;
+    for (var i = 1; i <= n; i++) {
+      if (i <= 3 || i > n - 3 || Math.abs(i - cur) <= 1) { if (last && i - last > 1) out.push(0); out.push(i); last = i; }
+    }
+    return out;
+  }
+  function pagerHtml(attr, cur, n) {
+    var pg = '<button type="button" ' + attr + '="' + (cur - 1) + '"' + (cur === 1 ? ' disabled' : '') + ' aria-label="Previous page"><i data-lucide="chevron-left"></i></button>';
+    pageNums(cur, n).forEach(function (i) { pg += i ? '<button type="button" ' + attr + '="' + i + '"' + (i === cur ? ' aria-current="page"' : '') + '>' + i + '</button>' : '<span class="pg-gap">…</span>'; });
+    return pg + '<button type="button" ' + attr + '="' + (cur + 1) + '"' + (cur === n ? ' disabled' : '') + ' aria-label="Next page"><i data-lucide="chevron-right"></i></button>';
+  }
   if (window.ADM_DEALS && $('[data-rows]')) (function () {
     var model = window.ADM_DEALS.map(function (d, i) { var x = Object.assign({}, d); if (!x.pos) x.pos = Date.now() - (x.age || i) * 60000; return x; });
-    var S = { q: params.get('q') || '', f: {}, sort: 'pos', dir: -1, page: 1, per: 25, sel: new Set() };
+    var S = { q: params.get('q') || '', f: {}, sort: 'pos', dir: -1, page: 1, per: 25, sel: new Set() };   // P-41: site order (newest first; Move to top lifts a deal); no drag
     if (params.get('posted') === 'today') S.f.posted = 'today';
     var LABEL = { type: { Top: 'Top deal', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }, pin: { yes: 'Pinned', no: 'Not pinned' }, feat: { yes: 'Featured', no: 'Not featured' }, display: { '1': 'Web + App', '2': 'Web only', '3': 'App only' }, posted: { today: 'Posted today', week: 'Last 7 days' } };
     var byId = function (id) { return model.filter(function (d) { return d.id === id; })[0]; };
@@ -186,13 +211,11 @@
     function cmp(a, b) { var k = S.sort, x = a[k], y = b[k]; return (x < y ? -1 : x > y ? 1 : 0) * S.dir; }
     var MAIN = ['Loot', 'Pantry', 'New', 'Top'];  // P-13: Top is every deal, so it comes last
     function mainType(ts) { for (var i = 0; i < MAIN.length; i++) if (ts.indexOf(MAIN[i]) > -1) return MAIN[i]; return ts[0]; }
-    function canDrag() { return S.sort === 'pos' && S.dir === -1; }
     function ib(k, icon, label, t40, on) { return '<button class="btn btn-ghost btn-icon btn-sm q-act' + (on ? ' is-on' : '') + '" type="button" data-quick="' + k + '"' + (on != null ? ' aria-pressed="' + !!on + '"' : '') + ' title="' + label + '" aria-label="' + label + ': ' + t40 + '"><i data-lucide="' + icon + '"></i></button>'; }
     function rowH(d) {
       var ck = S.sel.has(d.id) ? ' checked' : '', mt = mainType(d.types), t40 = esc(d.t.slice(0, 40)), view = withRole(ROUTES.view(d.id));
       var flags = (d.pin ? '<span class="d-flag d-pin" title="Pinned, slot ' + d.pin + ' on Top deals"><i data-lucide="pin"></i>Pinned ' + d.pin + '</span>' : '') + (d.featured ? '<span class="d-flag d-feat" title="Featured in Hot deals on Home"><i data-lucide="star"></i>Featured</span>' : '');
       return '<tr data-id="' + d.id + '"' + (S.sel.has(d.id) ? ' class="is-sel"' : '') + '>' +
-        '<td class="c-drag"><button class="drag-h" type="button" data-drag title="' + (canDrag() ? 'Drag to move on the site' : 'Sort by Deal (site order) to drag') + '" aria-label="Move ' + t40 + ' (arrow keys)"' + (canDrag() ? '' : ' disabled') + '><i data-lucide="grip-vertical"></i></button></td>' +
         '<td class="c-ck"><label class="ck"><input type="checkbox" data-sel' + ck + ' aria-label="Select ' + t40 + '"><span class="box"><i data-lucide="check"></i></span></label></td>' +
         '<td class="c-deal"><div class="d-cell"><img src="' + d.img + '" alt="" loading="lazy"><div><a href="' + view + '" title="Open this deal">' + esc(d.t) + '</a>' +
           '<span class="d-sub">' + esc(d.store) + ' · ' + esc(d.cat) + (mt ? ' <span class="tchip t-' + mt.toLowerCase() + '">' + LABEL.type[mt] + '</span>' : '') + flags + '</span></div></div></td>' +
@@ -200,10 +223,7 @@
         '<td class="m d-when">' + esc(d.when) + '</td>' +
         '<td class="m num" title="' + INR.format(d.views) + ' total views · ' + INR.format(d.clicks) + ' Buy clicks">' + INR.format(d.uniq) + '</td>' +
         '<td class="c-act"><div class="row-acts">' +
-          ib('wa', 'copy', 'Copy for WhatsApp', t40) + ib('share', 'share-2', 'Share', t40) +
-          ib('pin', 'pin', d.pin ? 'Unpin' : 'Pin', t40, !!d.pin) + ib('feat', 'star', d.featured ? 'Unfeature' : 'Feature on Home', t40, !!d.featured) +
-          ib('push', 'bell-ring', 'Send push alert', t40) +
-          '<a class="btn btn-ghost btn-icon btn-sm q-act" href="' + esc(d.page) + '" target="_blank" rel="noopener" title="Open public page" aria-label="Open public page: ' + t40 + '"><i data-lucide="external-link"></i></a>' +
+          ib('wa', 'copy', 'Copy for WhatsApp', t40) +
           '<a class="btn btn-ghost btn-icon btn-sm q-act" href="' + view + '#edit" title="Edit" aria-label="Edit ' + t40 + '"><i data-lucide="pencil"></i></a>' +
           '<button class="btn btn-ghost btn-icon btn-sm" type="button" data-row-menu aria-haspopup="menu" title="More" aria-label="More for ' + t40 + '"><i data-lucide="ellipsis-vertical"></i></button></div></td>' +
         '<td class="c-meta"><b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span> <span>' + esc(d.when) + '</span> <span>' + INR.format(d.uniq) + ' views</span></td></tr>';
@@ -218,17 +238,13 @@
       flashIds.forEach(function (id) { var tr = $('tr[data-id="' + id + '"]'); if (tr) tr.classList.add('is-new'); }); flashIds = [];
       $('[data-empty]').hidden = total > 0; $('[data-tbl]').hidden = total === 0;
       $('[data-count-line]').textContent = total ? (start + 1) + '–' + (start + view.length) + ' of ' + total + ' deal' + (total === 1 ? '' : 's') : '0 deals';
-      var hint = $('[data-order-hint] span'); if (hint) hint.innerHTML = canDrag() ? 'Drag a row by its handle to move the deal up or down on the site. Tick several rows to move them together.' : 'Sorted by ' + ({ p: 'price', age: 'posted time', uniq: 'views' }[S.sort] || S.sort) + '. <button type="button" class="btn-link" data-site-order>Back to site order</button> to drag deals.';
       var nf = Object.keys(S.f).filter(function (k) { return S.f[k]; }).length, fc = $('[data-fcount]');
       if (fc) { fc.textContent = nf; fc.hidden = !nf; }
       var chips = Object.keys(S.f).filter(function (k) { return S.f[k]; }).map(function (k) { return '<button type="button" class="chip" data-chip="' + k + '">' + esc(LABEL[k] ? LABEL[k][S.f[k]] : S.f[k]) + '<i data-lucide="x"></i></button>'; });
       if (S.q) chips.unshift('<button type="button" class="chip" data-chip="q">“' + esc(S.q) + '”<i data-lucide="x"></i></button>');
       $('[data-chips]').innerHTML = chips.join('') + (chips.length ? '<button type="button" class="btn-link" data-clear>Clear all</button>' : '');
       $$('select[data-f]').forEach(function (s) { s.classList.toggle('is-set', !!s.value); });
-      var pg = '<button type="button" data-page="' + (S.page - 1) + '"' + (S.page === 1 ? ' disabled' : '') + ' aria-label="Previous page"><i data-lucide="chevron-left"></i></button>';
-      for (var i = 1; i <= pages; i++) pg += '<button type="button" data-page="' + i + '"' + (i === S.page ? ' aria-current="page"' : '') + '>' + i + '</button>';
-      pg += '<button type="button" data-page="' + (S.page + 1) + '"' + (S.page === pages ? ' disabled' : '') + ' aria-label="Next page"><i data-lucide="chevron-right"></i></button>';
-      $('[data-pager]').innerHTML = total > S.per ? pg : '';
+      $('[data-pager]').innerHTML = total > S.per ? pagerHtml('data-page', S.page, pages) : '';
       $$('[data-sort]').forEach(function (b) { if (b.dataset.sort === S.sort) b.setAttribute('aria-sort', S.dir === 1 ? 'ascending' : 'descending'); else b.removeAttribute('aria-sort'); });
       var ids = view.map(function (d) { return d.id; }), n = ids.filter(function (id) { return S.sel.has(id); }).length, all = $('[data-all]');
       all.checked = ids.length > 0 && n === ids.length; all.indeterminate = n > 0 && n < ids.length;
@@ -238,18 +254,13 @@
     function snapshot() { var m = JSON.stringify(model), sel = Array.from(S.sel); return function () { model = JSON.parse(m); S.sel = new Set(sel); render(); }; }
     function done(msg, undo) { render(); toast(msg, undo ? { action: 'Undo', onAction: undo } : {}); }
     function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
-    function siteOrder() { return model.slice().sort(function (a, b) { return b.pos - a.pos; }); }
-    // place `moved` (in this order) just above `before` (a deal) in the site order, or at the end when before is null
-    function place(moved, before) {
-      var ids = moved.map(function (d) { return d.id; }), rest = siteOrder().filter(function (d) { return ids.indexOf(d.id) < 0; });
-      var at = before ? rest.indexOf(before) : rest.length, above = rest[at - 1], below = rest[at];
-      var hi = above ? above.pos : Math.max(Date.now(), (rest[0] ? rest[0].pos : 0)) + moved.length + 1, lo = below ? below.pos : (above ? above.pos - (moved.length + 1) * 60000 : Date.now() - 60000);
-      var step = (hi - lo) / (moved.length + 1);
-      moved.forEach(function (d, i) { d.pos = hi - step * (i + 1); flashIds.push(d.id); });
-    }
-
     var ACT = {
-      top: function (ds) { var u = snapshot(), first = siteOrder()[0]; var ordered = siteOrder().filter(function (d) { return ds.indexOf(d) > -1; }); place(ordered, first && ordered.indexOf(first) < 0 ? first : siteOrder().filter(function (d) { return ordered.indexOf(d) < 0; })[0] || null); if (!canDrag()) { S.sort = 'pos'; S.dir = -1; } S.page = 1; done(ds.length === 1 ? 'Moved to the top of the site' : plural(ds.length, 'deal') + ' moved to the top', u); },
+      top: function (ds) {
+        var u = snapshot(), t = Date.now() + ds.length;
+        ds.slice().sort(function (a, b) { return b.pos - a.pos; }).forEach(function (d, i) { d.pos = t - i; flashIds.push(d.id); });
+        S.sort = 'pos'; S.dir = -1; S.page = 1;
+        done(ds.length === 1 ? 'Moved to the top of the site' : plural(ds.length, 'deal') + ' moved to the top', u);
+      },
       wa: function (ds) { copy(ds.map(shareTextOf).join('\n\n— — —\n\n')).then(function () { toast(ds.length === 1 ? 'Copied for WhatsApp' : plural(ds.length, 'deal') + ' copied for WhatsApp'); }); },
       pin: function (ds) {
         var u = snapshot();
@@ -263,11 +274,11 @@
         if (ds.length === 1) { var d = ds[0]; d.featured = !d.featured; done(d.featured ? 'Featured in Hot deals on Home' : 'No longer featured', u); return; }
         var on = ds.some(function (d) { return !d.featured; }); ds.forEach(function (d) { d.featured = on; }); done(plural(ds.length, 'deal') + (on ? ' featured on Home' : ' unfeatured'), u);
       },
-      push: function (ds) { confirmBox('Send a push alert?', 'An alert for “' + ds[0].t.slice(0, 60) + (ds[0].t.length > 60 ? '…' : '') + '” goes to every web and app subscriber now. It can’t be taken back.', 'Send alert', function () { toast('Push alert sent'); }); },
+      push: function (ds) { confirmBox('Send a push alert', 'An alert for “' + ds[0].t.slice(0, 60) + (ds[0].t.length > 60 ? '…' : '') + '” goes to every web and app subscriber now. It can’t be taken back.', 'Send alert', function () { toast('Push alert sent'); }); },
       share: function (ds, btn) { shareDealNow(btn, ds[0]); },
       del: function (ds) {
         var n = ds.length;
-        confirmBox('Delete ' + plural(n, 'deal') + '?', (n === 1 ? 'It leaves' : 'They leave') + ' the site and the image files are removed. You can undo for 10 seconds.', 'Delete ' + plural(n, 'deal'), function () {
+        confirmBox('Delete ' + plural(n, 'deal'), (n === 1 ? 'It leaves' : 'They leave') + ' the site and the image files are removed. You can undo for 10 seconds.', 'Delete ' + plural(n, 'deal'), function () {
           var u = snapshot(), ids = ds.map(function (d) { return d.id; }); model = model.filter(function (d) { return ids.indexOf(d.id) < 0; }); ids.forEach(function (id) { S.sel.delete(id); }); done(plural(n, 'deal') + ' deleted', u);
         }, true);
       }
@@ -282,7 +293,6 @@
     document.addEventListener('click', function (e) {
       var c = e.target.closest('[data-chip]'); if (c) { var k = c.dataset.chip; if (k === 'q') { S.q = ''; qIn.value = ''; } else { S.f[k] = ''; $('select[data-f="' + k + '"]').value = ''; } S.page = 1; render(); return; }
       if (e.target.closest('[data-clear]')) { clearAll(); return; }
-      if (e.target.closest('[data-site-order]')) { S.sort = 'pos'; S.dir = -1; render(); return; }
       var p = e.target.closest('[data-page]'); if (p && !p.disabled) { S.page = +p.dataset.page; render(); $('.tbl-wrap').scrollIntoView({ block: 'start', behavior: 'smooth' }); return; }
       var so = e.target.closest('[data-sort]'); if (so) { var k2 = so.dataset.sort; if (S.sort === k2) S.dir = -S.dir; else { S.sort = k2; S.dir = k2 === 'age' ? 1 : -1; } render(); return; }
       var qa = e.target.closest('[data-quick]'); if (qa) { var qd = byId(qa.closest('tr').dataset.id); if (qd) ACT[qa.dataset.quick]([qd], qa); return; }
@@ -293,66 +303,20 @@
     $('[data-rows]').addEventListener('change', function (e) { if (!e.target.matches('[data-sel]')) return; var id = e.target.closest('tr').dataset.id; if (e.target.checked) S.sel.add(id); else S.sel.delete(id); render(); });
     $('[data-all]').addEventListener('change', function (e) { $$('tr[data-id]').forEach(function (tr) { if (e.target.checked) S.sel.add(tr.dataset.id); else S.sel.delete(tr.dataset.id); }); render(); });
 
-    // drag to reorder (changes.md A-02): pointer drag on the grip moves the row, or every ticked row when the grip's row is ticked
-    var drag = null, tbody = $('[data-rows]');
-    tbody.addEventListener('pointerdown', function (e) {
-      var h = e.target.closest('[data-drag]'); if (!h || h.disabled || e.button > 0) return;
-      e.preventDefault(); var tr = h.closest('tr'), id = tr.dataset.id;
-      var ids = S.sel.has(id) && S.sel.size > 1 ? $$('tr[data-id]', tbody).map(function (r) { return r.dataset.id; }).filter(function (x) { return S.sel.has(x); }) : [id];
-      var trs = ids.map(function (x) { return $('tr[data-id="' + x + '"]', tbody); }).filter(Boolean);
-      var line = document.createElement('tr'); line.className = 'drop-line'; line.innerHTML = '<td colspan="8"></td>';
-      var ghost = document.createElement('div'); ghost.className = 'drag-ghost'; ghost.innerHTML = '<i data-lucide="grip-vertical"></i><span>' + (ids.length > 1 ? 'Moving ' + ids.length + ' deals' : esc(byId(id).t.slice(0, 50))) + '</span>';
-      document.body.appendChild(ghost); icons();
-      trs.forEach(function (r) { r.classList.add('is-dragging'); });
-      drag = { ids: ids, trs: trs, line: line, ghost: ghost, target: undefined };
-      document.body.classList.add('is-row-drag');
-      move(e);
-    });
-    function move(e) {
-      if (!drag) return;
-      drag.ghost.style.transform = 'translate(' + (e.clientX + 12) + 'px,' + (e.clientY + 8) + 'px)';
-      var rows = $$('tr[data-id]', tbody).filter(function (r) { return drag.ids.indexOf(r.dataset.id) < 0; }), before = null;
-      for (var i = 0; i < rows.length; i++) { var b = rows[i].getBoundingClientRect(); if (e.clientY < b.top + b.height / 2) { before = rows[i]; break; } }
-      drag.target = before;
-      if (before) tbody.insertBefore(drag.line, before); else tbody.appendChild(drag.line);
-      if (e.clientY < 60) window.scrollBy(0, -12); else if (e.clientY > innerHeight - 60) window.scrollBy(0, 12);
-    }
-    document.addEventListener('pointermove', function (e) { if (drag) move(e); });
-    function endDrag(apply) {
-      if (!drag) return; var d0 = drag; drag = null;
-      d0.line.remove(); d0.ghost.remove(); d0.trs.forEach(function (r) { r.classList.remove('is-dragging'); }); document.body.classList.remove('is-row-drag');
-      if (!apply) return;
-      var moved = d0.ids.map(byId), beforeDeal = d0.target ? byId(d0.target.dataset.id) : null;
-      if (!beforeDeal) { // dropped below the last row of this page: just above the next deal in the site order
-        var so = siteOrder(), lastShown = $$('tr[data-id]', tbody).filter(function (r) { return d0.ids.indexOf(r.dataset.id) < 0; }).pop();
-        var idx = lastShown ? so.indexOf(byId(lastShown.dataset.id)) : -1; beforeDeal = so.slice(idx + 1).filter(function (x) { return moved.indexOf(x) < 0; })[0] || null;
-      }
-      var u = snapshot(); place(moved, beforeDeal);
-      done(moved.length === 1 ? 'Moved. The site shows it in this place now.' : plural(moved.length, 'deal') + ' moved together', u);
-    }
-    document.addEventListener('pointerup', function () { endDrag(true); });
-    document.addEventListener('pointercancel', function () { endDrag(false); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drag) endDrag(false); });
-    // keyboard: arrow up / down on a focused grip moves the deal one place
-    tbody.addEventListener('keydown', function (e) {
-      var h = e.target.closest('[data-drag]'); if (!h || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return; e.preventDefault();
-      var d = byId(h.closest('tr').dataset.id), so = siteOrder(), i = so.indexOf(d), u = snapshot();
-      if (e.key === 'ArrowUp' && i > 0) place([d], so[i - 1]); else if (e.key === 'ArrowDown' && i < so.length - 1) place([d], so[i + 2] || null); else return;
-      render(); toast('Moved ' + (e.key === 'ArrowUp' ? 'up' : 'down'), { action: 'Undo', onAction: u, ms: 1800 });
-      var g = $('tr[data-id="' + d.id + '"] [data-drag]'); if (g) g.focus();
-    });
-
     // row menu: Delete only
     function openRowMenu(btn) {
       if (menuBtn === btn && !rowMenu.hidden) { closeRowMenu(); return; }
       closeDD(); closeShare(); menuId = btn.closest('tr').dataset.id; menuBtn = btn;
+      var md = byId(menuId), mi = function (k, l) { return '<button role="menuitem" type="button" data-act="' + k + '">' + l + '</button>'; };
+      rowMenu.innerHTML = mi('share', 'Share') + mi('pin', md.pin ? 'Unpin from Top deals' : 'Pin on Top deals') + mi('feat', md.featured ? 'Remove from Home' : 'Feature on Home') + mi('top', 'Move to top') + mi('push', 'Send push alert') +
+        '<a role="menuitem" href="' + esc(md.page) + '" target="_blank" rel="noopener">Open public page</a><div class="separator"></div><button role="menuitem" type="button" data-act="delete" class="danger">Delete</button>';  // P-65: rarer actions as words in More
       rowMenu.hidden = false; var r = btn.getBoundingClientRect(), h = rowMenu.offsetHeight, w = rowMenu.offsetWidth;
       rowMenu.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px';
       rowMenu.style.top = (r.bottom + 4 + h > innerHeight ? Math.max(8, r.top - h - 4) : r.bottom + 4) + 'px';
       requestAnimationFrame(function () { rowMenu.dataset.state = 'open'; }); var f = $('[role^="menuitem"]', rowMenu); if (f) f.focus({ preventScroll: true });
     }
     window.addEventListener('scroll', function () { closeRowMenu(); }, { passive: true });
-    rowMenu.addEventListener('click', function (e) { var b = e.target.closest('[data-act]'); if (!b) return; e.preventDefault(); closeRowMenu(); if (b.dataset.act === 'delete') ACT.del([byId(menuId)]); });
+    rowMenu.addEventListener('click', function (e) { var b = e.target.closest('[data-act]'); if (!b) return; e.preventDefault(); var mbtn = menuBtn, a = b.dataset.act; closeRowMenu(); if (a === 'delete') ACT.del([byId(menuId)]); else ACT[a]([byId(menuId)], mbtn); });
     // bulk
     function selDeals() { return model.filter(function (d) { return S.sel.has(d.id); }); }
     $('[data-bulkbar]').addEventListener('click', function (e) {
@@ -421,8 +385,8 @@
       if (k === 'share') shareDealNow(b, d);
       if (k === 'pin') { if (d.pin) { save({ pin: null }); toast('Unpinned', { action: 'Undo', onAction: undo }); } else { var next = DB.deals().reduce(function (m, x) { return Math.max(m, x.pin || 0); }, 0) + 1; save({ pin: next, pinnedAt: Date.now() }); toast('Pinned to slot ' + next + ' on Top deals', { action: 'Undo', onAction: undo }); } }
       if (k === 'feat') { save({ featured: !d.featured }); toast(d.featured ? 'Featured in Hot deals on Home' : 'No longer featured', { action: 'Undo', onAction: undo }); }
-      if (k === 'push') confirmBox('Send a push alert?', 'An alert for “' + d.t.slice(0, 60) + (d.t.length > 60 ? '…' : '') + '” goes to every web and app subscriber now. It can’t be taken back.', 'Send alert', function () { toast('Push alert sent'); });
-      if (k === 'del') confirmBox('Delete this deal?', 'It leaves the site and its image files are removed.', 'Delete deal', function () { DB.deleteDeal(id); toast('Deal deleted'); setTimeout(function () { location.href = withRole('/admin/deal'); }, 700); }, true);
+      if (k === 'push') confirmBox('Send a push alert', 'An alert for “' + d.t.slice(0, 60) + (d.t.length > 60 ? '…' : '') + '” goes to every web and app subscriber now. It can’t be taken back.', 'Send alert', function () { toast('Push alert sent'); });
+      if (k === 'del') confirmBox('Delete this deal', 'It leaves the site and its image files are removed.', 'Delete deal', function () { DB.deleteDeal(id); toast('Deal deleted'); setTimeout(function () { location.href = withRole('/admin/deal'); }, 700); }, true);
     });
     // Edit: the deal form in a drawer (the same form as Post a deal)
     var drawer = $('#edit-drawer'), frame = $('[data-ed-frame]');
@@ -574,12 +538,7 @@
       $('.dc-tbl', el).hidden = !total;
       var filtered = q.value.trim() || S.f.store || S.f.cat || S.f.posted;
       $('[data-dc-count]', el).textContent = total ? (st + 1) + '–' + (st + view.length) + ' of ' + INR.format(total) + (filtered ? ' matching' : '') + ' deal' + (total === 1 ? '' : 's') : '';
-      var pg = '';
-      if (pages > 1) {
-        pg += '<button type="button" data-dc-page="' + (S.page - 1) + '"' + (S.page === 1 ? ' disabled' : '') + ' aria-label="Previous page"><i data-lucide="chevron-left"></i></button>';
-        for (var i = 1; i <= pages; i++) if (i === 1 || i === pages || Math.abs(i - S.page) <= 1) pg += '<button type="button" data-dc-page="' + i + '"' + (i === S.page ? ' aria-current="page"' : '') + '>' + i + '</button>'; else if (Math.abs(i - S.page) === 2) pg += '<span class="pg-gap">…</span>';
-        pg += '<button type="button" data-dc-page="' + (S.page + 1) + '"' + (S.page === pages ? ' disabled' : '') + ' aria-label="Next page"><i data-lucide="chevron-right"></i></button>';
-      }
+      var pg = pages > 1 ? pagerHtml('data-dc-page', S.page, pages) : '';
       $('[data-dc-pager]', el).innerHTML = pg;
       var ids = Object.keys(S.picked), use = $('[data-dc-use]', el);
       use.disabled = !ids.length;
@@ -839,7 +798,7 @@
     }
     $('[data-copy-short]').addEventListener('click', function () { copy($('[data-done-short]').value).then(function () { toast('Short link copied'); }); });
     $('[data-copy-wa]').addEventListener('click', function () { copy(shareText()).then(function () { toast('Copied for WhatsApp'); }); });
-    $('[data-del]').addEventListener('click', function () { confirmBox('Delete this deal?', 'It leaves the site and its image files are removed. You can undo for 10 seconds on All deals.', 'Delete deal', function () { if (src && window.ADM_PG) ADM_PG.deleteDeal(src.id); toast('Deal deleted'); setTimeout(function () { location.href = withRole('/admin/deal'); }, 900); }, true); });
+    $('[data-del]').addEventListener('click', function () { confirmBox('Delete this deal', 'It leaves the site and its image files are removed. You can undo for 10 seconds on All deals.', 'Delete deal', function () { if (src && window.ADM_PG) ADM_PG.deleteDeal(src.id); toast('Deal deleted'); setTimeout(function () { location.href = withRole('/admin/deal'); }, 900); }, true); });
   })();
 
   /* =================== Pinned board =================== */
@@ -848,50 +807,55 @@
     var P = window.ADM_PINS, order = P.pins.slice(), every = P.every, lifted = null, dragFrom = null;
     if (!window.ADM_PG) try { var se = +localStorage.getItem('adm-pin-every'); if (se >= 2) every = se; var sp = JSON.parse(localStorage.getItem('adm-pins-full') || 'null'); if (sp && sp.length) order = sp; } catch (e) {}
     var gapSel = $('[data-pin-every]'); gapSel.value = String(every);
-    function persist() { if (window.ADM_PG) { ADM_PG.savePins(order, every); return; } try { localStorage.setItem('adm-pin-every', String(every)); localStorage.setItem('adm-pins', JSON.stringify(order.map(function (x) { return x.id; }))); localStorage.setItem('adm-pins-full', JSON.stringify(order)); } catch (e) {} }
-    function snap() { var o = JSON.stringify(order), ev = every; return function () { order = JSON.parse(o); every = ev; gapSel.value = String(every); persist(); render(); }; }
-    function saved(msg, u) { persist(); render(); toast(msg || 'Slot order saved', { action: 'Undo', onAction: u }); }
+    var base = { order: order.slice(), every: every };   // what is saved; slot order and "every" on screen wait for Save (pin and unpin save at once)
+    function persist() { var o = base.order, ev = base.every; if (window.ADM_PG) { ADM_PG.savePins(o, ev); return; } try { localStorage.setItem('adm-pin-every', String(ev)); localStorage.setItem('adm-pins', JSON.stringify(o.map(function (x) { return x.id; }))); localStorage.setItem('adm-pins-full', JSON.stringify(o)); } catch (e) {} }
+    function ids(l) { return l.map(function (x) { return x.id; }).join(); }
+    var bar = saveBar({ save: function () { base = { order: order.slice(), every: every }; persist(); toast('Slot order saved'); },
+      discard: function () { order = base.order.slice(); every = base.every; gapSel.value = String(every); lifted = null; render(); } });
+    function snap() { var o = JSON.stringify(order), b = JSON.stringify(base), ev = every; return function () { order = JSON.parse(o); base = JSON.parse(b); every = ev; gapSel.value = String(every); persist(); render(); }; }
+    function saved(msg, u) { persist(); render(); toast(msg, { action: 'Undo', onAction: u }); }
     function card(k) { return k * every; }
-    function slotSel(cur) { var o = ''; for (var k = 1; k <= order.length; k++) o += '<option value="' + k + '"' + (k === cur ? ' selected' : '') + '>Slot ' + k + '</option>'; return '<label class="select slot-sel"><span class="visually-hidden">Move to slot</span><select data-move>' + o + '</select><i data-lucide="chevron-down"></i></label>'; }
+    function slotSel(cur) { var o = ''; for (var k = 1; k <= order.length; k++) o += '<option value="' + k + '"' + (k === cur ? ' selected' : '') + '>Spot ' + k + '</option>'; return '<label class="select slot-sel"><span class="visually-hidden">Move to slot</span><select data-move>' + o + '</select><i data-lucide="chevron-down"></i></label>'; }
     function render() {
       var html = order.map(function (x, i) {
         var s = i + 1, d = dealById(x.id); if (!d) return '';
-        return '<div class="slot" role="listitem" data-slot="' + s + '" draggable="true" tabindex="0" aria-roledescription="Pinned deal" aria-label="Slot ' + s + ', card ' + card(s) + ' on Top deals: ' + esc(d.t) + '. Press Space to move."' + (lifted === s ? ' data-lifted' : '') + '>' +
-          '<div class="slot-h"><span>Slot ' + s + ' <small>· card ' + card(s) + '</small></span><i data-lucide="grip-vertical"></i></div><img src="' + d.img + '" alt=""><div class="slot-t">' + esc(d.t) + '</div>' +
+        return '<div class="slot" role="listitem" data-slot="' + s + '" draggable="true" tabindex="0" aria-roledescription="Pinned deal" aria-label="Spot ' + s + ' on Top deals: ' + esc(d.t) + '. Press Space to move."' + (lifted === s ? ' data-lifted' : '') + '>' +
+          '<div class="slot-h"><span>Spot ' + s + '</span><i data-lucide="grip-vertical"></i></div><img src="' + d.img + '" alt=""><div class="slot-t">' + esc(d.t) + '</div>' +
           '<div class="slot-p"><b>' + rs(d.p) + '</b> <span class="d-pct">' + d.pct + '%</span></div><div class="slot-age">pinned ' + x.age + ' ago</div>' +
           '<div class="slot-acts"><a href="' + withRole(ROUTES.edit(d.id)) + '">Edit</a><button type="button" data-unpin="' + s + '">Unpin</button>' + slotSel(s) + '</div></div>';
       }).join('');
       var n = order.length + 1;
-      html += '<div class="slot empty" role="listitem" data-slot="' + n + '"><div class="slot-h"><span>Slot ' + n + ' <small>· card ' + card(n) + '</small></span></div><button type="button" class="slot-add" data-pin-add="' + n + '"><i data-lucide="plus"></i>Pin a deal</button></div>';
+      html += '<div class="slot empty" role="listitem" data-slot="' + n + '"><div class="slot-h"><span>Spot ' + n + '</span></div><button type="button" class="slot-add" data-pin-add="' + n + '"><i data-lucide="plus"></i>Pin a deal</button></div>';
       $('[data-slots]').innerHTML = html;
       var pos = []; for (var k = 1; k <= Math.min(order.length, 4); k++) pos.push(card(k));
       $('[data-pin-gap-h]').innerHTML = order.length
-        ? order.length + ' pinned deal' + (order.length === 1 ? '' : 's') + ' at cards ' + pos.join(', ') + (order.length > 4 ? ' … ' + card(order.length) : '') + '. Once they run out, those spots show normal fresh deals.'
+        ? order.length + ' pinned deal' + (order.length === 1 ? '' : 's') + ', one after every ' + (every - 1) + ' new deal' + (every === 2 ? '' : 's') + '.'
         : 'No pinned deals. Top deals shows normal deals only.';
       icons();
       if (lifted) { var c = $('[data-slot="' + lifted + '"]'); if (c) c.focus(); }
+      bar.set(every !== base.every || ids(order) !== ids(base.order));
     }
     function swap(a, b) { var t = order[a - 1]; order[a - 1] = order[b - 1]; order[b - 1] = t; }
-    gapSel.addEventListener('change', function () { var u = snap(); every = +gapSel.value; saved('A pinned deal now shows every ' + every + ' cards on Top deals', u); });
+    gapSel.addEventListener('change', function () { every = +gapSel.value; render(); });
     var box = $('[data-slots]');
     box.addEventListener('dragstart', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c) return; dragFrom = +c.dataset.slot; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', dragFrom); c.classList.add('is-drag'); });
     box.addEventListener('dragend', function () { $$('.slot').forEach(function (x) { x.classList.remove('is-drag', 'is-over'); }); });
     box.addEventListener('dragover', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c || dragFrom === null) return; e.preventDefault(); $$('.slot').forEach(function (x) { x.classList.toggle('is-over', x === c); }); });
-    box.addEventListener('drop', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c || dragFrom === null) return; e.preventDefault(); var to = +c.dataset.slot, from = dragFrom; dragFrom = null; if (to === from) { render(); return; } var u = snap(); swap(from, to); saved('Moved to slot ' + to, u); });
+    box.addEventListener('drop', function (e) { var c = e.target.closest('.slot[draggable]'); if (!c || dragFrom === null) return; e.preventDefault(); var to = +c.dataset.slot, from = dragFrom; dragFrom = null; if (to !== from) swap(from, to); render(); });
     box.addEventListener('keydown', function (e) {
       var c = e.target.closest('.slot[draggable]'); if (!c || e.target !== c) return; var s = +c.dataset.slot;
-      if (e.key === ' ') { e.preventDefault(); if (lifted) { lifted = null; persist(); render(); toast('Slot order saved'); } else { lifted = s; render(); } return; }
+      if (e.key === ' ') { e.preventDefault(); if (lifted) { lifted = null; render(); } else { lifted = s; render(); } return; }
       if (lifted && (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); var j = s + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1); if (j < 1 || j > order.length) return; swap(s, j); lifted = j; render(); }
       if (e.key === 'Escape' && lifted) { lifted = null; render(); }
     });
-    box.addEventListener('change', function (e) { var sel = e.target.closest('[data-move]'); if (!sel) return; var from = +sel.closest('.slot').dataset.slot, to = +sel.value; if (from === to) return; var u = snap(); swap(from, to); saved('Moved to slot ' + to, u); });
+    box.addEventListener('change', function (e) { var sel = e.target.closest('[data-move]'); if (!sel) return; var from = +sel.closest('.slot').dataset.slot, to = +sel.value; if (from === to) return; swap(from, to); render(); });
     box.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-unpin]'); if (b) { var s = +b.dataset.unpin, u = snap(); order.splice(s - 1, 1); saved('Unpinned. Later slots moved up one', u); return; }
+      var b = e.target.closest('[data-unpin]'); if (b) { var s = +b.dataset.unpin, u = snap(), gone = order.splice(s - 1, 1)[0]; base.order = base.order.filter(function (y) { return y.id !== gone.id; }); saved('Unpinned. Later slots moved up one', u); return; }
       b = e.target.closest('[data-pin-add]'); if (b) { e.stopPropagation(); openPick(b); }
     });
     // + Pin a deal (always the next slot)
     var pop = $('#pick-pop');
-    var draw = picker($('[data-pick-q]'), $('[data-pick-list]'), { filter: function (d) { return d.status === 'live' && !order.some(function (x) { return x.id === d.id; }); }, onPick: function (d) { var u = snap(); order.push({ id: d.id, age: '0 min' }); closePick(); saved('Pinned to slot ' + order.length + ' (card ' + card(order.length) + ' on Top deals)', u); } });
+    var draw = picker($('[data-pick-q]'), $('[data-pick-list]'), { filter: function (d) { return d.status === 'live' && !order.some(function (x) { return x.id === d.id; }); }, onPick: function (d) { var u = snap(), it = { id: d.id, age: '0 min' }; order.push(it); base.order.push(it); closePick(); saved('Pinned to slot ' + order.length + ' (card ' + card(order.length) + ' on Top deals)', u); } });
     function openPick(btn) { var r = btn.getBoundingClientRect(); pop.style.position = 'fixed'; pop.style.top = Math.min(r.bottom + 6, innerHeight - 380) + 'px'; pop.style.left = Math.max(12, Math.min(r.left, innerWidth - 412)) + 'px'; pop.hidden = false; requestAnimationFrame(function () { pop.dataset.state = 'open'; }); $('[data-pick-q]').value = ''; draw(); $('[data-pick-q]').focus(); }
     function closePick() { pop.dataset.state = 'closed'; pop.hidden = true; }
     document.addEventListener('click', function (e) { if (!pop.hidden && !pop.contains(e.target)) closePick(); });
@@ -927,7 +891,7 @@
       e.preventDefault(); var w = $('[data-al-web]').checked, a = $('[data-al-app]').checked;
       $('[data-al-deal-err]').hidden = !!att; $('[data-al-to-err]').hidden = w || a; if (!att) { $('[data-al-q]').focus(); return; } if (!w && !a) return;
       var to = w && a ? 'the website and the app' : w ? 'the website' : 'the app';
-      confirmBox('Send this alert now?', 'It goes to everyone who turned on alerts on ' + to + '. It can’t be taken back.', 'Send alert', function () {
+      confirmBox('Send this alert now', 'It goes to everyone who turned on alerts on ' + to + '. It can’t be taken back.', 'Send alert', function () {
         var now = new Date(), tm = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2), h = $('[data-al-hist]'), first = $('.day', h);
         var row = '<li class="is-new"><span class="t-time">' + tm + '</span><span class="t-title">' + esc(text()) + '</span><span class="share-res">' + (w ? '<span class="ok"><i data-lucide="check"></i>Web</span>' : '') + (a ? '<span class="ok"><i data-lucide="check"></i>App</span>' : '') + '</span><button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button></li>';
         if (first && first.textContent === 'Today') first.insertAdjacentHTML('afterend', row); else h.insertAdjacentHTML('afterbegin', '<li class="day">Today</li>' + row);
@@ -935,15 +899,21 @@
         icons(); toast('Alert sent'); att = null; $('[data-al-q]').value = ''; show();
       });
     });
+    $$('[data-altab]').forEach(function (b) { b.addEventListener('click', function () { var k = b.dataset.altab; $$('[data-altab]').forEach(function (x) { var on = x === b; x.dataset.state = on ? 'active' : ''; x.setAttribute('aria-selected', on ? 'true' : 'false'); }); $$('[data-alpane]').forEach(function (p) { p.hidden = p.dataset.alpane !== k; }); }); });  // P-62: Send alert / History tabs
+    $('[data-al-hq]').addEventListener('input', function () {
+      var q = this.value.trim().toLowerCase(), any = false, day = null, dayHas = false, lis = $$('li', $('[data-al-hist]'));
+      lis.forEach(function (li) { if (li.classList.contains('day')) { if (day) day.hidden = !dayHas; day = li; dayHas = false; return; } var m = !q || li.textContent.toLowerCase().indexOf(q) > -1; li.hidden = !m; if (m) { dayHas = true; any = true; } });
+      if (day) day.hidden = !dayHas; $('[data-al-hempty]').hidden = any;
+    });
     $('[data-al-hist]').addEventListener('click', function (e) {
       var r = e.target.closest('[data-retry]'); if (r) { var li = r.closest('li'), bad = $('.bad', li); bad.className = 'ok'; bad.querySelector('i, svg').outerHTML = '<i data-lucide="check"></i>'; r.outerHTML = '<button class="btn btn-ghost btn-sm" type="button" data-resend>Resend</button>'; icons(); toast('Sent to the app'); return; }
-      var s = e.target.closest('[data-resend]'); if (s) { var t = $('.t-title', s.closest('li')).textContent; confirmBox('Send this alert again?', '“' + t.slice(0, 80) + '” goes to every subscriber again now.', 'Send again', function () { toast('Alert sent again'); }); }
+      var s = e.target.closest('[data-resend]'); if (s) { var t = $('.t-title', s.closest('li')).textContent; confirmBox('Send this alert again', '“' + t.slice(0, 80) + '” goes to every subscriber again now.', 'Send again', function () { toast('Alert sent again'); }); }
     });
   })();
 
   /* =================== Sponsored (DEV-030, D-108) =================== */
   if ($('[data-sp-list]')) (function () {
-    var list = window.ADM_SPONSORED.slice(), T = window.ADM_TODAY, tab = 'cur', editing = null, imgs = {};
+    var list = window.ADM_SPONSORED.slice(), T = window.ADM_TODAY, tab = 'live', editing = null, imgs = {};
     // changes.md A-07: dates are optional; no dates = on until switched off
     // 2026-11-26: start date required, end date optional; no view or click numbers
     function status(p) { return !p.on ? 'off' : p.end && p.end < T ? 'ended' : p.start && p.start > T ? 'soon' : 'live'; }
@@ -953,11 +923,16 @@
     function label(p, st) { return st === 'soon' ? 'Starts ' + fmt(p.start) : SL[st]; }
     function fmt(d) { return new Date(d + 'T00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }); }
     function n(x) { return (x || 0).toLocaleString('en-IN'); }
-    function snap() { var s = JSON.stringify(list); return function () { list = JSON.parse(s); render(); }; }
+    var baseOn = {}; list.forEach(function (p) { baseOn[p.id] = p.on; });   // saved on/off; a switch waits for Save
+    function commit() { if (window.ADM_PG) ADM_PG.saveList('sponsored', list.map(function (p) { return p.id in baseOn ? Object.assign({}, p, { on: baseOn[p.id] }) : p; }), ['img', 'mimg']); }
+    var bar = saveBar({ save: function () { list.forEach(function (p) { baseOn[p.id] = p.on; }); commit(); toast('Saved. Home shows the change now.'); },
+      discard: function () { list.forEach(function (p) { if (p.id in baseOn) p.on = baseOn[p.id]; }); render(); } });
+    function snap() { var s = JSON.stringify(list), b = JSON.stringify(baseOn); return function () { list = JSON.parse(s); baseOn = JSON.parse(b); render(); }; }
     function render() {
-      var cur = list.filter(function (p) { return status(p) !== 'ended'; }), past = list.filter(function (p) { return status(p) === 'ended'; }), show = tab === 'cur' ? cur : past;
-      if (window.ADM_PG) ADM_PG.saveList('sponsored', list, ['img', 'mimg']);   // S25 playground
-      $('[data-scount="cur"]').textContent = cur.length; $('[data-scount="past"]').textContent = past.length;
+      var live = list.filter(function (p) { return status(p) === 'live'; }), cur = list.filter(function (p) { var st = status(p); return st === 'soon' || st === 'off'; }), past = list.filter(function (p) { return status(p) === 'ended'; });
+      var show = tab === 'live' ? live : tab === 'cur' ? cur.sort(function (a, b) { return a.start < b.start ? -1 : 1; }) : past;  // P-59: one slot, so Live / Scheduled / Ended
+      commit(); bar.set(list.some(function (p) { return p.id in baseOn && baseOn[p.id] !== p.on; }));   // S25 playground
+      $('[data-scount="live"]').textContent = live.length; $('[data-scount="cur"]').textContent = cur.length; $('[data-scount="past"]').textContent = past.length;
       $('[data-sp-list]').innerHTML = show.length ? show.map(function (p) {
         var st = status(p);
         return '<li class="poster-row" data-sid="' + p.id + '"><img class="p-img sp-thumb" src="' + p.img + '" alt="">' +
@@ -965,17 +940,19 @@
           '<span class="pill pill-' + PL[st] + '">' + label(p, st) + '</span>' +
           (st !== 'ended' ? '<label class="switch" title="Show on Home"><input type="checkbox" data-s-on' + (p.on ? ' checked' : '') + ' aria-label="Show this ad on Home"><span></span></label>' : '') +
           '<div class="p-acts"><button type="button" class="btn btn-ghost btn-sm" data-s-edit>Edit</button><button type="button" class="btn btn-ghost btn-icon btn-sm danger" data-s-del aria-label="Delete ad"><i data-lucide="trash-2"></i></button></div></li>';
-      }).join('') : '<li class="empty">' + (tab === 'cur' ? 'No sponsored ads live or coming up. Home shows no ad card.' : 'No ended ads.') + '</li>';
+      }).join('') : '<li class="empty">' + (tab === 'live' ? 'No ad is live. Home shows no ad card.' : tab === 'cur' ? 'Nothing scheduled.' : 'No ended ads.') + '</li>';
       icons();
     }
     $$('[data-stab]').forEach(function (t) { t.addEventListener('click', function () { tab = t.dataset.stab; $$('[data-stab]').forEach(function (x) { x.dataset.state = x === t ? 'active' : ''; x.setAttribute('aria-selected', x === t); }); render(); }); });
     function byId(id) { return list.filter(function (p) { return p.id === id; })[0]; }
+    function clash(o, self) { var e1 = o.end || '9999-12-31'; return list.filter(function (q) { return q !== self && q.on && !(q.end && q.end < T) && q.start <= e1 && o.start <= (q.end || '9999-12-31'); })[0]; }  // P-59: one slot, so two switched-on ads can't share a day
+    function clashMsg(q) { return 'Another ad runs ' + when(q) + '. One ad shows at a time, so pick dates outside that, or switch that ad off.'; }
     $('[data-sp-list]').addEventListener('click', function (e) {
       var row = e.target.closest('[data-sid]'); if (!row) return; var p = byId(+row.dataset.sid);
       if (e.target.closest('[data-s-edit]')) { openEdit(p); return; }
-      if (e.target.closest('[data-s-del]')) { confirmBox('Delete this ad?', 'It is removed from Home and from this list.', 'Delete ad', function () { var u = snap(); list.splice(list.indexOf(p), 1); render(); toast('Ad deleted', { action: 'Undo', onAction: u }); }, true); }
+      if (e.target.closest('[data-s-del]')) { confirmBox('Delete this ad', 'It is removed from Home and from this list.', 'Delete ad', function () { var u = snap(); list.splice(list.indexOf(p), 1); render(); toast('Ad deleted', { action: 'Undo', onAction: u }); }, true); }
     });
-    $('[data-sp-list]').addEventListener('change', function (e) { var c = e.target.closest('[data-s-on]'); if (!c) return; var p = byId(+c.closest('[data-sid]').dataset.sid), u = snap(); p.on = c.checked; render(); toast(p.on ? 'Ad is on' : 'Ad is off. It stays here but Home won’t show it', { action: 'Undo', onAction: u }); });
+    $('[data-sp-list]').addEventListener('change', function (e) { var c = e.target.closest('[data-s-on]'); if (!c) return; var p = byId(+c.closest('[data-sid]').dataset.sid); var q = c.checked && clash(p, p); if (q) { c.checked = false; toast(clashMsg(q), { icon: 'info' }); return; } p.on = c.checked; render(); });
     var D = $('[data-se]'), sheet = $('#sp-edit');
     function setDrop(k, url) { var z = $('[data-drop="' + k + '"]', D), i = $('img', z); imgs[k] = url || ''; i.src = url || ''; i.hidden = !url; z.classList.toggle('has', !!url); }
     $$('[data-drop]', D).forEach(function (z) { $('input', z).addEventListener('change', function (e) { readImg(e.target.files[0], function (u0) { (window.OTDB ? OTDB.shrink : function (x, cb) { cb(x); })(u0, function (u) { setDrop(z.dataset.drop, u); var er = $('.err', z.closest('.fld')); if (er) er.hidden = true; }, 1200); }); }); });
@@ -991,13 +968,16 @@
     $('[data-se-save]').addEventListener('click', function () {
       var f = D.elements, bad = [];
       function chk(ok, node) { var e = $('.err', node.closest('.fld')); if (e) e.hidden = ok; if (!ok) bad.push(node); }
+      $('.err', f.start.closest('.fld')).textContent = 'Add the start date.';
       var lk = f.link.value.trim(), phone = /^\+?[\d\s-]{8,}$/.test(lk);
       chk(!!imgs.d, $('[data-drop="d"]', D)); chk(!!f.cta.value.trim(), f.cta);
       chk(phone || /^https?:\/\/\S+\.\S+/.test(lk), f.link); chk(!!f.start.value, f.start); chk(!(f.start.value && f.end.value && f.end.value < f.start.value), f.end);
       if (bad.length) { (bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
+      var q = f.on.checked && clash({ start: f.start.value, end: f.end.value }, editing); if (q) { var ce = $('.err', f.start.closest('.fld')); if (ce) { ce.textContent = clashMsg(q); ce.hidden = false; } f.start.focus(); return; }
       var u = snap(), o = { cta: f.cta.value.trim(), link: phone ? 'tel:' + lk.replace(/[\s-]/g, '') : lk, start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d, title: '', line: '', adv: host(phone ? 'tel:' + lk : lk) };
       if (editing) Object.assign(editing, o); else { o.id = Date.now(); list.unshift(o); }
-      closeSheet(); tab = status(o) === 'ended' ? 'past' : 'cur'; $$('[data-stab]').forEach(function (x) { x.dataset.state = x.dataset.stab === tab ? 'active' : ''; x.setAttribute('aria-selected', x.dataset.stab === tab); });
+      baseOn[(editing || o).id] = o.on;
+      closeSheet(); tab = status(o) === 'ended' ? 'past' : status(o) === 'live' ? 'live' : 'cur'; $$('[data-stab]').forEach(function (x) { x.dataset.state = x.dataset.stab === tab ? 'active' : ''; x.setAttribute('aria-selected', x.dataset.stab === tab); });
       render(); toast(editing ? 'Ad saved' : 'Ad added' + (status(o) === 'soon' ? '. It shows from ' + fmt(o.start) : status(o) === 'live' ? ' and live on Home' : ''), { action: 'Undo', onAction: u });
     });
     render();
@@ -1007,7 +987,7 @@
   if (matchMedia('(max-width: 899px)').matches) $$('[data-fold-phone]').forEach(function (d) { d.open = false; });
 
   /* shared helpers for admin-c.js (batch C pages) */
-  window.ADM = { chooser: chooser, routes: ROUTES, $: $, $$: $$, icons: icons, store: store, params: params, rs: rs, INR: INR, esc: esc, withRole: withRole, toast: toast, copy: copy, openSheet: openSheet, closeSheet: closeSheet, confirmBox: confirmBox, setCount: setCount, SUB: SUB };
+  window.ADM = { chooser: chooser, routes: ROUTES, $: $, $$: $$, icons: icons, store: store, params: params, rs: rs, INR: INR, esc: esc, withRole: withRole, toast: toast, saveBar: saveBar, copy: copy, openSheet: openSheet, closeSheet: closeSheet, confirmBox: confirmBox, setCount: setCount, SUB: SUB };
 
   icons();
 })();

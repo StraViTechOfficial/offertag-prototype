@@ -42,7 +42,6 @@ for p in BLOG_ADMIN:
 
 # tabbed admin pages answer to one address per tab (live names where they exist)
 TABS = {
-    'admin-social.html': ('data-stab', {'channels': '/admin/social', 'history': '/admin/social/history'}),   # no Formats tab (changes.md A-15)
     'admin-inbox.html': ('data-itab', {'feedback': '/admin/feedback', 'deletion': '/admin/deletion-requests'}),   # 2026-11-25: no Reports; comments live on each deal's page (changes.md A-11)
     'admin-catalogue.html': ('data-ctab', {'shops': '/admin/shop', 'categories': '/admin/category', 'dealtypes': '/admin/lookup', 'types': '/admin/type'}),
 }

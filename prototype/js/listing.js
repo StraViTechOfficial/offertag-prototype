@@ -142,7 +142,7 @@
     if (s.pmin !== null || s.pmax !== null) { n++; chips.appendChild(chip(priceText(s.pmin, s.pmax), function () { setPrice(null, null); reset(); })); }
     s.type.forEach(function (v) { n++; var tl = form.querySelector('input[name="type"][value="' + v + '"]'); chips.appendChild(chip(tl ? tl.closest('.opt').querySelector('.txt').textContent : v, function () { form.querySelector('input[name="type"][value="' + v + '"]').checked = false; reset(); })); });
     if (s.coupon) { n++; chips.appendChild(chip('Has a coupon', function () { form.querySelector('input[name="coupon"]').checked = false; reset(); })); }
-    if (n) { var ca = document.createElement('button'); ca.type = 'button'; ca.className = 'btn btn-link btn-sm'; ca.textContent = 'Clear all'; ca.addEventListener('click', clearAll); chips.appendChild(ca); }
+    // P-39: chips stay at the top, each with its own x; the only Clear all is the filter panel's
     filterCount.hidden = n === 0; filterCount.textContent = n;
     // sort labels + checked states
     sortLabel.textContent = 'Sort: ' + sortNames[sortMode]; if (sortLabelM) sortLabelM.textContent = 'Sort: ' + sortNames[sortMode];

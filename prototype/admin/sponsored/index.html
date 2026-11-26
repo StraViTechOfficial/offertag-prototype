@@ -32,7 +32,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
 <div class="adm">
   <aside class="adm-side" id="adm-side" aria-label="Admin menu">
-    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
+    <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
@@ -40,7 +40,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <a class="adm-link" href="/admin/sponsored" data-role="admin" aria-current="page"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">4</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">1</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -75,11 +75,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     </header>
     <main class="adm-content" id="main">
       <div class="page-h">
-        <div><h1>Sponsored</h1><p>A business sends you a picture; you add it with one button. It shows on Home, labelled "Sponsored". With more than one on, each visit shows one at random.</p></div>
+        <div><h1>Sponsored</h1><p>A business sends you a picture; you add it with one button. It shows on Home, labelled "Sponsored". There is one ad slot, so one ad runs at a time; schedule the next one for after it ends.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-sp-new><i data-lucide="plus"></i>Add sponsored ad</button></div>
       </div>
-      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-stab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-scount="cur"></span></button><button class="tabs-trigger" role="tab" data-stab="past" aria-selected="false">Ended <span class="adm-count muted" data-scount="past"></span></button></div>
+      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-stab="live" data-state="active" aria-selected="true">Live <span class="adm-count muted" data-scount="live"></span></button><button class="tabs-trigger" role="tab" data-stab="cur" aria-selected="false">Scheduled <span class="adm-count muted" data-scount="cur"></span></button><button class="tabs-trigger" role="tab" data-stab="past" aria-selected="false">Ended <span class="adm-count muted" data-scount="past"></span></button></div>
       <ol class="posters sp-list" data-sp-list></ol>
+      <div class="savebar" data-savebar hidden><span>Unsaved changes</span><button class="btn btn-ghost btn-sm" type="button" data-discard>Discard</button><button class="btn btn-default btn-sm" type="button" data-save>Save</button></div>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="sp-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="se-title">
         <div class="sheet-header"><div class="sheet-title" id="se-title">Add sponsored ad</div><p class="sheet-desc">A picture and one button. That’s all.</p></div>
@@ -103,7 +104,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 </div>
 <div class="toaster" id="toaster" aria-live="polite"></div>
 <script src="/vendor/lucide.min.js"></script>
-<script>window.ADM_SPONSORED = [{"id": 1, "adv": "Sharma Electronics, Andheri", "title": "Sharma Electronics: up to 40% off headphones", "line": "Walk-in store deals this week. Free delivery across Mumbai.", "cta": "Visit store", "link": "https://example.com/ad-1", "img": "/assets/posters/electronics.jpg", "start": "2026-11-10", "end": "2026-11-30", "on": true, "views": 18420, "clicks": 402}, {"id": 2, "adv": "HomeNest Interiors", "title": "HomeNest: modular kitchens from ₹89,000", "line": "Free design visit and 10-year warranty. Book this month.", "cta": "Book a visit", "link": "https://example.com/ad-2", "img": "/assets/posters/home.jpg", "start": "2026-11-12", "end": "2026-12-14", "on": true, "views": 6210, "clicks": 97}, {"id": 3, "adv": "FitZone Gym, Powai", "title": "FitZone: 3 months for the price of 2", "line": "Opening offer at our Powai branch.", "cta": "Join now", "link": "https://example.com/ad-3", "img": "/assets/posters/festive.jpg", "start": "2026-10-01", "end": "2026-10-31", "on": true, "views": 24980, "clicks": 511}]; window.ADM_TODAY = "2026-11-13";</script>
+<script>window.ADM_SPONSORED = [{"id": 1, "adv": "Sharma Electronics, Andheri", "title": "Sharma Electronics: up to 40% off headphones", "line": "Walk-in store deals this week. Free delivery across Mumbai.", "cta": "Visit store", "link": "https://example.com/ad-1", "img": "/assets/posters/electronics.jpg", "start": "2026-11-10", "end": "2026-11-30", "on": true, "views": 18420, "clicks": 402}, {"id": 2, "adv": "HomeNest Interiors", "title": "HomeNest: modular kitchens from ₹89,000", "line": "Free design visit and 10-year warranty. Book this month.", "cta": "Book a visit", "link": "https://example.com/ad-2", "img": "/assets/posters/home.jpg", "start": "2026-12-01", "end": "2026-12-31", "on": true, "views": 6210, "clicks": 97}, {"id": 3, "adv": "FitZone Gym, Powai", "title": "FitZone: 3 months for the price of 2", "line": "Opening offer at our Powai branch.", "cta": "Join now", "link": "https://example.com/ad-3", "img": "/assets/posters/festive.jpg", "start": "2026-10-01", "end": "2026-10-31", "on": true, "views": 24980, "clicks": 511}]; window.ADM_TODAY = "2026-11-13";</script>
 <script src="/js/db.js"></script>
 <script src="/js/render.js"></script>
 <script src="/js/admin-db.js"></script>

@@ -64,7 +64,7 @@
         var old = {}; DB.get('categories').forEach(function (c) { old[c.id] = c.name; });
         var oldS = {}; DB.get('shops').forEach(function (s) { oldS[s.id] = s.name; });
         DB.set('categories', C.categories.map(function (c) { var b = DB.get('categories').filter(function (x) { return x.id === c.id; })[0] || {}; return Object.assign({}, b, { id: c.id, name: c.name, slug: c.slug, order: c.order, icon: c.icon || b.icon || 'tag', on: c.on !== false, total: c.n || 0, title: c.title || b.title || '', description: c.seo != null ? c.seo : b.description, page: b.page || '/products/' + c.slug + '-deals', icon: b.icon || 'tag', img: b.img || '' }); }));
-        DB.set('shops', C.shops.map(function (s) { var b = DB.get('shops').filter(function (x) { return x.id === s.id; })[0] || {}; return Object.assign({}, b, { id: s.id, name: s.name, label: s.label, slug: b.slug || H.slug(s.name).replace(/-/g, ''), order: s.order, on: s.on !== false, total: s.n || 0, aff: s.aff, steps: s.steps, description: s.seo != null ? s.seo : b.description, logo: pack(s.logo) || b.logo || '', page: b.page || '/shops/' + (b.slug || H.slug(s.name).replace(/-/g, '')), tint: b.tint, btn: b.btn }); }));
+        DB.set('shops', C.shops.map(function (s) { var b = DB.get('shops').filter(function (x) { return x.id === s.id; })[0] || {}; return Object.assign({}, b, { id: s.id, name: s.name, label: s.label, slug: b.slug || H.slug(s.name).replace(/-/g, ''), order: s.order, on: s.on !== false, total: s.n || 0, aff: s.aff, affs: s.affs || [], steps: s.steps, description: s.seo != null ? s.seo : b.description, logo: pack(s.logo) || b.logo || '', page: b.page || '/shops/' + (b.slug || H.slug(s.name).replace(/-/g, '')), tint: b.tint, btn: b.btn }); }));
         DB.set('dealtypes', C.dealtypes);
         // a renamed category or shop: its deals move with it
         C.categories.forEach(function (c) { if (old[c.id] && old[c.id] !== c.name) DB.deals({ all: true }).forEach(function (d) { if (d.cat === old[c.id]) DB.saveDeal({ id: d.id, cat: c.name }); }); });
@@ -131,13 +131,12 @@
     if (window.ADM_CAT) {
       var seedC = window.ADM_CAT, byId = function (l, id) { return l.filter(function (x) { return x.id === id; })[0] || {}; };
       window.ADM_CAT = {
-        shops: DB.shops(true).map(function (s) { var b = byId(seedC.shops, s.id); return Object.assign({}, b, { id: s.id, name: s.name, label: s.label || s.name.slice(0, 13), slug: s.slug, aff: s.aff != null ? s.aff : b.aff, order: s.order, n: s.total || 0, on: s.on !== false, logo: show(s.logo) || b.logo || '', steps: s.steps || b.steps || DB.steps(), seo: s.description != null ? s.description : b.seo }); }),
+        shops: DB.shops(true).map(function (s) { var b = byId(seedC.shops, s.id); return Object.assign({}, b, { id: s.id, name: s.name, label: s.label || s.name.slice(0, 13), slug: s.slug, aff: s.aff != null ? s.aff : b.aff, affs: s.affs || b.affs || [], order: s.order, n: s.total || 0, on: s.on !== false, logo: show(s.logo) || b.logo || '', steps: s.steps || b.steps || DB.steps(), seo: s.description != null ? s.description : b.seo }); }),
         categories: DB.cats(true).map(function (c) { var b = byId(seedC.categories, c.id); return Object.assign({}, b, { id: c.id, name: c.name, slug: c.slug, order: c.order, n: c.total || 0, on: c.on !== false, icon: c.icon || b.icon || 'tag', img: c.img || b.img || '', title: c.title, seo: c.description }); }),
         dealtypes: DB.get('dealtypes') || seedC.dealtypes, types: seedC.types
       };
     }
     if (window.ADM_SEC) window.ADM_SEC = DB.get('security') || window.ADM_SEC;
-    if (window.ADM_SOCIAL) { var so = DB.get('social'); if (so) { window.ADM_SOCIAL.channels = so.channels; window.ADM_SOCIAL.hist = so.hist; } }
     if (window.ADM_BLOG) window.ADM_BLOG = DB.seedBlog();
     if (window.ADM_CFG) { DB.shops(true).forEach(function (s) { window.ADM_CFG.logos[s.name] = DB.logo(s.name); }); }
 
