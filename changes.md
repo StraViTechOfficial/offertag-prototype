@@ -349,6 +349,11 @@ About 30 categories fit on one screen, so the "Find a category" box is gone. Eac
 - Adil found "Slot 1 · card 3" and the four-line intro confusing. Intro is one line: new deals keep coming in at the top of Top deals; pinned deals stay in place between them. Cards say "Spot 1, 2, 3" (no card number); summary reads "8 pinned deals, one after every 2 new deals". Logic unchanged.
 - Files: build/admin.py, js/admin.js.
 
+### P-70 · Sign-in is email + code only, no Google (26 Nov)
+- Adil: no Google sign-in; members and staff sign in with email and a one-time code. The public sign-in already had no Google button (D-155); the admin sign-in still had "Continue with Google" + "or": removed. Send-error text no longer says "use Google".
+- Backend: Google sign-in (`google.service.ts`, `GOOGLE_CLIENT_IDS`) is no longer needed; web/ and the Android app drop any Google button.
+- Files: build/admin_login.py, js/admin-login.js, js/site.js.
+
 ### Notes from the public build (2026-11-25)
 
 **P-01 card research (what we copied and why).** Flipkart, Meesho and Ajio show the price, the struck MRP and "% off" on **one line**, read left to right. Amazon puts "-88%" before the price. Myntra puts "(88% OFF)" after the MRP. DesiDime and Slickdeals put the store and the posting time in a small top line above the title. Our card now follows that common order:

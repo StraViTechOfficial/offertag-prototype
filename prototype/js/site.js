@@ -410,10 +410,10 @@
       e.preventDefault(); var v = email.value.trim(); show(emailErr, '');
       if (!EMAIL.test(v)) { show(emailErr, 'Enter a valid email address.'); email.focus(); return; }
       if (!box.hidden && !tick.checked) { show(emailErr, 'Please complete the check below first.'); return; }
-      if (/fail/i.test(v)) { show(emailErr, 'We could not send the code. Try again or use Google.'); return; } // prototype: an address containing "fail"
+      if (/fail/i.test(v)) { show(emailErr, 'We could not send the code. Try again in a minute.'); return; } // prototype: an address containing "fail"
       toCode(v);
     });
-    return { reset: function () { toStart(); form.reset(); show(emailErr, ''); }, toCode: toCode, lock: lock, sendError: function () { show(emailErr, 'We could not send the code. Try again or use Google.'); }, codeError: function () { show(codeErr, 'That code is not right. 4 tries left.'); tries = 4; }, turnstile: function () { box.hidden = false; } };
+    return { reset: function () { toStart(); form.reset(); show(emailErr, ''); }, toCode: toCode, lock: lock, sendError: function () { show(emailErr, 'We could not send the code. Try again in a minute.'); }, codeError: function () { show(codeErr, 'That code is not right. 4 tries left.'); tries = 4; }, turnstile: function () { box.hidden = false; } };
   }
 
   function member(addr) { return { name: SAMPLE.name, email: addr || SAMPLE.email, mobile: '' }; }

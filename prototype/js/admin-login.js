@@ -1,6 +1,6 @@
 /* admin-login.js — screen 37, Admin sign-in (D-105). Prototype rules (data sheet admin-login.md, SAMPLE):
    any @offertag.in address is staff, one starting "sub" is a sub-admin, everything else has no admin access;
-   000000 is the wrong code, any other 6 digits work; Google signs in as Adil (admin). */
+   000000 is the wrong code, any other 6 digits work. */
 (function () {
   function $(s) { return document.querySelector(s); }
   var steps = document.querySelectorAll('[data-alog-step]'), EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, timer = null, left = 0, tries = 5, sentTo = '';
@@ -38,7 +38,6 @@
   $('[data-alog-resend]').addEventListener('click', function () { count(); toast('New code sent to ' + sentTo); });
   $('[data-alog-change]').addEventListener('click', function () { clearInterval(timer); show('start'); });
   $('[data-alog-again]').addEventListener('click', function () { $('[data-alog-email]').reset(); show('start'); });
-  $('[data-alog-google]').addEventListener('click', function () { enter('adil@offertag.in'); });
 
   var st = qs.get('state');
   if (st === 'code') toCode('adil@offertag.in');

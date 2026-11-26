@@ -1,6 +1,6 @@
 # admin_login.py — screen 37, Admin sign-in (S18, D-105). Runs inside build.py's namespace after admin_d.py.
 # Data sheet: design-system/ia/data-sheets/admin-login.md. Live route `admin/login` (routes/web.php:139, LoginController@adminLogin);
-# password sign-in is removed (DEV-010), so staff use the same Google / email-code methods as the public site.
+# password sign-in is removed (DEV-010), so staff use the same email-code sign-in as the public site.
 
 def build_admin_login():
     page = f'''<!doctype html>
@@ -23,9 +23,7 @@ def build_admin_login():
     <p class="alog-note" data-alog-out hidden><i data-lucide="check"></i>You are signed out.</p>
     <div data-alog-step="start">
       <h1 id="alog-h">Sign in to the admin</h1>
-      <p class="alog-sub">For OfferTag staff. Use the Google account or email address your admin role is on.</p>
-      <button class="btn btn-outline alog-google" type="button" data-alog-google><svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="#EA4335" d="M12 10.2v3.9h5.4c-.2 1.3-1.6 3.9-5.4 3.9-3.3 0-5.9-2.7-5.9-6s2.6-6 5.9-6c1.9 0 3.1.8 3.8 1.5l2.6-2.5C16.8 3.5 14.6 2.5 12 2.5 6.8 2.5 2.6 6.7 2.6 12s4.2 9.5 9.4 9.5c5.4 0 9-3.8 9-9.2 0-.6-.1-1.1-.2-1.6H12z"/></svg>Continue with Google</button>
-      <div class="alog-or"><span>or</span></div>
+      <p class="alog-sub">For OfferTag staff. Use the email address your admin role is on.</p>
       <form data-alog-email novalidate>
         <label class="fld"><span class="lab">Work email</span><input class="input" type="email" name="email" autocomplete="email" placeholder="you@offertag.in" required><span class="err" data-alog-email-err hidden></span></label>
         <button class="btn btn-default alog-go" type="submit">Email me a code</button>
