@@ -34,14 +34,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
-<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
 <a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
-<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
-<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">3</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin" aria-current="page"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -60,12 +58,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
       <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
       <div class="dropdown adm-user">
-        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b data-user-name>Adil</b><small data-role-label>Super admin</small></span><i data-lucide="chevron-down"></i></button>
         <div class="menu" role="menu" hidden data-state="closed">
-          <div class="menu-label">Signed in as Adil</div>
+          <div class="menu-label" data-signed-in>Signed in as Adil</div>
           <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
-          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
-          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview as an Admin</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to Super admin view</a>
           <div class="separator"></div>
           <div class="menu-label">Theme</div>
           <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
@@ -75,31 +73,43 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin" aria-current="page">Users</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></nav>
-      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Users is for admins only. Sub-admins see Incoming, Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin" aria-current="page">Users</a><a href="/admin/security" data-role="admin">Security</a></nav>
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Users is for Super admins only. Admins post, edit and delete deals, and see Overview, Deals and Alerts. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="page-h">
-        <div><h1>Users</h1><p>The people who run the admin: admins and sub-admins. Each can have their own Amazon tag for the links they share. Members who signed up on the site are under <a href="/admin/members">Members</a>.</p></div>
+        <div><h1>Users</h1><p>The people who run OfferTag. Each can have their own Amazon tag for the links they share.</p></div>
+        <div class="page-h-acts"><button class="btn btn-default" type="button" data-unew><i data-lucide="user-plus"></i>Add user</button></div>
       </div>
+      <p class="role-line"><i data-lucide="shield"></i><span><b>Super admin</b> can do everything. <b>Admin</b> can post, edit and delete deals, but can’t change categories or stores.</span></p>
       <div class="toolbar">
         <label class="input-wrap tb-search"><i data-lucide="search"></i><span class="visually-hidden">Search users</span><input class="input" type="search" placeholder="Name or email" data-uq></label>
-        <label class="select tb-sel"><select data-urole aria-label="Role"><option value="">Admins and sub-admins</option><option>Admin</option><option>Sub-admin</option></select><i data-lucide="chevron-down"></i></label>
-        <span class="count" data-ucount></span><span class="tag-sample">Sample</span>
+        <label class="select tb-sel"><select data-urole aria-label="Role"><option value="">Everyone</option><option>Super admin</option><option>Admin</option></select><i data-lucide="chevron-down"></i></label>
+        <span class="count" data-ucount></span>
       </div>
       <div class="tbl-wrap"><table class="tbl ltbl users-tbl">
-        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Amazon tag</th></tr></thead>
+        <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Last signed in</th><th>Amazon tag</th><th class="c-act"><span class="visually-hidden">Actions</span></th></tr></thead>
         <tbody data-urows></tbody></table>
         <p class="empty" data-uempty hidden>No users match. <button class="btn-link" type="button" data-uclear>Clear search</button></p></div>
-      <p class="foot-note"><i data-lucide="info"></i><span>Roles are fixed. To make a member a sub-admin, or to remove someone's access, ask the developer. See <a href="/admin/role">Roles</a> for what each role can open.</span></p>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="user-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="ue-title">
-        <div class="sheet-header"><div class="sheet-title" id="ue-title">User</div><p class="sheet-desc" data-ue-sub></p></div>
+        <div class="sheet-header"><div class="sheet-title" id="ue-title">Add user</div><p class="sheet-desc" data-ue-sub>They sign in with a code sent to this email.</p></div>
         <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
         <form class="sheet-body pe" data-ue novalidate>
-          <dl class="kv" data-ue-kv></dl>
-          <label class="fld" data-ue-tagfld><span class="lab">Amazon tag <small>replaces the website tag on links this person shares</small></span><input class="input mono" type="text" name="tag" placeholder="e.g. offertag3-21" spellcheck="false" autocomplete="off"><span class="err" hidden>Amazon tags in India end in “-21”.</span></label>
+          <label class="fld"><span class="lab">Name *</span><input class="input" type="text" name="name" maxlength="60" autocomplete="off"><span class="err" hidden>Add a name.</span></label>
+          <label class="fld"><span class="lab">Email *</span><input class="input" type="email" name="email" autocomplete="off" placeholder="name@offertag.in"><span class="err" hidden>Add a working email.</span></label>
+          <div class="fld"><span class="lab">Role *</span>
+            <div class="role-pick">
+              <label class="role-opt"><input type="radio" name="role" value="Admin" checked><span><b>Admin</b><small>Posts, edits and deletes deals. Can’t change categories or stores.</small></span></label>
+              <label class="role-opt"><input type="radio" name="role" value="Super admin"><span><b>Super admin</b><small>Everything.</small></span></label>
+            </div></div>
+          <label class="fld"><span class="lab">Amazon tag <small>optional; used on links this person shares</small></span><input class="input mono" type="text" name="tag" placeholder="e.g. offertag5-21" spellcheck="false" autocomplete="off"><span class="err" hidden>Amazon tags in India end in “-21”.</span></label>
+          <label class="ckl"><span class="ck"><input type="checkbox" name="active" checked><span class="box"><i data-lucide="check"></i></span></span><span>Active <small>can sign in</small></span></label>
         </form>
-        <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ue-save>Save</button></div>
+        <div class="sheet-footer"><button class="btn btn-ghost danger" type="button" data-ue-del hidden><i data-lucide="trash-2"></i>Delete</button><span class="grow"></span><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ue-save>Save</button></div>
+      </aside>
+      <aside class="sheet dialog" id="confirm" hidden data-state="closed" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-desc">
+        <div class="sheet-header"><div class="sheet-title" id="cf-title"></div><p class="sheet-desc" id="cf-desc"></p></div>
+        <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-confirm-go></button></div>
       </aside>
       </div>
     </main>
@@ -107,7 +117,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 </div>
 <div class="toaster" id="toaster" aria-live="polite"></div>
 <script src="/vendor/lucide.min.js"></script>
-<script>window.ADM_USERS = [{"id": 1, "name": "Adil", "email": "adil@…", "phone": "", "role": "Admin", "joined": "2019-06", "tag": "offertag-21"}, {"id": 2, "name": "Imran K.", "email": "posts@…", "phone": "", "role": "Sub-admin", "joined": "2025-01", "tag": "offertag3-21"}, {"id": 3, "name": "Neha P.", "email": "neha.p@…", "phone": "", "role": "Sub-admin", "joined": "2025-08", "tag": ""}, {"id": 4, "name": "Rahul S.", "email": "rahul@…", "phone": "98xxxxxx21", "role": "Member", "joined": "2024-03", "tag": ""}, {"id": 5, "name": "Priya M.", "email": "priya@…", "phone": "", "role": "Member", "joined": "2023-11", "tag": ""}, {"id": 6, "name": "Arjun V.", "email": "arjun.v@…", "phone": "97xxxxxx08", "role": "Member", "joined": "2026-10", "tag": ""}, {"id": 7, "name": "Sneha R.", "email": "sneha@…", "phone": "", "role": "Member", "joined": "2022-05", "tag": ""}, {"id": 8, "name": "Mohammed F.", "email": "mfaiz@…", "phone": "99xxxxxx44", "role": "Member", "joined": "2021-01", "tag": ""}, {"id": 9, "name": "Kavya N.", "email": "kavya@…", "phone": "", "role": "Member", "joined": "2026-11", "tag": ""}, {"id": 10, "name": "Vikram T.", "email": "vikram@…", "phone": "90xxxxxx13", "role": "Member", "joined": "2020-07", "tag": ""}, {"id": 11, "name": "Ananya G.", "email": "ananya@…", "phone": "", "role": "Member", "joined": "2025-12", "tag": ""}, {"id": 12, "name": "Deepak J.", "email": "deepak@…", "phone": "88xxxxxx70", "role": "Member", "joined": "2019-09", "tag": ""}];</script>
+<script>window.ADM_USERS = [{"id": 1, "name": "Adil", "email": "adil@offertag.in", "phone": "98xxxxxx01", "role": "Super admin", "joined": "2019-06", "tag": "offertag-21", "active": true, "last": "today"}, {"id": 2, "name": "Imran K.", "email": "imran@offertag.in", "phone": "", "role": "Admin", "joined": "2025-01", "tag": "offertag3-21", "active": true, "last": "today"}, {"id": 3, "name": "Neha P.", "email": "neha.p@offertag.in", "phone": "", "role": "Admin", "joined": "2025-08", "tag": "", "active": true, "last": "yesterday"}, {"id": 4, "name": "Farhan A.", "email": "farhan@offertag.in", "phone": "", "role": "Admin", "joined": "2024-04", "tag": "offertag4-21", "active": false, "last": "3 months ago"}];</script>
 <script src="/js/db.js"></script>
 <script src="/js/render.js"></script>
 <script src="/js/admin-db.js"></script>

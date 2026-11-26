@@ -34,14 +34,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
-<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
 <a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
-<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
-<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">3</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -60,12 +58,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
       <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
       <div class="dropdown adm-user">
-        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b data-user-name>Adil</b><small data-role-label>Super admin</small></span><i data-lucide="chevron-down"></i></button>
         <div class="menu" role="menu" hidden data-state="closed">
-          <div class="menu-label">Signed in as Adil</div>
+          <div class="menu-label" data-signed-in>Signed in as Adil</div>
           <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
-          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
-          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview as an Admin</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to Super admin view</a>
           <div class="separator"></div>
           <div class="menu-label">Theme</div>
           <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
@@ -79,7 +77,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
         <i data-lucide="hammer"></i>
         <h1 data-soon-title>This screen</h1>
         <p>This screen is built in a later batch (S16–S19). Its design is already agreed in <code>design-system/screens/</code>.</p>
-        <div class="page-h-acts"><a class="btn btn-outline" href="/admin/deal">All deals</a><a class="btn btn-default" href="/admin/incoming">Incoming deals</a></div>
+        <div class="page-h-acts"><a class="btn btn-outline" href="/admin/deal">All deals</a><a class="btn btn-default" href="/admin/deal/create">Post a deal</a></div>
       </div>
     </main>
   </div>

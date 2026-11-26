@@ -36,7 +36,7 @@ class Handler(SimpleHTTPRequestHandler):
         # serve its shell and js/render.js draws it from the data (same rules as _redirects for Netlify / Cloudflare Pages)
         import re
         for pat, shell in ((r"^/deal/[^/]+$", "deal"), (r"^/products/[^/]+-deals$", "products"), (r"^/shops/[^/]+/[^/]+$", "combo"), (r"^/shops/[^/]+$", "shops"),
-                           (r"^/blog/[^/]+$", "blog"), (r"^/admin/deal/[^/]+/(edit|clone)$", "adm-deal"), (r"^/admin/blog/[^/]+/edit$", "adm-blog")):
+                           (r"^/blog/[^/]+$", "blog"), (r"^/admin/deal/[^/]+/edit$", "adm-deal"), (r"^/admin/deal/\d+$", "adm-view"), (r"^/admin/users/\d+$", "adm-user"), (r"^/admin/blog/[^/]+/edit$", "adm-blog")):
             if re.match(pat, p.rstrip("/")) and (ROOT / "_shell" / shell / "index.html").is_file():
                 return ("file", ROOT / "_shell" / shell / "index.html")
         return ("404", ROOT / "404.html")

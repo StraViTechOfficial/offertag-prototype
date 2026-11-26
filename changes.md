@@ -103,54 +103,54 @@ Every row is either full width or a left/right pair, so no row leaves an empty s
 
 ---
 
-## Part B: Admin
+## Part B: Admin (done 2026-11-25)
 
 ### Deals
 
 #### A-01 Deals list row: actions in the row, no menu clutter
 Screens: Image 1 (row) and 2 (menu).
-- [ ] **Remove** Clone (including the `/admin/deal/{id}/clone` pages and "Copy Deal"), Copy buy link, Bump to top, the "Change status" group (Live, Withdrawn, Rejected) and the stand-alone "Share…" behaviour that leaves the page.
-- [ ] **Copy for WhatsApp** is the only copy action and uses a **copy icon** (not the chat bubble). It copies the one fixed format (see Part C, short links).
-- [ ] **Share** opens a share sheet **in place**, as a small popover on desktop and a bottom sheet on phones. It offers WhatsApp, Telegram, Facebook and copy link, and uses the device's native share on phones. Today Share sends the user to the deal's edit page (`#share`); after this change it never navigates away.
-- [ ] Put the actions **in the row itself**, using the empty space in the table. Each is an icon button with a tooltip, in this order: Copy for WhatsApp · Share · Pin · Feature · Send push · Open public page · Edit. Use clear icons, for example copy, share-2, pin (filled when pinned), star (filled when featured), bell, external-link and pencil.
-- [ ] The overflow menu (`…`) keeps only **Delete**, with a confirmation and an Undo toast.
-- [ ] **Pin** and **Feature** are toggles in the row and show their state at a glance.
-- [ ] On phones the same actions are available from the card's action strip or sheet.
+- [x] **Remove** Clone (including the `/admin/deal/{id}/clone` pages and "Copy Deal"), Copy buy link, Bump to top, the "Change status" group (Live, Withdrawn, Rejected) and the stand-alone "Share…" behaviour that leaves the page.
+- [x] **Copy for WhatsApp** is the only copy action and uses a **copy icon** (not the chat bubble). It copies the one fixed format (see Part C, short links).
+- [x] **Share** opens a share sheet **in place**, as a small popover on desktop and a bottom sheet on phones. It offers WhatsApp, Telegram, Facebook and copy link, and uses the device's native share on phones. Today Share sends the user to the deal's edit page (`#share`); after this change it never navigates away.
+- [x] Put the actions **in the row itself**, using the empty space in the table. Each is an icon button with a tooltip, in this order: Copy for WhatsApp · Share · Pin · Feature · Send push · Open public page · Edit. Use clear icons, for example copy, share-2, pin (filled when pinned), star (filled when featured), bell, external-link and pencil.
+- [x] The overflow menu (`…`) keeps only **Delete**, with a confirmation and an Undo toast.
+- [x] **Pin** and **Feature** are toggles in the row and show their state at a glance.
+- [x] On phones the same actions are available from the card's action strip or sheet.
 
 #### A-02 Reorder by dragging, and multi-select (replaces "Bump to top")
-- [ ] Each row gets a **drag handle** (grip icon). Dragging a row up moves that deal up on the site, so the top row is the first deal shown.
-- [ ] Each row gets a **checkbox**. With several rows selected, dragging any selected row moves them all together, keeping their order.
-- [ ] The selection bar shows "N selected" with these bulk actions: **Move to top** · Copy for WhatsApp (all selected, one after another) · Pin · Feature · Delete · Clear.
-- [ ] On touch screens the handle works with long-press and drag, and "Move to top" is available for one-tap use.
-- [ ] Replaces B11 "Bump to top" and the silent bump on save.
+- [x] Each row gets a **drag handle** (grip icon). Dragging a row up moves that deal up on the site, so the top row is the first deal shown.
+- [x] Each row gets a **checkbox**. With several rows selected, dragging any selected row moves them all together, keeping their order.
+- [x] The selection bar shows "N selected" with these bulk actions: **Move to top** · Copy for WhatsApp (all selected, one after another) · Pin · Feature · Delete · Clear.
+- [x] On touch screens the handle works with long-press and drag, and "Move to top" is available for one-tap use.
+- [x] Replaces B11 "Bump to top" and the silent bump on save.
 
 #### A-03 Remove deal statuses entirely
 Screen: Image 3 (tabs: All 120 · Live 114 · Pending 5 · Withdrawn 1 · Rejected 0).
 The script publishes deals directly. There is no pending, approved, rejected or withdrawn state: a deal is either on the site or deleted.
-- [ ] Remove the status tabs, the Status column, the status filter and the status chips everywhere in the admin.
-- [ ] Remove the Live, Pending, Withdrawn and Rejected labels from `js/admin.js` (`LABEL.status`), from the sample data (`data/*.json`, `build/*.json`) and from the deal content contract (field 24).
-- [ ] Remove the "only live deals can be shared" checks.
-- [ ] **Incoming page** (`/admin/incoming`): remove it entirely, with its menu entry, Overview tiles and links. *(Decided 2026-11-25.)*
-- [ ] Replaces B17 (Telegram deals wait for approval), D-040 (withdrawn state) and D-079 (publish rule statuses).
+- [x] Remove the status tabs, the Status column, the status filter and the status chips everywhere in the admin.
+- [x] Remove the Live, Pending, Withdrawn and Rejected labels from `js/admin.js` (`LABEL.status`), from the sample data (`data/*.json`, `build/*.json`) and from the deal content contract (field 24).
+- [x] Remove the "only live deals can be shared" checks.
+- [x] **Incoming page** (`/admin/incoming`): remove it entirely, with its menu entry, Overview tiles and links. *(Decided 2026-11-25.)*
+- [x] Replaces B17 (Telegram deals wait for approval), D-040 (withdrawn state) and D-079 (publish rule statuses).
 
 #### A-04 Deal view page (read-only) with an edit drawer
 Screen: Image 10 (context).
-- [ ] Clicking a row in the deals list opens a **deal view page** (new address `/admin/deal/{id}`), not the edit form. It shows:
+- [x] Clicking a row in the deals list opens a **deal view page** (new address `/admin/deal/{id}`), not the edit form. It shows:
   - Image, title, price, MRP, % off, store, category and the auto tag (Loot, Top and so on)
   - When posted and by whom, plus the Pinned and Featured state
   - **Numbers:** views, Buy clicks, shares by channel (WhatsApp, Telegram, Facebook and so on) and pushes sent
   - **Comments** on this deal: author, time and text, each with Delete and Undo. This replaces the Comments tab in the Inbox.
   - Actions: Copy for WhatsApp · Share · Pin · Feature · Send push · Open public page · Delete
-- [ ] A **pencil (Edit) button** opens the edit form in a **side drawer** (full screen on phones). Saving closes the drawer and refreshes the view.
-- [ ] The existing address `/admin/deal/{id}/edit` keeps working and opens the view page with the drawer open.
+- [x] A **pencil (Edit) button** opens the edit form in a **side drawer** (full screen on phones). Saving closes the drawer and refreshes the view.
+- [x] The existing address `/admin/deal/{id}/edit` keeps working and opens the view page with the drawer open.
 
 #### A-05 Post a deal: a simpler page
 Screens: Image 5 and 6.
-- [ ] **Drag and drop the image anywhere on the page.** While a file is dragged over the window, show a full-page "Drop image here" overlay. Pasting an image (Ctrl+V), Fetch from link and Upload also keep working.
-- [ ] **Remove the "Clean URL" checkbox.** Link cleaning stays automatic, as in the current code: store tags and affiliate parameters are stripped on save and the right tag is added when the link is used (Part C).
-- [ ] **Remove the "Deal types" chips** (Top deal, Loot, New, Pantry). The tag is set automatically from the % off using the Settings rules (A-14). Show a read-only hint instead, e.g. "Will be tagged: Loot (88% off)".
-- [ ] **Off %** is calculated from Price and MRP and is no longer typed by hand.
-- [ ] Field order, plain-language labels and helper text:
+- [x] **Drag and drop the image anywhere on the page.** While a file is dragged over the window, show a full-page "Drop image here" overlay. Pasting an image (Ctrl+V), Fetch from link and Upload also keep working.
+- [x] **Remove the "Clean URL" checkbox.** Link cleaning stays automatic, as in the current code: store tags and affiliate parameters are stripped on save and the right tag is added when the link is used (Part C).
+- [x] **Remove the "Deal types" chips** (Top deal, Loot, New, Pantry). The tag is set automatically from the % off using the Settings rules (A-14). Show a read-only hint instead, e.g. "Will be tagged: Loot (88% off)".
+- [x] **Off %** is calculated from Price and MRP and is no longer typed by hand.
+- [x] Field order, plain-language labels and helper text:
   1. Deal link (store chosen automatically from the link)
   2. Image (drop zone)
   3. Title
@@ -159,51 +159,51 @@ Screens: Image 5 and 6.
   6. Price, MRP and the calculated off %
   7. Options: Pinned · **Featured** · Send push · Shows on (Web + App by default)
   8. "More details" (coupon, how to get it and extras) stays folded away
-- [ ] Clear required markers, inline errors, and the live card preview on the right, which shows the new card from P-01.
-- [ ] After publishing: the success panel with Copy for WhatsApp, Share and "Post another".
+- [x] Clear required markers, inline errors, and the live card preview on the right, which shows the new card from P-01.
+- [x] After publishing: the success panel with Copy for WhatsApp, Share and "Post another".
 
 #### A-06 Featured deals replace sale posters
 Screens: Image 6 (Promote), 13 and 14 (Settings → Home → Sale posters).
-- [ ] Remove **sale posters** completely:
+- [x] Remove **sale posters** completely:
   - the "Add poster" form and `/admin/posters`
   - the Promote → Sale posters entry
   - the Settings → Home "Sale posters" toggle and its "Manage posters" link
   - the poster sample data
-- [ ] A deal becomes featured **only** from the deals list row (A-01), the deal view page (A-04) or the Post/Edit form (A-05). There are no other places, so nothing is duplicated.
-- [ ] Featured deals fill the Home hero (P-08).
+- [x] A deal becomes featured **only** from the deals list row (A-01), the deal view page (A-04) or the Post/Edit form (A-05). There are no other places, so nothing is duplicated.
+- [x] Featured deals fill the Home hero (P-08).
 
 #### A-07 Sponsored ads: image + CTA only
 Screen: Image 7.
-- [ ] The add and edit form has only these fields:
+- [x] The add and edit form has only these fields:
   - **Image** (one image, required)
   - **Button text** (CTA), e.g. "Visit website" or "Call us"
   - **Button link** (URL, or `tel:` for calls)
   - **Start date** (optional) and **End date** (optional)
   - **On/off** switch
-- [ ] Remove Advertiser, Phone image and Title, along with every other field.
-- [ ] Dates: if both are given, the ad shows only within that period. If they are empty, the ad shows until it is switched off. The dates are for internal use only and are never shown on the site. There is no separate scheduling feature.
-- [ ] The list shows the image thumbnail, button text, link, dates (or "Until turned off"), on/off, views and clicks.
+- [x] Remove Advertiser, Phone image and Title, along with every other field.
+- [x] Dates: if both are given, the ad shows only within that period. If they are empty, the ad shows until it is switched off. The dates are for internal use only and are never shown on the site. There is no separate scheduling feature.
+- [x] The list shows the image thumbnail, button text, link, dates (or "Until turned off"), on/off, views and clicks.
 
 #### A-08 New alert: deal image, title and price only
 Screen: Image 8.
-- [ ] When a deal is selected, the alert is built from the deal itself: **image, title and price**. Nothing else is entered.
-- [ ] Remove the "Message" box.
-- [ ] Keep the "Send to" choice exactly as it is today (Website, App, or both). *(Decided 2026-11-25.)*
+- [x] When a deal is selected, the alert is built from the deal itself: **image, title and price**. Nothing else is entered.
+- [x] Remove the "Message" box.
+- [x] Keep the "Send to" choice exactly as it is today (Website, App, or both). *(Decided 2026-11-25.)*
 
 ### Inbox
 
 #### A-11 Inbox: remove Reports, move Comments
 Screen: Image 10.
-- [ ] **Remove Reports** entirely: the tab, its data and the public "Report a problem" button (P-06).
-- [ ] **Move Comments** to each deal's view page (A-04), and remove the Comments tab and `/admin/comments`.
-- [ ] The Inbox keeps Feedback (contact form) and Deletion requests.
+- [x] **Remove Reports** entirely: the tab, its data and the public "Report a problem" button (P-06).
+- [x] **Move Comments** to each deal's view page (A-04), and remove the Comments tab and `/admin/comments`.
+- [x] The Inbox keeps Feedback (contact form) and Deletion requests.
 
 ### People, roles and access
 
 #### A-12 Remove the Members page; show a Users count on Overview
 Screen: Image 11.
-- [ ] Remove the **Members** page (`/admin/members`) and its sidebar entry.
-- [ ] On **Overview**, add one tile labelled **"Users"** showing the total (28,880). The tile is not clickable, and no names or details are shown anywhere.
+- [x] Remove the **Members** page (`/admin/members`) and its sidebar entry.
+- [x] On **Overview**, add one tile labelled **"Users"** showing the total (28,880). The tile is not clickable, and no names or details are shown anywhere.
 
 #### A-13 Roles and users: three roles, one Users page
 Screens: Image 17 (Roles) and 19 (Users). Roles:
@@ -214,60 +214,74 @@ Screens: Image 17 (Roles) and 19 (Users). Roles:
 | **Admin** | Post, edit and delete deals. Cannot change categories or shops. |
 | **User** (public) | View the site and edit their own profile. No admin access. |
 
-- [ ] **Merge Roles into Users.** Remove the Settings → Roles tab and its capability matrix.
-- [ ] On the Users page, show one short line describing the Admin role only (the text in the table above). Super admin needs no description.
-- [ ] Rename "Sub-admin" to **Admin** and "Admin" to **Super admin** everywhere: menus, labels, `?role=` preview and data.
-- [ ] Settings → Users lists **Super admins and Admins only**. Public users appear only as the count from A-12.
-- [ ] **Add user:** name, email, role (Admin or Super admin) and Amazon tag. The user signs in with email OTP.
-- [ ] **Edit user:** name, role (promote to Super admin or demote to Admin), Amazon tag.
-- [ ] **Active / Inactive** switch. An inactive user cannot sign in, and their deals stay on the site.
-- [ ] **Delete user**, with a confirmation. Their deals stay on the site.
-- [ ] **Per-user page** (`/admin/users/{id}`): profile, role, status and Amazon tag, editable in place, plus an **activity log (audit)** listing sign-ins, deals posted, edited and deleted, and settings changed, each with a date and time and filterable by type.
-- [ ] Menu access: an Admin sees only what the Admin role allows. *(Confirm the exact list in Part D, Q5.)*
-- [ ] Replaces D-160's "roles are fixed, ask the developer" note.
+- [x] **Merge Roles into Users.** Remove the Settings → Roles tab and its capability matrix.
+- [x] On the Users page, show one short line describing the Admin role only (the text in the table above). Super admin needs no description.
+- [x] Rename "Sub-admin" to **Admin** and "Admin" to **Super admin** everywhere: menus, labels, `?role=` preview and data.
+- [x] Settings → Users lists **Super admins and Admins only**. Public users appear only as the count from A-12.
+- [x] **Add user:** name, email, role (Admin or Super admin) and Amazon tag. The user signs in with email OTP.
+- [x] **Edit user:** name, role (promote to Super admin or demote to Admin), Amazon tag.
+- [x] **Active / Inactive** switch. An inactive user cannot sign in, and their deals stay on the site.
+- [x] **Delete user**, with a confirmation. Their deals stay on the site.
+- [x] **Per-user page** (`/admin/users/{id}`): profile, role, status and Amazon tag, editable in place, plus an **activity log (audit)** listing sign-ins, deals posted, edited and deleted, and settings changed, each with a date and time and filterable by type.
+- [x] Menu access: an Admin sees only what the Admin role allows. *(Confirm the exact list in Part D, Q5.)*
+- [x] Replaces D-160's "roles are fixed, ask the developer" note.
 
 ### Settings
 
 #### A-14 Deal tag rules, set in Catalogue → Deal types (replaces "Featured deals" rules)
 Screens: Image 15 and 24.
-- [ ] Remove the "Featured deals" settings block from Settings (Price at or above, Or discount at or above, At most per day, What the flag does).
-- [ ] Remove the empty **"Header"** block that sits directly below it in Settings (Image 24). *(Decided 2026-11-25.)*
-- [ ] Catalogue stays **as it is**. In **Catalogue → Deal types**, the "Rule line" becomes a **real, editable rule** instead of descriptive text. Defaults are the **old live site's** numbers (W44):
+- [x] Remove the "Featured deals" settings block from Settings (Price at or above, Or discount at or above, At most per day, What the flag does).
+- [x] Remove the empty **"Header"** block that sits directly below it in Settings (Image 24). *(Decided 2026-11-25.)*
+- [x] Catalogue stays **as it is**. In **Catalogue → Deal types**, the "Rule line" becomes a **real, editable rule** instead of descriptive text. Defaults are the **old live site's** numbers (W44):
   - **Top deal:** 25% off or more
   - **Loot:** 75% off or more (also counts as Top)
   - **New:** below 25% off
   - **Pantry:** deals in the **Grocery** category. This is a category rule, not a percentage rule.
   - **Push ticked by default:** 90% off or more (old site rule, unchanged)
-- [ ] Every deal gets its tag from these rules automatically, both new deals and existing ones when a rule changes. For example, with Loot set to 85%, every deal at 85% off or more is tagged Loot.
-- [ ] Order and on/off for each deal type stay as they are today.
+- [x] Every deal gets its tag from these rules automatically, both new deals and existing ones when a rule changes. For example, with Loot set to 85%, every deal at 85% off or more is tagged Loot.
+- [x] Order and on/off for each deal type stay as they are today.
 
 #### A-15 Social sharing: one fixed format
 Screen: Image 16.
-- [ ] Remove the per-platform format editor: the text box, the Insert chips, "Save format" and "Reset to default".
-- [ ] One **hard-coded** format is used for every share, with no editing.
-- [ ] Replaces B14.
+- [x] Remove the per-platform format editor: the text box, the Insert chips, "Save format" and "Reset to default".
+- [x] One **hard-coded** format is used for every share, with no editing.
+- [x] Replaces B14.
 
 #### A-16 Join / community buttons are always on
 Screen: Image 14.
-- [ ] In Settings → Site & app, remove the on/off switch for the join / announcement buttons (WhatsApp, Telegram, Get the app) just below the Home section. They are always shown. *(Decided 2026-11-25.)*
+- [x] In Settings → Site & app, remove the on/off switch for the join / announcement buttons (WhatsApp, Telegram, Get the app) just below the Home section. They are always shown. *(Decided 2026-11-25.)*
 
 #### A-17 Security: flagged IPs only, kept simple
 Screen: Image 20.
-- [ ] Remove the **Bot check** section entirely.
-- [ ] Keep one **Flagged IPs** table with the columns IP · Status · Added · Until · "Let back in".
-- [ ] Remove the **"Why"** column.
-- [ ] Remove **"Always allowed"**: the row, the status and the "Remove" action.
+- [x] Remove the **Bot check** section entirely.
+- [x] Keep one **Flagged IPs** table with the columns IP · Status · Added · Until · "Let back in".
+- [x] Remove the **"Why"** column.
+- [x] Remove **"Always allowed"**: the row, the status and the "Remove" action.
 
 #### A-18 One place for affiliate tags (Catalogue vs Affiliate tags)
 Screen: Image 12 (Catalogue → Shops row showing `tag=offertag-21`).
-- [ ] The Amazon and Flipkart tags are set in **Settings → Affiliate tags only**, per channel: Website, App, WhatsApp/short links, Google, Facebook and so on (BRD B16).
-- [ ] Remove the affiliate tag column and field from Catalogue → Shops, so the Shops page keeps only name, logo, card label, description, steps, order and active.
-- [ ] Per-person Amazon tags stay on Users (A-13).
-- [ ] See Part C for how the tags are used today.
+- [x] The Amazon and Flipkart tags are set in **Settings → Affiliate tags only**, per channel: Website, App, WhatsApp/short links, Google, Facebook and so on (BRD B16).
+- [x] Remove the affiliate tag column and field from Catalogue → Shops, so the Shops page keeps only name, logo, card label, description, steps, order and active.
+- [x] Per-person Amazon tags stay on Users (A-13).
+- [x] See Part C for how the tags are used today.
 
 #### A-19 Short links: build them properly
-- [ ] Make the short link **fixed per deal** and generated from the deal ID, as on the old site (Part C). Today the prototype makes a random 5-character link (`offertag.in/v/` + random), so the same deal gets a different link each time.
-- [ ] "Copy for WhatsApp" and Share use the **buy short link** (`/d/…`, which goes straight to the store with the WhatsApp tag). The deal page link is `/v/…`.
+- [x] Make the short link **fixed per deal** and generated from the deal ID, as on the old site (Part C). Today the prototype makes a random 5-character link (`offertag.in/v/` + random), so the same deal gets a different link each time.
+- [x] "Copy for WhatsApp" and Share use the **buy short link** (`/d/…`, which goes straight to the store with the WhatsApp tag). The deal page link is `/v/…`.
+
+### Notes from the admin build (2026-11-25)
+
+- **Site order:** dragging a deal (or **Move to top**) sets its place on the site. Home, Top deals and the other lists now follow that order, newest first otherwise. Drag works when the list is in site order (the Deal column). If it's sorted by price, time or views, the handles are greyed out with a "Back to site order" link. Arrow keys on a handle move a deal one place.
+- **Row actions:** Copy for WhatsApp · Share (a menu on desktop, the phone's own share sheet on phones) · Pin · Feature · Send push · Public page · Edit · ⋮ (Delete only). Pinned and Featured show as lit icons and as labels under the title.
+- **Deal page:** `/admin/deal/{id}` shows the deal, its numbers (views, unique visitors, Buy clicks, click rate, comments), sample share counts, its links (public page, both short links, store link) and its comments, with Delete and Undo. **Edit** opens the form in a side drawer. Saving closes it and refreshes the page. The old `/admin/deal/{id}/edit` address opens the deal page with the drawer open.
+- **Post a deal:** numbered steps, a big drop zone, drag a picture anywhere on the page, or paste it. Description sits under the title. The tag hint ("Will be tagged: Loot") follows the rules. Featured is in Options. Clone, Clean URL, deal-type chips, "How to get it", Bump and the share panel are gone.
+- **Sponsored:** the list shows "Button → website" and the dates, or "Until switched off". The public card is the picture with "Sponsored" and the button under it. A phone number in "Button opens" becomes a Call button.
+- **Users:** Settings → Users lists Super admins and Admins. **Add user**, Edit (name, email, role, Amazon tag, active), the on/off switch, Delete. You can't delete or turn off yourself, and there's always at least one active Super admin. Each user has a page `/admin/users/{id}` with an activity log: sign-ins, deals posted, edited, pinned, featured, moved and deleted, and settings changed. Real actions taken in this browser are logged against whoever is signed in (Super admin preview = Adil, Admin preview = Imran K.), on top of sample history.
+- **Admin access (Q5, still to confirm):** an Admin sees Overview, Deals (All deals, Pinned board, Post a deal) and Alerts. Everything else says "for Super admins only".
+- **Deal tag rules:** Catalogue → Deal types shows the live rule for each tab. Edit Top deals or Loot to change the %, edit Pantry to pick its categories. New is "under the Top deals %". Loot must stay above Top. Every page, card tag, filter and the Loot heading sticker follow at once.
+- **Short links:** fixed per deal (`offertag.in/d/` + the id written as letters, A=0 … J=9), used by Copy for WhatsApp, Share and the deal page.
+- **The one post text:** title, then "Deal price: ₹… (MRP ₹…, …% off)", then "Code: …" if there's a coupon, then "Buy: offertag.in/d/…". Social sharing shows it, read-only.
+- **Removed pages:** `/admin/incoming`, `/admin/posters`, `/admin/members`, `/admin/role`, `/admin/reports`, `/admin/comments`, `/admin/social/formats` and every `/admin/deal/{id}/clone` page.
 
 ---
 
@@ -306,6 +320,6 @@ Sources: `ia/inventory/old-website.md` (live offertag.in, Laravel), `ia/deal-con
 | Q2 | A-16 | Remove the on/off switch for the join / announcement buttons; they are always on. |
 | Q3 | A-14 | The element is the empty "Header" block in Settings (Image 24). Remove it. |
 | Q4 | A-08 | Keep the alert "Send to" choice as it is. |
-| Q5 | A-13 | Not answered yet. Working default: an Admin sees Overview, Deals (list, post, pinned) and Alerts. |
+| Q5 | A-13 | Not answered yet. Built with the working default: an Admin sees Overview, Deals (list, post, pinned) and Alerts. |
 | Q6 | A-14 | Catalogue stays as it is. The deal tag rules are edited in Catalogue → Deal types (the "Rule line" becomes a real rule). |
 | Q7 | A-14 | Use the old live site's numbers: Top 25% or more, Loot 75% or more, New below 25%, Pantry = Grocery, push at 90% or more. Where the old site and the BRD cover something, follow the old site. |

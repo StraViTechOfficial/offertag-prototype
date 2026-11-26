@@ -55,12 +55,12 @@
   }
   function tdDeal(d, o) { return tdCard(d.store, d.td, d.tdFill, d.t, d.sale ? '<b>Up to ' + d.pct + '% off</b>' : '<b>' + inr(d.p) + '</b><s>' + inr(d.m) + '</s><em>' + d.pct + '% off</em>', d.page, o); }
   function liveByDates(x) { var t = DB.today(); return x.on && (!x.start || x.start <= t) && (!x.end || t <= x.end); }
-  function sponsorCard(x, where) {  // build.py sponsor_card()
-    var img = DB.imgSrc(where === 'inline' && x.mimg ? x.mimg : x.img);
-    return '<a class="sp-card sp-' + where + '" href="' + E(x.link || '#') + '" target="_blank" rel="sponsored nofollow noopener" data-sp="' + E(x.id) + '" aria-label="Sponsored: ' + E(x.title) + '">' +
-      '<span class="sp-img" style="background-image:url(' + E(img) + ')"></span>' +
-      '<span class="sp-body"><span class="sp-tag">Sponsored' + (x.sample ? '<span class="sp-sample"> · Sample</span>' : '') + '</span><b class="sp-title">' + E(x.title) + '</b>' + (x.line ? '<span class="sp-line">' + E(x.line) + '</span>' : '') +
-      '<span class="sp-cta">' + E(x.cta || 'Visit') + '<i data-lucide="arrow-right"></i></span></span></a>';
+  function sponsorCard(x, where) {  // changes.md A-07: the advertiser's picture and one button, labelled Sponsored
+    var img = DB.imgSrc(x.img), tel = /^tel:/.test(x.link || '');
+    return '<a class="sp-card sp-pic sp-' + where + '" href="' + E(x.link || '#') + '"' + (tel ? '' : ' target="_blank" rel="sponsored nofollow noopener"') + ' data-sp="' + E(x.id) + '" aria-label="Sponsored: ' + E(x.cta || 'Visit') + '">' +
+      '<span class="sp-img"><img src="' + E(img) + '" alt="" loading="lazy"></span>' +
+      '<span class="sp-body"><span class="sp-tag">Sponsored' + (x.sample ? '<span class="sp-sample"> · Sample</span>' : '') + '</span>' +
+      '<span class="sp-cta">' + E(x.cta || 'Visit') + '<i data-lucide="' + (tel ? 'phone' : 'arrow-right') + '"></i></span></span></a>';
   }
   function byViews(a, b) { return (b.views || 0) - (a.views || 0); }
 
@@ -203,7 +203,7 @@
     var d = DB.dealByPath(path());
     if (!d) { notFound(main); return true; }
     var sale = d.sale, pct = d.pct, store = d.store, link = d.buy;
-    var shareText = d.t + '\n' + SITE + '/d/' + d.id + '\n' + (sale ? 'Up to ' + pct + '% off' : 'MRP ' + inr(d.m) + ' → ' + inr(d.p) + ' (' + pct + '% off)');
+    var shareText = H.shareText(d);   // the one fixed format (changes.md A-15, A-19)
     var types = d.typesAll.filter(function (t) { return t !== 'Fresh' && t !== 'New'; }).map(function (t) { return TYPELABEL[t]; }); if (!types.length) types = ['New'];
     var posted = d.posted || postedText(d.postedAt), postedIso = d.posted ? d.postedIso || '' : isoLocal(d.postedAt);
     var waIcon = ($('.sh-wa svg') || { outerHTML: '' }).outerHTML, tgIcon = ($('.sh-tg svg') || { outerHTML: '' }).outerHTML;
@@ -226,7 +226,7 @@
       '<div class="deal-stats"><span class="views" title="Every view, repeat visits included"><i data-lucide="eye"></i>' + Number(d.views || 0).toLocaleString('en-IN') + ' views</span><a class="comment-link" href="#comments"><i data-lucide="message-square"></i>' + cm.n + ' comments<i data-lucide="arrow-down"></i></a>' +
       '<div class="post-share sh-exp" data-share><button class="sh-trig" type="button" aria-expanded="false" aria-controls="sh-items" data-share-trig><i data-lucide="share-2"></i>Share</button><span class="sh-items" id="sh-items">' +
       '<a class="sh-ic sh-wa" href="https://wa.me/?text=' + quote(shareText) + '" target="_blank" rel="noopener" aria-label="Share on WhatsApp" data-tip="WhatsApp">' + waIcon + '</a>' +
-      '<a class="sh-ic sh-tg" href="https://t.me/share/url?url=' + quote(SITE + '/d/' + d.id) + '&amp;text=' + quote(shareText) + '" target="_blank" rel="noopener" aria-label="Share on Telegram" data-tip="Telegram">' + tgIcon + '</a>' +
+      '<a class="sh-ic sh-tg" href="https://t.me/share/url?url=' + quote(H.buyShort(d.id)) + '&amp;text=' + quote(shareText) + '" target="_blank" rel="noopener" aria-label="Share on Telegram" data-tip="Telegram">' + tgIcon + '</a>' +
       '<button class="sh-ic sh-copy" type="button" id="copy-link" aria-label="Copy link" data-tip="Copy link" data-share="' + E(shareText) + '"><i data-lucide="link"></i></button></span></div></div>';
     var body = $('.deal-body', main);
     if (body) { $$(':scope > .block', body).forEach(function (b) { b.remove(); }); $('#comments', body).insertAdjacentHTML('beforebegin', blocksOf(d)); }

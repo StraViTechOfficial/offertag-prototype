@@ -34,14 +34,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
-<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
 <a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
-<a class="adm-link" href="/admin/posters" data-role="admin" aria-current="page"><i data-lucide="megaphone"></i><span>Promote</span></a>
-<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin" aria-current="page"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
-<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">3</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -60,12 +58,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
       <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
       <div class="dropdown adm-user">
-        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b data-user-name>Adil</b><small data-role-label>Super admin</small></span><i data-lucide="chevron-down"></i></button>
         <div class="menu" role="menu" hidden data-state="closed">
-          <div class="menu-label">Signed in as Adil</div>
+          <div class="menu-label" data-signed-in>Signed in as Adil</div>
           <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
-          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
-          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview as an Admin</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to Super admin view</a>
           <div class="separator"></div>
           <div class="menu-label">Theme</div>
           <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
@@ -75,27 +73,24 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <nav class="sec-tabs" aria-label="Promote"><a href="/admin/posters" data-role="admin">Sale posters</a><a href="/admin/sponsored" data-role="admin" aria-current="page">Sponsored</a></nav>
       <div class="page-h">
-        <div><h1>Sponsored</h1><p>Paid ad cards from businesses. Desktop shows one at the top of Home's right panel; phones and tablets show it between Top deals and Shop by store. With more than one live, each visit shows one at random. Every card is labelled "Sponsored".</p></div>
+        <div><h1>Sponsored</h1><p>A business sends you a picture; you add it with one button. It shows on Home, labelled "Sponsored". With more than one on, each visit shows one at random.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-sp-new><i data-lucide="plus"></i>Add sponsored ad</button></div>
       </div>
       <div class="sp-stats" data-sp-stats></div>
       <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-stab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-scount="cur"></span></button><button class="tabs-trigger" role="tab" data-stab="past" aria-selected="false">Ended <span class="adm-count muted" data-scount="past"></span></button></div>
       <ol class="posters sp-list" data-sp-list></ol>
-      <p class="foot-note"><i data-lucide="info"></i>Ad image 600 × 500 px. Phone image 1200 × 400 px, optional; if you skip it, the ad image is cropped to fit. Views count each time the card is on screen; clicks count each visit to the advertiser's link. Sample numbers.</p>
+      <p class="foot-note"><i data-lucide="info"></i>Views count each time the card is on screen; clicks count each tap on its button. Sample numbers.</p>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="sp-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="se-title">
-        <div class="sheet-header"><div class="sheet-title" id="se-title">Add sponsored ad</div><p class="sheet-desc">Shows on Home between the dates you set, labelled "Sponsored".</p></div>
+        <div class="sheet-header"><div class="sheet-title" id="se-title">Add sponsored ad</div><p class="sheet-desc">A picture and one button. That’s all.</p></div>
         <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
         <form class="sheet-body pe" data-se novalidate>
-          <label class="fld"><span class="lab">Advertiser *</span><input class="input" type="text" name="adv" maxlength="60" placeholder="Business name, e.g. Sharma Electronics"><span class="err" hidden>Add the advertiser.</span></label>
-          <div class="fld"><span class="lab">Ad image * <small>600 × 500</small></span><label class="drop sq" data-drop="d"><img alt="" hidden><span><i data-lucide="upload"></i>Choose image</span><input type="file" accept="image/*" hidden></label><span class="err" hidden>Add the ad image.</span></div>
-          <div class="fld"><span class="lab">Phone image <small>1200 × 400, optional</small></span><label class="drop wide" data-drop="m"><img alt="" hidden><span><i data-lucide="upload"></i>Choose image</span><input type="file" accept="image/*" hidden></label></div>
-          <label class="fld"><span class="lab">Title *</span><input class="input" type="text" name="title" maxlength="60" placeholder="e.g. Sharma Electronics: up to 40% off headphones"><span class="err" hidden>Add a title.</span></label>
-          <label class="fld"><span class="lab">One line <small>optional</small></span><input class="input" type="text" name="line" maxlength="90" placeholder="e.g. Free delivery across Mumbai"></label>
-          <div class="grid2"><label class="fld"><span class="lab">Button *</span><input class="input" type="text" name="cta" maxlength="16" value="Visit"><span class="err" hidden>Add button text.</span></label><label class="fld"><span class="lab">Opens *</span><input class="input" type="url" name="link" placeholder="https://"><span class="err" hidden>Add a full link starting with https://</span></label></div>
-          <div class="grid2"><label class="fld"><span class="lab">Start *</span><input class="input" type="date" name="start"></label><label class="fld"><span class="lab">End *</span><input class="input" type="date" name="end"><span class="err" hidden>End must be on or after the start.</span></label></div>
+          <div class="fld"><span class="lab">Ad picture * <small>the picture the business sent, about 600 × 500</small></span><label class="drop sq" data-drop="d"><img alt="" hidden><span><i data-lucide="upload"></i>Choose picture</span><input type="file" accept="image/*" hidden></label><span class="err" hidden>Add the ad picture.</span></div>
+          <div class="grid2"><label class="fld"><span class="lab">Button text *</span><input class="input" type="text" name="cta" maxlength="20" value="Visit website" list="cta-ideas"><datalist id="cta-ideas"><option value="Visit website"><option value="Call us"><option value="Shop now"><option value="Order on WhatsApp"><option value="Know more"></datalist><span class="err" hidden>Add the button text.</span></label>
+            <label class="fld"><span class="lab">Button opens *</span><input class="input" type="text" name="link" placeholder="https://… or a phone number"><span class="err" hidden>Add a link starting with https://, or a phone number.</span></label></div>
+          <div class="grid2"><label class="fld"><span class="lab">From <small>optional</small></span><input class="input" type="date" name="start"></label><label class="fld"><span class="lab">Until <small>optional</small></span><input class="input" type="date" name="end"><span class="err" hidden>Until must be on or after From.</span></label></div>
+          <p class="hint-line"><i data-lucide="info"></i><span>Leave the dates empty and the ad stays on until you switch it off. Dates are only for you; the site never shows them.</span></p>
           <label class="ckl"><span class="ck"><input type="checkbox" name="on" checked><span class="box"><i data-lucide="check"></i></span></span><span>On</span></label>
         </form>
         <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-se-save>Save ad</button></div>

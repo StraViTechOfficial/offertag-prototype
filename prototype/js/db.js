@@ -1,6 +1,6 @@
 /* db.js — the UAT playground's small "backend" (S25, plan.md Part B).
    Seed data: /data/*.json, made by build/data_export.py from the same files the pages are built from.
-   What a person changes (deals, posters, ads, pins, blog, catalogue, comments, reports, settings …) is kept in THIS browser's
+   What a person changes (deals, posters, ads, pins, blog, catalogue, comments, settings …) is kept in THIS browser's
    localStorage under keys that start with "pg:". Seed + changes = what every page shows.
    Boot order on every page: load the seed → apply the changes → page hooks draw the deal lists, deal page, Home rows and admin
    lists from the data → then the page's own scripts run (they are marked type="ot/defer" by build/routes.py).
@@ -51,7 +51,18 @@
         return u.toString();
       } catch (e) { return href; }
     },
-    domain: function (href) { try { return new URL(href).hostname.replace(/^www\./, ''); } catch (e) { return href; } }
+    domain: function (href) { try { return new URL(href).hostname.replace(/^www\./, ''); } catch (e) { return href; } },
+    // 2026-11-25 (changes.md A-19): short links as on the old site (W31): the deal id with each digit written as a letter (0→A … 9→J).
+    // offertag.in/d/{code} opens the store with the WhatsApp tag; offertag.in/v/{code} opens the deal page.
+    shortCode: function (id) { return String(id).replace(/\d/g, function (c) { return 'ABCDEFGHIJ'.charAt(+c); }); },
+    buyShort: function (id) { return 'https://offertag.in/d/' + H.shortCode(id); },
+    viewShort: function (id) { return 'https://offertag.in/v/' + H.shortCode(id); },
+    // changes.md A-15: the one fixed text used for Copy for WhatsApp and every share (no format editor)
+    shareText: function (d) {
+      var sale = !(d.p > 0);
+      return d.t + '\n\n' + (sale ? 'Up to ' + d.pct + '% off' : 'Deal price: ' + H.inr(d.p) + (d.m > d.p ? ' (MRP ' + H.inr(d.m) + ', ' + d.pct + '% off)' : '')) +
+        (d.coupon ? '\nCode: ' + d.coupon : '') + '\nBuy: ' + H.buyShort(d.id);
+    }
   };
 
   var TYPE_RULES = { top: 25, loot: 75, pantry: ['Grocery'], push: 90 };
@@ -79,6 +90,7 @@
     if (x.postedAt == null) x.postedAt = EPOCH - (x.ago || 0) * MIN;
     // 2026-11-25 (changes.md A-03): no statuses; a deal is on the site or deleted. "live" stays true for older callers.
     x.status = 'live'; x.live = true;
+    x.pos = x.sortAt || x.postedAt;
     x.agemin = Math.max(0, Math.floor((t - x.postedAt) / MIN));
     x.agetxt = H.ago(x.agemin);
     x.types = H.typesFor(x.pct, x.cat);
@@ -94,7 +106,7 @@
     opt = opt || {};
     var list = rawDeals().map(resolve);
     if (!opt.all) list = list.filter(function (d) { return !d.detailOnly; });
-    return list.sort(function (a, b) { return b.postedAt - a.postedAt; });
+    return list.sort(function (a, b) { return b.pos - a.pos; });   // site order: newest first, or where the admin dragged it (changes.md A-02)
   };
   DB.deal = function (id) { id = String(id); var d = rawDeals().filter(function (x) { return String(x.id) === id; })[0]; return d ? resolve(d) : null; };
   DB.dealByPath = function (path) {
@@ -175,12 +187,12 @@
   DB.restoreComment = function (id) { delete CM.del[id]; setJ('comments', CM); emit('comments'); };   // D-153: Undo after Delete
   DB.setReactions = function (id, rx) { CM.rx[id] = rx; setJ('comments', CM); emit('comments'); };
 
-  // ---- inbox items sent from the public site (reports, contact, delete-account requests) ----
+  // ---- inbox items sent from the public site (contact messages, delete-account requests) ----
   DB.addInbox = function (kind, item) {
     var list = DB.get(kind) || [];
     item = Object.assign({ id: now(), at: now(), done: false }, item); list.unshift(item); DB.set(kind, list); return item;
   };
-  DB.inboxOpen = function () { return ['feedback', 'reports', 'deletion'].reduce(function (n, k) { return n + (DB.get(k) || []).filter(function (r) { return !r.done; }).length; }, 0); };
+  DB.inboxOpen = function () { return ['feedback', 'deletion'].reduce(function (n, k) { return n + (DB.get(k) || []).filter(function (r) { return !r.done; }).length; }, 0); };
   DB.whenOf = function (r) { var at = r.at != null ? r.at : EPOCH - (r.ago || 0) * MIN; return H.ago((now() - at) / MIN); };
 
   // ---- catalogue (Admin → Catalogue writes here; the public pages read names, order and on/off) ----
@@ -264,8 +276,8 @@
       coll: {
         typeRules: TYPE_RULES,
         categories: cat.categories, shops: cat.shops, combos: cat.combos, tintDefault: cat.tintDefault, btnDefault: cat.btnDefault,
-        posters: dated(home.posters), sponsored: dated(home.sponsored), pinEvery: home.pinEvery, trending: home.trending, promo: home.promo, site: home.site,
-        feedback: com.feedback, reports: com.reports, deletion: com.deletion, users: com.users
+        sponsored: dated(home.sponsored), pinEvery: home.pinEvery, trending: home.trending, site: home.site,
+        feedback: com.feedback, deletion: com.deletion, users: com.users
       }
     };
     loadChanges();

@@ -1535,3 +1535,14 @@ html.theme .deal { container-type: inline-size; container-name: dealcard; }
   html.theme .deal .topline .m-ago { display: none; }
   html.theme .deal .topline .store-chip { flex-basis: 3.25rem; }
 }
+
+/* ---- 2026-11-25 · changes.md A-07: sponsored = the advertiser's picture + one button ---- */
+html.theme .sp-card.sp-pic { flex-direction: column; }
+html.theme .sp-pic .sp-img { width: 100%; min-height: 0; aspect-ratio: auto; background: hsl(var(--well)); }
+html.theme .sp-pic .sp-img img { display: block; width: 100%; height: auto; max-height: 20rem; object-fit: contain; }
+html.theme .sp-pic .sp-body { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.625rem 0.75rem; }
+html.theme .sp-pic .sp-cta { margin-top: 0; }
+html.theme .sp-inline .sp-card.sp-pic { flex-direction: column; max-width: 40rem; margin: 0 auto; }
+html.theme .sp-inline .sp-pic .sp-img { width: 100%; min-height: 0; }
+html.theme .sp-pic .sp-cta { white-space: nowrap; flex: none; }
+html.theme .sp-pic .sp-tag { min-width: 0; }

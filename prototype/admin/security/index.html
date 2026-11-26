@@ -34,14 +34,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
-<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
 <a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
-<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
-<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">3</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin" aria-current="page"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -60,12 +58,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
       <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
       <div class="dropdown adm-user">
-        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b data-user-name>Adil</b><small data-role-label>Super admin</small></span><i data-lucide="chevron-down"></i></button>
         <div class="menu" role="menu" hidden data-state="closed">
-          <div class="menu-label">Signed in as Adil</div>
+          <div class="menu-label" data-signed-in>Signed in as Adil</div>
           <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
-          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
-          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview as an Admin</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to Super admin view</a>
           <div class="separator"></div>
           <div class="menu-label">Theme</div>
           <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
@@ -75,24 +73,17 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin">Users</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin" aria-current="page">Security</a></nav>
-      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Security is for admins only. Sub-admins see Incoming, Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin">Users</a><a href="/admin/security" data-role="admin" aria-current="page">Security</a></nav>
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Security is for Super admins only. Admins post, edit and delete deals, and see Overview, Deals and Alerts. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="page-h">
-        <div><h1>Security</h1><p>Tools for when fake visitors flood the site. Real visitors, Google and Shop Now keep working.</p></div>
+        <div><h1>Security</h1><p>IPs the click counter flagged. Let one back in if real shoppers were caught.</p></div>
       </div>
-      <section class="panel bc-panel" data-bc>
-        <div class="panel-h"><h2>Bot check</h2><span class="tag-sample">Sample</span></div>
-        <div class="set-row"><div class="set-l"><b>Bot check for all visitors</b><small>Every visitor to a web page passes Cloudflare’s automatic check first. Real visitors see a 1–3 second check. Google, Bing, Shop Now links and the app are never affected.</small></div><div class="set-c"><label class="switch"><input type="checkbox" role="switch" data-bc-switch aria-label="Bot check for all visitors"><span></span></label></div></div>
-        <div class="bc-status"><span class="pill pill-withdrawn" data-bc-pill>Off</span><span class="bc-meta" data-bc-meta></span></div>
-        <div class="bc-alert" data-bc-alert hidden><i data-lucide="shield-alert"></i><p><b>The bot check is on.</b> Every visitor waits 1–3 seconds before a page opens. Turn it off when the site is back to normal.</p></div>
-        <div class="bc-help"><p class="hint-line"><i data-lucide="info"></i>Turn it on when the site slows down from a flood of fake visits. It starts in about 25 seconds and stops in about 15.</p></div>
-      </section>
-      <section class="panel fl-panel">
+      <section class="panel fl-panel" data-fl>
         <div class="panel-h"><h2>Flagged IPs</h2><span class="fl-count" data-fl-count></span></div>
         <p class="fl-intro">An IP with over 300 Shop Now clicks in 10 minutes is flagged. It still reaches the store, but without our Amazon tag, and its clicks don’t count as views. Nothing is blocked. A flag clears itself after a day.</p>
         <div class="tbl-wrap"><table class="tbl ltbl fl-tbl">
-          <thead><tr><th>IP</th><th>Status</th><th>Why</th><th>Added</th><th>Until</th><th><span class="visually-hidden">Action</span></th></tr></thead>
+          <thead><tr><th>IP</th><th>Status</th><th>Added</th><th>Until</th><th><span class="visually-hidden">Action</span></th></tr></thead>
           <tbody data-fl-rows></tbody></table>
           <p class="empty" data-fl-empty hidden>No flagged IPs. A visitor with over 300 Shop Now clicks in 10 minutes shows up here.</p></div>
       </section>
@@ -108,7 +99,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 </div>
 <div class="toaster" id="toaster" aria-live="polite"></div>
 <script src="/vendor/lucide.min.js"></script>
-<script>window.ADM_SEC = {"bot": {"on": false, "by": "Adil", "at": "12 Nov, 14:05"}, "ips": [{"ip": "49.36.212.18", "status": "flag", "why": "412 clicks in 10 min", "by": "auto", "added": "13 Nov, 09:41", "until": "14 Nov, 09:41"}, {"ip": "2409:40c2:1047:8f3a::/64", "status": "flag", "why": "96 clicks in 10 min", "by": "auto", "added": "13 Nov, 08:17", "until": "14 Nov, 08:17"}, {"ip": "103.211.54.7", "status": "flag", "why": "318 clicks in 10 min", "by": "auto", "added": "12 Nov, 22:03", "until": "13 Nov, 22:03"}, {"ip": "157.48.90.201", "status": "flag", "why": "1,204 clicks in 10 min", "by": "auto", "added": "12 Nov, 19:55", "until": "13 Nov, 19:55"}, {"ip": "122.161.66.30", "status": "allow", "why": "Office network", "by": "Adil", "added": "5 Nov, 11:20", "until": "Always"}]};</script>
+<script>window.ADM_SEC = {"ips": [{"ip": "49.36.212.18", "status": "flag", "why": "412 clicks in 10 min", "by": "auto", "added": "13 Nov, 09:41", "until": "14 Nov, 09:41"}, {"ip": "2409:40c2:1047:8f3a::/64", "status": "flag", "why": "96 clicks in 10 min", "by": "auto", "added": "13 Nov, 08:17", "until": "14 Nov, 08:17"}, {"ip": "103.211.54.7", "status": "flag", "why": "318 clicks in 10 min", "by": "auto", "added": "12 Nov, 22:03", "until": "13 Nov, 22:03"}, {"ip": "157.48.90.201", "status": "flag", "why": "1,204 clicks in 10 min", "by": "auto", "added": "12 Nov, 19:55", "until": "13 Nov, 19:55"}]};</script>
 <script src="/js/db.js"></script>
 <script src="/js/render.js"></script>
 <script src="/js/admin-db.js"></script>

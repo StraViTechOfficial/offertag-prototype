@@ -19,7 +19,7 @@
 
     /* ---------- deals as the admin lists them ---------- */
     function row(d) {
-      return { id: String(d.id), t: d.t, store: d.store, cat: d.cat || '', p: d.p, m: d.m, pct: d.pct, types: (d.types || []).filter(function (t) { return t !== 'Fresh'; }), status: d.status, pin: d.pin || null,
+      return { id: String(d.id), t: d.t, store: d.store, cat: d.cat || '', p: d.p, m: d.m, pct: d.pct, types: (d.types || []).filter(function (t) { return t !== 'Fresh'; }), pin: d.pin || null, featured: !!d.featured, pos: d.pos, postedAt: d.postedAt, status: 'live',   /* no statuses (changes.md A-03); kept so older pickers that ask for live deals still work */
         age: d.agemin, when: d.agemin < 1 ? 'now' : d.agetxt, views: d.views || 0, uniq: d.uniq || 0, clicks: d.clicks || 0, img: d.img, page: d.page, link: d.link === '#buy' ? '#buy' : d.link,
         display: d.display || 1, caption: d.caption || '', coupon: d.coupon || '', terms: d.terms || '', offers: d.offers || [], note: d.note || '', exc: d.exc || [], logo: DB.logo(d.store),
         highlights: d.highlights || [], specs: d.specs || [], desc: d.desc || '' };
@@ -37,10 +37,10 @@
           var d = DB.deal(r.id);
           if (!d) { if (trash[r.id]) { PG.undelete(r.id); d = DB.deal(r.id); } if (!d) return; }
           var patch = {};
-          ['status', 'cat', 'store', 'display'].forEach(function (k) { if (r[k] !== d[k] && !(k === 'status' && d.status === 'live' && r.status === 'live')) patch[k] = r[k]; });
+          ['cat', 'store', 'display'].forEach(function (k) { if (r[k] !== d[k]) patch[k] = r[k]; });
           if ((r.pin || null) !== (d.pin || null)) { patch.pin = r.pin || null; if (r.pin) patch.pinnedAt = Date.now(); }
-          if (JSON.stringify(r.types) !== JSON.stringify((d.types || []).filter(function (t) { return t !== 'Fresh'; }))) patch.types = r.types;
-          if (r._bump) { patch.postedAt = Date.now(); patch.status = 'live'; delete r._bump; }   // Bump to top
+          if (!!r.featured !== !!d.featured) patch.featured = !!r.featured;
+          if (r.pos && r.pos !== d.pos) patch.sortAt = r.pos;   // dragged up or down, or moved to the top (changes.md A-02)
           if (Object.keys(patch).length) DB.saveDeal(Object.assign({ id: r.id }, patch));
         });
       },
@@ -59,7 +59,7 @@
         var out = clone(list); (imgKeys || []).forEach(function (k) { out.forEach(function (x) { if (x[k]) x[k] = pack(x[k]); }); });
         DB.set(name, out);
       },
-      saveInbox: function (D) { ['feedback', 'reports', 'deletion'].forEach(function (k) { DB.set(k, D[k].map(function (x) { var y = Object.assign({}, x); delete y.when; return y; })); }); },
+      saveInbox: function (D) { ['feedback', 'deletion'].forEach(function (k) { DB.set(k, D[k].map(function (x) { var y = Object.assign({}, x); delete y.when; return y; })); }); },
       saveCatalogue: function (C) {
         var old = {}; DB.get('categories').forEach(function (c) { old[c.id] = c.name; });
         var oldS = {}; DB.get('shops').forEach(function (s) { oldS[s.id] = s.name; });
@@ -77,6 +77,44 @@
       },
       today: DB.today
     };
+    /* ---------- activity log (changes.md A-13): who did what, shown on each user's page ---------- */
+    var ME = /[?&]role=sub\b/.test(location.search) ? 2 : 1;
+    function audit() { return DB.get('audit') || []; }
+    PG.log = function (kind, text, link, uid, linkText) {
+      var L = audit(), last = L[0];
+      if (last && last.text === text && Date.now() - last.at < 1500) return;
+      L.unshift({ at: Date.now(), uid: uid || ME, kind: kind, text: text, link: link || null, linkText: linkText || null });
+      DB.set('audit', L.slice(0, 500));
+    };
+    function seedLog(uid) {   // SAMPLE history so every page has something to read before anyone changes anything
+      var out = [], now = Date.now(), H6 = 36e5, day = 864e5, all = DB.deals();
+      var u = (DB.get('users') || []).filter(function (x) { return x.id === uid; })[0];
+      if (!u || u.active === false) { out.push({ at: now - 92 * day, uid: uid, kind: 'signin', text: 'Signed in on the web' }); return out; }
+      for (var k = 0; k < 6; k++) out.push({ at: now - k * day - (uid * 37 + k * 11) % 180 * 60000 - 2 * H6, uid: uid, kind: 'signin', text: k % 3 === 2 ? 'Signed in on the app' : 'Signed in on the web' });
+      all.forEach(function (d, i) { if (i % 3 === uid - 1 && i < 60) out.push({ at: d.postedAt, uid: uid, kind: 'deal', text: 'Posted “' + d.t.slice(0, 70) + (d.t.length > 70 ? '…' : '') + '”', link: '/admin/deal/' + d.id, linkText: 'Open deal' }); });
+      all.slice(0, 30).forEach(function (d, i) { if (i % 7 === uid) out.push({ at: Math.min(now - 60000, d.postedAt + 40 * 60000), uid: uid, kind: 'deal', text: (i % 2 ? 'Pinned “' : 'Edited “') + d.t.slice(0, 60) + '”', link: '/admin/deal/' + d.id, linkText: 'Open deal' }); });
+      if (uid === 1) { out.push({ at: now - day - 3 * H6, uid: 1, kind: 'settings', text: 'Changed the Amazon tag for WhatsApp links' }); out.push({ at: now - 4 * day, uid: 1, kind: 'settings', text: 'Changed the Loot rule to 75% off or more' }); }
+      return out;
+    }
+    PG.logFor = function (uid) { return audit().filter(function (x) { return x.uid === uid; }).concat(seedLog(uid)).sort(function (a, b) { return b.at - a.at; }); };
+    // every deal change made in the admin is logged against whoever is signed in
+    var _save = DB.saveDeal, _del = DB.deleteDeal, QUIET = { views: 1, uniq: 1, clicks: 1, id: 1, pinnedAt: 1 };
+    DB.saveDeal = function (rec) {
+      var before = rec.id ? DB.raw(rec.id) : null, out = _save.apply(DB, arguments);
+      try {
+        var keys = Object.keys(rec).filter(function (k) { return !QUIET[k]; }); if (!keys.length || !out) return out;
+        var t = '“' + out.t.slice(0, 60) + (out.t.length > 60 ? '…' : '') + '”', text;
+        if (!before) text = 'Posted ' + t;
+        else if (keys.length === 1 && keys[0] === 'pin') text = (rec.pin ? 'Pinned ' : 'Unpinned ') + t;
+        else if (keys.length === 1 && keys[0] === 'featured') text = (rec.featured ? 'Featured ' : 'Unfeatured ') + t;
+        else if (keys.length === 1 && keys[0] === 'sortAt') text = 'Moved ' + t + ' on the site';
+        else text = 'Edited ' + t;
+        PG.log('deal', text, '/admin/deal/' + out.id, null, 'Open deal');
+      } catch (e) {}
+      return out;
+    };
+    DB.deleteDeal = function (id) { var d = DB.raw(id); _del.apply(DB, arguments); if (d) PG.log('deal', 'Deleted “' + d.t.slice(0, 60) + '”'); };
+
     window.ADM_PG = PG;
 
     /* ---------- the sample lists the admin scripts start from ---------- */
@@ -85,11 +123,10 @@
     window.ADM_TODAY = DB.today();
     var seedPins = {}; ((window.ADM_PINS || {}).pins || []).forEach(function (x) { seedPins[x.id] = x.age; });
     window.ADM_PINS = { every: DB.pinEvery(), pins: DB.pins().map(function (d) { return { id: String(d.id), age: d.pinnedAt ? (H.ago((Date.now() - d.pinnedAt) / MIN) === 'now' ? '0 min' : H.ago((Date.now() - d.pinnedAt) / MIN)) : seedPins[d.id] || '1 d' }; }) };
-    window.ADM_POSTERS = DB.get('posters').map(function (p) { return Object.assign({}, p, { img: show(p.img) }); });
     window.ADM_POSTER_DEALS = DB.deals().map(function (d) { return { id: String(d.id), t: d.t, img: d.td, store: d.store, price: inr(d.p), pct: String(d.pct) }; });
     window.ADM_SPONSORED = DB.get('sponsored').map(function (p) { return Object.assign({}, p, { img: show(p.img), mimg: show(p.mimg) }); });
     if (window.ADM_USERS) window.ADM_USERS = DB.get('users');
-    var ib = {}; ['feedback', 'reports', 'deletion'].forEach(function (k) { ib[k] = DB.get(k).map(function (x) { return Object.assign({}, x, { when: DB.whenOf(x) }); }); });
+    var ib = {}; ['feedback', 'deletion'].forEach(function (k) { ib[k] = DB.get(k).map(function (x) { return Object.assign({}, x, { when: DB.whenOf(x) }); }); });
     if (window.ADM_INBOX) window.ADM_INBOX = ib;
     if (window.ADM_CAT) {
       var seedC = window.ADM_CAT, byId = function (l, id) { return l.filter(function (x) { return x.id === id; })[0] || {}; };
@@ -116,52 +153,13 @@
     /* ---------- Site & app: the saved values fill the form before its save bar takes its starting point ---------- */
     var sf = $('[data-site]');
     if (sf) { var site = DB.get('site') || {}; $$('input, select, textarea', sf).forEach(function (i) { if (!(i.name in site)) return; if (i.type === 'checkbox') i.checked = i.defaultChecked = !!site[i.name]; else i.value = i.defaultValue = site[i.name]; }); }
-    var pm = $('[data-promo] form');
-    if (pm) { var pr = DB.get('promo') || {}; ['tag', 'text', 'cta', 'href', 'start', 'end'].forEach(function (k) { if (pm[k] && pr[k] != null) pm[k].value = pr[k]; }); if (pm.on) pm.on.checked = !!pr.on; }
 
     /* ---------- sidebar counts ---------- */
-    var pending = DB.deals({ all: true }).filter(function (d) { return d.status === 'pending'; });
     function badge(key, n) {
       $$('[data-count="' + key + '"]').forEach(function (el) { el.textContent = n; if (el.classList.contains('adm-count')) { if (n) el.removeAttribute('data-zero'); else el.setAttribute('data-zero', ''); } });
       $$('.adm-nav a').forEach(function (a) { var t = a.textContent.trim(); if ((key === 'incoming' && /^Incoming/.test(t)) || (key === 'inbox' && /^Inbox/.test(t))) { var b = $('.adm-count', a); if (!b && n) a.insertAdjacentHTML('beforeend', '<span class="adm-count" data-count="' + key + '">' + n + '</span>'); } });
     }
-    badge('incoming', pending.length); badge('inbox', DB.inboxOpen());
-
-    /* ---------- Incoming (built as fixed rows; drawn from the pending deals) ---------- */
-    var pend = $('[data-panel="pending"]');
-    if (pend) {
-      var site2 = DB.get('site') || {}, FP = +site2.feat_price || 10000, FPCT = +site2.feat_pct || 70;
-      var SRC = { telegram: ['Telegram', 'send'], form: ['Quick post', 'mouse-pointer-click'] }, HOLD = { mrp: 'Check MRP', missing: 'Category missing' };
-      var types = function (ts) { return ts.filter(function (t) { return t !== 'Fresh'; }).map(function (t) { return '<span class="tchip t-' + t.toLowerCase() + '">' + (t === 'Top' ? 'Top deal' : t) + '</span>'; }).join(''); };
-      var inc = function (d, note) {
-        var s = SRC[d.source] || SRC.form, sim = d.similar ? DB.deal(d.similar) : null;
-        var flag = d.hold && HOLD[d.hold] ? '<span class="hold"><i data-lucide="triangle-alert"></i>' + HOLD[d.hold] + (d.hold === 'similar' && sim ? ' · <a href="' + E(sim.page) + '" target="_blank" rel="noopener">view</a>' : '') + '</span>' : '';
-        var why = []; if (d.p >= FP) why.push(inr(FP) + '+'); if (d.pct && d.pct >= FPCT) why.push(FPCT + '%+ off');
-        // D-155: no Featured badge on Incoming (planned as its own feature)
-        var rec = d.receivedAt ? H.ago((Date.now() - d.receivedAt) / MIN) : d.agetxt;
-        return '<article class="inc" data-inc data-id="' + E(d.id) + '" data-missing="' + (d.cat ? '' : '1') + '" data-pct="' + (d.pct || 0) + '" data-title="' + E(d.t) + '"' + (note ? ' data-done' : '') + '>' +
-          '<label class="ck"><input type="checkbox" data-inc-check aria-label="Select ' + E(d.t.slice(0, 40)) + '"><span class="box"><i data-lucide="check"></i></span></label>' +
-          '<img class="inc-img" src="' + E(d.img) + '" alt="" loading="lazy"><div class="inc-body"><div class="inc-top"><span class="src src-' + (d.source || 'form') + '"><i data-lucide="' + s[1] + '"></i>' + s[0] + '</span><span class="inc-time">received ' + (rec === 'now' ? 'just now' : rec + ' ago') + '</span>' + flag + (note ? '<span class="inc-done-note">' + E(note) + '</span>' : '') + '</div>' +
-          '<h3>' + E(d.t) + '</h3><div class="inc-meta">' + E(d.store) + ' · ' + (d.cat ? E(d.cat) : '<span class="miss">Category?</span>') + '</div>' +
-          '<div class="inc-price"><b>' + inr(d.p) + '</b> <span>' + (d.m ? 'MRP ' + inr(d.m) : '<span class="miss">MRP —</span>') + '</span> ' + (d.pct ? '<b class="pct">' + d.pct + '% off</b>' : '<span class="miss">—%</span>') + ' <span class="inc-types">' + types(d.types || ['New']) + '</span></div></div>' +
-          '<div class="inc-acts"><button class="btn btn-default btn-sm" type="button" data-approve>Approve</button><a class="btn btn-outline btn-sm" href="/admin/deal/' + E(d.id) + '/edit">Edit</a><button class="btn btn-ghost btn-sm" type="button" data-reject>Reject</button></div></article>';
-      };
-      var all = DB.deals({ all: true }), dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
-      $$('[data-inc]', pend).forEach(function (n) { n.remove(); });
-      pend.insertAdjacentHTML('afterbegin', pending.sort(function (a, b) { return b.postedAt - a.postedAt; }).map(function (d) { return inc(d); }).join(''));
-      var appr = $('[data-panel="approved"]'), rej = $('[data-panel="rejected"]');
-      var ap = all.filter(function (d) { return d.approvedAt && d.approvedAt >= dayStart.getTime() && d.status !== 'pending'; }), rj = all.filter(function (d) { return d.status === 'rejected'; });
-      if (appr) appr.insertAdjacentHTML('afterbegin', ap.map(function (d) { return inc(d, 'Live now'); }).join(''));
-      if (rj.length && rej) rej.insertAdjacentHTML('afterbegin', rj.map(function (d) { return inc(d, d.rejectReason ? 'Rejected: ' + d.rejectReason : 'Rejected'); }).join(''));
-      $$('[data-count="approved"]').forEach(function (e) { e.textContent = ap.length; }); $$('[data-count="rejected"]').forEach(function (e) { e.textContent = rj.length; });
-      $$('[data-approve-all] [data-count="incoming"], [data-count="incoming"]').forEach(function (e) { e.textContent = pending.length; });
-      PG.incoming = {
-        approve: function (ids) { ids.forEach(function (id) { var d = DB.deal(id); if (!d) return; DB.saveDeal({ id: id, status: 'live', postedAt: Date.now(), approvedAt: Date.now(), receivedAt: d.receivedAt || d.postedAt, types: d.pct ? H.typesFor(d.pct, d.cat) : ['New'] }); }); },
-        reject: function (ids, reason) { ids.forEach(function (id) { DB.saveDeal({ id: id, status: 'rejected', rejectReason: reason || '' }); }); },
-        back: function (ids, snap) { DB.restoreDeals(snap); },
-        snap: function () { return DB.dealSnapshot(); }
-      };
-    }
+    badge('inbox', DB.inboxOpen());
 
     /* ---------- Overview (built as fixed numbers; drawn from the data; D-160 layout) ---------- */
     var kpis = $('.kpis');
@@ -169,7 +167,7 @@
       var sub = $('.page-h p'); if (sub && /today so far/.test(sub.textContent)) sub.textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' }) + ' · today so far';
       var live = DB.deals(), today = live.filter(function (d) { return d.agemin <= 1440; }), pins = DB.pins(), every = DB.pinEvery();
       var setK = function (key, v) { var k = $('[data-kpi="' + key + '"] .kpi-n', kpis); if (k) k.textContent = v; };
-      setK('today', today.length); setK('incoming', pending.length); setK('inbox', DB.inboxOpen()); setK('pinned', pins.length);
+      setK('today', today.length); setK('inbox', DB.inboxOpen()); setK('pinned', pins.length);
       var pp = $('[data-ov-pins]');
       if (pp) {
         $('.pin-sum', pp).innerHTML = pins.length ? '<b>' + pins.length + '</b> pinned, one every <b>' + every + '</b> cards on Top deals.' : 'Nothing pinned. Pin a deal from All deals or the Pinned board.';

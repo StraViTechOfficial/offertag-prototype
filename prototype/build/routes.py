@@ -26,10 +26,10 @@ ROUTE = {
     'email-otp.html': '/_design/email-otp', 'share-card.html': '/_design/share-card',
     # admin (routes/web.php admin group; new screens logged in DEV-025)
     'admin-login.html': '/admin/login',
-    'admin.html': '/admin', 'admin-incoming.html': '/admin/incoming', 'admin-deals.html': '/admin/deal', 'admin-post.html': '/admin/deal/create',
-    'admin-pinned.html': '/admin/pinned', 'admin-alerts.html': '/admin/admin-notifications', 'admin-posters.html': '/admin/posters', 'admin-sponsored.html': '/admin/sponsored',
+    'admin.html': '/admin', 'admin-deals.html': '/admin/deal', 'admin-deal-view.html': '/admin/deal/' + str(ADM_ROWS[0]['id']), 'admin-post.html': '/admin/deal/create',
+    'admin-pinned.html': '/admin/pinned', 'admin-alerts.html': '/admin/admin-notifications', 'admin-sponsored.html': '/admin/sponsored',
     'admin-social.html': '/admin/social', 'admin-tags.html': '/admin/settings/tags', 'admin-inbox.html': '/admin/feedback',
-    'admin-site.html': '/admin/settings/site', 'admin-roles.html': '/admin/role', 'admin-users.html': '/admin/users', 'admin-members.html': '/admin/members', 'admin-security.html': '/admin/security',
+    'admin-site.html': '/admin/settings/site', 'admin-users.html': '/admin/users', 'admin-user.html': '/admin/users/1', 'admin-security.html': '/admin/security',
     'admin-catalogue.html': '/admin/shop', 'admin-blog.html': '/admin/blog', 'admin-blog-edit.html': '/admin/blog/create', 'admin-soon.html': '/admin/soon',
 }
 for d in deals + extras: ROUTE[d['page']] = d['slug'] if d['slug'].startswith('/deal/') else '/deal/' + d['slug'].lstrip('/')  # snapshot slug is the live path
@@ -42,8 +42,8 @@ for p in BLOG_ADMIN:
 
 # tabbed admin pages answer to one address per tab (live names where they exist)
 TABS = {
-    'admin-social.html': ('data-stab', {'channels': '/admin/social', 'formats': '/admin/social/formats', 'history': '/admin/social/history'}),
-    'admin-inbox.html': ('data-itab', {'feedback': '/admin/feedback', 'reports': '/admin/reports', 'deletion': '/admin/deletion-requests', 'comments': '/admin/comments'}),
+    'admin-social.html': ('data-stab', {'channels': '/admin/social', 'history': '/admin/social/history'}),   # no Formats tab (changes.md A-15)
+    'admin-inbox.html': ('data-itab', {'feedback': '/admin/feedback', 'deletion': '/admin/deletion-requests'}),   # 2026-11-25: no Reports; comments live on each deal's page (changes.md A-11)
     'admin-catalogue.html': ('data-ctab', {'shops': '/admin/shop', 'categories': '/admin/category', 'dealtypes': '/admin/lookup', 'types': '/admin/type'}),
 }
 
@@ -54,7 +54,6 @@ def url_for(fname, query='', frag=''):
     path = ROUTE[fname]
     if fname in TABS and kv.get('tab') in TABS[fname][1]: path = TABS[fname][1][kv.pop('tab')]
     elif fname == 'admin-post.html' and kv.get('id'): path = f"/admin/deal/{kv.pop('id')}/edit"
-    elif fname == 'admin-post.html' and kv.get('clone'): path = f"/admin/deal/{kv.pop('clone')}/clone"
     elif fname == 'admin-blog-edit.html' and kv.get('post'): path = f"/admin/blog/{kv.pop('post')}/edit"
     rest = '&'.join(k + ('=' + v if v != '' else '') for k, v in kv.items())
     return path + ('?' + rest if rest else '') + frag
@@ -124,7 +123,11 @@ for fname in sorted(flat):
     else:
         put(ROUTE[fname], html)
     if fname == 'admin-post.html':
-        for r in ADM_ROWS: put(f"/admin/deal/{r['id']}/edit", html); put(f"/admin/deal/{r['id']}/clone", html)
+        for r in ADM_ROWS: put(f"/admin/deal/{r['id']}/edit", html)   # 2026-11-25: no clone pages (changes.md A-01)
+    if fname == 'admin-deal-view.html':
+        for r in ADM_ROWS: put(f"/admin/deal/{r['id']}", html)
+    if fname == 'admin-user.html':
+        for k in range(1, len(USERS) + 1): put(f"/admin/users/{k}", html)
     if fname == 'admin-blog-edit.html':
         for p in BLOG_ADMIN: put(f"/admin/blog/{p['name']}/edit", html)
     if ROUTE[fname] not in ('/', '/404.html', '/500.html'): os.remove(os.path.join(ROOT, fname))
@@ -143,7 +146,7 @@ open(os.path.join(ROOT, 'fresh-deals', 'index.html'), 'w').write('<!doctype html
 # The local server (build/serve.py), Netlify / Cloudflare Pages (_redirects) and, on any other host, 404.html serve these
 # for an address that has no built page; js/render.js draws the page from the playground data. ----
 SHELLS = {'deal': ROUTE[deals[0]['page']], 'products': ROUTE[cat_page('Others')], 'shops': ROUTE[SHOPS[0]['page']], 'blog': '/blog/' + LATEST_POST['name'],
-          'adm-deal': '/admin/deal/create', 'adm-blog': '/admin/blog/create'}
+          'adm-deal': '/admin/deal/create', 'adm-view': '/admin/deal/' + str(ADM_ROWS[0]['id']), 'adm-user': '/admin/users/1', 'adm-blog': '/admin/blog/create'}
 _combo = next((f"/shops/{x['slug']}/{c['slug']}" for x in SHOPS for c in CATS if any(d['store'] == x['name'] and d['cat'] == c['name'] for d in deals)), None)
 if _combo: SHELLS['combo'] = _combo
 for k, r in SHELLS.items():
@@ -156,8 +159,10 @@ open(os.path.join(ROOT, '_redirects'), 'w').write(
     '/shops/:shop/:cat  /_shell/combo/index.html     200\n'
     '/shops/*           /_shell/shops/index.html     200\n'
     '/blog/*            /_shell/blog/index.html      200\n'
-    '/admin/deal/*      /_shell/adm-deal/index.html  200\n'
-    '/admin/blog/*      /_shell/adm-blog/index.html  200\n')
+    '/admin/deal/:id/edit  /_shell/adm-deal/index.html  200\n'
+    '/admin/deal/*      /_shell/adm-view/index.html  200\n'
+    '/admin/blog/*      /_shell/adm-blog/index.html  200\n'
+    '/admin/users/*     /_shell/adm-user/index.html  200\n')
 # S25 hosting (D-153): the UAT link stays out of search engines, and the playground data is always fresh after a redeploy
 open(os.path.join(ROOT, 'robots.txt'), 'w').write('# OfferTag prototype (UAT playground): not for search engines. The live site is https://www.offertag.in\nUser-agent: *\nDisallow: /\n')
 open(os.path.join(ROOT, '_headers'), 'w').write(
@@ -171,7 +176,7 @@ json.dump({'name': 'OfferTag prototype', 'short_name': 'OfferTag', 'start_url': 
            'icons': [{'src': '/icon-512.png', 'sizes': '512x512', 'type': 'image/png'}, {'src': '/apple-touch-icon.png', 'sizes': '180x180', 'type': 'image/png'}]},
           open(os.path.join(ROOT, 'site.webmanifest'), 'w'), indent=1)
 _FALLBACK = ('<script>/* S25: an address the playground created (new deal, category, store, blog post) on a host without rewrites */'
-             '(function(){var p=location.pathname.replace(/\\/$/,""),s=/^\\/deal\\/[^\\/]+$/.test(p)?"deal":/^\\/products\\/[^\\/]+-deals$/.test(p)?"products":/^\\/shops\\/[^\\/]+\\/[^\\/]+$/.test(p)?"combo":/^\\/shops\\/[^\\/]+$/.test(p)?"shops":/^\\/blog\\/[^\\/]+$/.test(p)?"blog":/^\\/admin\\/deal\\/[^\\/]+\\/(edit|clone)$/.test(p)?"adm-deal":/^\\/admin\\/blog\\/[^\\/]+\\/edit$/.test(p)?"adm-blog":"";'
+             '(function(){var p=location.pathname.replace(/\\/$/,""),s=/^\\/deal\\/[^\\/]+$/.test(p)?"deal":/^\\/products\\/[^\\/]+-deals$/.test(p)?"products":/^\\/shops\\/[^\\/]+\\/[^\\/]+$/.test(p)?"combo":/^\\/shops\\/[^\\/]+$/.test(p)?"shops":/^\\/blog\\/[^\\/]+$/.test(p)?"blog":/^\\/admin\\/deal\\/[^\\/]+\\/edit$/.test(p)?"adm-deal":/^\\/admin\\/deal\\/\\d+$/.test(p)?"adm-view":/^\\/admin\\/users\\/\\d+$/.test(p)?"adm-user":/^\\/admin\\/blog\\/[^\\/]+\\/edit$/.test(p)?"adm-blog":"";'
              'if(!s)return;document.documentElement.style.visibility="hidden";fetch("/_shell/"+s+"/").then(function(r){return r.text()}).then(function(h){document.open();document.write(h);document.close();}).catch(function(){document.documentElement.style.visibility=""})})();</script>')
 _nf = os.path.join(ROOT, '404.html'); _h = open(_nf).read()
 if 'S25: an address' not in _h: open(_nf, 'w').write(_h.replace('<head>', '<head>\n' + _FALLBACK, 1))

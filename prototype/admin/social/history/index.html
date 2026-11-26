@@ -26,7 +26,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
 <link rel="stylesheet" href="/vendor/geist/geist.css">
 <link rel="stylesheet" href="/css/ui.css">
 <link rel="stylesheet" href="/css/admin.css">
-<script>window.ADM_TABS = {"channels": "/admin/social", "formats": "/admin/social/formats", "history": "/admin/social/history"}; window.ADM_TAB = "history";</script>
+<script>window.ADM_TABS = {"channels": "/admin/social", "history": "/admin/social/history"}; window.ADM_TAB = "history";</script>
 </head>
 <body>
 <!-- Admin shell (D-057; look D-098; data sheet admin-batch-a.md). Review state: ?role=sub shows the sub-admin menu. -->
@@ -35,14 +35,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
-<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
 <a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
-<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
-<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">3</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin" aria-current="page"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -61,12 +59,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
       <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
       <div class="dropdown adm-user">
-        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b data-user-name>Adil</b><small data-role-label>Super admin</small></span><i data-lucide="chevron-down"></i></button>
         <div class="menu" role="menu" hidden data-state="closed">
-          <div class="menu-label">Signed in as Adil</div>
+          <div class="menu-label" data-signed-in>Signed in as Adil</div>
           <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
-          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
-          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview as an Admin</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to Super admin view</a>
           <div class="separator"></div>
           <div class="menu-label">Theme</div>
           <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
@@ -76,13 +74,13 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin" aria-current="page">Social sharing</a><a href="/admin/users" data-role="admin">Users</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></nav>
-      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Social sharing is for admins only. Sub-admins see Incoming, Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin" aria-current="page">Social sharing</a><a href="/admin/users" data-role="admin">Users</a><a href="/admin/security" data-role="admin">Security</a></nav>
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Social sharing is for Super admins only. Admins post, edit and delete deals, and see Overview, Deals and Alerts. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="page-h">
-        <div><h1>Social sharing</h1><p>Share a deal to the OfferTag Facebook Page, Pinterest and Threads from the deal's edit screen. Connect each place once here, and set what each post says.</p></div>
+        <div><h1>Social sharing</h1><p>Share a deal to the OfferTag Facebook Page, Pinterest and Threads from the deal's page. Connect each place once here. Every post uses the same fixed text.</p></div>
       </div>
-      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-stab="channels" data-state=active aria-selected="true">Channels</button><button class="tabs-trigger" role="tab" type="button" data-stab="formats" aria-selected="false">Formats</button><button class="tabs-trigger" role="tab" type="button" data-stab="history" aria-selected="false">History</button></div>
+      <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" type="button" data-stab="channels" data-state=active aria-selected="true">Channels</button><button class="tabs-trigger" role="tab" type="button" data-stab="history" aria-selected="false">History</button></div>
       <section data-spanel="channels">
         <div class="panel"><div class="panel-h"><h2>Where deals can be shared</h2><span class="tag-sample">Sample</span></div><ul class="chs" data-chs>
           <li class="ch" data-ch="fb" data-state="on">
@@ -104,54 +102,9 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
             <div class="ch-acts" data-ch-acts></div>
           </li>
         </ul></div>
+        <div class="panel fixed-fmt"><div class="panel-h"><h2>What every post says</h2><small>one fixed text for every place, also used by Copy for WhatsApp</small></div>
+          <div class="spv"><img alt="" data-spv-img><p data-spv-text></p></div></div>
         <p class="foot-note" data-approval-note><i data-lucide="info"></i>Meta (Facebook, Threads) and Pinterest must approve the OfferTag app before posting works; that is due by week 7. Until then these show “Awaiting platform approval”.</p>
-      </section>
-      <section data-spanel="formats" hidden>
-        <div class="fmts">
-          <div class="fmt-list">
-            <details class="fmt panel" data-fmt="fb" open>
-              <summary class="panel-h"><h2><span class="ch-mark ch-fb sm" aria-hidden="true">f</span>Facebook Page</h2><span class="fmt-dirty" data-fmt-dirty hidden>Unsaved</span><i data-lucide="chevron-down"></i></summary>
-              <div class="fmt-body">
-                <label class="ckl"><span class="ck"><input type="checkbox" data-fmt-img checked><span class="box"><i data-lucide="check"></i></span></span><span>Include the deal image</span></label>
-                <label class="fld"><span class="lab">Text</span><textarea class="textarea mono" rows="5" data-fmt-text spellcheck="false">{pct}% off · {title}
-Deal price ₹{price} (MRP ₹{mrp}) at {store}
-{coupon_line}
-{short_link}</textarea><span class="err" hidden>Keep {short_link} so the post links back to the deal.</span></label>
-                <div class="ins"><span class="lab">Insert</span><button class="chip-add" type="button" data-ins="{title}">{title}</button><button class="chip-add" type="button" data-ins="{price}">{price}</button><button class="chip-add" type="button" data-ins="{mrp}">{mrp}</button><button class="chip-add" type="button" data-ins="{pct}">{pct}</button><button class="chip-add" type="button" data-ins="{store}">{store}</button><button class="chip-add" type="button" data-ins="{coupon_line}">{coupon_line}</button><button class="chip-add" type="button" data-ins="{short_link}">{short_link}</button></div>
-                <p class="hint-line"><i data-lucide="tag"></i>Amazon tag on these links: <b data-fmt-tag="fb"></b> <a href="/admin/settings/tags">Affiliate tags</a></p>
-                <div class="fmt-foot"><button class="btn btn-default btn-sm" type="button" data-fmt-save disabled>Save format</button><button class="btn btn-ghost btn-sm" type="button" data-fmt-reset>Reset to default</button></div>
-              </div>
-            </details>
-            <details class="fmt panel" data-fmt="pin">
-              <summary class="panel-h"><h2><span class="ch-mark ch-pin sm" aria-hidden="true">P</span>Pinterest</h2><span class="fmt-dirty" data-fmt-dirty hidden>Unsaved</span><i data-lucide="chevron-down"></i></summary>
-              <div class="fmt-body">
-                <label class="ckl"><span class="ck"><input type="checkbox" data-fmt-img checked><span class="box"><i data-lucide="check"></i></span></span><span>Include the deal image</span></label>
-                <label class="fld"><span class="lab">Text</span><textarea class="textarea mono" rows="5" data-fmt-text spellcheck="false">{pct}% off {title} · ₹{price} at {store}
-{short_link}</textarea><span class="err" hidden>Keep {short_link} so the post links back to the deal.</span></label>
-                <div class="ins"><span class="lab">Insert</span><button class="chip-add" type="button" data-ins="{title}">{title}</button><button class="chip-add" type="button" data-ins="{price}">{price}</button><button class="chip-add" type="button" data-ins="{mrp}">{mrp}</button><button class="chip-add" type="button" data-ins="{pct}">{pct}</button><button class="chip-add" type="button" data-ins="{store}">{store}</button><button class="chip-add" type="button" data-ins="{coupon_line}">{coupon_line}</button><button class="chip-add" type="button" data-ins="{short_link}">{short_link}</button></div>
-                <p class="hint-line"><i data-lucide="tag"></i>Amazon tag on these links: <b data-fmt-tag="pin"></b> <a href="/admin/settings/tags">Affiliate tags</a></p>
-                <div class="fmt-foot"><button class="btn btn-default btn-sm" type="button" data-fmt-save disabled>Save format</button><button class="btn btn-ghost btn-sm" type="button" data-fmt-reset>Reset to default</button></div>
-              </div>
-            </details>
-            <details class="fmt panel" data-fmt="th">
-              <summary class="panel-h"><h2><span class="ch-mark ch-th sm" aria-hidden="true">@</span>Threads</h2><span class="fmt-dirty" data-fmt-dirty hidden>Unsaved</span><i data-lucide="chevron-down"></i></summary>
-              <div class="fmt-body">
-                <label class="ckl"><span class="ck"><input type="checkbox" data-fmt-img checked><span class="box"><i data-lucide="check"></i></span></span><span>Include the deal image</span></label>
-                <label class="fld"><span class="lab">Text</span><textarea class="textarea mono" rows="5" data-fmt-text spellcheck="false">{pct}% off {title}
-Now ₹{price} (MRP ₹{mrp}) at {store}
-{coupon_line}
-{short_link}</textarea><span class="err" hidden>Keep {short_link} so the post links back to the deal.</span></label>
-                <div class="ins"><span class="lab">Insert</span><button class="chip-add" type="button" data-ins="{title}">{title}</button><button class="chip-add" type="button" data-ins="{price}">{price}</button><button class="chip-add" type="button" data-ins="{mrp}">{mrp}</button><button class="chip-add" type="button" data-ins="{pct}">{pct}</button><button class="chip-add" type="button" data-ins="{store}">{store}</button><button class="chip-add" type="button" data-ins="{coupon_line}">{coupon_line}</button><button class="chip-add" type="button" data-ins="{short_link}">{short_link}</button></div>
-                <p class="hint-line"><i data-lucide="tag"></i>Amazon tag on these links: <b data-fmt-tag="th"></b> <a href="/admin/settings/tags">Affiliate tags</a></p>
-                <div class="fmt-foot"><button class="btn btn-default btn-sm" type="button" data-fmt-save disabled>Save format</button><button class="btn btn-ghost btn-sm" type="button" data-fmt-reset>Reset to default</button></div>
-              </div>
-            </details>
-          </div>
-          <details class="panel fmt-pv" open data-fmt-pvwrap><summary class="panel-h"><h2>Preview <small data-pv-name>Facebook Page</small></h2><i data-lucide="chevron-down"></i></summary>
-            <div class="spv"><img src="/assets/deals/lg/1795509846.jpg" alt="" data-spv-img><p data-spv-text></p><small class="spv-meta" data-spv-meta></small></div>
-            <p class="foot-note pad"><i data-lucide="info"></i>Sample deal: the newest deal. {coupon_line} shows “Code: …” only when the deal has a coupon.</p>
-          </details>
-        </div>
       </section>
       <section data-spanel="history" hidden>
         <div class="toolbar">

@@ -72,39 +72,11 @@
     var board = $('[data-pin-board]'); if (board) board.addEventListener('change', function () { toast('Pins now go to the “' + board.value + '” board'); });
     renderCh();
 
-    /* formats */
-    var saved = J('adm-fmt', {}), pv = S.pv, cur = 'fb';
-    function fill(tpl) {
-      var map = { title: pv.title, price: INR.format(pv.price), mrp: INR.format(pv.mrp || pv.price), pct: pv.pct, store: pv.store, coupon_line: pv.coupon ? 'Code: ' + pv.coupon.toUpperCase() : '', short_link: pv.short };
-      var out = tpl.replace(/\{(\w+)\}/g, function (m, k) { return k in map ? map[k] : m; });
-      return out.split('\n').filter(function (l, i, a) { return l.trim() !== '' || (i > 0 && i < a.length - 1 && a[i - 1].trim() !== ''); }).join('\n').trim();
-    }
-    function card(k) { return $('[data-fmt="' + k + '"]'); }
-    function showPv(k) {
-      cur = k; var c = card(k), t = fill($('[data-fmt-text]', c).value), img = $('[data-fmt-img]', c).checked;
-      $('[data-pv-name]').textContent = NAMES[k]; $('[data-spv-img]').hidden = !img; $('[data-spv-text]').innerHTML = esc(t).replace(/\n/g, '<br>');
-      var tag = tagFor(k) || (tagFor('web') || 'offertag-21') + ' (website tag)';
-      $('[data-spv-meta]').innerHTML = 'Link carries tag <b>' + esc(tag) + '</b>' + (LIMIT[k] ? ' · <span class="' + (t.length > LIMIT[k] ? 'over' : '') + '">' + t.length + '/' + LIMIT[k] + ' characters</span>' : '');
-    }
-    $$('[data-fmt]').forEach(function (c) {
-      var k = c.dataset.fmt, ta = $('[data-fmt-text]', c), im = $('[data-fmt-img]', c), save = $('[data-fmt-save]', c), dirty = $('[data-fmt-dirty]', c);
-      var base = saved[k] || { text: S.defaults[k], img: true };
-      ta.value = base.text; im.checked = base.img;
-      var tagEl = $('[data-fmt-tag="' + k + '"]', c); tagEl.textContent = tagFor(k) || 'none yet, uses the website tag';
-      function upd() { var d = ta.value !== base.text || im.checked !== base.img; save.disabled = !d; dirty.hidden = !d; if (ta.value.indexOf('{short_link}') > -1) fieldErr(ta, ''); showPv(k); }
-      ta.addEventListener('input', upd); im.addEventListener('change', upd); ta.addEventListener('focus', function () { showPv(k); });
-      c.addEventListener('toggle', function () { if (c.open) showPv(k); });
-      $$('[data-ins]', c).forEach(function (b) { b.addEventListener('click', function () { var s = ta.selectionStart || ta.value.length, e2 = ta.selectionEnd || s; ta.value = ta.value.slice(0, s) + b.dataset.ins + ta.value.slice(e2); ta.focus(); ta.selectionStart = ta.selectionEnd = s + b.dataset.ins.length; upd(); }); });
-      save.addEventListener('click', function () {
-        if (ta.value.indexOf('{short_link}') < 0) { fieldErr(ta, 'Keep {short_link} so the post links back to the deal.'); ta.focus(); return; }
-        var t = fill(ta.value); if (LIMIT[k] && t.length > LIMIT[k]) { fieldErr(ta, NAMES[k] + ' allows ' + LIMIT[k] + ' characters. This one has ' + t.length + ' with the sample deal.'); ta.focus(); return; }
-        var prev = base; base = { text: ta.value, img: im.checked }; saved[k] = base; A.store.set('adm-fmt', JSON.stringify(saved)); upd();
-        toast(NAMES[k] + ' format saved. The next share uses it.', { action: 'Undo', onAction: function () { base = prev; saved[k] = prev; A.store.set('adm-fmt', JSON.stringify(saved)); ta.value = prev.text; im.checked = prev.img; upd(); } });
-      });
-      $('[data-fmt-reset]', c).addEventListener('click', function () { ta.value = S.defaults[k]; im.checked = true; upd(); toast('Default text restored. Save to keep it.', { icon: 'rotate-ccw' }); });
-    });
-    showPv('fb');
-    if (matchMedia('(max-width: 899px)').matches) $('[data-fmt-pvwrap]').open = false;  // phone: preview folded (admin-pinned-blog §4)
+    /* changes.md A-15: one fixed text for every post (db.js H.shareText), shown here; nothing to edit */
+    (function () {
+      var d = window.OTDB ? OTDB.deals()[0] : null, t = $('[data-spv-text]'), im = $('[data-spv-img]'); if (!t || !d) return;
+      t.innerHTML = esc(OTDB.H.shareText(d)).replace(/\n/g, '<br>'); im.src = d.img;
+    })();
 
     /* history */
     var H = S.hist, fch = $('[data-hf="ch"]'), fres = $('[data-hf="res"]');
@@ -224,100 +196,133 @@
     });
   })();
 
-  /* =================== Users =================== */
+  /* =================== Users and the page for one user (changes.md A-13) =================== */
   if (window.ADM_USERS) (function () {
-    var U = window.ADM_USERS, q = $('[data-uq]'), role = $('[data-urole]'), body = $('[data-urows]'), sheet = $('#user-edit'), cur = null;
-    function staff(u) { return u.role !== 'Member'; }
-    function render() {
-      var s = q.value.trim().toLowerCase(), rows = U.filter(function (u) { return staff(u) && (!role.value || u.role === role.value) && (!s || (u.name + ' ' + u.email).toLowerCase().indexOf(s) > -1); });
-      body.innerHTML = rows.map(function (u) {
-        var tag = staff(u) ? (u.tag ? '<span class="mono">' + esc(u.tag) + '</span>' : '<span class="d-none">website tag</span>') + ' <button class="btn btn-ghost btn-icon btn-sm" type="button" data-uedit aria-label="Edit Amazon tag for ' + esc(u.name) + '"><i data-lucide="pencil"></i></button>' : '<span class="d-none">—</span>';
-        return '<tr data-u="' + u.id + '"><td class="c-title" data-l="Name"><button class="btn-link u-name" type="button" data-uedit>' + esc(u.name) + '</button></td><td data-l="Email">' + esc(u.email) + '</td>'
-          + '<td data-l="Role"><span class="role r-' + u.role.toLowerCase().replace(/[^a-z]/g, '') + '">' + u.role + '</span></td><td class="d-when" data-l="Joined">' + u.joined + '</td><td data-l="Amazon tag">' + tag + '</td></tr>';
-      }).join('');
-      $('[data-uempty]').hidden = rows.length > 0; $('[data-ucount]').textContent = rows.length + ' of ' + U.filter(staff).length; A.icons();
-      if (window.OTDB) OTDB.set('users', U);   // S25 playground
-    }
-    q.addEventListener('input', render); role.addEventListener('change', render);
-    $('[data-uclear]').addEventListener('click', function () { q.value = ''; role.value = ''; render(); q.focus(); });
-    var f = $('[data-ue]'), inp = f.elements.tag;
-    body.addEventListener('click', function (e) {
-      if (!e.target.closest('[data-uedit]')) return; cur = U.filter(function (u) { return u.id === +e.target.closest('tr').dataset.u; })[0];
-      $('#ue-title').textContent = cur.name; $('[data-ue-sub]').textContent = cur.role + ' · joined ' + cur.joined;
-      $('[data-ue-kv]').innerHTML = [['Email', cur.email], ['Phone', cur.phone || '—'], ['Role', cur.role + ' <small>roles are set by the developer</small>']].map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + (r[0] === 'Role' ? r[1] : esc(r[1])) + '</dd>'; }).join('');
-
-      inp.value = cur.tag; fieldErr(inp, ''); A.openSheet(sheet);
+    var U = (window.OTDB && OTDB.get('users')) || window.ADM_USERS;
+    U = U.filter(function (u) { return u.role !== 'Member'; }).map(function (u) {   // older playground copies used Admin / Sub-admin
+      var x = Object.assign({ active: true, last: '' }, u); if (x.role === 'Sub-admin') x.role = 'Admin'; else if (x.role === 'Admin' && x.id === 1) x.role = 'Super admin'; return x;
     });
-    inp.addEventListener('input', function () { if (inp.getAttribute('aria-invalid')) fieldErr(inp, !inp.value.trim() || /^[a-z0-9][a-z0-9-]*-21$/i.test(inp.value.trim()) ? '' : 'Amazon tags in India end in “-21”.'); });
-    function save() {
-      var v = inp.value.trim(); if (v && !fieldErr(inp, /^[a-z0-9][a-z0-9-]*-21$/i.test(v) ? '' : 'Amazon tags in India end in “-21”.')) { inp.focus(); return; }
-      if (v && U.some(function (u) { return u !== cur && u.tag.toLowerCase() === v.toLowerCase(); })) { fieldErr(inp, 'Another person already uses this tag.'); inp.focus(); return; }
-      var u = cur, prev = u.tag; u.tag = v; A.closeSheet(); render(); flash($('[data-u="' + u.id + '"]'));
-      toast(v ? 'Amazon tag saved for ' + u.name : u.name + ' now uses the website tag', { action: 'Undo', onAction: function () { u.tag = prev; render(); } });
-    }
-    $('[data-ue-save]').addEventListener('click', save); f.addEventListener('submit', function (e) { e.preventDefault(); save(); });
-    render();
-  })();
+    var ME = A.SUB ? 2 : 1, sheet = $('#user-edit'), F = $('[data-ue]'), cur = null;
+    function byId(id) { return U.filter(function (u) { return u.id === +id; })[0]; }
+    function persist() { if (window.OTDB) OTDB.set('users', U); }
+    function log(text, uid) { if (window.ADM_PG && ADM_PG.log) ADM_PG.log('settings', text, null, uid); }
+    function supers() { return U.filter(function (u) { return u.role === 'Super admin' && u.active; }); }
+    function badge(u) { return '<span class="role r-' + (u.role === 'Super admin' ? 'admin' : 'subadmin') + '">' + u.role + '</span>'; }
+    function status(u) { return u.active ? '<span class="pill pill-live">Active</span>' : '<span class="pill pill-withdrawn">Off</span>'; }
+    function userHref(u) { return A.withRole('/admin/users/' + u.id); }
 
-  /* =================== Members (D-161) =================== */
-  // Read-only list of everyone who signed up. Built like the live one: search + three filters + sort + pages,
-  // never a full list. In the build every change here is one paged query (name/email/phone index, created_at).
-  if (window.ADM_MEMBERS) (function () {
-    var M = window.ADM_MEMBERS, T = new Date(window.ADM_MEMBERS_TODAY + 'T00:00'), q = $('[data-mq]'), jn = $('[data-mjoined]'), al = $('[data-malerts]'), so = $('[data-msort]'), per = $('[data-mper]'), body = $('[data-mrows]');
-    var page = 1, timer = null, sheet = $('#member-view');
-    var qs = A.params.get('q'); if (qs) q.value = qs;
-    function days(m) { return Math.round((T - new Date(m.joined + 'T00:00')) / 864e5); }
-    function joinedTxt(m) { var d = new Date(m.joined + 'T00:00'); return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
-    function initials(n) { return n.split(' ').map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase(); }
-    function list() {
-      var s = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean), j = jn.value, a = al.value;
-      var r = M.filter(function (m) {
-        var h = (m.name + ' ' + m.email + ' ' + m.phone).toLowerCase();
-        if (s.length && !s.every(function (w) { return h.indexOf(w) > -1; })) return false;
-        var d = days(m); if (j === 'old' ? d <= 365 : j && d > +j) return false;
-        if (a && (a === 'on') !== m.alerts) return false;
-        return true;
-      });
-      var k = so.value;
-      r.sort(function (x, y) { return k === 'old' ? (x.joined < y.joined ? -1 : 1) : k === 'name' ? x.name.localeCompare(y.name) : k === 'com' ? (y.comments - x.comments) || (x.joined < y.joined ? 1 : -1) : (x.joined < y.joined ? 1 : -1); });
-      return r;
+    // add / edit drawer, shared by both pages
+    function openForm(u) {
+      cur = u || null; F.reset(); $$('.err', F).forEach(function (x) { x.hidden = true; });
+      $('#ue-title').textContent = u ? 'Edit ' + u.name : 'Add user';
+      $('[data-ue-sub]').textContent = u ? 'Joined ' + u.joined : 'They sign in with a code sent to this email.';
+      if (u) { F.elements.name.value = u.name; F.elements.email.value = u.email; F.elements.tag.value = u.tag || ''; F.elements.active.checked = u.active; $$('input[name="role"]', F).forEach(function (r) { r.checked = r.value === u.role; }); }
+      $('[data-ue-del]').hidden = !u || u.id === ME;
+      A.openSheet(sheet);
     }
-    function render() {
-      var r = list(), n = +per.value, pages = Math.max(1, Math.ceil(r.length / n)); if (page > pages) page = pages;
-      var st = (page - 1) * n, view = r.slice(st, st + n);
-      body.innerHTML = view.map(function (m) {
-        return '<tr data-m="' + m.id + '"><td class="c-title" data-l="Member"><button type="button" class="mb-who" data-mopen><span class="avatar sm">' + initials(m.name) + '</span><span><b>' + esc(m.name) + '</b><small>' + esc(m.email) + '</small></span></button>' + (m.deletion ? ' <span class="pill pill-pending" title="Asked to delete their account">Deletion asked</span>' : '') + '</td>' +
-          '<td data-l="Phone"' + (m.phone ? '' : ' class="na"') + '>' + (m.phone ? esc(m.phone) : '<span class="d-none">—</span>') + '</td>' +
-          '<td class="d-when" data-l="Joined">' + joinedTxt(m) + '</td>' +
-          '<td data-l="Deal alerts">' + (m.alerts ? '<span class="ok-t"><i data-lucide="bell"></i>On</span>' : '<span class="d-none">Off</span>') + '</td>' +
-          '<td class="num" data-l="Comments">' + (m.comments || '<span class="d-none">0</span>') + '</td>' +
-          '<td class="c-act"><button class="btn btn-ghost btn-icon btn-sm" type="button" data-mopen aria-label="Open ' + esc(m.name) + '"><i data-lucide="chevron-right"></i></button></td></tr>';
-      }).join('');
-      $('[data-mempty]').hidden = r.length > 0; $('.mb-tbl').hidden = !r.length;
-      var filtered = q.value.trim() || jn.value || al.value;
-      $('[data-mcount]').textContent = r.length ? (st + 1) + '–' + (st + view.length) + ' of ' + r.length + (filtered ? ' matching' : '') + ' member' + (r.length === 1 ? '' : 's') + ' in this sample' : '0 members';
-      var pg = '';
-      if (pages > 1) {
-        pg += '<button type="button" data-mpage="' + (page - 1) + '"' + (page === 1 ? ' disabled' : '') + ' aria-label="Previous page"><i data-lucide="chevron-left"></i></button>';
-        for (var i = 1; i <= pages; i++) if (i === 1 || i === pages || Math.abs(i - page) <= 1) pg += '<button type="button" data-mpage="' + i + '"' + (i === page ? ' aria-current="page"' : '') + '>' + i + '</button>'; else if (Math.abs(i - page) === 2) pg += '<span class="pg-gap">…</span>';
-        pg += '<button type="button" data-mpage="' + (page + 1) + '"' + (page === pages ? ' disabled' : '') + ' aria-label="Next page"><i data-lucide="chevron-right"></i></button>';
+    function err(name, on) { var e = $('.err', F.elements[name].closest('.fld')); if (e) e.hidden = !on; return on; }
+    $('[data-ue-save]').addEventListener('click', function () {
+      var f = F.elements, name = f.name.value.trim(), email = f.email.value.trim(), tag = f.tag.value.trim(), role = $('input[name="role"]:checked', F).value, active = f.active.checked, bad = false;
+      bad = err('name', !name) || bad;
+      bad = err('email', !/^\S+@\S+\.\S+$/.test(email) || U.some(function (x) { return x !== cur && x.email.toLowerCase() === email.toLowerCase(); })) || bad;
+      bad = err('tag', !!tag && !/^[a-z0-9][a-z0-9-]*-21$/i.test(tag)) || bad;
+      if (bad) { var first = $('.err:not([hidden])', F); if (first) first.closest('.fld').querySelector('input').focus(); return; }
+      if (cur && cur.role === 'Super admin' && (role !== 'Super admin' || !active) && supers().length === 1 && supers()[0] === cur) { A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
+      var snap = JSON.stringify(U);
+      if (cur) {
+        if (cur.role !== role) log((role === 'Super admin' ? 'Made ' : 'Changed ') + cur.name + (role === 'Super admin' ? ' a Super admin' : ' to Admin'));
+        if (cur.active !== active) log((active ? 'Turned on ' : 'Turned off ') + cur.name);
+        if (cur.name !== name || cur.email !== email || (cur.tag || '') !== tag) log('Edited ' + name + '’s details');
+        Object.assign(cur, { name: name, email: email, tag: tag, role: role, active: active });
+      } else {
+        var u = { id: U.reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1, name: name, email: email, phone: '', role: role, joined: new Date().toISOString().slice(0, 7), tag: tag, active: active, last: 'never' };
+        U.push(u); log('Added ' + name + ' as ' + role);
       }
-      $('[data-mpager]').innerHTML = pg; A.icons();
-    }
-    function again() { page = 1; render(); }
-    q.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(again, 150); });
-    [jn, al, so, per].forEach(function (x) { x.addEventListener('change', again); });
-    $('[data-mclear]').addEventListener('click', function () { q.value = ''; jn.value = ''; al.value = ''; again(); q.focus(); });
-    $('[data-mpager]').addEventListener('click', function (e) { var b = e.target.closest('[data-mpage]'); if (!b || b.disabled) return; page = +b.dataset.mpage; render(); $('.mb-tools').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
-    body.addEventListener('click', function (e) {
-      if (!e.target.closest('[data-mopen]')) return; var m = M.filter(function (x) { return x.id === +e.target.closest('tr').dataset.m; })[0];
-      $('#mv-title').textContent = m.name; $('[data-mv-sub]').textContent = 'Member since ' + joinedTxt(m);
-      $('[data-mv-kv]').innerHTML = [['Email', esc(m.email)], ['Phone', m.phone ? esc(m.phone) : '—'], ['Joined', joinedTxt(m)], ['Deal alerts', m.alerts ? 'On' : 'Off'], ['Comments', String(m.comments)], ['Signs in with', 'A code sent to their email']].map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>'; }).join('');
-      $('[data-mv-more]').innerHTML = (m.comments ? '<a class="btn btn-outline btn-block" href="' + A.withRole('/admin/comments?q=' + encodeURIComponent(m.name.split(' ')[0])) + '"><i data-lucide="message-square"></i>See their comments in Inbox</a>' : '') +
-        (m.deletion ? '<p class="hint-line"><i data-lucide="user-x"></i>This member asked to delete their account. <a href="' + A.withRole('/admin/deletion-requests') + '">Open the request</a></p>' : '');
-      A.openSheet(sheet); A.icons();
+      persist(); A.closeSheet(); draw();
+      A.toast(cur ? 'Saved' : name + ' added. They get a sign-in code at ' + email + '.', { action: 'Undo', onAction: function () { U = JSON.parse(snap); persist(); draw(); } });
     });
-    render();
+    F.addEventListener('submit', function (e) { e.preventDefault(); $('[data-ue-save]').click(); });
+    function del(u, after) {
+      if (u.id === ME) { A.toast('You can’t delete yourself.', { icon: 'info' }); return; }
+      if (u.role === 'Super admin' && supers().length === 1 && supers()[0] === u) { A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
+      A.confirmBox('Delete ' + u.name + '?', 'They can’t sign in any more. The deals they posted stay on the site.', 'Delete user', function () {
+        var snap = JSON.stringify(U); U = U.filter(function (x) { return x !== u; }); log('Deleted user ' + u.name); persist();
+        if (after) after(); else draw();
+        A.toast(u.name + ' deleted', { action: 'Undo', onAction: function () { U = JSON.parse(snap); persist(); draw(); } });
+      }, true);
+    }
+    $('[data-ue-del]').addEventListener('click', function () { var u = cur; A.closeSheet(); setTimeout(function () { del(u, $('[data-user-page]') ? function () { location.href = A.withRole('/admin/users'); } : null); }, 260); });
+
+    var draw = function () {};
+    /* ---- the list ---- */
+    if ($('[data-urows]')) {
+      var q = $('[data-uq]'), role = $('[data-urole]'), body = $('[data-urows]');
+      draw = function () {
+        var s = q.value.trim().toLowerCase(), rows = U.filter(function (u) { return (!role.value || u.role === role.value) && (!s || (u.name + ' ' + u.email).toLowerCase().indexOf(s) > -1); });
+        body.innerHTML = rows.map(function (u) {
+          return '<tr data-u="' + u.id + '"' + (u.active ? '' : ' class="is-off"') + '><td class="c-title" data-l="Name"><a class="u-name" href="' + userHref(u) + '"><span class="avatar">' + esc(u.name.charAt(0)) + '</span><span><b>' + esc(u.name) + (u.id === ME ? ' <small>(you)</small>' : '') + '</b><small>' + esc(u.email) + '</small></span></a></td>' +
+            '<td data-l="Role">' + badge(u) + '</td>' +
+            '<td data-l="Status"><label class="switch" title="' + (u.active ? 'Turn off' : 'Turn on') + '"><input type="checkbox" data-uact' + (u.active ? ' checked' : '') + (u.id === ME ? ' disabled' : '') + ' aria-label="' + esc(u.name) + ' can sign in"><span></span></label></td>' +
+            '<td class="d-when" data-l="Last signed in">' + esc(u.last || '—') + '</td>' +
+            '<td data-l="Amazon tag">' + (u.tag ? '<span class="mono">' + esc(u.tag) + '</span>' : '<span class="d-none">website tag</span>') + '</td>' +
+            '<td class="c-act"><a class="btn btn-ghost btn-sm" href="' + userHref(u) + '">Open</a><button class="btn btn-ghost btn-icon btn-sm" type="button" data-uedit aria-label="Edit ' + esc(u.name) + '"><i data-lucide="pencil"></i></button></td></tr>';
+        }).join('');
+        $('[data-uempty]').hidden = rows.length > 0; $('[data-ucount]').textContent = rows.length + ' of ' + U.length; A.icons();
+      };
+      q.addEventListener('input', draw); role.addEventListener('change', draw);
+      $('[data-uclear]').addEventListener('click', function () { q.value = ''; role.value = ''; draw(); q.focus(); });
+      $('[data-unew]').addEventListener('click', function () { openForm(null); });
+      body.addEventListener('click', function (e) { var b = e.target.closest('[data-uedit]'); if (b) openForm(byId(b.closest('tr').dataset.u)); });
+      body.addEventListener('change', function (e) {
+        var c = e.target.closest('[data-uact]'); if (!c) return; var u = byId(c.closest('tr').dataset.u);
+        if (!c.checked && u.role === 'Super admin' && supers().length === 1) { c.checked = true; A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
+        u.active = c.checked; log((u.active ? 'Turned on ' : 'Turned off ') + u.name); persist(); draw();
+        A.toast(u.active ? u.name + ' can sign in again' : u.name + ' can’t sign in now. Their deals stay.', { action: 'Undo', onAction: function () { u.active = !u.active; persist(); draw(); } });
+      });
+      draw();
+    }
+
+    /* ---- one user: details, actions, activity log ---- */
+    if ($('[data-user-page]')) {
+      var m = location.pathname.match(/\/admin\/users\/(\d+)/), id = m ? +m[1] : 1, filter = '';
+      draw = function () {
+        var u = byId(id);
+        if (!u) { $$('[data-user-page] > section').forEach(function (x) { x.hidden = true; }); $('[data-up-missing]').hidden = false; return; }
+        document.title = u.name + ' · OfferTag Admin';
+        $('[data-up-av]').textContent = u.name.charAt(0); $('[data-up-name]').textContent = u.name + (u.id === ME ? ' (you)' : '');
+        $('[data-up-sub]').textContent = u.email + (u.phone ? ' · ' + u.phone : '') + ' · joined ' + u.joined + ' · last signed in ' + (u.last || '—');
+        $('[data-up-badges]').innerHTML = badge(u) + status(u) + (u.tag ? '<span class="tchip mono">' + esc(u.tag) + '</span>' : '<span class="tchip">website tag</span>');
+        var rb = $('[data-up="role"]'), ab = $('[data-up="active"]');
+        $('span', rb).textContent = u.role === 'Super admin' ? 'Make Admin' : 'Make Super admin';
+        $('span', ab).textContent = u.active ? 'Turn off' : 'Turn on';
+        rb.hidden = ab.hidden = $('[data-up="del"]').hidden = u.id === ME;
+        var L = window.ADM_PG && ADM_PG.logFor ? ADM_PG.logFor(u.id) : [], dealsN = L.filter(function (x) { return x.kind === 'deal' && /^Posted/.test(x.text); }).length;
+        $('[data-up-stats]').innerHTML = [['Deals posted, 30 days', dealsN], ['Edits and changes', L.filter(function (x) { return x.kind === 'deal' && !/^Posted/.test(x.text); }).length], ['Sign-ins, 30 days', L.filter(function (x) { return x.kind === 'signin'; }).length]]
+          .map(function (k) { return '<div class="panel dv-stat"><span class="dv-stat-l">' + k[0] + '</span><b class="dv-stat-n">' + k[1] + '</b></div>'; }).join('');
+        var show = L.filter(function (x) { return !filter || x.kind === filter; }), ICON = { deal: 'tag', signin: 'log-in', settings: 'settings' }, day = '';
+        $('[data-up-log]').innerHTML = show.map(function (x) {
+          var d = new Date(x.at), dl = d.toDateString() === new Date().toDateString() ? 'Today' : d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }), head = dl !== day ? '<li class="day">' + dl + '</li>' : ''; day = dl;
+          return head + '<li><span class="t-time">' + d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }) + '</span><i data-lucide="' + ICON[x.kind] + '"></i><span class="t-title">' + esc(x.text) + (x.link ? ' <a href="' + esc(x.link) + '">' + esc(x.linkText || 'Open') + '</a>' : '') + '</span></li>';
+        }).join('');
+        $('[data-up-empty]').hidden = show.length > 0; A.icons();
+      };
+      $('[data-user-page]').addEventListener('click', function (e) {
+        var f = e.target.closest('[data-uf]'); if (f) { filter = f.dataset.uf; $$('[data-uf]').forEach(function (b) { b.setAttribute('aria-pressed', b === f); }); draw(); return; }
+        var b = e.target.closest('[data-up]'); if (!b) return; var u = byId(id), k = b.dataset.up, snap = JSON.stringify(U);
+        var undo = { action: 'Undo', onAction: function () { U = JSON.parse(snap); persist(); draw(); } };
+        if (k === 'edit') openForm(u);
+        if (k === 'del') del(u, function () { location.href = A.withRole('/admin/users'); });
+        if (k === 'role') {
+          if (u.role === 'Super admin' && supers().length === 1) { A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
+          u.role = u.role === 'Super admin' ? 'Admin' : 'Super admin'; log((u.role === 'Super admin' ? 'Made ' + u.name + ' a Super admin' : 'Changed ' + u.name + ' to Admin')); persist(); draw(); A.toast(u.name + ' is ' + (u.role === 'Admin' ? 'an Admin' : 'a Super admin') + ' now', undo);
+        }
+        if (k === 'active') {
+          if (u.active && u.role === 'Super admin' && supers().length === 1) { A.toast('Keep at least one active Super admin.', { icon: 'info' }); return; }
+          u.active = !u.active; log((u.active ? 'Turned on ' : 'Turned off ') + u.name); persist(); draw(); A.toast(u.active ? u.name + ' can sign in again' : u.name + ' can’t sign in now. Their deals stay.', undo);
+        }
+      });
+      draw();
+    }
   })();
 
   /* =================== Catalogue =================== */
@@ -327,23 +332,29 @@
     var NOTE = {
       shops: 'Order sets where a shop shows in store lists and filters. A shop with deals can’t be deleted; switch it off to hide it.',
       categories: 'A category’s page address can’t be changed here, so old links keep working. Order sets the order of the category tiles.',
-      dealtypes: 'Order sets the tab order on the site, after Home. Switching a type off hides its tab; its deals stay.',
+      dealtypes: 'Every deal gets its tag from these rules on its own, when it is posted and whenever a rule changes. Order sets the tab order on the site, after Home. Switching a type off hides its tab; its deals stay.',
       types: 'Types group the lookup lists the site is built on. Read-only.'
     };
     var COLS = {
-      shops: ['Shop', 'Card label', 'Affiliate value', 'Order', 'Deals', 'Active', ''],
+      shops: ['Shop', 'Card label', 'Order', 'Deals', 'Active', ''],
       categories: ['Category', 'Address', 'Order', 'Deals', 'Active', ''],
-      dealtypes: ['Deal type', 'Rule line', 'Order', 'Deals in snapshot', 'Active', ''],
+      dealtypes: ['Deal type', 'Rule', 'Order', 'Deals', 'Active', ''],
       types: ['Name', 'Alias', '']
     };
     function nf(n) { return INR.format(n); }
+    // changes.md A-14: the rules live in the playground data (db.js typeRules) and every page reads them
+    var DB = window.OTDB;
+    function rules() { return DB ? DB.typeRules() : { top: 25, loot: 75, pantry: ['Grocery'], push: 90 }; }
+    function keyOf(x) { return x.key || ({ 'Top deals': 'Top', 'Top deal': 'Top', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }[x.name]) || ''; }
+    function ruleText(x) { var R = rules(), k = keyOf(x); return k === 'Top' ? R.top + '% off or more' : k === 'Loot' ? R.loot + '% off or more' : k === 'New' ? 'Under ' + R.top + '% off' : k === 'Pantry' ? 'In ' + (R.pantry.join(', ') || 'no category') : ''; }
+    function countOf(x) { var k = keyOf(x); return DB && k ? DB.deals().filter(function (d) { return d.types.indexOf(k) > -1; }).length : x.n; }
     function swc(x) { return '<label class="switch"><input type="checkbox" role="switch" data-con' + (x.on ? ' checked' : '') + ' aria-label="Active: ' + esc(x.name) + '"><span></span></label>'; }
     function ed(x) { return '<button class="btn btn-ghost btn-sm" type="button" data-cedit aria-label="Edit ' + esc(x.name) + '">Edit</button>'; }
     function row(x) {
       var r = '<tr data-c="' + x.id + '"' + (x.on === false ? ' class="is-off"' : '') + '>';
-      if (tab === 'shops') r += '<td class="c-title" data-l="Shop"><span class="nm">' + (x.logo ? '<span class="lg"><img src="' + x.logo + '" alt=""></span>' : '<span class="lg ini">' + esc(x.name[0]) + '</span>') + '<b>' + esc(x.name) + '</b></span></td><td data-l="Card label">' + esc(x.label) + '</td><td data-l="Affiliate value">' + (x.aff ? '<span class="mono">' + esc(x.aff) + '</span>' : '<span class="d-none">—</span>') + '</td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(x.n) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
+      if (tab === 'shops') r += '<td class="c-title" data-l="Shop"><span class="nm">' + (x.logo ? '<span class="lg"><img src="' + x.logo + '" alt=""></span>' : '<span class="lg ini">' + esc(x.name[0]) + '</span>') + '<b>' + esc(x.name) + '</b></span></td><td data-l="Card label">' + esc(x.label) + '</td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(x.n) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
       else if (tab === 'categories') r += '<td class="c-title" data-l="Category"><span class="nm">' + (x.img ? '<span class="lg ph"><img src="' + x.img + '" alt="" loading="lazy"></span>' : '<span class="lg ini">' + esc(x.name[0]) + '</span>') + '<b>' + esc(x.name) + '</b></span></td><td data-l="Address"><span class="mono d-none">/' + esc(x.slug) + '</span></td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(x.n) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
-      else if (tab === 'dealtypes') r += '<td class="c-title" data-l="Deal type"><b>' + esc(x.name) + '</b></td><td data-l="Rule line">' + esc(x.rule) + '</td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(x.n) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
+      else if (tab === 'dealtypes') r += '<td class="c-title" data-l="Deal type"><b>' + esc(x.name) + '</b></td><td data-l="Rule"><b class="rule-t">' + esc(ruleText(x)) + '</b></td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(countOf(x)) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
       else r += '<td class="c-title" data-l="Name"><b>' + esc(x.name) + '</b></td><td data-l="Alias"><span class="mono">' + esc(x.alias) + '</span></td><td class="c-act"><span class="d-none">Read-only</span></td>';
       return r + '</tr>';
     }
@@ -354,7 +365,7 @@
       $('[data-crows]').innerHTML = rows.map(row).join('');
       $('[data-cempty]').hidden = rows.length > 0; $('[data-ccount]').textContent = rows.length === all.length ? all.length + ' ' + (all.length === 1 ? ONE[tab] : tab === 'categories' ? 'categories' : ONE[tab] + 's') : rows.length + ' of ' + all.length;
       $('[data-cnote]').innerHTML = '<i data-lucide="info"></i><span>' + NOTE[tab] + '</span>';
-      $('[data-cat-active]').hidden = tab === 'types'; var add = $('[data-cat-add]'); add.hidden = tab === 'types'; $('[data-cat-add-l]').textContent = 'Add ' + ONE[tab];
+      $('[data-cat-active]').hidden = tab === 'types'; var add = $('[data-cat-add]'); add.hidden = tab === 'types' || tab === 'dealtypes'; $('[data-cat-add-l]').textContent = 'Add ' + ONE[tab];
       var tc = $('[data-tcount="' + tab + '"]'); if (tc) tc.textContent = C[tab].length;
       A.icons();
       if (window.ADM_PG) ADM_PG.saveCatalogue(C);   // S25 playground: names, order, on/off and new ones reach the site
@@ -387,16 +398,19 @@
         logoImg = x.logo || null;
         h = fld('name', 'Name', x.name, { req: 1 }) + fld('label', 'Card label', x.label, { req: 1, max: 13, cnt: 1, hint: 'on deal cards' })
           + '<div class="fld"><span class="lab">Logo <small>square or wide, on a white or clear background</small></span><div class="logo-row"><span class="lg big" data-logo-pv>' + (x.logo ? '<img src="' + x.logo + '" alt="">' : '<i data-lucide="image"></i>') + '</span><label class="btn btn-outline btn-sm">' + (x.logo ? 'Replace' : 'Upload') + '<input type="file" accept="image/*" hidden data-logo-in></label></div></div>'
-          + '<div class="grid2">' + fld('aff', 'Affiliate value', x.aff, { mono: 1, ph: 'tag=… or affid=…', hint: 'added to every link' }) + fld('order', 'Order', x.order, { type: 'number', req: 1 }) + '</div>'
+          + '<div class="grid2">' + fld('order', 'Order', x.order, { type: 'number', req: 1 }) + '<div class="fld"><span class="lab">Affiliate tag</span><small class="hint">Set in <a href="' + A.withRole('/admin/settings/tags') + '">Settings → Affiliate tags</a></small></div></div>'
           + '<label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Active <small>shows its store page and filter</small></span></label>'
-          + fld('steps', 'Default “How to get it” steps', (x.steps || []).join('\n'), { area: 1, rows: 5, hint: 'one per line; new deals from this shop start with these' })
           + fld('seo', 'SEO description', x.seo, { area: 1, rows: 3, hint: 'shop page, search results' });
       } else if (tab === 'categories') {
         h = fld('name', 'Name', x.name, { req: 1 }) + fld('slug', 'Page address', x.slug, { mono: 1, ro: !n, hint: n ? 'made from the name; letters, numbers and _' : 'fixed, so old links keep working' })
           + '<div class="grid2">' + fld('order', 'Order', x.order, { type: 'number', req: 1 }) + '<div class="fld"><span class="lab">&nbsp;</span><label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Active</span></label></div></div>'
           + fld('title', 'SEO title', x.title, { hint: 'browser tab and search results' }) + fld('seo', 'SEO description', x.seo, { area: 1, rows: 3 });
       } else {
-        h = fld('name', 'Name', x.name, { req: 1, hint: 'the tab label' }) + fld('rule', 'Rule line', x.rule, { hint: 'shown under the page title' })
+        var R = rules(), k = keyOf(x), rule = '';
+        if (k === 'Top' || k === 'Loot') rule = '<label class="fld"><span class="lab">Rule * <small>' + (k === 'Top' ? 'deals at this discount or more are Top deals' : 'deals at this discount or more are Loot (they stay Top deals too)') + '</small></span><span class="input-suffix rule-in"><input class="input num" type="number" min="1" max="99" name="pct" value="' + (k === 'Top' ? R.top : R.loot) + '"><span>% off or more</span></span><span class="err" hidden></span></label>';
+        else if (k === 'New') rule = '<div class="fld"><span class="lab">Rule</span><p class="hint-line"><i data-lucide="info"></i><span>Every deal under ' + R.top + '% off. Change the Top deals rule to move this line.</span></p></div>';
+        else if (k === 'Pantry') rule = '<div class="fld"><span class="lab">Rule * <small>deals in these categories are Pantry</small></span><div class="cat-picks">' + C.categories.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).map(function (c) { return '<label class="ckl"><span class="ck"><input type="checkbox" name="pcat" value="' + esc(c.name) + '"' + (R.pantry.indexOf(c.name) > -1 ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>' + esc(c.name) + '</span></label>'; }).join('') + '</div><span class="err" hidden></span></div>';
+        h = fld('name', 'Name', x.name, { req: 1, hint: 'the tab label' }) + rule
           + '<div class="grid2">' + fld('order', 'Order', x.order, { type: 'number', req: 1 }) + '<div class="fld"><span class="lab">&nbsp;</span><label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Active</span></label></div></div>';
       }
       form.innerHTML = h; $('[data-ce-del]').hidden = n; A.icons();
@@ -418,9 +432,18 @@
       $$('.err', form).forEach(function (e) { e.hidden = true; }); $$('[aria-invalid]', form).forEach(function (i) { i.removeAttribute('aria-invalid'); });
       if (bad.length) { bad.forEach(function (b) { fieldErr(b[0], b[1]); }); bad[0][0].focus(); return; }
       var o = { name: name, order: ord, on: F.on.checked };
-      if (tab === 'shops') { o.label = F.label.value.trim(); o.aff = F.aff.value.trim(); o.steps = F.steps.value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean); o.seo = F.seo.value.trim(); o.logo = logoImg || ''; }
+      if (tab === 'shops') { o.label = F.label.value.trim(); o.seo = F.seo.value.trim(); o.logo = logoImg || ''; }
       if (tab === 'categories') { o.title = F.title.value.trim(); o.seo = F.seo.value.trim(); if (!editing) o.slug = F.slug.value.trim(); }
-      if (tab === 'dealtypes') o.rule = F.rule.value.trim();
+      if (tab === 'dealtypes') {
+        var R0 = rules(), R1 = JSON.parse(JSON.stringify(R0)), k1 = keyOf(editing);
+        if (k1 === 'Top' || k1 === 'Loot') { var v = +F.pct.value; if (!(v >= 1 && v <= 99)) { fieldErr(F.pct, 'Use a number from 1 to 99.'); F.pct.focus(); return; } R1[k1 === 'Top' ? 'top' : 'loot'] = v; if (R1.loot <= R1.top) { fieldErr(F.pct, 'Loot must be a bigger discount than Top deals (' + (k1 === 'Top' ? 'Loot is ' + R1.loot + '%' : 'Top deals is ' + R1.top + '%') + ').'); F.pct.focus(); return; } }
+        if (k1 === 'Pantry') { R1.pantry = $$('input[name="pcat"]:checked', form).map(function (i) { return i.value; }); if (!R1.pantry.length) { toast('Pick at least one category for Pantry.', { icon: 'info' }); return; } }
+        if (JSON.stringify(R0) !== JSON.stringify(R1) && DB) {
+          DB.set('typeRules', R1);
+          if (window.ADM_PG && ADM_PG.log) ADM_PG.log('settings', 'Changed the ' + editing.name + ' rule to ' + (k1 === 'Pantry' ? R1.pantry.join(', ') : (k1 === 'Top' ? R1.top : R1.loot) + '% off or more'));
+          var undoR = R0; setTimeout(function () { toast('Rule saved. ' + DB.deals().filter(function (d) { return d.types.indexOf(k1) > -1; }).length + ' deals are ' + editing.name + ' now.', { action: 'Undo', onAction: function () { DB.set('typeRules', undoR); render(); } }); }, 2700);
+        }
+      }
       var t = tab, target = editing, prev = target ? JSON.parse(JSON.stringify(target)) : null, made;
       if (target) Object.assign(target, o); else { made = Object.assign({ id: Date.now(), n: 0 }, o); C[t].push(made); }
       A.closeSheet(); render(); flash($('[data-c="' + (target || made).id + '"]'));

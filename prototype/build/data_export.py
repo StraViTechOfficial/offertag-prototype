@@ -56,16 +56,12 @@ _out('catalogue.json', dict(
 ))
 
 # ---------------- home: posters, sponsored, pins, promo, site settings ----------------
-_posters = [dict(id=1, kind='custom', title=x['title'], img=_asset(x['img']), store=x['store'], link='Flipkart store page', href=_route(x['href']), ends=x['ends'], start=-3, end=9, on=True) for x in TD_CUSTOM]
-_posters += [dict(id=2, kind='deal', deal=d['id'], title=d['t'], img=_asset(td_img(d)[0]), store=d['store'], link='Deal page', start=-1, end=8, on=True) for d in TD_FEATURED]
-_posters.append(dict(id=3, kind='custom', title='Republic Day sale: up to 70% off', img='/assets/posters/festive.jpg', store='Amazon', link='Loot deals', href='/loot-deals', start=_days('2026-01-20'), end=_days('2026-01-26'), on=True))
 _spons = [dict(id=x['id'], adv=x['adv'], title=x['title'], line=x['line'], cta=x['cta'], link=x['href'].replace('#sponsored-', 'https://example.com/ad-'), img=f'/assets/posters/{x["img"]}.jpg',
                start=_days(x['start']), end=_days(x['end']), on=x['on'], views=x['views'], clicks=x['clicks'], sample=True) for x in SPONSORS]
 _spons.append(dict(id=3, adv='FitZone Gym, Powai', title='FitZone: 3 months for the price of 2', line='Opening offer at our Powai branch.', cta='Join now', link='https://example.com/ad-3', img='/assets/posters/festive.jpg', start=_days('2026-10-01'), end=_days('2026-10-31'), on=True, views=24980, clicks=511, sample=True))
 _out('home.json', dict(
-    pinEvery=PIN_EVERY, trending=sorted(TD_TRENDING), posters=_posters, sponsored=_spons,
-    promo=dict(on=False, tag='', text='', cta='', href='', start='', end=''),
-    site=dict(posters=True, strip=True, blognew=True, chat=True, feat_price=FEATURED['price'], feat_pct=FEATURED['pct'], feat_cap=FEATURED['cap'], feat_do='Flag in Incoming for review',
+    pinEvery=PIN_EVERY, trending=sorted(TD_TRENDING), sponsored=_spons,
+    site=dict(blognew=True, chat=True,
               wa='https://chat.whatsapp.com/FpM8Z1mM898BmFOqd8ccqg', tg='https://t.me/OffertagLoot', fb='https://www.facebook.com/Offertag.in', ig='', li='',
               play='https://play.google.com/store/apps/details?id=app.offertag', mail='support@offertag.in'),
 ))
@@ -99,11 +95,11 @@ for di, rows_ in SAMPLE_COMMENTS.items():
         for k, (rn, ra, rt, rw, rl) in enumerate(replies):
             _cm.append(dict(id=f'{cid}-{k}', deal=str(d['id']), parent=cid, name=rn, admin=ra, text=trim_links(rt), ago=_ago(rw), rx=_rx(rl, rn + trim_links(rt)), seed=True))
 _inbox = json.loads(_re2.search(r'window\.ADM_INBOX = (.*?);</script>', open(os.path.join(ROOT, 'admin', 'feedback', 'index.html')).read()).group(1).replace('<\\/', '</'))
-for k in ('feedback', 'reports', 'deletion'):
+for k in ('feedback', 'deletion'):
     for r in _inbox[k]: r['ago'] = _ago(r.get('when')); r['seed'] = True
 _out('community.json', dict(
     comments=_cm, rx=[dict(e=e, label=l) for e, l in RX], rxNames=RX_NAMES,
-    feedback=_inbox['feedback'], reports=_inbox['reports'], deletion=_inbox['deletion'],
-    users=[dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, tag=t) for i, (n, e, p, r, j, t) in enumerate(USERS)],
+    feedback=_inbox['feedback'], deletion=_inbox['deletion'],
+    users=[dict(id=i + 1, name=n, email=e, phone=p, role=r, joined=j, tag=t, active=ac, last=l) for i, (n, e, p, r, j, t, ac, l) in enumerate(USERS)],
 ))
-print('data/: deals', len(D_OUT), '· comments', len(_cm), '· posters', len(_posters), '· sponsored', len(_spons), '· blog', len(BLOG_ADMIN))
+print('data/: deals', len(D_OUT), '· comments', len(_cm), '· sponsored', len(_spons), '· blog', len(BLOG_ADMIN))

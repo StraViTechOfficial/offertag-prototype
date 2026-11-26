@@ -85,7 +85,7 @@
     return true;
   }
   var sorters = {
-    newest: function (a, b) { return +a.dataset.age - +b.dataset.age; },
+    newest: function (a, b) { return +a.dataset.order - +b.dataset.order; },   // site order: newest first, or where the admin moved a deal (changes.md A-02)
     disc: function (a, b) { return +b.dataset.pct - +a.dataset.pct; },
     saving: function (a, b) { return +b.dataset.save - +a.dataset.save; },
     'price-asc': function (a, b) { return +a.dataset.price - +b.dataset.price; },

@@ -24,13 +24,12 @@ def blog_admin_posts():
     # SAMPLE scheduled + draft posts (data sheet D), built from snapshot deals
     kit = [d for d in deals if d['cat'] == 'Kitchen'][:3]
     gro = [d for d in deals if d['cat'] in ('Grocery', 'Food & Beverage')][:2]
-    wd = next(r for r in ADM_ROWS if r['status'] == 'withdrawn')
     if kit:
         posts.append(dict(name='kitchen-deals-for-the-wedding-season', title='Kitchen deals for the wedding season', summary='Cookware and appliances worth gifting, with live prices.', status='scheduled',
                           date='2026-11-15', time='09:00', when='15 Nov', cover='assets/deals/lg/' + kit[0]['file'], cat='Kitchen', seo='', meta='', edited='',
                           body=[{'p': 'Wedding season means gifts, and kitchen things are the safest pick. These are on our feed this week.'}, {'h': 'Cookware'}] + [{'deal': d['id']} for d in kit]))
     posts.append(dict(name='grocery-staples-price-watch', title='Grocery staples: price watch', summary='', status='draft', date='', time='', when='', cover='', cat=(gro[0]['cat'] if gro else ''), seo='', meta='', edited='1 h ago',
-                      body=[{'p': 'Atta, oil and rice prices move every week. We track the packs our readers buy most.'}] + [{'deal': d['id']} for d in gro] + [{'deal': wd['id']}]))
+                      body=[{'p': 'Atta, oil and rice prices move every week. We track the packs our readers buy most.'}] + [{'deal': d['id']} for d in gro]))
     order = {'draft': 0, 'scheduled': 1, 'published': 2}
     posts.sort(key=lambda p: (order[p['status']], -int(p['date'].replace('-', '') or 0)))
     return posts

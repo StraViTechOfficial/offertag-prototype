@@ -34,14 +34,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
     <div class="adm-brand"><a href="/admin" aria-label="OfferTag admin home"><img src="/assets/logo-crop.png" alt="OfferTag" width="1510" height="500"></a><span>Admin</span>
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
-<a class="adm-link" href="/admin" data-role="admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/incoming"><i data-lucide="inbox"></i><span>Incoming</span><span class="adm-count" data-count="incoming">5</span></a>
+<a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
 <a class="adm-link" href="/admin/deal"><i data-lucide="tag"></i><span>Deals</span></a>
-<a class="adm-link" href="/admin/posters" data-role="admin"><i data-lucide="megaphone"></i><span>Promote</span></a>
-<a class="adm-link" href="/admin/admin-notifications" data-role="admin"><i data-lucide="bell"></i><span>Alerts</span></a>
+<a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
+<a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
-<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">5</span></a>
-<a class="adm-link" href="/admin/members" data-role="admin"><i data-lucide="users"></i><span>Members</span></a>
+<a class="adm-link" href="/admin/feedback" data-role="admin"><i data-lucide="mail"></i><span>Inbox</span><span class="adm-count" data-count="inbox">3</span></a>
 <a class="adm-link" href="/admin/shop" data-role="admin"><i data-lucide="library"></i><span>Catalogue</span></a>
 <a class="adm-link" href="/admin/settings/site" data-role="admin" aria-current="page"><i data-lucide="settings"></i><span>Settings</span></a>
     </nav>
@@ -60,12 +58,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-search-btn" type="button" data-search-toggle aria-label="Search"><i data-lucide="search"></i></button>
       <a class="btn btn-default adm-post" href="/admin/deal/create"><i data-lucide="plus"></i><span>Post a deal</span></a>
       <div class="dropdown adm-user">
-        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b>Adil</b><small data-role-label>Admin</small></span><i data-lucide="chevron-down"></i></button>
+        <button class="btn btn-ghost adm-user-btn" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span class="avatar">A</span><span class="adm-user-name"><b data-user-name>Adil</b><small data-role-label>Super admin</small></span><i data-lucide="chevron-down"></i></button>
         <div class="menu" role="menu" hidden data-state="closed">
-          <div class="menu-label">Signed in as Adil</div>
+          <div class="menu-label" data-signed-in>Signed in as Adil</div>
           <a role="menuitem" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>View site</a>
-          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview sub-admin menu</a>
-          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to admin view</a>
+          <a role="menuitem" href="?role=sub" data-role="admin"><i data-lucide="eye"></i>Preview as an Admin</a>
+          <a role="menuitem" href="?" data-role="sub"><i data-lucide="eye"></i>Back to Super admin view</a>
           <div class="separator"></div>
           <div class="menu-label">Theme</div>
           <div class="theme-seg adm-theme" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
@@ -75,25 +73,14 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin" aria-current="page">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin">Users</a><a href="/admin/role" data-role="admin">Roles</a><a href="/admin/security" data-role="admin">Security</a></nav>
-      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Site & app settings is for admins only. Sub-admins see Incoming, Deals and View site. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
+      <nav class="sec-tabs" aria-label="Settings"><a href="/admin/settings/site" data-role="admin" aria-current="page">Site &amp; app</a><a href="/admin/settings/tags" data-role="admin">Affiliate tags</a><a href="/admin/social" data-role="admin">Social sharing</a><a href="/admin/users" data-role="admin">Users</a><a href="/admin/security" data-role="admin">Security</a></nav>
+      <div class="sub-note" data-role="sub"><i data-lucide="lock"></i><p>Site & app settings is for Super admins only. Admins post, edit and delete deals, and see Overview, Deals and Alerts. <a href="/admin/deal?role=sub">Go to All deals</a></p></div>
       <div data-role="admin">
       <div class="page-h">
         <div><h1>Site & app settings</h1><p>Switches and links used across the website header, footer and menu, and in the app.</p></div>
       </div>
       <form class="set" data-site novalidate>
-        <section class="panel"><div class="panel-h"><h2>Home</h2></div>
-          <div class="set-row"><div class="set-l"><b>Sale posters</b><small>The poster slider at the top of Home. <a href="/admin/posters">Manage posters</a></small></div><div class="set-c"><label class="switch"><input type="checkbox" role="switch" name="posters" checked aria-label="Sale posters"><span></span></label></div></div>
-          <div class="set-row"><div class="set-l"><b>Join button</b><small>The small WhatsApp / Telegram button in the bottom corner of every public page. Opens when tapped, closes on scroll. Uses the links below.</small></div><div class="set-c"><label class="switch"><input type="checkbox" role="switch" name="strip" checked aria-label="Join button"><span></span></label></div></div>
-        </section>
-        <section class="panel"><div class="panel-h"><h2>Featured deals</h2><span class="tag-sample">Sample</span></div>
-          <div class="set-row"><div class="set-l"><b>Price at or above</b><small>Deals at this price or higher get a “Featured” flag in Incoming, so they are reviewed first.</small></div><div class="set-c"><label class="input-wrap pre"><span>₹</span><input class="input mono" type="number" name="feat_price" min="0" step="500" value="10000" aria-label="Featured price threshold"></label></div></div>
-          <div class="set-row"><div class="set-l"><b>Or discount at or above</b><small>Flag big discounts too. Leave empty to use price only.</small></div><div class="set-c"><label class="input-wrap post"><input class="input mono" type="number" name="feat_pct" min="0" max="99" value="70" aria-label="Featured discount threshold"><span>%</span></label></div></div>
-          <div class="set-row"><div class="set-l"><b>At most per day</b><small>After this many, matching deals come in without the flag, so highlights stay special.</small></div><div class="set-c"><input class="input mono feat-cap" type="number" name="feat_cap" min="1" max="50" value="5" aria-label="Featured deals per day"></div></div>
-          <div class="set-row"><div class="set-l"><b>What the flag does</b><small>Nothing is published or promoted on its own. An admin always decides.</small></div><div class="set-c"><label class="select "><select name="feat_do" aria-label="What the flag does"><option>Flag in Incoming for review</option><option>Flag and suggest Top pick</option><option>Flag and suggest a push alert</option></select><i data-lucide="chevron-down"></i></label></div></div>
-        </section>
-        <section class="panel"><div class="panel-h"><h2>Header</h2></div>
-        </section>
+        <!-- 2026-11-25: Home switches (sale posters, join button), Featured deals rules and the empty Header block are gone (changes.md A-06, A-14, A-16) -->
         <section class="panel"><div class="panel-h"><h2>Links</h2><small>footer, menu, Deal alerts and app</small></div>
           <div class="set-row"><div class="set-l"><b>WhatsApp group</b></div><div class="set-c"><label class="fld"><span class="visually-hidden">https://chat.whatsapp.com/…</span><input class="input" type="url" name="wa" value="https://chat.whatsapp.com/FpM8Z1mM898BmFOqd8ccqg" placeholder="https://chat.whatsapp.com/…" spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></div></div>
           <div class="set-row"><div class="set-l"><b>Telegram channel</b></div><div class="set-c"><label class="fld"><span class="visually-hidden">https://t.me/…</span><input class="input" type="url" name="tg" value="https://t.me/OffertagLoot" placeholder="https://t.me/…" spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></div></div>
