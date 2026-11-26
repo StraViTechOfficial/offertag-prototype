@@ -145,15 +145,13 @@
       since.dataset.today = today.length; since.dataset.ages = all.map(function (d) { return d.agemin; }).join(',');
       var meta = $('.since-meta', since); if (meta && all.length) meta.textContent = 'Last deal posted ' + (all[0].agemin < 1 ? 'just now' : all[0].agetxt + ' ago');
     }
-    // sponsored: one live ad per visit, the same in both slots; views and clicks count for the advertiser's report
+    // sponsored: one live ad per visit, the same in both slots (no view or click counts, 2026-11-26)
     $$('[data-sp-slot]').forEach(function (s) { var sec = s.closest('.sp-inline'); (sec || s).remove(); });
     var live = DB.get('sponsored').filter(liveByDates);
     if (live.length) {
       var pick = live[Math.floor(Math.random() * live.length)], side = $('.home-side');
       if (side) side.insertAdjacentHTML('afterbegin', '<div class="sp-slot sp-slot-side" data-sp-slot>' + sponsorCard(pick, 'side') + '</div>');
       var hero = $('#hero'); if (hero) hero.insertAdjacentHTML('afterend', '<section class="section sp-inline" aria-label="Sponsored"><div class="container"><div class="sp-slot sp-slot-inline" data-sp-slot>' + sponsorCard(pick, 'inline') + '</div></div></section>');
-      var list = DB.get('sponsored'); list.forEach(function (x) { if (x.id === pick.id) x.views = (x.views || 0) + 1; }); DB.set('sponsored', list);
-      document.addEventListener('click', function (e) { var a = e.target.closest('[data-sp]'); if (!a) return; var l = DB.get('sponsored'); l.forEach(function (x) { if (String(x.id) === a.dataset.sp) x.clicks = (x.clicks || 0) + 1; }); DB.set('sponsored', l); });
     }
     return true;
   }

@@ -77,10 +77,8 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
         <div><h1>Sponsored</h1><p>A business sends you a picture; you add it with one button. It shows on Home, labelled "Sponsored". With more than one on, each visit shows one at random.</p></div>
         <div class="page-h-acts"><a class="btn btn-outline" href="/" target="_blank" rel="noopener"><i data-lucide="external-link"></i>See Home</a><button class="btn btn-default" type="button" data-sp-new><i data-lucide="plus"></i>Add sponsored ad</button></div>
       </div>
-      <div class="sp-stats" data-sp-stats></div>
       <div class="tabs-list adm-tabs" role="tablist"><button class="tabs-trigger" role="tab" data-stab="cur" data-state="active" aria-selected="true">Live and upcoming <span class="adm-count muted" data-scount="cur"></span></button><button class="tabs-trigger" role="tab" data-stab="past" aria-selected="false">Ended <span class="adm-count muted" data-scount="past"></span></button></div>
       <ol class="posters sp-list" data-sp-list></ol>
-      <p class="foot-note"><i data-lucide="info"></i>Views count each time the card is on screen; clicks count each tap on its button. Sample numbers.</p>
       <div class="sheet-overlay" data-overlay hidden data-state="closed"></div>
       <aside class="sheet sheet-right" id="sp-edit" hidden data-state="closed" role="dialog" aria-modal="true" aria-labelledby="se-title">
         <div class="sheet-header"><div class="sheet-title" id="se-title">Add sponsored ad</div><p class="sheet-desc">A picture and one button. That’s all.</p></div>
@@ -89,8 +87,8 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
           <div class="fld"><span class="lab">Ad picture * <small>the picture the business sent, about 600 × 500</small></span><label class="drop sq" data-drop="d"><img alt="" hidden><span><i data-lucide="upload"></i>Choose picture</span><input type="file" accept="image/*" hidden></label><span class="err" hidden>Add the ad picture.</span></div>
           <div class="grid2"><label class="fld"><span class="lab">Button text *</span><input class="input" type="text" name="cta" maxlength="20" value="Visit website" list="cta-ideas"><datalist id="cta-ideas"><option value="Visit website"><option value="Call us"><option value="Shop now"><option value="Order on WhatsApp"><option value="Know more"></datalist><span class="err" hidden>Add the button text.</span></label>
             <label class="fld"><span class="lab">Button opens *</span><input class="input" type="text" name="link" placeholder="https://… or a phone number"><span class="err" hidden>Add a link starting with https://, or a phone number.</span></label></div>
-          <div class="grid2"><label class="fld"><span class="lab">From <small>optional</small></span><input class="input" type="date" name="start"></label><label class="fld"><span class="lab">Until <small>optional</small></span><input class="input" type="date" name="end"><span class="err" hidden>Until must be on or after From.</span></label></div>
-          <p class="hint-line"><i data-lucide="info"></i><span>Leave the dates empty and the ad stays on until you switch it off. Dates are only for you; the site never shows them.</span></p>
+          <div class="grid2"><label class="fld"><span class="lab">Start date *</span><input class="input" type="date" name="start"><span class="err" hidden>Add the start date.</span></label><label class="fld"><span class="lab">End date <small>optional</small></span><input class="input" type="date" name="end"><span class="err" hidden>The end date must be on or after the start date.</span></label></div>
+          <p class="hint-line"><i data-lucide="info"></i><span>The ad shows on Home from the start date. With no end date it stays on until you switch it off. The dates are only for you; the site never shows them.</span></p>
           <label class="ckl"><span class="ck"><input type="checkbox" name="on" checked><span class="box"><i data-lucide="check"></i></span></span><span>On</span></label>
         </form>
         <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-se-save>Save ad</button></div>
