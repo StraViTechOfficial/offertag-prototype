@@ -200,6 +200,12 @@ About 30 categories fit on one screen, so the "Find a category" box is gone. Eac
 ### P-36 · Pinned chip only on Top deals (26 Nov)
 - Pinned slots were already Top-only (D-104), but the "Pinned" chip showed on the card everywhere: home rails, Loot, category pages, search, deal page. Now it shows only on Top deals; elsewhere a pinned deal is a normal card. css/theme.css only.
 
+### P-37 · No Flipkart affiliate id anywhere (26 Nov)
+- Adil: our Flipkart links carry no id. Removed `affid=offertag` from the Buy link tagging (js/db.js, build/build.py STORE_TAG), the "Search this on Flipkart" link (build.py, render.js), the old category texts (build/catalogue.json, 8 links), and the Flipkart id column in Settings → Affiliate tags (build/admin_c.py, js/admin-c.js).
+- Another site's `affid` on a pasted link is still stripped, so nobody else earns on our deals.
+- Also corrected in Part C above: "Flipkart uses affid=offertag" describes the old site only.
+- Backend: docs/features/short-links-and-tags.md and migration-cutover.md updated; the import still copies Flipkart's id (offertag-backend db/import/load.sql:58) and needs a one-line fix there.
+
 ### Notes from the public build (2026-11-25)
 
 **P-01 card research (what we copied and why).** Flipkart, Meesho and Ajio show the price, the struck MRP and "% off" on **one line**, read left to right. Amazon puts "-88%" before the price. Myntra puts "(88% OFF)" after the MRP. DesiDime and Slickdeals put the store and the posting time in a small top line above the title. Our card now follows that common order:
@@ -437,7 +443,7 @@ Sources: `ia/inventory/old-website.md` (live offertag.in, Laravel), `ia/deal-con
 
 **Affiliate tags**
 - On the old site the store link is `deal_link` + `shops.affiliate_value` (Amazon and Flipkart only).
-- The tag changes with the source of the click: `?source=` → `offertag2-21` (Google), `?fbclid` → `offertagfb-21` (Facebook), `/d/` short link → `offertag1-21` (WhatsApp), and the website itself → `offertag-21`. Flipkart uses `affid=offertag`.
+- The tag changes with the source of the click: `?source=` → `offertag2-21` (Google), `?fbclid` → `offertagfb-21` (Facebook), `/d/` short link → `offertag1-21` (WhatsApp), and the website itself → `offertag-21`. Flipkart uses `affid=offertag` (old site; the new site adds no Flipkart id, P-37).
 - The prototype shows the tag in two places, Catalogue → Shops and Settings → Affiliate tags. A-18 keeps only Settings.
 
 **Statuses**

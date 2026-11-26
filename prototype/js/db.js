@@ -47,7 +47,6 @@
         var u = new URL(href), host = u.hostname.toLowerCase().replace(/^www\./, '');
         ['tag', 'ascsubtag', 'affid', 'affExtParam1'].forEach(function (k) { u.searchParams.delete(k); });
         if (/(^|\.)amazon\.in$/.test(host)) u.searchParams.append('tag', 'offertag-21');
-        else if (/(^|\.)flipkart\.com$/.test(host)) u.searchParams.append('affid', 'offertag');
         return u.toString();
       } catch (e) { return href; }
     },

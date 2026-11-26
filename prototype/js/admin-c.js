@@ -103,14 +103,14 @@
   /* =================== Affiliate tags =================== */
   var tf = $('[data-tags]');
   if (tf) (function () {
-    if (TAGS) $$('[data-tag-row]', tf).forEach(function (r) { var v = TAGS[r.dataset.tagRow]; if (!v) return; var a = $('[data-tag="amz"]', r), f = $('[data-tag="fk"]', r); a.value = a.defaultValue = v.amz; f.value = f.defaultValue = v.fk; });
+    if (TAGS) $$('[data-tag-row]', tf).forEach(function (r) { var v = TAGS[r.dataset.tagRow]; if (!v) return; var a = $('[data-tag="amz"]', r); a.value = a.defaultValue = v.amz; });
     var d = dirtyForm(tf);
     function valid(a) { var v = a.value.trim(); if (!v) return fieldErr(a, a.hasAttribute('data-req') ? 'This link needs a tag.' : ''); return fieldErr(a, /^[a-z0-9][a-z0-9-]*-21$/i.test(v) ? '' : 'Amazon tags in India end in “-21”, e.g. offertag-21.'); }
     tf.addEventListener('input', function (e) { if (e.target.matches('[data-tag="amz"]') && e.target.getAttribute('aria-invalid')) valid(e.target); });
     tf.addEventListener('submit', function (e) {
       e.preventDefault(); var bad = $$('[data-tag="amz"]', tf).filter(function (a) { return !valid(a); });
       if (bad.length) { bad[0].focus(); return; }
-      var out = {}; $$('[data-tag-row]', tf).forEach(function (r) { out[r.dataset.tagRow] = { amz: $('[data-tag="amz"]', r).value.trim(), fk: $('[data-tag="fk"]', r).value.trim() }; });
+      var out = {}; $$('[data-tag-row]', tf).forEach(function (r) { out[r.dataset.tagRow] = { amz: $('[data-tag="amz"]', r).value.trim() }; });
       A.store.set('adm-tags', JSON.stringify(out)); d.saved();
       toast('Tags saved. New links and shares use them; links already shared keep their old tag.');
     });

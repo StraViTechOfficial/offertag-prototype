@@ -424,7 +424,7 @@ from html.parser import HTMLParser
 tpl_detail = open(os.path.join(HERE, 'detail.template.html')).read()
 HEADER_DETAIL = HEADER.replace('<a class="logo"', '<a class="btn btn-ghost header-back" href="index.html"><i data-lucide="chevron-left"></i>Deals</a>\n      <a class="logo"', 1).replace('<a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>', '<button class="btn btn-ghost btn-icon share-native" id="share-native" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>\n        <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>', 1)
 TYPELABEL = {'Top': 'Top deal', 'Loot': 'Loot', 'New': 'New', 'Pantry': 'Pantry', 'Fresh': 'Posted today'}
-STORE_TAG = {'amazon.in': ('tag', 'offertag-21'), 'flipkart.com': ('affid', 'offertag'), 'dl.flipkart.com': ('affid', 'offertag')}
+STORE_TAG = {'amazon.in': ('tag', 'offertag-21')}  # P-37: no Flipkart id (Adil, 26 Nov); other sites' affid is still stripped
 STRIP_PARAMS = {'tag', 'ascsubtag', 'affid', 'affExtParam1'}
 # store default steps (Catalogue → Shops, `shop_steps`): what the live site shows today, step 1 reworded per D-080
 SHOP_STEPS = {'*': ['Open the deal page', 'Add to cart', 'Login or Register', 'Update your shipping details', 'Pay by Credit/Debit card, Net banking or COD']}
@@ -671,7 +671,7 @@ for idx, d in enumerate(deals + extras):
                      TYPE=''.join(f'<span class="badge badge-outline">{t}</span>' for t in types), LINK=E(link), PRICEBOX=pricebox, BAR_PRICE=bar_price, BADGE=('' if sale else f'<span class="off-tag" aria-label="{d["pct"]}% off"><i data-lucide="arrow-down" aria-hidden="true"></i>{d["pct"]}%</span>'),
                      CAPTION=caption, COUPON=coupon, COUPON_BAR=coupon_bar, OFFERS=offers, NOTE=note, HIGHLIGHTS=highlights, LINKS=links, DESCRIPTION=description, SPECS=specs, STEPS=steps,
                      WA_ICON=_icon(re.match(r'(\w+)', 'whatsapp')), TG_ICON=_icon(re.match(r'(\w+)', 'telegram')), WA='https://wa.me/?text=' + quote(share_text), TG='https://t.me/share/url?url=' + quote(f"https://www.offertag.in/d/{d['id']}") + '&text=' + quote(share_text), SHARE_TEXT=E(share_text),
-                     AMZ_SEARCH='https://www.amazon.in/s?k=' + quote(d['t']) + '&tag=offertag-21', FK_SEARCH='https://www.flipkart.com/search?q=' + quote(d['t']) + '&affid=offertag',
+                     AMZ_SEARCH='https://www.amazon.in/s?k=' + quote(d['t']) + '&tag=offertag-21', FK_SEARCH='https://www.flipkart.com/search?q=' + quote(d['t']),
                      RELATED=carousel(''.join(card(x) for x in related)), RELATED_SIDE=related_side, STORE_CHIP=store_chip, COMMENTS=comments_html(idx), COMMENT_COUNT=str(ncom), VIEWS=f"{int(d.get('views') or 0):,}", COMMENTS_EMPTY_HIDDEN='' if ncom == 0 else 'hidden', COMMENTS_MORE_HIDDEN='' if ncom > 10 else 'hidden',
                      CAT_PAGE=cat_page(d['cat']), STORE_PAGE=store_page(d['store']), HEADER=HEADER_DETAIL, FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET).items():
         out = out.replace('{{' + k + '}}', str(v))

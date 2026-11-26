@@ -97,7 +97,6 @@ def build_tags():
     rows = ''.join(f'''          <tr data-tag-row="{k}">
             <td class="c-name"><b>{E(w)}</b>{'<span class="tag-check" title="The app source is not in the files we hold. Confirm with the app developer.">Check with app</span>' if note else ''}</td>
             <td data-l="Amazon tag"><label class="fld"><span class="visually-hidden">Amazon tag for {E(w)}</span><input class="input q-input mono" type="text" value="{E(a)}" data-tag="amz" placeholder="{"Required" if req else "Not set"}"{" data-req" if req else ""} spellcheck="false" autocomplete="off"><span class="err" hidden></span></label></td>
-            <td data-l="Flipkart id"><label class="fld"><span class="visually-hidden">Flipkart id for {E(w)}</span><input class="input q-input mono" type="text" value="{E(f)}" data-tag="fk" placeholder="Not set" spellcheck="false" autocomplete="off"></label></td>
             <td class="m-used" data-l="Used on">{E(u)}</td>
           </tr>''' for k, w, a, f, u, req, note in TAG_ROWS)
     body = f'''      <div class="page-h">
@@ -105,7 +104,7 @@ def build_tags():
       </div>
       <form data-tags novalidate>
         <div class="tbl-wrap"><table class="tbl ltbl tags-tbl">
-          <thead><tr><th>Where the link is used</th><th>Amazon tag</th><th>Flipkart id</th><th>Used on</th></tr></thead>
+          <thead><tr><th>Where the link is used</th><th>Amazon tag</th><th>Used on</th></tr></thead>
           <tbody>
 {rows}
           </tbody></table></div>
