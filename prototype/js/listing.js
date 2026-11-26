@@ -7,7 +7,7 @@
   var countEl = document.getElementById('count'), sheetCount = document.getElementById('sheet-count'), chips = document.getElementById('chips');
   var loadState = document.getElementById('load-state'), empty = document.getElementById('empty'), filterCount = document.getElementById('filter-count');
   var sortLabel = document.getElementById('sort-label'), sortLabelM = document.getElementById('sort-label-m');
-  var PAGE = 16, limit = PAGE, batch = 1, AUTO = 2, loading = false; // auto-load 2 batches, then a button, then auto again
+  var PAGE = 16, limit = PAGE, batch = 1, loading = false; // P-11: every batch auto-loads on scroll, no button
   var sortMode = document.body.dataset.defaultSort || 'recommended';
   // S13: search page (kind=search) applies the old LIKE rule on title + category + store, pinned dropped when q is present (W14)
   var KIND = document.body.dataset.kind || 'type', Q = (new URLSearchParams(location.search).get('q') || '').trim(), QL = Q.toLowerCase();
@@ -18,10 +18,12 @@
 
   /* ---- 2026-11-25 (changes.md P-03): Discount slider with stops, Amazon-style price range slider ---- */
   var discIn = form.querySelector('input[name="disc"]'), discOut = document.getElementById('disc-val');
-  var STOPS = discIn ? discIn.dataset.stops.split(',').map(Number) : [0];
-  function discValue() { return discIn ? STOPS[+discIn.value] || 0 : 0; }
-  function discLabel() { var v = discValue(), t = v ? v + '% off or more' : 'Any discount'; if (discOut) discOut.textContent = t; if (discIn) { discIn.setAttribute('aria-valuetext', t); discIn.style.setProperty('--p', (+discIn.value / (STOPS.length - 1) * 100) + '%'); } }
-  function setDisc(v) { if (!discIn) return; var k = 0; STOPS.forEach(function (x, i) { if (v >= x) k = i; }); discIn.value = k; discLabel(); }
+  // P-23: 1% steps, from Any up to the biggest discount on this page (was fixed stops 25/50/75/90)
+  var DMAX = Math.max.apply(null, [1].concat(cards.map(function (c) { return +c.dataset.pct || 0; })));
+  if (discIn) { discIn.max = DMAX; var dm = document.getElementById('disc-max'); if (dm) dm.textContent = DMAX + '%'; }
+  function discValue() { return discIn ? +discIn.value || 0 : 0; }
+  function discLabel() { var v = discValue(), t = v ? v + '% off or more' : 'Any discount'; if (discOut) discOut.textContent = t; if (discIn) { discIn.setAttribute('aria-valuetext', t); discIn.style.setProperty('--p', (+discIn.value / DMAX * 100) + '%'); } }
+  function setDisc(v) { if (!discIn) return; discIn.value = Math.min(v, DMAX); discLabel(); }
   if (discIn) discIn.addEventListener('input', discLabel);
   // price: the ends are the cheapest and the dearest deal on this page; the scale is logarithmic, so cheap items get fine steps
   var plo = document.getElementById('plo'), phi = document.getElementById('phi'), pfill = document.getElementById('prng-fill'), pOut = document.getElementById('price-val');
@@ -60,8 +62,8 @@
 
   function state() {
     var s = { cat: [], store: [], disc: 0, price: null, pmin: null, pmax: null, type: [], coupon: false };
-    form.querySelectorAll('input[name="cat"]:checked').forEach(function (i) { s.cat.push(i.value); });
-    form.querySelectorAll('input[name="store"]:checked').forEach(function (i) { s.store.push(i.value); });
+    form.querySelectorAll('input[name="cat"]:checked:not([data-page-lock])').forEach(function (i) { s.cat.push(i.value); });
+    form.querySelectorAll('input[name="store"]:checked:not([data-page-lock])').forEach(function (i) { s.store.push(i.value); });
     s.disc = discValue();
     var mn = form.querySelector('input[name="pmin"]'), mx = form.querySelector('input[name="pmax"]');
     s.pmin = mn && mn.value !== '' ? +mn.value : null; s.pmax = mx && mx.value !== '' ? +mx.value : null;
@@ -119,9 +121,10 @@
     var vis = placePins(sortCards(cards.filter(function (c) { return match(c, s); }), sortMode), s);
     cards.forEach(function (c) { c.hidden = true; });
     vis.forEach(function (c, i) { results.insertBefore(c, empty); c.hidden = i >= limit; });
-    countEl.textContent = vis.length; if (sheetCount) sheetCount.textContent = vis.length;
+    if (countEl) countEl.textContent = vis.length; if (sheetCount) sheetCount.textContent = vis.length;  // P-16: both counts are gone; kept null-safe
     empty.hidden = vis.length > 0;
     var nFilters = s.cat.length + s.store.length + s.type.length + (s.disc ? 1 : 0) + (s.pmin !== null || s.pmax !== null ? 1 : 0) + (s.coupon ? 1 : 0);
+    document.querySelectorAll('#clear-all, .sheet-footer [data-clear]').forEach(function (b) { b.disabled = !nFilters; });  // P-23: Clear all only works once a filter is on
     if (KIND === 'search' && rule) rule.textContent = Q ? vis.length + ' result' + (vis.length === 1 ? '' : 's') + ', newest first' : 'All deals, newest first';
     if (!vis.length) {
       emptyText.textContent = nFilters ? 'No deals match these filters.' : (KIND === 'search' && Q ? 'No deals for \u201c' + Q + '\u201d.' : 'No ' + (h1.textContent.replace(/ deals.*$/, '')) + ' deals right now.');
@@ -154,13 +157,8 @@
     loadState.innerHTML = '';
     if (total === 0) return;
     if (left === 0) return;  // D-125: no end-of-list line; the last row of cards runs into the footer
-    if (batch % (AUTO + 1) === 0) {
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn-outline btn-lg'; b.textContent = 'Show more deals (' + left + ' more)';
-      b.addEventListener('click', nextBatch); loadState.appendChild(b);
-      var hint = document.createElement('span'); hint.textContent = 'Page ' + (batch + 1); loadState.appendChild(hint);
-    } else {
-      var sp = document.createElement('div'); sp.className = 'loader'; sp.setAttribute('role', 'status'); sp.setAttribute('aria-label', 'Loading more deals'); loadState.appendChild(sp);
-    }
+    // P-11 (signed scope): automatic scrolling, no "Show more deals" button
+    var sp = document.createElement('div'); sp.className = 'loader'; sp.setAttribute('role', 'status'); sp.setAttribute('aria-label', 'Loading more deals'); loadState.appendChild(sp);
   }
   function nextBatch() { limit += PAGE; batch += 1; apply(); }
 
@@ -170,7 +168,7 @@
   var SORT_URL = { 'price-asc': 'price-low', 'price-desc': 'price-high' }, SORT_IN = { 'price-low': 'price-asc', 'price-high': 'price-desc' };
   function slugOf(name, v) { var i = form.querySelector('input[name="' + name + '"][value="' + v.replace(/"/g, '\\"') + '"]'); return i ? i.dataset.s : v; }
   function head(sel, make) { var el = document.head.querySelector(sel); if (!el) { el = make(); document.head.appendChild(el); } return el; }
-  function writeUrl(s, nFilters) {
+  function query(s) {
     var p = [];
     if (Q) p.push('q=' + encodeURIComponent(Q));
     ['cat', 'store', 'type'].forEach(function (g) { if (s[g].length) p.push(g + '=' + s[g].map(function (v) { return encodeURIComponent(slugOf(g, v)); }).sort().join(',')); });
@@ -179,6 +177,10 @@
     if (s.coupon) p.push('coupon=1');
     if (sortMode !== (document.body.dataset.defaultSort || 'recommended')) p.push('sort=' + (SORT_URL[sortMode] || sortMode));
     if (batch > 1) p.push('page=' + batch);
+    return p;
+  }
+  function writeUrl(s, nFilters) {
+    var p = query(s);
     var url = location.pathname + (p.length ? '?' + p.join('&') : '') + location.hash;
     if (url !== location.pathname + location.search + location.hash) { try { history.replaceState(history.state, '', url); } catch (e) {} }
     head('link[rel="canonical"]', function () { var l = document.createElement('link'); l.rel = 'canonical'; return l; }).href = location.origin + location.pathname + (KIND === 'search' && Q ? '?q=' + encodeURIComponent(Q) : '');
@@ -198,6 +200,11 @@
     var pg = +u.get('page'); if (pg > 1) { batch = pg; limit = PAGE * pg; }
   }
   readUrl();
+  // P-30: a filter box that scrolls opens on its first ticked option, so the page's own category or store is in view
+  form.querySelectorAll('.opts').forEach(function (box) {
+    var on = box.querySelector('input:checked'); if (!on || box.scrollHeight <= box.clientHeight) return;
+    var o = on.closest('.opt'); box.scrollTop = o.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - 20;
+  });
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       if (!entries[0].isIntersecting || loading || !loadState.querySelector('.loader')) return;
@@ -209,12 +216,21 @@
 
   function reset() { limit = PAGE; batch = 1; apply(); }
   function clearAll() {
-    form.querySelectorAll('input[type="checkbox"]').forEach(function (i) { i.checked = false; });
+    form.querySelectorAll('input[type="checkbox"]:not([data-page-lock])').forEach(function (i) { i.checked = false; });
     form.querySelectorAll('input[type="radio"]').forEach(function (i) { i.checked = i.value === '' || i.value === '0'; });
     setDisc(0); setPrice(null, null);
     reset();
   }
-  form.addEventListener('change', function (e) { if (!e.target.classList.contains('prng-input')) reset(); });
+  form.addEventListener('change', function (e) {
+    var g = e.target.name;
+    // P-29: a category or store page is that one category/store; choosing more (or unticking it) opens all deals with the choice
+    if ((g === 'cat' || g === 'store') && form.querySelector('input[name="' + g + '"][data-page-lock]')) {
+      var s = state();
+      ['cat', 'store'].forEach(function (k) { s[k] = []; form.querySelectorAll('input[name="' + k + '"]:checked').forEach(function (i) { s[k].push(i.value); }); });
+      batch = 1; var p = query(s); location.href = '/deals/search' + (p.length ? '?' + p.join('&') : ''); return;
+    }
+    if (!e.target.classList.contains('prng-input')) reset();
+  });
   document.getElementById('clear-all').addEventListener('click', clearAll);
   document.querySelectorAll('[data-clear]').forEach(function (b) { b.addEventListener('click', clearAll); });
   sortItems.forEach(function (b) { b.addEventListener('click', function () { sortMode = b.dataset.sort; reset(); }); });

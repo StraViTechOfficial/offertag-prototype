@@ -15,20 +15,16 @@
   });
 
   // icon chips: Home section heads, and the matching page head on each type page
-  var ICONS = { 'h-cats': ['layout-grid', 't-peach'], 'h-fresh': ['star', 't-sky'], 'h-top': ['star', 't-mint'], 'h-stores': ['store', 't-sky'], 'h-loot': ['flame', 't-peach'], 'h-new': ['sparkles', 't-mint'] };
+  var ICONS = { 'h-cats': ['layout-grid', 't-peach'], 'h-fresh': ['star', 't-top'], 'h-top': ['star', 't-mint'], 'h-stores': ['store', 't-sky'], 'h-loot': ['flame', 't-loot'], 'h-new': ['sparkles', 't-new'], 'h-pantry': ['shopping-basket', 't-pantry'] };
   var PAGE_ICON_EXTRA = { '/faq': ['circle-help', 't-sky'] };
-  var PAGE_ICON = { '/loot-deals': 'h-loot', '/top-deals': 'h-fresh', '/new-deals': 'h-new', '/categories': 'h-cats', '/stores': 'h-stores' };
+  var PAGE_ICON = { '/loot-deals': 'h-loot', '/top-deals': 'h-fresh', '/new-deals': 'h-new', '/pantry-deals': 'h-pantry', '/categories': 'h-cats', '/stores': 'h-stores' };
   function chip(h, key, loot) {
     if (!h || h.querySelector('.sh-ico')) return;
     var s = document.createElement('span'); s.className = 'sh-ico ' + ICONS[key][1]; s.innerHTML = '<i data-lucide="' + ICONS[key][0] + '"></i>';
     h.insertBefore(s, h.firstChild);
-    // D-141: "+80% off" sticker on the heading's top-right corner; beside the heading (in a .loot-sup wrapper), never inside it
-    if (loot) {
-      var t = document.createElement('span'); t.className = 'loot-tag'; t.textContent = ((window.OTDB && OTDB.typeRules ? OTDB.typeRules().loot : 75)) + '%+ off';   // follows Catalogue → Deal types (changes.md A-14)
-      var box = h.tagName === 'H1' ? document.createElement('div') : h.parentElement;
-      if (h.tagName === 'H1') { h.parentNode.insertBefore(box, h); box.appendChild(h); }
-      box.classList.add('loot-sup'); box.appendChild(t);
-    }
+    // 2026-11-26 (Adil): each deal type has its own colour; the icon plays once when it first scrolls into view
+    if ('IntersectionObserver' in window) { var o = new IntersectionObserver(function (e) { if (e[0].isIntersecting) { s.classList.add('is-in'); o.disconnect(); } }); o.observe(s); }
+    // 2026-11-26 (Adil): no discount label on headings (replaces D-137–D-141's Loot sticker)
   }
   Object.keys(ICONS).forEach(function (id) { chip(document.getElementById(id), id, id === 'h-loot'); });
   var file = location.pathname.replace(/\/(index\.html)?$/, '') || '/';  // D-105: real addresses

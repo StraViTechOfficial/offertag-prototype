@@ -41,7 +41,7 @@
   // ---- comments
   var list = document.getElementById('comment-list'), countEls = [document.getElementById('comment-count')], empty = document.getElementById('comments-empty'), more = document.getElementById('comments-more');
   var linkCount = document.querySelector('.comment-link'); var total = list ? list.querySelectorAll(':scope > .comment').length : 0;
-  function setCount() { countEls[0].textContent = '(' + total + ')'; if (linkCount) linkCount.childNodes[1].textContent = total + ' comments'; if (empty) empty.hidden = total > 0; }
+  function setCount() { if (empty) empty.hidden = total > 0; }
   function rel(name, admin) { return '<div class="avatar' + (admin ? ' is-admin' : '') + '" aria-hidden="true">' + name.charAt(0).toUpperCase() + '</div><div class="who"><b></b>' + (admin ? '<span class="badge badge-secondary">OfferTag</span>' : '') + '<time>Just now</time></div>'; }
   function esc(s) { return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   // D-149: a pasted link is plain text, never clickable: http(s)://, www. and the host's .com are removed ("https://www.amazon.com/dp/B0X" → "amazon/dp/B0X").

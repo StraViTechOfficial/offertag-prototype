@@ -115,7 +115,7 @@ def shell(fname, title, active, body, scripts='', after=''):
 '''
     open(os.path.join(ROOT, fname), 'w').write(page)
 
-def types_html(ts): return ''.join(f'<span class="tchip t-{t.lower()}">{"Top deal" if t == "Top" else t}</span>' for t in ts if t != 'Fresh')
+def types_html(ts): return ''.join(f'<span class="tchip t-{t.lower()}">{"Top deal" if t == "Top" else t}</span>' for t in ts if t not in ('Fresh', 'Top'))
 
 # ---------- Overview (admin-tools §8) ----------
 INBOX_UNHANDLED = dict(feedback=2, deletion=1)   # matches build_inbox() SAMPLE rows (admin_c.py); total = A_INBOX_COUNT
@@ -177,7 +177,7 @@ def build_deals():
     stores = sorted({r['store'] for r in rows}, key=lambda s: shop_by_name[s]['order'] if s in shop_by_name else 99)
     catsl = [c['name'] for c in CATS if any(r['cat'] == c['name'] for r in rows)]
     toolbar = ''.join([
-        sel('type', 'Type', [('Top', 'Top deal'), ('Loot', 'Loot'), ('New', 'New'), ('Pantry', 'Pantry')]),
+        sel('type', 'Type', [('Loot', 'Loot'), ('New', 'New'), ('Pantry', 'Pantry')]),
         sel('store', 'Store', [(s, s) for s in stores]),
         sel('cat', 'Category', [(c, c) for c in catsl]),
         sel('pin', 'Pinned', [('yes', 'Pinned'), ('no', 'Not pinned')]),

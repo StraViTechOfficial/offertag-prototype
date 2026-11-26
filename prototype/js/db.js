@@ -41,7 +41,7 @@
     slug: function (t) { return String(t || '').toLowerCase().replace(/₹/g, 'rs ').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/, ''); },
     ago: function (min) { min = Math.max(0, Math.floor(min)); return min < 1 ? 'now' : min < 60 ? min + ' min' : min < 1440 ? Math.floor(min / 60) + ' h' : Math.floor(min / 1440) + ' d'; },
     // 2026-11-25 (changes.md A-14, P-07): tags come from the rules in Admin → Catalogue → Deal types; defaults = the old live site (W44)
-    typesFor: function (pct, cat) { var R = typeRules(), t = []; pct = +pct || 0; t.push(pct >= R.top ? 'Top' : 'New'); if (pct >= R.loot) t.push('Loot'); if (R.pantry.indexOf(cat) > -1) t.push('Pantry'); return t; },
+    typesFor: function (pct, cat) { var R = typeRules(), t = []; pct = +pct || 0; t.push('Top'); if (pct < R.top) t.push('New');  /* 2026-11-26 (Adil): Top deals = every deal (D-114); R.top only marks New */ if (pct >= R.loot) t.push('Loot'); if (R.pantry.indexOf(cat) > -1) t.push('Pantry'); return t; },
     tagLink: function (href) {  // contract §4.6: strip affiliate params, add the store tag by host
       try {
         var u = new URL(href), host = u.hostname.toLowerCase().replace(/^www\./, '');
@@ -94,7 +94,8 @@
     x.agemin = Math.max(0, Math.floor((t - x.postedAt) / MIN));
     x.agetxt = H.ago(x.agemin);
     x.types = H.typesFor(x.pct, x.cat);
-    x.typesAll = (x.agemin <= 1440 ? ['Fresh'] : []).concat(x.types);
+    var midnight = new Date(t); midnight.setHours(0, 0, 0, 0);  // P-13: "today" = since 12 am (IST on the live site), not the last 24 h
+    x.typesAll = (x.postedAt >= +midnight ? ['Fresh'] : []).concat(x.types);
     x.save = x.m && x.m > x.p ? x.m - x.p : 0;
     x.sale = !(x.p > 0);
     x.img = imgSrc(x.img); x.lg = imgSrc(x.lg || x.img); x.td = imgSrc(x.td || x.lg || x.img);

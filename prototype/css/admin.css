@@ -1571,3 +1571,18 @@ html.is-embed .page-h { display: none; }
 .rule-in > span { white-space: nowrap; }
 .cat-picks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; max-height: 260px; overflow: auto; padding: 4px 2px; }
 @media (max-width: 899px) { .dl-tbl .row-acts { display: flex; justify-content: space-between; width: 100%; } .dl-tbl .row-acts .btn { width: 36px; height: 36px; } }
+/* P-24: catalogue reorder handle (same grip as the deals table) */
+.c-drag { width: 64px; padding-left: 6px !important; padding-right: 0 !important; white-space: nowrap; }
+.c-pos { display: inline-block; min-width: 1.75em; margin-left: 2px; font-variant-numeric: tabular-nums; font-size: 13px; color: hsl(var(--muted-foreground)); vertical-align: middle; }
+tr.is-dragging { opacity: .55; background: hsl(var(--muted)); }
+/* P-25: category icon in the list and the icon picker */
+.lg.ico { display: inline-grid; place-items: center; background: hsl(var(--muted)); color: hsl(var(--foreground)); }
+.lg.ico .lucide { width: 16px; height: 16px; }
+.ico-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 6px; }
+.ico-pick label { display: grid; place-items: center; height: 40px; border: 1px solid hsl(var(--border)); border-radius: 8px; cursor: pointer; color: hsl(var(--muted-foreground)); }
+.ico-pick label:hover { color: hsl(var(--foreground)); border-color: hsl(var(--foreground) / .35); }
+.ico-pick input { position: absolute; opacity: 0; pointer-events: none; }
+.ico-pick label:has(input:checked) { border-color: hsl(var(--primary)); color: hsl(var(--primary)); box-shadow: 0 0 0 1px hsl(var(--primary)); }
+.ico-pick label:has(input:focus-visible) { outline: 2px solid hsl(var(--ring)); outline-offset: 1px; }
+.ico-pick .lucide { width: 18px; height: 18px; }
+.c-drag .drag-h { vertical-align: middle; }

@@ -1,42 +1,212 @@
 [
- {"name":"lunch-boxes-and-tiffins-worth-packing","title":"Lunch boxes and tiffins worth packing this week","summary":"Insulated tiffins and steel boxes for office and school, with live prices.","date":"2026-11-09","cover":30,
-  "body":[
-   {"p":"A good lunch box does two jobs: it keeps food warm until the break and it does not leak in a bag. This week several Milton boxes came up on our feed together, so here they are in one place."},
-   {"h":"For a full office lunch"},
-   {"p":"A jacketed box with more than one container lets you carry rice and curry apart. It takes more room in a bag, so check that it fits before you buy."},
-   {"deal":30},{"deal":29},
-   {"h":"For something smaller"},
-   {"p":"Compact inner-steel tiffins suit a short commute or a child's school bag. Steel is easier to clean than plastic and holds on to smells less."},
-   {"deal":28},{"deal":32},
-   {"h":"Before you buy"},
-   {"p":"Prices on these move during the day. The cards here always show the current price, and the store page has the final amount after any bank offer."}
-  ]},
- {"name":"running-shoes-from-puma-and-reebok","title":"Running shoes from Puma and Reebok on sale","summary":"Three pairs for road running and daily walks, and how to pick a size online.","date":"2026-11-06","cover":5,
-  "body":[
-   {"p":"Sports shoes are one of the few things worth waiting for a sale on, because the same pair often returns at a much lower price. These three are on our feed now."},
-   {"h":"Daily running"},
-   {"p":"If you run on roads most days, look for cushioning under the heel and a sole with some flex at the toe."},
-   {"deal":5},{"deal":6},
-   {"h":"One more from Reebok"},
-   {"deal":12},
-   {"h":"Getting the size right"},
-   {"p":"Sizes differ between brands. Measure your foot in the evening, go by the brand's own chart, and check the return window on the store page before you pay."}
-  ]},
- {"name":"laptop-backpacks-for-work-and-college","title":"Laptop backpacks for work and college","summary":"What to check on a laptop bag before you pay, with three picks.","date":"2026-11-03","cover":null,
-  "body":[
-   {"p":"A laptop bag gets carried every day, so small things matter more than the look. Three bags are on our feed at the moment, each for a slightly different need."},
-   {"h":"What to check"},
-   {"p":"Match the laptop sleeve to your screen size, look for a padded back panel, and see whether the bag has a separate pocket for a charger."},
-   {"h":"Our picks"},
-   {"deal":37},{"deal":39},{"deal":34}
-  ]},
- {"name":"why-bldc-ceiling-fans-cost-more","title":"Why BLDC ceiling fans cost more, and when they pay off","summary":"A plain guide to BLDC fans and two models on sale now.","date":"2026-10-30","cover":13,
-  "body":[
-   {"p":"BLDC is a type of motor. Fans built with one use much less electricity than regular ceiling fans, but they cost more to buy. Whether that is worth it depends on how many hours a day the fan runs. A regular fan running ten hours a day can use more than twice the power of a BLDC fan doing the same work. Most BLDC fans sell for somewhere between ₹2,500 and ₹4,500, while a basic regular fan can cost under ₹1,500. In a bedroom or living room where the fan stays on through the night, the saving on the bill usually covers that gap within two summers. In a guest room, or for a fan used only on the hottest afternoons, it can take many years, and the cheaper fan makes more sense."},
-   {"h":"Who should switch"},
-   {"p":"If a fan runs most of the day, the lower power use adds up. For a room used now and then, a regular fan is often the better buy."},
-   {"h":"Two on our feed"},
-   {"deal":13},{"deal":20},
-   {"p":"Check that the blade size suits your room before you order."}
-  ]}
+ {
+  "name": "how-to-spot-a-fake-discount",
+  "title": "How to spot a fake discount before you pay",
+  "summary": "Four quick checks that show whether a sale price is really lower.",
+  "date": "2026-11-20",
+  "cover": null,
+  "body": [
+   {
+    "p": "Many sale tags compare today's price with an MRP that the product never actually sold at. The discount looks huge, but the price is the same as last month. A few quick checks tell a real drop from a dressed-up one."
+   },
+   {
+    "h": "Check the price history"
+   },
+   {
+    "p": "Search the product name with the words price history. If the price has sat at the same level for weeks, the sale is only a new label on an old price."
+   },
+   {
+    "h": "Compare the same model in two stores"
+   },
+   {
+    "p": "Match the exact model number, not the product name. Sellers often list a cheaper variant with fewer features under a familiar name."
+   },
+   {
+    "h": "Read the seller line"
+   },
+   {
+    "p": "The same listing can have several sellers. The lowest price sometimes comes from a seller with poor ratings or a longer delivery time, so check who ships it."
+   },
+   {
+    "h": "Add the delivery and fee lines"
+   },
+   {
+    "p": "A low price with a high delivery charge or a convenience fee can cost more than a slightly higher price with free delivery. Look at the total on the payment page, not the price on the card."
+   }
+  ]
+ },
+ {
+  "name": "best-time-to-buy-in-big-sales",
+  "title": "When to buy during the big sale weeks",
+  "summary": "How bank offers, early access and lightning deals change the best day to order.",
+  "date": "2026-11-14",
+  "cover": null,
+  "body": [
+   {
+    "p": "Big sales on Amazon and Flipkart run for several days, and the best price on one product is often not on the first day. Knowing how the offers stack helps you pick the right day."
+   },
+   {
+    "h": "Bank offers change by day"
+   },
+   {
+    "p": "The instant discount on cards often moves from one bank to another during the sale. If your card's offer starts later in the week, waiting can save more than the opening price drop."
+   },
+   {
+    "h": "Early access is for members"
+   },
+   {
+    "p": "Prime and Plus members usually get a day of early access. The prices are the same as the main sale, so early access mainly helps with stock on popular phones and TVs."
+   },
+   {
+    "h": "Lightning deals sell out fast"
+   },
+   {
+    "p": "Short deals with a timer are often limited to a small number of pieces. Add the item to your cart before the deal starts and keep your address and payment ready."
+   },
+   {
+    "h": "Keep a list ready"
+   },
+   {
+    "p": "Note the normal price of what you plan to buy a week before the sale. On the day, you will know at a glance whether the sale price is a real saving."
+   }
+  ]
+ },
+ {
+  "name": "lunch-boxes-and-tiffins-worth-packing",
+  "title": "Lunch boxes and tiffins worth packing this week",
+  "summary": "Insulated tiffins and steel boxes for office and school, with live prices.",
+  "date": "2026-11-09",
+  "cover": 30,
+  "body": [
+   {
+    "p": "A good lunch box does two jobs: it keeps food warm until the break and it does not leak in a bag. This week several Milton boxes came up on our feed together, so here they are in one place."
+   },
+   {
+    "h": "For a full office lunch"
+   },
+   {
+    "p": "A jacketed box with more than one container lets you carry rice and curry apart. It takes more room in a bag, so check that it fits before you buy."
+   },
+   {
+    "deal": 30
+   },
+   {
+    "deal": 29
+   },
+   {
+    "h": "For something smaller"
+   },
+   {
+    "p": "Compact inner-steel tiffins suit a short commute or a child's school bag. Steel is easier to clean than plastic and holds on to smells less."
+   },
+   {
+    "deal": 28
+   },
+   {
+    "deal": 32
+   },
+   {
+    "h": "Before you buy"
+   },
+   {
+    "p": "Prices on these move during the day. The cards here always show the current price, and the store page has the final amount after any bank offer."
+   }
+  ]
+ },
+ {
+  "name": "running-shoes-from-puma-and-reebok",
+  "title": "Running shoes from Puma and Reebok on sale",
+  "summary": "Three pairs for road running and daily walks, and how to pick a size online.",
+  "date": "2026-11-06",
+  "cover": 5,
+  "body": [
+   {
+    "p": "Sports shoes are one of the few things worth waiting for a sale on, because the same pair often returns at a much lower price. These three are on our feed now."
+   },
+   {
+    "h": "Daily running"
+   },
+   {
+    "p": "If you run on roads most days, look for cushioning under the heel and a sole with some flex at the toe."
+   },
+   {
+    "deal": 5
+   },
+   {
+    "deal": 6
+   },
+   {
+    "h": "One more from Reebok"
+   },
+   {
+    "deal": 12
+   },
+   {
+    "h": "Getting the size right"
+   },
+   {
+    "p": "Sizes differ between brands. Measure your foot in the evening, go by the brand's own chart, and check the return window on the store page before you pay."
+   }
+  ]
+ },
+ {
+  "name": "laptop-backpacks-for-work-and-college",
+  "title": "Laptop backpacks for work and college",
+  "summary": "What to check on a laptop bag before you pay, with three picks.",
+  "date": "2026-11-03",
+  "cover": null,
+  "body": [
+   {
+    "p": "A laptop bag gets carried every day, so small things matter more than the look. Three bags are on our feed at the moment, each for a slightly different need."
+   },
+   {
+    "h": "What to check"
+   },
+   {
+    "p": "Match the laptop sleeve to your screen size, look for a padded back panel, and see whether the bag has a separate pocket for a charger."
+   },
+   {
+    "h": "Our picks"
+   },
+   {
+    "deal": 37
+   },
+   {
+    "deal": 39
+   },
+   {
+    "deal": 34
+   }
+  ]
+ },
+ {
+  "name": "why-bldc-ceiling-fans-cost-more",
+  "title": "Why BLDC ceiling fans cost more, and when they pay off",
+  "summary": "A plain guide to BLDC fans and two models on sale now.",
+  "date": "2026-10-30",
+  "cover": 13,
+  "body": [
+   {
+    "p": "BLDC is a type of motor. Fans built with one use much less electricity than regular ceiling fans, but they cost more to buy. Whether that is worth it depends on how many hours a day the fan runs. A regular fan running ten hours a day can use more than twice the power of a BLDC fan doing the same work. Most BLDC fans sell for somewhere between ₹2,500 and ₹4,500, while a basic regular fan can cost under ₹1,500. In a bedroom or living room where the fan stays on through the night, the saving on the bill usually covers that gap within two summers. In a guest room, or for a fan used only on the hottest afternoons, it can take many years, and the cheaper fan makes more sense."
+   },
+   {
+    "h": "Who should switch"
+   },
+   {
+    "p": "If a fan runs most of the day, the lower power use adds up. For a room used now and then, a regular fan is often the better buy."
+   },
+   {
+    "h": "Two on our feed"
+   },
+   {
+    "deal": 13
+   },
+   {
+    "deal": 20
+   },
+   {
+    "p": "Check that the blade size suits your room before you order."
+   }
+  ]
+ }
 ]

@@ -7,11 +7,12 @@ var m=window.matchMedia('(prefers-color-scheme: dark)');
 function apply(){var t=p==='auto'?(m.matches?'dark':'light'):p;d.dataset.theme=t;d.dataset.themePref=p;d.style.colorScheme=t;
 var c=document.querySelector('meta[name=theme-color]');if(c)c.content=t==='dark'?(admin?'#0a0f1d':'#0b111f'):(admin?'#0a0f1d':'#ffffff');
 var bs=document.querySelectorAll('[data-theme-set]');for(var i=0;i<bs.length;i++)bs[i].setAttribute('aria-checked',bs[i].getAttribute('data-theme-set')===p?'true':'false');
+var f=document.querySelectorAll('[data-theme-flip]');for(var q=0;q<f.length;q++)f[q].setAttribute('aria-label',t==='dark'?'Switch to light theme':'Switch to dark theme');
 var em=document.querySelectorAll('emoji-picker');for(var j=0;j<em.length;j++)em[j].className=t;}
 apply();if(m.addEventListener)m.addEventListener('change',function(){if(p==='auto')apply()});
 window.OTTheme={get:function(){return p},set:function(v){p=v;try{localStorage.setItem(k,v)}catch(e){}apply();
 var n={light:'Light',dark:'Dark',auto:'Automatic'}[v];if(window.OT&&OT.toast)OT.toast('Theme: '+n,v==='dark'?'moon':v==='light'?'sun':'sun-moon');}};
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
+document.addEventListener('click',function(e){var f=e.target.closest&&e.target.closest('[data-theme-flip]');if(f){e.preventDefault();window.OTTheme.set(d.dataset.theme==='dark'?'light':'dark');return}var b=e.target.closest&&e.target.closest('[data-theme-set]');if(!b)return;e.preventDefault();window.OTTheme.set(b.getAttribute('data-theme-set'))});
 document.addEventListener('DOMContentLoaded',apply);
 window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newValue;apply()}});})();</script>
 <meta name="theme-color" content="#ffffff">
@@ -41,15 +42,17 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
       <nav class="hnav" aria-label="Deal types">
         <a href="/">Home</a><a href="/top-deals">Top</a><a href="/loot-deals">Loot</a><a href="/new-deals">New</a><a href="/pantry-deals">Pantry</a>
-        <a href="/blog" class="hnav-blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden><svg viewBox="0 0 44 44" aria-hidden="true"><path class="fold" d="M1 0H6L12 6Z"/><path class="fold" d="M44 43V38L38 32Z"/><path class="band" d="M6 0H25L44 19V38Z"/><text x="28.5" y="15.5" transform="rotate(45 28.5 15.5)">NEW</text></svg></span><span class="blog-tip" role="tooltip"><small>New on the blog</small>Lunch boxes and tiffins worth packing this week</span></a>
+        <a href="/blog" class="hnav-blog" data-blog-link data-latest="how-to-spot-a-fake-discount">Blog<span class="new-pill" data-blog-new hidden><svg viewBox="0 0 44 44" aria-hidden="true"><path class="fold" d="M1 0H6L12 6Z"/><path class="fold" d="M44 43V38L38 32Z"/><path class="band" d="M6 0H25L44 19V38Z"/><text x="28.5" y="15.5" transform="rotate(45 28.5 15.5)">NEW</text></svg></span><!-- P-18: no hover box on Blog; the NEW ribbon stays --></a>
       </nav>
       <form class="header-search" data-search role="search">
         <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" aria-controls="search-pop" aria-expanded="false"></label>
         <div class="popover search-pop" id="search-pop" hidden data-state="closed" role="listbox" aria-label="Suggestions"></div>
       </form>
       <div class="header-actions">
-        <a class="btn btn-link nav-blog" href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing">Blog<span class="new-pill" data-blog-new hidden>New</span></a>
+        <a class="btn btn-link nav-blog" href="/blog" data-blog-link data-latest="how-to-spot-a-fake-discount">Blog<span class="new-pill" data-blog-new hidden>New</span></a>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
+        <!-- P-15: one-tap light/dark in the header; the menu keeps Light / Dark / Auto -->
+        <button class="btn btn-ghost btn-icon theme-flip" type="button" data-theme-flip aria-label="Switch to dark theme"><i data-lucide="sun" class="tf-sun"></i><i data-lucide="moon" class="tf-moon"></i></button>
         <button class="btn btn-ghost btn-icon share-native" id="share-native" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
         <a class="btn btn-outline" href="/login" data-signin-open data-when-guest>Sign in</a>
         <div class="dropdown account-menu" data-when-user hidden>
@@ -85,7 +88,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
           <span class="zoom-hint"><i data-lucide="zoom-in"></i></span>
         </button>
         <div class="panel-core">
-          <div class="kicker"><span class="badge badge-outline">Top deal</span><span class="kstore" itemprop="brand"><i data-lucide="store"></i>Flipkart</span><span class="dot">·</span><time datetime="2026-11-24T11:09:00+05:30" title="Posted Tue, Nov 24, 2026 11:09 AM">3 h ago</time></div>
+          <div class="kicker"><span class="kstore" itemprop="brand"><i data-lucide="store"></i>Flipkart</span><span class="dot">·</span><time datetime="2026-11-24T11:09:00+05:30" title="Posted Tue, Nov 24, 2026 11:09 AM">3 h ago</time></div>
           <h1 class="deal-title" itemprop="name">Godrej 194 L Direct Cool Single Door 5 Star Refrigerator with 24 Days Farm Freshness 16L Jumbo Vegetable Tray Advanced Inverter Technology (Fossil Steel, RD M200EN TDI FS ST)</h1>
           
           <div class="pricebox" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
@@ -96,7 +99,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
           
           <div class="buy-row"><img class="store-chip" src="/assets/stores/flipkart.svg" alt="Flipkart" loading="lazy"><a class="btn btn-default btn-lg btn-buy buy" id="buy" href="https://fkrt.to/LmCD2rRD?+=" target="_blank" rel="nofollow sponsored noopener" itemprop="url" aria-label="Buy now at Flipkart"><span class="buy-label">Buy now</span><i data-lucide="arrow-up-right"></i></a></div>
           
-          <div class="deal-stats"><span class="views" title="Every view, repeat visits included"><i data-lucide="eye"></i>0 views</span><a class="comment-link" href="#comments"><i data-lucide="message-square"></i>0 comments<i data-lucide="arrow-down"></i></a><div class="post-share sh-exp" data-share><button class="sh-trig" type="button" aria-expanded="false" aria-controls="sh-items" data-share-trig><i data-lucide="share-2"></i>Share</button><span class="sh-items" id="sh-items"><a class="sh-ic sh-wa" href="https://wa.me/?text=Godrej%20194%20L%20Direct%20Cool%20Single%20Door%205%20Star%20Refrigerator%20with%2024%20Days%20Farm%20Freshness%2016L%20Jumbo%20Vegetable%20Tray%20Advanced%20Inverter%20Technology%20%28Fossil%20Steel%2C%20RD%20M200EN%20TDI%20FS%20ST%29%0Ahttps%3A//www.offertag.in/d/478044%0AMRP%20%E2%82%B927%2C740%20%E2%86%92%20%E2%82%B915%2C113%20%2845%25%20off%29" target="_blank" rel="noopener" aria-label="Share on WhatsApp" data-tip="WhatsApp"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a><a class="sh-ic sh-tg" href="https://t.me/share/url?url=https%3A//www.offertag.in/d/478044&text=Godrej%20194%20L%20Direct%20Cool%20Single%20Door%205%20Star%20Refrigerator%20with%2024%20Days%20Farm%20Freshness%2016L%20Jumbo%20Vegetable%20Tray%20Advanced%20Inverter%20Technology%20%28Fossil%20Steel%2C%20RD%20M200EN%20TDI%20FS%20ST%29%0Ahttps%3A//www.offertag.in/d/478044%0AMRP%20%E2%82%B927%2C740%20%E2%86%92%20%E2%82%B915%2C113%20%2845%25%20off%29" target="_blank" rel="noopener" aria-label="Share on Telegram" data-tip="Telegram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a><button class="sh-ic sh-copy" type="button" id="copy-link" aria-label="Copy link" data-tip="Copy link" data-share="Godrej 194 L Direct Cool Single Door 5 Star Refrigerator with 24 Days Farm Freshness 16L Jumbo Vegetable Tray Advanced Inverter Technology (Fossil Steel, RD M200EN TDI FS ST)
+          <div class="deal-stats"><a class="comment-link" href="#comments"><i data-lucide="message-square"></i>Comments<i data-lucide="arrow-down"></i></a><div class="post-share sh-exp" data-share><button class="sh-trig" type="button" aria-expanded="false" aria-controls="sh-items" data-share-trig><i data-lucide="share-2"></i>Share</button><span class="sh-items" id="sh-items"><a class="sh-ic sh-wa" href="https://wa.me/?text=Godrej%20194%20L%20Direct%20Cool%20Single%20Door%205%20Star%20Refrigerator%20with%2024%20Days%20Farm%20Freshness%2016L%20Jumbo%20Vegetable%20Tray%20Advanced%20Inverter%20Technology%20%28Fossil%20Steel%2C%20RD%20M200EN%20TDI%20FS%20ST%29%0Ahttps%3A//www.offertag.in/d/478044%0AMRP%20%E2%82%B927%2C740%20%E2%86%92%20%E2%82%B915%2C113%20%2845%25%20off%29" target="_blank" rel="noopener" aria-label="Share on WhatsApp" data-tip="WhatsApp"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a><a class="sh-ic sh-tg" href="https://t.me/share/url?url=https%3A//www.offertag.in/d/478044&text=Godrej%20194%20L%20Direct%20Cool%20Single%20Door%205%20Star%20Refrigerator%20with%2024%20Days%20Farm%20Freshness%2016L%20Jumbo%20Vegetable%20Tray%20Advanced%20Inverter%20Technology%20%28Fossil%20Steel%2C%20RD%20M200EN%20TDI%20FS%20ST%29%0Ahttps%3A//www.offertag.in/d/478044%0AMRP%20%E2%82%B927%2C740%20%E2%86%92%20%E2%82%B915%2C113%20%2845%25%20off%29" target="_blank" rel="noopener" aria-label="Share on Telegram" data-tip="Telegram"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a><button class="sh-ic sh-copy" type="button" id="copy-link" aria-label="Copy link" data-tip="Copy link" data-share="Godrej 194 L Direct Cool Single Door 5 Star Refrigerator with 24 Days Farm Freshness 16L Jumbo Vegetable Tray Advanced Inverter Technology (Fossil Steel, RD M200EN TDI FS ST)
 https://www.offertag.in/d/478044
 MRP ₹27,740 → ₹15,113 (45% off)"><i data-lucide="link"></i></button></span></div></div>
         </div>
@@ -111,7 +114,7 @@ MRP ₹27,740 → ₹15,113 (45% off)"><i data-lucide="link"></i></button></span
         
 
         <section class="comments" id="comments" aria-labelledby="h-comments">
-          <div class="section-head"><h2 id="h-comments">Comments <span class="count-n" id="comment-count">(0)</span></h2></div>
+          <div class="section-head"><h2 id="h-comments">Comments</h2></div>
 
           <div class="composer" id="composer">
             <div class="signed-out" id="composer-out"><a class="btn btn-outline" href="/login" data-signin-open><i data-lucide="log-in"></i>Sign in to comment</a><span>A code to your email, takes a few seconds.</span></div>
@@ -237,8 +240,7 @@ MRP ₹27,740 → ₹15,113 (45% off)"><i data-lucide="link"></i></button></span
     <div class="ft-top">
       <div class="ft-about">
         <a class="ft-logo" href="/" aria-label="OfferTag home"><img src="/assets/logo-crop.png" alt="OfferTag · Bachat har shopping par" width="1510" height="500"></a>
-        <h3>What is OfferTag?</h3>
-        <p>OfferTag finds the best online deals, loot offers and price drops from Amazon, Flipkart, Myntra, Ajio, JioMart and other Indian stores, and posts them all day. Every deal shows the price, the MRP and how much you save, with a direct link to the store. Free to use, no account needed.</p>
+        <p>Online deals from Amazon, Flipkart and more, posted all day.</p>
         <div class="ft-follow">
           <span>Follow us on</span>
           <div class="ft-social">
@@ -254,8 +256,8 @@ MRP ₹27,740 → ₹15,113 (45% off)"><i data-lucide="link"></i></button></span
       <div class="ft-app">
         <span class="ft-app-ico"><i data-lucide="smartphone"></i></span>
         <div>
-          <b>Deals on your phone</b>
-          <p>Get an alert the moment a loot deal is posted. Download the OfferTag app.</p>
+          <b>OfferTag app</b>
+          <p>Deal alerts on your phone.</p>
           <div class="ft-app-acts">
             <a class="ft-play" href="#app" target="_blank" rel="noopener"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg><span><small>Get it on</small>Google Play</span></a>
             <a class="ft-alerts" href="#alerts"><i data-lucide="bell"></i>Browser alerts</a>
@@ -264,17 +266,17 @@ MRP ₹27,740 → ₹15,113 (45% off)"><i data-lucide="link"></i></button></span
       </div>
     </div>
 
-    <p class="ft-disclaimer"><b>Disclaimer:</b> OfferTag does not sell any products. Links on this site are affiliate links: when you buy through them, the store pays us a small commission at no extra cost to you. That keeps OfferTag free. Prices and stock change fast, so check the store before you buy. <a href="/disclaimer">Read more</a></p>
+    <p class="ft-disclaimer"><b>Disclaimer:</b> OfferTag does not sell any products. We earn a small commission when you buy through our links, at no extra cost to you. Prices change fast, so check the store before you buy. <a href="/disclaimer">Read more</a></p>
 
     <div class="ft-cols">
-      <div><h4>Deals</h4><ul><li><a href="/top-deals">Top deals</a></li><li><a href="/loot-deals">Loot deals</a></li><li><a href="/new-deals">New deals</a></li><li><a href="/pantry-deals">Pantry</a></li><li><a href="/categories">All categories</a></li></ul></div>
+      <div><h4>Deals</h4><ul><li><a href="/top-deals">Top deals</a></li><li><a href="/loot-deals">Loot deals</a></li><li><a href="/new-deals">New deals</a></li><li><a href="/pantry-deals">Pantry</a></li><li><a href="/categories">All categories</a></li><li><a href="/blog">Blog</a></li></ul></div>
       <div class="ft-stores"><h4>Top stores</h4><ul><li><a href="/shops/amazon">Amazon</a></li><li><a href="/shops/flipkart">Flipkart</a></li><li><a href="/shops/myntra">Myntra</a></li><li><a href="/shops/ajio">Ajio</a></li><li><a href="/shops/jiomart">JioMart</a></li><li><a href="/shops/bigbasket">BigBasket</a></li><li><a href="/shops/blinkit">Blinkit</a></li><li><a href="/shops/meesho">Meesho</a></li><li><a href="/shops/swiggy">Swiggy</a></li><li><a href="/stores">All stores</a></li></ul></div>
       <div><h4>Need help?</h4><ul><li><a href="/faq">FAQs</a></li><li><a href="/contact">Contact us</a></li><li><a href="/contact">Send feedback</a></li><li><a href="/delete-account">Delete account</a></li></ul></div>
-      <div><h4>Privacy &amp; you</h4><ul><li><a href="/privacy">Privacy policy</a></li><li><a href="/terms">Terms of use</a></li><li><a href="/disclaimer">Disclaimer</a></li><li><a href="/blog">Blog</a></li></ul></div>
+      <div><h4>Legal</h4><ul><li><a href="/privacy">Privacy policy</a></li><li><a href="/terms">Terms of use</a></li><li><a href="/disclaimer">Disclaimer</a></li></ul></div>
     </div>
 
     <div class="footer-bottom">
-      <details><summary>About OfferTag deals</summary><p>OfferTag lists hand-picked online deals, coupons and loot offers from Amazon, Flipkart, Myntra, Ajio, BigBasket and other Indian stores, updated through the day. Every deal shows the current price, the MRP and how much you save, with a direct link to the store.</p></details>
+      <!--ABOUT-->
       <span>© 2026 OfferTag · Bachat har shopping par</span>
     </div>
   </div>
@@ -321,11 +323,15 @@ MRP ₹27,740 → ₹15,113 (45% off)"><i data-lucide="link"></i></button></span
     <div class="sheet-section">Browse</div>
     <a href="/categories"><i data-lucide="layout-grid"></i>Shop by category</a>
     <a href="/stores"><i data-lucide="store"></i>Shop by store</a>
-    <a href="/blog" data-blog-link data-latest="lunch-boxes-and-tiffins-worth-packing"><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
+    <a href="/blog" data-blog-link data-latest="how-to-spot-a-fake-discount"><i data-lucide="newspaper"></i>Blog <span class="new-pill" data-blog-new hidden style="margin-left:auto">New</span></a>
     <div class="sheet-section">More</div>
     <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
     <a href="/faq"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
     <a href="/contact"><i data-lucide="mail"></i>Feedback</a>
+    <!-- P-11: lists auto-scroll, so the footer's legal links also live here -->
+    <a href="/privacy"><i data-lucide="shield"></i>Privacy policy</a>
+    <a href="/terms"><i data-lucide="file-text"></i>Terms of use</a>
+    <a href="/disclaimer"><i data-lucide="info"></i>Disclaimer</a>
     <div class="sheet-section">Theme</div>
     <div class="theme-seg" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
   </nav>

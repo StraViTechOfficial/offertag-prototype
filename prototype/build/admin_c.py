@@ -266,7 +266,7 @@ def build_catalogue():
         <div class="sheet-header"><div class="sheet-title" id="ce-title">Edit</div><p class="sheet-desc" data-ce-sub></p></div>
         <button class="sheet-close" type="button" data-close aria-label="Close"><i data-lucide="x"></i></button>
         <form class="sheet-body pe" data-ce novalidate></form>
-        <div class="sheet-footer"><button class="btn btn-ghost danger" type="button" data-ce-del>Delete</button><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ce-save>Save</button></div>
+        <div class="sheet-footer"><button class="btn btn-outline" type="button" data-close>Cancel</button><button class="btn btn-default" type="button" data-ce-save>Save</button></div>
       </aside>
 {CONFIRM}'''
     shell('admin-catalogue.html', 'Catalogue', 'shops', admin_only('Catalogue', body),

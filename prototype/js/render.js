@@ -66,7 +66,7 @@
 
   /* ---------------- lists ---------------- */
   var LISTS = {
-    '/top-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('Top') > -1; }); },
+    '/top-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('Fresh') > -1 || d.pin; }); },  // P-13: today's deals (since 12 am), any discount; pinned deals stay whatever their date
     '/loot-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('Loot') > -1; }).sort(function (a, b) { return b.pct - a.pct; }); },
     '/new-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('New') > -1; }); },
     '/pantry-deals': function (all) { return all.filter(function (d) { return d.typesAll.indexOf('Pantry') > -1; }); },
@@ -91,7 +91,7 @@
   }
   function renderListing() {
     var p = path(), all = DB.deals(), L = listFor(p, all); if (!L) return false;
-    var R = DB.typeRules(), RULE = { '/top-deals': R.top + '% off or more, newest first', '/loot-deals': R.loot + '% off or more', '/new-deals': 'Under ' + R.top + '% off, newest first', '/pantry-deals': R.pantry.join(', ') + ' essentials' };
+    var R = DB.typeRules(), RULE = { '/top-deals': 'Today\'s deals, newest first', '/loot-deals': R.loot + '% off or more', '/new-deals': 'Under ' + R.top + '% off, newest first', '/pantry-deals': R.pantry.join(', ') + ' essentials' };
     if (RULE[p]) { if ($('#page-rule')) $('#page-rule').textContent = RULE[p]; var mdr = $('meta[name="description"]'); if (mdr) mdr.content = RULE[p] + '. Live prices from Amazon, Flipkart and more.'; }
     var results = $('#results'), empty = $('#empty'); if (!results || !empty) return false;
     $$('.deal', results).forEach(function (c) { c.remove(); });
@@ -107,7 +107,7 @@
       var h1 = $('#page-title'); if (h1) h1.textContent = who;
       var lock = $('#locked'); if (lock) lock.innerHTML = (L.combo ? [L.shop.name, L.cat.name] : [(L.cat || L.shop).name]).map(function (n) { return '<span class="chip-x is-locked"><i data-lucide="lock"></i>' + E(n) + '</span>'; }).join('');
       var rule = $('#page-rule'); if (rule && !L.combo) rule.textContent = L.cat ? 'All stores' : 'All categories';   // D-155: no deal counts
-      if (rule && L.combo) rule.textContent = L.items.length + ' today';
+      if (rule && L.combo) rule.textContent = 'All deals from this store in this category';  // P-16: no counts
       var cr = $('.crumbs');
       if (cr) cr.innerHTML = '<a href="/">Home</a><i data-lucide="chevron-right"></i>' + (L.combo ? '<a href="/stores">Stores</a><i data-lucide="chevron-right"></i><a href="' + E(DB.shopPage(L.shop.name)) + '">' + E(L.shop.name) + '</a><i data-lucide="chevron-right"></i><span>' + E(L.cat.name) + '</span>'
         : L.cat ? '<a href="/categories">Categories</a><i data-lucide="chevron-right"></i><span>' + E(L.cat.name) + '</span>' : '<a href="/stores">Stores</a><i data-lucide="chevron-right"></i><span>' + E(L.shop.name) + '</span>');
@@ -132,11 +132,12 @@
     var trend = DB.get('trending') || [];
     all.filter(function (d) { return !featured[d.id]; }).sort(byViews).slice(0, 10).forEach(function (d, i) { items += tdDeal(d, { trending: trend.indexOf(i) > -1 }); });
     td.innerHTML = items;
-    var top = LISTS['/top-deals'](all), loot = LISTS['/loot-deals'](all);
-    [['#fresh', top.slice(0, 12)], ['#loot', loot.slice(0, 10)]].forEach(function (x) {
-      var sec = $(x[0]), old = sec && $('.carousel', sec); if (!old) return;
-      if (!x[1].length) { sec.hidden = true; return; }
-      var t = document.createElement('div'); t.innerHTML = carousel(x[1].map(function (d) { return card(d); }).join('')); old.replaceWith(t.firstChild);
+    // P-34: four rails (Top, Loot, New, Pantry), 16 deals each, then a View all slide
+    [['#fresh', '/top-deals'], ['#loot', '/loot-deals'], ['#new', '/new-deals'], ['#pantry', '/pantry-deals']].forEach(function (x) {
+      var sec = $(x[0]), old = sec && $('.carousel', sec), list = LISTS[x[1]](all); if (!old) return;
+      if (!list.length) { sec.hidden = true; return; }
+      var more = list.length > 16 ? '<div class="carousel-item"><a class="rail-more" href="' + x[1] + '"><span class="rm-ico"><i data-lucide="arrow-right"></i></span><b>View all</b></a></div>' : '';
+      var t = document.createElement('div'); t.innerHTML = carousel(list.slice(0, 16).map(function (d) { return card(d); }).join('') + more); old.replaceWith(t.firstChild);
     });
     // "N deals posted today" / "new since your last visit" (site.js reads these)
     var since = $('[data-since]');
@@ -204,7 +205,7 @@
     if (!d) { notFound(main); return true; }
     var sale = d.sale, pct = d.pct, store = d.store, link = d.buy;
     var shareText = H.shareText(d);   // the one fixed format (changes.md A-15, A-19)
-    var types = d.typesAll.filter(function (t) { return t !== 'Fresh' && t !== 'New'; }).map(function (t) { return TYPELABEL[t]; }); if (!types.length) types = ['New'];
+    var types = d.typesAll.filter(function (t) { return t !== 'Fresh' && t !== 'Top'; }).map(function (t) { return TYPELABEL[t]; });  // P-13: every deal is on Top deals, so no Top tag
     var posted = d.posted || postedText(d.postedAt), postedIso = d.posted ? d.postedIso || '' : isoLocal(d.postedAt);
     var waIcon = ($('.sh-wa svg') || { outerHTML: '' }).outerHTML, tgIcon = ($('.sh-tg svg') || { outerHTML: '' }).outerHTML;
     var coupon = '<div class="coupon"' + (d.coupon ? '' : ' hidden') + '><span class="lbl">Code</span><span class="code">' + E(d.coupon || 'SAVE20') + '</span><button class="btn btn-outline btn-sm" type="button" data-copy="' + E(d.coupon || 'SAVE20') + '"><i data-lucide="copy"></i><span>Copy</span></button></div>' + (d.terms ? '<p class="coupon-terms">' + E(d.terms) + '</p>' : '');
@@ -223,7 +224,7 @@
       coupon + (d.offers && d.offers.length ? '<ul class="offers">' + d.offers.map(function (o) { return '<li><i data-lucide="badge-percent"></i>' + E(o) + '</li>'; }).join('') + '</ul>' : '') +
       '<div class="buy-row">' + storeChip(store) + '<a class="btn btn-default btn-lg btn-buy buy" id="buy" href="' + E(link) + '" target="_blank" rel="nofollow sponsored noopener" itemprop="url" aria-label="Buy now at ' + E(store) + '" data-buy-id="' + E(d.id) + '"><span class="buy-label">Buy now</span><i data-lucide="arrow-up-right"></i></a></div>' +
       (d.note ? '<p class="note"><i data-lucide="circle-alert"></i>' + E(d.note) + '</p>' : '') +
-      '<div class="deal-stats"><span class="views" title="Every view, repeat visits included"><i data-lucide="eye"></i>' + Number(d.views || 0).toLocaleString('en-IN') + ' views</span><a class="comment-link" href="#comments"><i data-lucide="message-square"></i>' + cm.n + ' comments<i data-lucide="arrow-down"></i></a>' +
+      '<div class="deal-stats"><a class="comment-link" href="#comments"><i data-lucide="message-square"></i>Comments<i data-lucide="arrow-down"></i></a>' +
       '<div class="post-share sh-exp" data-share><button class="sh-trig" type="button" aria-expanded="false" aria-controls="sh-items" data-share-trig><i data-lucide="share-2"></i>Share</button><span class="sh-items" id="sh-items">' +
       '<a class="sh-ic sh-wa" href="https://wa.me/?text=' + quote(shareText) + '" target="_blank" rel="noopener" aria-label="Share on WhatsApp" data-tip="WhatsApp">' + waIcon + '</a>' +
       '<a class="sh-ic sh-tg" href="https://t.me/share/url?url=' + quote(H.buyShort(d.id)) + '&amp;text=' + quote(shareText) + '" target="_blank" rel="noopener" aria-label="Share on Telegram" data-tip="Telegram">' + tgIcon + '</a>' +
@@ -343,7 +344,12 @@
     var p = path(); if (p !== '/categories' && p !== '/stores') return false;
     var ul = $('#index-list'); if (!ul) return false;
     var cat = p === '/categories', list = cat ? DB.cats() : DB.shops();
-    var top = list.slice().sort(function (a, b) { return b.total - a.total; }).slice(0, 8), rest = list.filter(function (r) { return top.indexOf(r) < 0; }).sort(function (a, b) { return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
+    var top = list.slice().sort(function (a, b) { return (a.name === 'Others') - (b.name === 'Others') || (a.order || 0) - (b.order || 0) || a.name.localeCompare(b.name); }), rest = [];  // P-24: admin order, Others last
+    if (cat) {  // P-22: categories are icon tiles; keep each built tile's icon, new categories get a tag
+      var ico = {}; $$('.cat-tile a', ul).forEach(function (a) { var i = a.querySelector('[data-lucide]'); if (i) ico[a.getAttribute('href')] = i.getAttribute('data-lucide'); });
+      ul.innerHTML = top.concat(rest).map(function (r) { var h = DB.catPage(r.name); return '<li class="cat-tile' + (r.total === 0 ? ' is-zero' : '') + '"><a href="' + E(h) + '"><span class="ct-ico"><i data-lucide="' + E(r.icon || ico[h] || 'tag') + '"></i></span><span class="nm">' + E(r.name) + '</span></a></li>'; }).join('');
+      return true;
+    }
     ul.innerHTML = top.concat(rest).map(function (r) { return '<li class="' + (r.total === 0 ? 'is-zero' : '') + '"><a href="' + E(cat ? DB.catPage(r.name) : DB.shopPage(r.name)) + '">' + (cat ? '' : '<span class="avatar" aria-hidden="true">' + E(r.name.charAt(0)) + '</span>') + '<span class="nm">' + E(r.name) + '</span><i data-lucide="chevron-right"></i></a></li>'; }).join('');
     return true;
   }

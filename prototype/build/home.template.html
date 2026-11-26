@@ -21,7 +21,7 @@
       <!-- S16 header (D-097): one sticky row on wide screens; text-only type links; Blog carries the "New" pill (site.js) -->
       <nav class="hnav" aria-label="Deal types">
         <a href="index.html">Home</a><a href="fresh.html">Top</a><a href="loot.html">Loot</a><a href="new.html">New</a><a href="pantry.html">Pantry</a>
-        <a href="blog.html" class="hnav-blog" data-blog-link>Blog<span class="new-pill" data-blog-new hidden><svg viewBox="0 0 44 44" aria-hidden="true"><path class="fold" d="M1 0H6L12 6Z"/><path class="fold" d="M44 43V38L38 32Z"/><path class="band" d="M6 0H25L44 19V38Z"/><text x="28.5" y="15.5" transform="rotate(45 28.5 15.5)">NEW</text></svg></span><span class="blog-tip" role="tooltip"><small>New on the blog</small>{{BLOG_LATEST_TITLE}}</span></a>
+        <a href="blog.html" class="hnav-blog" data-blog-link>Blog<span class="new-pill" data-blog-new hidden><svg viewBox="0 0 44 44" aria-hidden="true"><path class="fold" d="M1 0H6L12 6Z"/><path class="fold" d="M44 43V38L38 32Z"/><path class="band" d="M6 0H25L44 19V38Z"/><text x="28.5" y="15.5" transform="rotate(45 28.5 15.5)">NEW</text></svg></span><!-- P-18: no hover box on Blog; the NEW ribbon stays --></a>
       </nav>
       <form class="header-search" data-search role="search">
         <label class="input-wrap"><i data-lucide="search"></i><span class="visually-hidden">Search deals</span><input class="input" type="search" name="q" placeholder="Search deals, stores, categories…" autocomplete="off" aria-controls="search-pop" aria-expanded="false"></label>
@@ -30,6 +30,8 @@
       <div class="header-actions">
         <a class="btn btn-link nav-blog" href="blog.html" data-blog-link>Blog<span class="new-pill" data-blog-new hidden>New</span></a>
         <button class="btn btn-ghost btn-icon" aria-label="Search" id="search-mobile-btn" hidden><i data-lucide="search"></i></button>
+        <!-- P-15: one-tap light/dark in the header; the menu keeps Light / Dark / Auto -->
+        <button class="btn btn-ghost btn-icon theme-flip" type="button" data-theme-flip aria-label="Switch to dark theme"><i data-lucide="sun" class="tf-sun"></i><i data-lucide="moon" class="tf-moon"></i></button>
         <a class="btn btn-outline" href="login.html" data-signin-open data-when-guest>Sign in</a>
         <div class="dropdown account-menu" data-when-user hidden>
           <button class="btn btn-ghost btn-icon" type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Account menu"><span class="avatar" data-user-initial></span></button>
@@ -60,7 +62,7 @@
   <!-- D-121: desktop (1200 px up) has a right column (ad, Shop by category, Shop by store) that starts beside Hot deals today; smaller screens show Hot deals, then the ad, then the deal rows, and reach categories and stores from the menu -->
   <div class="container home-body">
   <!-- D-122: "Hot deals today" and the new-deals capsule share one line above the left column; the cards and the right column start on the same line below it -->
-  <div class="section-head home-head"><h2 id="h-td">Hot deals today</h2>{{SINCE}}</div>
+  <div class="section-head home-head"><h2 id="h-td">Hot deals today</h2></div><!-- P-20: no "new since your last visit" bar -->
   <aside class="home-side" aria-label="Shop by category and store">{{SIDE}}</aside>
   <div class="home-main">
   <section class="section top-deals" id="hero" aria-labelledby="h-td">
@@ -102,6 +104,21 @@
       {{LOOT}}
     </div>
   </section>
+
+  <!-- P-34: New and Pantry rails, same as Top and Loot (16 deals, then View all) -->
+  <section class="section deals" aria-labelledby="h-new" id="new">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-new">New deals</h2></div><a class="view-all" href="new.html">View all <i data-lucide="chevron-right"></i></a></div>
+      {{NEW}}
+    </div>
+  </section>
+
+  <section class="section deals" aria-labelledby="h-pantry" id="pantry">
+    <div class="container">
+      <div class="section-head"><div><h2 id="h-pantry">Pantry</h2></div><a class="view-all" href="pantry.html">View all <i data-lucide="chevron-right"></i></a></div>
+      {{PANTRY}}
+    </div>
+  </section>
   </div>
   </div>
 
@@ -135,6 +152,10 @@
     <a href="#alerts"><i data-lucide="bell"></i>Get deal alerts</a>
     <a href="faq.html"><i data-lucide="circle-help"></i>Help &amp; FAQs</a>
     <a href="contact.html"><i data-lucide="mail"></i>Feedback</a>
+    <!-- P-11: lists auto-scroll, so the footer's legal links also live here -->
+    <a href="privacy.html"><i data-lucide="shield"></i>Privacy policy</a>
+    <a href="terms.html"><i data-lucide="file-text"></i>Terms of use</a>
+    <a href="disclaimer.html"><i data-lucide="info"></i>Disclaimer</a>
     <div class="sheet-section">Theme</div>
     <div class="theme-seg" role="radiogroup" aria-label="Theme"><button type="button" role="radio" data-theme-set="light" aria-checked="false"><i data-lucide="sun"></i><span>Light</span></button><button type="button" role="radio" data-theme-set="dark" aria-checked="false"><i data-lucide="moon"></i><span>Dark</span></button><button type="button" role="radio" data-theme-set="auto" aria-checked="false"><i data-lucide="sun-moon"></i><span>Auto</span></button></div>
   </nav>

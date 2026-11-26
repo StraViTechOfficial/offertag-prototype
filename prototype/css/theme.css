@@ -1546,3 +1546,84 @@ html.theme .sp-inline .sp-card.sp-pic { flex-direction: column; max-width: 40rem
 html.theme .sp-inline .sp-pic .sp-img { width: 100%; min-height: 0; }
 html.theme .sp-pic .sp-cta { white-space: nowrap; flex: none; }
 html.theme .sp-pic .sp-tag { min-width: 0; }
+
+/* 2026-11-26 (Adil): deal-type heading icons get their own colour again (the retail pass had made every chip grey).
+   Top gold star, Loot red flame, New blue sparkles, Pantry green basket; one short motion when the icon first scrolls into view. */
+html.theme .sh-ico.t-top { background: hsl(var(--gold) / .18); color: hsl(38 95% 36%); }
+html.theme .sh-ico.t-loot { background: hsl(var(--loot) / .12); color: hsl(var(--loot)); }
+html.theme .sh-ico.t-new { background: hsl(217 80% 46% / .12); color: hsl(217 80% 46%); }
+html.theme[data-theme="dark"] .sh-ico.t-new { color: hsl(var(--brand-ink)); }
+html.theme .sh-ico.t-pantry { background: hsl(var(--save) / .12); color: hsl(var(--save)); }
+html.theme[data-theme="dark"] .sh-ico.t-top { color: hsl(var(--gold)); }
+html.theme .sh-ico:is(.t-top, .t-loot) .lucide { fill: currentColor; }
+@media (prefers-reduced-motion: no-preference) {
+  html.theme .sh-ico.t-loot.is-in .lucide { transform-origin: 50% 90%; animation: ot-flicker .9s ease-in-out 2; }
+  html.theme .sh-ico:is(.t-new, .t-top).is-in .lucide { animation: ot-twinkle .7s ease-out 1; }
+  html.theme .sh-ico.t-pantry.is-in .lucide { transform-origin: 50% 100%; animation: ot-bob .6s ease-out 1; }
+}
+@keyframes ot-flicker { 0%, 100% { transform: scale(1) rotate(0); } 25% { transform: scale(1.12, .92) rotate(-6deg); } 50% { transform: scale(.94, 1.1) rotate(4deg); } 75% { transform: scale(1.06, .96) rotate(-2deg); } }
+@keyframes ot-twinkle { 0% { transform: scale(.6) rotate(-30deg); opacity: .4; } 60% { transform: scale(1.18) rotate(8deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+@keyframes ot-bob { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-3px); } 70% { transform: translateY(1px); } }
+
+/* P-15: header light/dark button; sun shows on light, moon on dark, they swap with a turn */
+.theme-flip { position: relative; overflow: hidden; }
+.theme-flip svg { position: absolute; inset: 0; margin: auto; transition: transform .35s cubic-bezier(.4,1.6,.6,1), opacity .2s; }
+.theme-flip .tf-moon { opacity: 0; transform: rotate(-90deg) scale(.5); }
+[data-theme="dark"] .theme-flip .tf-sun { opacity: 0; transform: rotate(90deg) scale(.5); }
+[data-theme="dark"] .theme-flip .tf-moon { opacity: 1; transform: none; color: var(--gold, #f5b301); }
+.theme-flip .tf-sun { color: hsl(38 95% 45%); }
+@media (prefers-reduced-motion: reduce) { .theme-flip svg { transition: none; } }
+
+/* P-18: a guide post with no deals has no right rail, so the article sits centred at reading width */
+@media (min-width: 900px) { html.theme .post-grid:not(:has(.post-rail:not([hidden]))) { grid-template-columns: minmax(0, 46rem); justify-content: center; } }
+
+/* P-17: account page, one plain page with hairline sections instead of three stacked cards */
+html.theme .acct-id { display: flex; align-items: center; gap: 0.875rem; padding: 0.5rem 0 1.25rem; }
+html.theme .acct-av { width: 3.25rem; height: 3.25rem; font-size: 1.25rem; font-weight: 600; flex: none; }
+html.theme .acct-id h1 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+html.theme .acct-mail { margin: 2px 0 0; color: hsl(var(--muted-foreground)); font-size: 0.875rem; overflow-wrap: anywhere; }
+html.theme .acct-sec { display: grid; gap: 0.875rem; padding: 1.25rem 0; border-top: 1px solid hsl(var(--border)); font-size: 0.875rem; }
+html.theme .acct-sec h2 { margin: 0; font-size: 0.8125rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+html.theme .acct-sec .input { font-size: 1rem; height: 2.5rem; }
+html.theme .acct-sec b { font-weight: 600; font-size: 0.9375rem; }
+html.theme .acct-del, html.theme .acct-danger b { color: hsl(var(--destructive)); }
+html.theme .acct-del:hover { background: hsl(var(--destructive) / .08); }
+html.theme .acct-del-yes { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground, 0 0% 100%)); }
+
+/* P-22: categories page, icon tiles instead of a searchable list. Kept plain on purpose: no tinted chip, no lift or glow */
+html.theme .index-list:has(.cat-tile) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; border: 0; padding: 0; margin-top: 0.5rem; }
+@media (min-width: 640px) { html.theme .index-list:has(.cat-tile) { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { html.theme .index-list:has(.cat-tile) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+html.theme .cat-tile { border: 0; }
+html.theme .cat-tile a { display: flex; align-items: center; gap: 0.625rem; height: 100%; padding: 0.75rem; border: 1px solid hsl(var(--border)); border-radius: 0.5rem; color: hsl(var(--foreground)); font-weight: 500; font-size: 0.9375rem; text-decoration: none; transition: border-color .15s, color .15s; }
+html.theme .cat-tile a:hover { border-color: hsl(var(--foreground) / .35); }
+html.theme .ct-ico { flex: none; display: grid; place-items: center; color: hsl(var(--muted-foreground)); transition: color .15s; }
+html.theme .cat-tile a:hover .ct-ico { color: hsl(var(--primary)); }
+html.theme .ct-ico svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.75; }
+html.theme .cat-tile.is-zero a { opacity: .6; }
+
+/* P-23: filter rows carry the category icon or store logo; Clear all is dimmed until a filter is on */
+html.theme .opt .opt-ico { flex: none; width: 1.25rem; height: 1.25rem; padding: 0.125rem; box-sizing: border-box; color: hsl(var(--muted-foreground)); stroke-width: 1.75; }
+html.theme .opt .opt-logo { flex: none; width: 1.25rem; height: 1.25rem; object-fit: contain; border-radius: 0.25rem; }
+html.theme .opt:hover .opt-ico { color: hsl(var(--primary)); }
+html.theme #clear-all:disabled, html.theme .sheet-footer [data-clear]:disabled { opacity: .45; cursor: default; pointer-events: none; }
+html.theme .opt:has(.opt-ico, .opt-logo) .box { order: 3; margin-left: auto; }   /* P-23: icon, name, then the checkbox at the far right */
+html.theme .opt:has(.opt-ico, .opt-logo) .txt { order: 2; }
+html.theme .opt:has(.opt-ico, .opt-logo) .opt-ico, html.theme .opt:has(.opt-ico, .opt-logo) .opt-logo { order: 1; }
+
+/* ============ P-32: Shop by store has a fixed height (three rows) and scrolls inside; at the end of that list the page carries on scrolling (no scroll trap). Replaces D-158's fill-to-the-deals height ============ */
+@media (min-width: 1200px) {
+  html.theme .home-side > nav.hs-box:last-of-type { flex: none; min-height: 0; }
+  html.theme .home-side .hs-stores { flex: none; max-height: 24rem; }  /* 4½ rows: the half row shows the list scrolls */
+}
+html.theme .home-side .hs-stores { overscroll-behavior: auto; }
+
+/* P-34: last slide of a home rail: View all */
+html.theme .rail-more { height: 100%; min-height: 16rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .375rem; border: 1px dashed hsl(var(--border)); border-radius: .75rem; color: hsl(var(--foreground)); text-decoration: none; transition: border-color .15s, background-color .15s; }
+html.theme .rail-more:hover { border-color: hsl(var(--primary)); background: hsl(var(--primary) / .04); }
+html.theme .rail-more .rm-ico { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+html.theme .rail-more .rm-ico .lucide { width: 1.25rem; height: 1.25rem; }
+html.theme .rail-more:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+
+/* P-36: the Pinned chip shows only on Top deals, where the pinned slots are (D-104); elsewhere a pinned deal is a normal card */
+html.theme body:not([data-pin-every]) .pin-chip { display: none; }

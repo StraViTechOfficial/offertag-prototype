@@ -330,42 +330,43 @@
     var C = window.ADM_CAT, tab = 'shops', q = $('[data-cq]'), only = $('[data-conly]'), sheet = $('#cat-edit'), form = $('[data-ce]'), editing = null;
     var ONE = { shops: 'shop', categories: 'category', dealtypes: 'deal type', types: 'type' };
     var NOTE = {
-      shops: 'Order sets where a shop shows in store lists and filters. A shop with deals can’t be deleted; switch it off to hide it.',
-      categories: 'A category’s page address can’t be changed here, so old links keep working. Order sets the order of the category tiles.',
-      dealtypes: 'Every deal gets its tag from these rules on its own, when it is posted and whenever a rule changes. Order sets the tab order on the site, after Home. Switching a type off hides its tab; its deals stay.',
+      shops: 'Drag the dots to set where a shop shows in store lists and filters. A shop with deals can’t be deleted.',
+      categories: 'A category’s page address can’t be changed here, so old links keep working. Drag the dots to set the order on the site.',
+      dealtypes: 'Every deal gets its tag from these rules on its own, when it is posted and whenever a rule changes. Drag the dots to set the tab order on the site, after Home.',  // P-14: the four tabs are fixed (name, on/off)
       types: 'Types group the lookup lists the site is built on. Read-only.'
     };
     var COLS = {
-      shops: ['Shop', 'Card label', 'Order', 'Deals', 'Active', ''],
-      categories: ['Category', 'Address', 'Order', 'Deals', 'Active', ''],
-      dealtypes: ['Deal type', 'Rule', 'Order', 'Deals', 'Active', ''],
+      shops: ['', 'Shop', 'Card label', ''],  // P-16: no deal counts
+      categories: ['', 'Category', 'Address', ''],
+      dealtypes: ['', 'Deal type', 'Rule', ''],
       types: ['Name', 'Alias', '']
     };
+    // P-25: icons a category can use (lucide names; the site's map plus spares)
+    var CAT_ICONS = ['monitor-smartphone','smartphone','battery-charging','shirt','clapperboard','utensils','shopping-basket','apple','brush','luggage','briefcase','cooking-pot','footprints','watch','car-taxi-front','tv','washing-machine','air-vent','scissors','headphones','laptop','spray-can','speaker','sofa','cable','heart-pulse','baby','car-front','book-open','wallet','shapes','gamepad-2','dumbbell','gift','camera','plane','pill','dog','gem','tag'];
     function nf(n) { return INR.format(n); }
     // changes.md A-14: the rules live in the playground data (db.js typeRules) and every page reads them
     var DB = window.OTDB;
     function rules() { return DB ? DB.typeRules() : { top: 25, loot: 75, pantry: ['Grocery'], push: 90 }; }
     function keyOf(x) { return x.key || ({ 'Top deals': 'Top', 'Top deal': 'Top', Loot: 'Loot', New: 'New', Pantry: 'Pantry' }[x.name]) || ''; }
-    function ruleText(x) { var R = rules(), k = keyOf(x); return k === 'Top' ? R.top + '% off or more' : k === 'Loot' ? R.loot + '% off or more' : k === 'New' ? 'Under ' + R.top + '% off' : k === 'Pantry' ? 'In ' + (R.pantry.join(', ') || 'no category') : ''; }
-    function countOf(x) { var k = keyOf(x); return DB && k ? DB.deals().filter(function (d) { return d.types.indexOf(k) > -1; }).length : x.n; }
-    function swc(x) { return '<label class="switch"><input type="checkbox" role="switch" data-con' + (x.on ? ' checked' : '') + ' aria-label="Active: ' + esc(x.name) + '"><span></span></label>'; }
+    function ruleText(x) { var R = rules(), k = keyOf(x); return k === 'Top' ? 'Today\'s deals (resets at 12 am)' : k === 'Loot' ? R.loot + '% off or more' : k === 'New' ? 'Under ' + R.top + '% off' : k === 'Pantry' ? 'In ' + (R.pantry.join(', ') || 'no category') : ''; }
     function ed(x) { return '<button class="btn btn-ghost btn-sm" type="button" data-cedit aria-label="Edit ' + esc(x.name) + '">Edit</button>'; }
     function row(x) {
       var r = '<tr data-c="' + x.id + '"' + (x.on === false ? ' class="is-off"' : '') + '>';
-      if (tab === 'shops') r += '<td class="c-title" data-l="Shop"><span class="nm">' + (x.logo ? '<span class="lg"><img src="' + x.logo + '" alt=""></span>' : '<span class="lg ini">' + esc(x.name[0]) + '</span>') + '<b>' + esc(x.name) + '</b></span></td><td data-l="Card label">' + esc(x.label) + '</td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(x.n) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
-      else if (tab === 'categories') r += '<td class="c-title" data-l="Category"><span class="nm">' + (x.img ? '<span class="lg ph"><img src="' + x.img + '" alt="" loading="lazy"></span>' : '<span class="lg ini">' + esc(x.name[0]) + '</span>') + '<b>' + esc(x.name) + '</b></span></td><td data-l="Address"><span class="mono d-none">/' + esc(x.slug) + '</span></td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(x.n) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
-      else if (tab === 'dealtypes') r += '<td class="c-title" data-l="Deal type"><b>' + esc(x.name) + '</b></td><td data-l="Rule"><b class="rule-t">' + esc(ruleText(x)) + '</b></td><td class="num" data-l="Order">' + x.order + '</td><td class="num" data-l="Deals">' + nf(countOf(x)) + '</td><td data-l="Active">' + swc(x) + '</td><td class="c-act">' + ed(x) + '</td>';
+      if (tab !== 'types') r += '<td class="c-drag"><button class="drag-h" type="button" data-cdrag aria-label="Move ' + esc(x.name) + ' (drag, or arrow keys)"' + (q.value.trim() ? ' disabled title="Clear the search to reorder"' : ' title="Drag to change the order on the site"') + '><i data-lucide="grip-vertical"></i></button><span class="c-pos">' + (sorted().indexOf(x) + 1) + '</span></td>';  // P-24: position number beside the grip: drag replaces the Order number
+      if (tab === 'shops') r += '<td class="c-title" data-l="Shop"><span class="nm">' + (x.logo ? '<span class="lg"><img src="' + x.logo + '" alt=""></span>' : '<span class="lg ini">' + esc(x.name[0]) + '</span>') + '<b>' + esc(x.name) + '</b>' + (x.on === false ? ' <span class="pill">Hidden</span>' : '') + '</span></td><td data-l="Card label">' + esc(x.label) + '</td><td class="c-act">' + ed(x) + '</td>';
+      else if (tab === 'categories') r += '<td class="c-title" data-l="Category"><span class="nm">' + '<span class="lg ico"><i data-lucide="' + esc(x.icon || 'tag') + '"></i></span>' + '<b>' + esc(x.name) + '</b>' + (x.on === false ? ' <span class="pill">Hidden</span>' : '') + '</span></td><td data-l="Address"><span class="mono d-none">/' + esc(x.slug) + '</span></td><td class="c-act">' + ed(x) + '</td>';
+      else if (tab === 'dealtypes') r += '<td class="c-title" data-l="Deal type"><b>' + esc(x.name) + '</b></td><td data-l="Rule"><b class="rule-t">' + esc(ruleText(x)) + '</b></td><td class="c-act">' + ed(x) + '</td>';
       else r += '<td class="c-title" data-l="Name"><b>' + esc(x.name) + '</b></td><td data-l="Alias"><span class="mono">' + esc(x.alias) + '</span></td><td class="c-act"><span class="d-none">Read-only</span></td>';
       return r + '</tr>';
     }
     function sorted() { return C[tab].slice().sort(function (a, b) { return (a.order || 0) - (b.order || 0) || a.name.localeCompare(b.name); }); }
     function render() {
       var s = q.value.trim().toLowerCase(), all = sorted(), rows = all.filter(function (x) { return (!s || x.name.toLowerCase().indexOf(s) > -1) && (tab === 'types' || !only.checked || x.on); });
-      $('[data-chead]').innerHTML = '<tr>' + COLS[tab].map(function (c, i) { return '<th' + ((c === 'Order' || c.indexOf('Deals') === 0) ? ' class="num"' : i === COLS[tab].length - 1 ? ' class="c-act"' : '') + '>' + (c || '<span class="visually-hidden">Actions</span>') + '</th>'; }).join('') + '</tr>';
+      $('[data-chead]').innerHTML = '<tr>' + COLS[tab].map(function (c, i) { return '<th' + (i === 0 && tab !== 'types' ? ' class="c-drag"' : i === COLS[tab].length - 1 ? ' class="c-act"' : '') + '>' + (i === 0 && tab !== 'types' ? '#' : c || '<span class="visually-hidden">Actions</span>') + '</th>'; }).join('') + '</tr>';
       $('[data-crows]').innerHTML = rows.map(row).join('');
       $('[data-cempty]').hidden = rows.length > 0; $('[data-ccount]').textContent = rows.length === all.length ? all.length + ' ' + (all.length === 1 ? ONE[tab] : tab === 'categories' ? 'categories' : ONE[tab] + 's') : rows.length + ' of ' + all.length;
       $('[data-cnote]').innerHTML = '<i data-lucide="info"></i><span>' + NOTE[tab] + '</span>';
-      $('[data-cat-active]').hidden = tab === 'types'; var add = $('[data-cat-add]'); add.hidden = tab === 'types' || tab === 'dealtypes'; $('[data-cat-add-l]').textContent = 'Add ' + ONE[tab];
+      $('[data-cat-active]').hidden = true;  var add = $('[data-cat-add]'); add.hidden = tab === 'types' || tab === 'dealtypes'; $('[data-cat-add-l]').textContent = 'Add ' + ONE[tab];  // P-24/P-25: no 'Active only' filter; Show on site lives in the edit sheet
       var tc = $('[data-tcount="' + tab + '"]'); if (tc) tc.textContent = C[tab].length;
       A.icons();
       if (window.ADM_PG) ADM_PG.saveCatalogue(C);   // S25 playground: names, order, on/off and new ones reach the site
@@ -385,6 +386,7 @@
     /* edit drawer */
     function fld(name, label, val, o) {
       o = o || {}; var id = 'ce-' + name, req = o.req ? ' *' : '';
+      if (o.fixed) return '<input type="hidden" name="' + name + '" value="' + esc(val || '') + '">';  // P-24: an existing name / page address is SEO-linked, so it isn't shown at all (the sheet title names it)
       if (o.area) return '<label class="fld"><span class="lab">' + label + req + (o.hint ? ' <small>' + o.hint + '</small>' : '') + '</span><textarea class="textarea" rows="' + (o.rows || 4) + '" name="' + name + '" id="' + id + '">' + esc(val || '') + '</textarea><span class="err" hidden></span></label>';
       return '<label class="fld"><span class="lab">' + label + req + (o.hint ? ' <small>' + o.hint + '</small>' : '') + '</span><input class="input' + (o.mono ? ' mono' : '') + '" type="' + (o.type || 'text') + '" name="' + name + '" id="' + id + '" value="' + esc(val == null ? '' : val) + '"' + (o.max ? ' maxlength="' + o.max + '"' : '') + (o.ro ? ' readonly' : '') + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.type === 'number' ? ' min="1" step="1" inputmode="numeric"' : '') + ' autocomplete="off">' + (o.cnt ? '<span class="cnt"><span data-cnt="' + name + '">' + (val || '').length + '</span>/' + o.max + '</span>' : '') + '<span class="err" hidden></span></label>';
     }
@@ -392,28 +394,29 @@
     function openEdit(x) {
       editing = x; var n = !x; x = x || { name: '', label: '', aff: '', order: sorted().reduce(function (m, y) { return Math.max(m, y.order || 0); }, 0) + 1, on: true, steps: [], seo: '', slug: '', title: '', rule: '', n: 0, logo: '' };
       $('#ce-title').textContent = n ? 'Add ' + ONE[tab] : 'Edit ' + x.name;
-      $('[data-ce-sub]').textContent = n ? 'Shows on the site when saved and switched on.' : (x.n ? nf(x.n) + ' deals' + (tab === 'dealtypes' ? ' in this snapshot' : ' on the live site') : 'No deals yet');
+      $('[data-ce-sub]').textContent = n && tab !== 'dealtypes' ? 'Shows on the site when saved and switched on.' : '';  // P-14/P-16: no deal counts
       var h = '';
       if (tab === 'shops') {
         logoImg = x.logo || null;
-        h = fld('name', 'Name', x.name, { req: 1 }) + fld('label', 'Card label', x.label, { req: 1, max: 13, cnt: 1, hint: 'on deal cards' })
+        h = fld('name', 'Name', x.name, n ? { req: 1 } : { fixed: 'can’t be changed: its page is ranked in search' }) + fld('label', 'Card label', x.label, { req: 1, max: 13, cnt: 1, hint: 'on deal cards' })
           + '<div class="fld"><span class="lab">Logo <small>square or wide, on a white or clear background</small></span><div class="logo-row"><span class="lg big" data-logo-pv>' + (x.logo ? '<img src="' + x.logo + '" alt="">' : '<i data-lucide="image"></i>') + '</span><label class="btn btn-outline btn-sm">' + (x.logo ? 'Replace' : 'Upload') + '<input type="file" accept="image/*" hidden data-logo-in></label></div></div>'
-          + '<div class="grid2">' + fld('order', 'Order', x.order, { type: 'number', req: 1 }) + '<div class="fld"><span class="lab">Affiliate tag</span><small class="hint">Set in <a href="' + A.withRole('/admin/settings/tags') + '">Settings → Affiliate tags</a></small></div></div>'
-          + '<label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Active <small>shows its store page and filter</small></span></label>'
+          + '<div class="grid2">' + '<input type="hidden" name="order" value="' + x.order + '">' + '<div class="fld"><span class="lab">Affiliate tag</span><small class="hint">Set in <a href="' + A.withRole('/admin/settings/tags') + '">Settings → Affiliate tags</a></small></div></div>'
+          + '<label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on !== false ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Show on site <small>untick to hide it without deleting it</small></span></label>'  // P-25: the old site's Active, as one tick
           + fld('seo', 'SEO description', x.seo, { area: 1, rows: 3, hint: 'shop page, search results' });
       } else if (tab === 'categories') {
-        h = fld('name', 'Name', x.name, { req: 1 }) + fld('slug', 'Page address', x.slug, { mono: 1, ro: !n, hint: n ? 'made from the name; letters, numbers and _' : 'fixed, so old links keep working' })
-          + '<div class="grid2">' + fld('order', 'Order', x.order, { type: 'number', req: 1 }) + '<div class="fld"><span class="lab">&nbsp;</span><label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Active</span></label></div></div>'
+        h = fld('name', 'Name', x.name, n ? { req: 1 } : { fixed: 'can’t be changed: its page is ranked in search' }) + fld('slug', 'Page address', x.slug, n ? { mono: 1, hint: 'made from the name; letters, numbers and _' } : { mono: 1, fixed: 'can’t be changed, so old links keep working' })
+          + '<input type="hidden" name="order" value="' + x.order + '">'
+          + '<div class="fld"><span class="lab">Icon <small>shown on the Categories page and in filters</small></span><div class="ico-pick" role="radiogroup" aria-label="Icon">' + CAT_ICONS.map(function (k) { return '<label title="' + k + '"><input type="radio" name="icon" value="' + k + '"' + ((x.icon || 'tag') === k ? ' checked' : '') + '><i data-lucide="' + k + '"></i></label>'; }).join('') + '</div></div>'
+          + '<label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on !== false ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Show on site <small>untick to hide it without deleting it</small></span></label>'
           + fld('title', 'SEO title', x.title, { hint: 'browser tab and search results' }) + fld('seo', 'SEO description', x.seo, { area: 1, rows: 3 });
       } else {
         var R = rules(), k = keyOf(x), rule = '';
-        if (k === 'Top' || k === 'Loot') rule = '<label class="fld"><span class="lab">Rule * <small>' + (k === 'Top' ? 'deals at this discount or more are Top deals' : 'deals at this discount or more are Loot (they stay Top deals too)') + '</small></span><span class="input-suffix rule-in"><input class="input num" type="number" min="1" max="99" name="pct" value="' + (k === 'Top' ? R.top : R.loot) + '"><span>% off or more</span></span><span class="err" hidden></span></label>';
-        else if (k === 'New') rule = '<div class="fld"><span class="lab">Rule</span><p class="hint-line"><i data-lucide="info"></i><span>Every deal under ' + R.top + '% off. Change the Top deals rule to move this line.</span></p></div>';
+        if (k === 'New' || k === 'Loot') rule = '<label class="fld"><span class="lab">Rule * <small>' + (k === 'New' ? 'deals under this discount are New deals' : 'deals at this discount or more are Loot') + '</small></span><span class="input-suffix rule-in"><input class="input num" type="number" min="1" max="99" name="pct" value="' + (k === 'New' ? R.top : R.loot) + '"><span>' + (k === 'New' ? '% off' : '% off or more') + '</span></span><span class="err" hidden></span></label>';
+        else if (k === 'Top') rule = '<div class="fld"><span class="lab">Rule</span><p class="hint-line"><i data-lucide="info"></i><span>Deals posted today, any discount, newest first. The list starts fresh at 12 am. Pinned deals stay on it.</span></p></div>';
         else if (k === 'Pantry') rule = '<div class="fld"><span class="lab">Rule * <small>deals in these categories are Pantry</small></span><div class="cat-picks">' + C.categories.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).map(function (c) { return '<label class="ckl"><span class="ck"><input type="checkbox" name="pcat" value="' + esc(c.name) + '"' + (R.pantry.indexOf(c.name) > -1 ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>' + esc(c.name) + '</span></label>'; }).join('') + '</div><span class="err" hidden></span></div>';
-        h = fld('name', 'Name', x.name, { req: 1, hint: 'the tab label' }) + rule
-          + '<div class="grid2">' + fld('order', 'Order', x.order, { type: 'number', req: 1 }) + '<div class="fld"><span class="lab">&nbsp;</span><label class="ckl"><span class="ck"><input type="checkbox" name="on"' + (x.on ? ' checked' : '') + '><span class="box"><i data-lucide="check"></i></span></span><span>Active</span></label></div></div>';
+        h = rule + '<input type="hidden" name="order" value="' + x.order + '">';  // P-14: the tab name and on/off are fixed, so neither is a field
       }
-      form.innerHTML = h; $('[data-ce-del]').hidden = n; A.icons();
+      form.innerHTML = h; A.icons();  // P-24: the four tabs are pages; they can't be deleted. P-35: categories and shops can't be deleted either (their page links and old deals depend on them); Show on site hides one
       var li = $('[data-logo-in]', form); if (li) li.addEventListener('change', function () { var file = li.files[0]; if (!file) return; var r = new FileReader(); r.onload = function () { logoImg = r.result; $('[data-logo-pv]', form).innerHTML = '<img src="' + r.result + '" alt="">'; }; r.readAsDataURL(file); });
       var lab = form.elements.label; if (lab) lab.addEventListener('input', function () { $('[data-cnt="label"]', form).textContent = lab.value.length; });
       if (n && tab === 'categories') form.elements.name.addEventListener('input', function () { form.elements.slug.value = form.elements.name.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''); });
@@ -422,8 +425,27 @@
     form.addEventListener('input', function (e) { if (e.target.getAttribute('aria-invalid')) fieldErr(e.target, ''); });
     $('[data-crows]').addEventListener('click', function (e) { if (e.target.closest('[data-cedit]')) openEdit(byId(e.target.closest('tr').dataset.c)); });
     $('[data-cat-add]').addEventListener('click', function () { openEdit(null); });
+    // P-24: reorder by the 9-dot handle (pointer drag works with mouse and touch; arrow keys on the handle move one step)
+    function saveOrder() { $$('[data-crows] tr').forEach(function (tr, i) { var x = byId(tr.dataset.c); if (x) x.order = i + 1; }); render(); toast('Order saved', { icon: 'check' }); }
+    var tb = $('[data-crows]'), dr = null;
+    tb.addEventListener('pointerdown', function (e) {
+      var h = e.target.closest('[data-cdrag]'); if (!h || h.disabled || e.button > 0) return;
+      e.preventDefault(); dr = h.closest('tr'); dr.classList.add('is-dragging'); h.setPointerCapture(e.pointerId);
+    });
+    tb.addEventListener('pointermove', function (e) {
+      if (!dr) return;
+      var over = document.elementFromPoint(e.clientX, e.clientY), tr = over && over.closest('[data-crows] tr'); if (!tr || tr === dr) return;
+      var b = tr.getBoundingClientRect(); tb.insertBefore(dr, e.clientY > b.top + b.height / 2 ? tr.nextSibling : tr);
+    });
+    function endDrag() { if (!dr) return; dr.classList.remove('is-dragging'); dr = null; saveOrder(); }
+    tb.addEventListener('pointerup', endDrag); tb.addEventListener('pointercancel', endDrag);
+    tb.addEventListener('keydown', function (e) {
+      var h = e.target.closest('[data-cdrag]'); if (!h || h.disabled || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+      e.preventDefault(); var tr = h.closest('tr'), id = tr.dataset.c, sib = e.key === 'ArrowUp' ? tr.previousElementSibling : tr.nextElementSibling; if (!sib) return;
+      tb.insertBefore(tr, e.key === 'ArrowUp' ? sib : sib.nextSibling); saveOrder(); var nh = $('[data-crows] tr[data-c="' + id + '"] [data-cdrag]'); if (nh) nh.focus();
+    });
     function saveEdit() {
-      var F = form.elements, bad = [], name = F.name.value.trim();
+      var F = form.elements, bad = [], name = F.name ? F.name.value.trim() : editing.name;
       if (!name) bad.push([F.name, 'Add a name.']);
       else if (C[tab].some(function (y) { return y !== editing && y.name.toLowerCase() === name.toLowerCase(); })) bad.push([F.name, 'A ' + ONE[tab] + ' with this name already exists.']);
       if (F.label && !F.label.value.trim()) bad.push([F.label, 'Add the label shown on cards.']);
@@ -431,12 +453,12 @@
       if (F.slug && !editing) { var sl = F.slug.value.trim(); if (!/^[a-z0-9_]+$/.test(sl)) bad.push([F.slug, 'Use lowercase letters, numbers and _ only.']); else if (C.categories.some(function (y) { return y.slug === sl; })) bad.push([F.slug, 'Another category uses this address.']); }
       $$('.err', form).forEach(function (e) { e.hidden = true; }); $$('[aria-invalid]', form).forEach(function (i) { i.removeAttribute('aria-invalid'); });
       if (bad.length) { bad.forEach(function (b) { fieldErr(b[0], b[1]); }); bad[0][0].focus(); return; }
-      var o = { name: name, order: ord, on: F.on.checked };
+      var o = { name: name, order: ord, on: F.on ? F.on.checked : true };
       if (tab === 'shops') { o.label = F.label.value.trim(); o.seo = F.seo.value.trim(); o.logo = logoImg || ''; }
-      if (tab === 'categories') { o.title = F.title.value.trim(); o.seo = F.seo.value.trim(); if (!editing) o.slug = F.slug.value.trim(); }
+      if (tab === 'categories') { o.icon = (form.querySelector('input[name="icon"]:checked') || {}).value || 'tag'; o.title = F.title.value.trim(); o.seo = F.seo.value.trim(); if (!editing) o.slug = F.slug.value.trim(); }
       if (tab === 'dealtypes') {
         var R0 = rules(), R1 = JSON.parse(JSON.stringify(R0)), k1 = keyOf(editing);
-        if (k1 === 'Top' || k1 === 'Loot') { var v = +F.pct.value; if (!(v >= 1 && v <= 99)) { fieldErr(F.pct, 'Use a number from 1 to 99.'); F.pct.focus(); return; } R1[k1 === 'Top' ? 'top' : 'loot'] = v; if (R1.loot <= R1.top) { fieldErr(F.pct, 'Loot must be a bigger discount than Top deals (' + (k1 === 'Top' ? 'Loot is ' + R1.loot + '%' : 'Top deals is ' + R1.top + '%') + ').'); F.pct.focus(); return; } }
+        if (k1 === 'New' || k1 === 'Loot') { var v = +F.pct.value; if (!(v >= 1 && v <= 99)) { fieldErr(F.pct, 'Use a number from 1 to 99.'); F.pct.focus(); return; } R1[k1 === 'New' ? 'top' : 'loot'] = v; if (R1.loot <= R1.top) { fieldErr(F.pct, 'Loot must be a bigger discount than New (' + (k1 === 'New' ? 'Loot is ' + R1.loot + '%' : 'New is under ' + R1.top + '%') + ').'); F.pct.focus(); return; } }
         if (k1 === 'Pantry') { R1.pantry = $$('input[name="pcat"]:checked', form).map(function (i) { return i.value; }); if (!R1.pantry.length) { toast('Pick at least one category for Pantry.', { icon: 'info' }); return; } }
         if (JSON.stringify(R0) !== JSON.stringify(R1) && DB) {
           DB.set('typeRules', R1);
@@ -450,13 +472,5 @@
       toast(target ? name + ' saved' : name + ' added', { action: 'Undo', onAction: function () { if (target) Object.assign(target, prev); else C[t].splice(C[t].indexOf(made), 1); render(); } });
     }
     $('[data-ce-save]').addEventListener('click', saveEdit); form.addEventListener('submit', function (e) { e.preventDefault(); saveEdit(); });
-    $('[data-ce-del]').addEventListener('click', function () {
-      var x = editing; if (!x) return;
-      if (x.n) { toast(x.name + ' has ' + nf(x.n) + ' deals, so it can’t be deleted. Switch it off to hide it.', { icon: 'info', ms: 5000 }); return; }
-      A.closeSheet();
-      setTimeout(function () { A.confirmBox('Delete ' + x.name + '?', 'It has no deals. This can’t be undone after you leave the page.', 'Delete', function () {
-        var t = tab, i = C[t].indexOf(x); C[t].splice(i, 1); render(); toast(x.name + ' deleted', { icon: 'trash-2', action: 'Undo', onAction: function () { C[t].splice(i, 0, x); render(); } });
-      }, true); }, 270);
-    });
   })();
 })();

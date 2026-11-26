@@ -66,6 +66,140 @@ Screen: Image 26.
 Screen: Image 25.
 - [x] Remove the Min/Max boxes and the Go button under the price slider.
 
+### P-11 Deal lists load automatically, no "Show more deals" button (added 2026-11-26, Adil)
+Source: signed proposal ("Automatic scrolling instead of Load More", 31 Oct requirements). Replaces D-032's button after every 2 auto-loads.
+- [x] Remove the "Show more deals (N more)" button and its "Page N" hint (`prototype/js/listing.js`, `renderLoadState`). Every batch loads on scroll with the spinner.
+- [x] Keep the `?page=N` link and the back-button restore (SEO and position), and the corner back-to-top button.
+- [ ] Same on every list: listings, category, store, search. Then the same change in `web/`.
+- [x] Footer is hard to reach on long lists, so the menu (phone and desktop) also carries Privacy policy, Terms of use and Disclaimer (`build/home.template.html`). Help & FAQs and Feedback were already there.
+
+### P-12 Deal-type headings get their own colour (added 2026-11-26, Adil, in review)
+The retail pass had turned every heading icon grey, so the headings looked idle.
+- [x] Top gold star, Loot red flame, New blue sparkles, Pantry green basket (new icon), on Home and on each type page (`js/theme.js`, end of `css/theme.css`).
+- [x] One short motion when the icon first scrolls into view; none for people who turn motion off.
+- [x] No discount label on any heading: the Loot "75%+ off" sticker is removed (replaces D-137–D-141).
+- [ ] Same in `web/` once approved.
+
+### P-13 Top deals = today's deals, any discount (added 2026-11-26, Adil's decision)
+Follows D-114 (Fresh became Top deals at `/top-deals`, `/fresh-deals` 301s there). Replaces the Top part of P-07/A-14 (Top 25%+).
+- [x] Top deals lists deals posted since 12 am today (IST on the live site), any discount, newest first; pinned deals stay on it whatever their date. Its line reads "Today's deals, newest first" (`js/db.js`, `js/render.js`, `build/build.py`).
+- [x] No "Top deal" tag on cards or deal pages and no Top option in the type filter, public or admin, since every deal of the day is on it (`js/render.js`, `build/build.py`, `build/admin.py`, `js/admin.js`, `js/admin-db.js`). FAQ text updated.
+- [x] Loot (75%+), New (under 25%) and Pantry (Grocery) keep their rules. Admin → Catalogue → Deal types: the % box moved from Top to New; Top reads "Today's deals (resets at 12 am)" (`js/admin-c.js`).
+- [ ] Same in `web/` and the backend list rule (told backend-ot 26 Nov).
+
+### P-14 Deal-type tabs are fixed (added 2026-11-26, Adil)
+The four tabs (Top, Loot, New, Pantry) are part of the site build, not admin content.
+- [x] Admin → Catalogue → Deal types: no Name field, no Active switch or column, no deal count in the edit sheet. Only the rule and the order stay (`js/admin-c.js`).
+- [ ] Same in `web/` admin.
+
+### P-15 Light/dark button in the header (added 2026-11-26, Adil)
+The theme switch sat only inside the menu, where few people look.
+- [x] Sun/moon button in the header beside Sign in, every public page; one tap swaps light and dark with a short turn (still under reduced motion). The menu keeps Light / Dark / Auto (`build/home.template.html`, `build/theme_head.py`, `css/theme.css`).
+- [ ] Same in `web/`.
+
+### P-16 No deal counts on shops, categories or lists (added 2026-11-26, Adil)
+Counts add weight and say nothing a shopper needs (follows D-155).
+- [x] Admin → Catalogue: no Deals column on Shops, Categories or Deal types; no "N deals" line in the edit sheet (`js/admin-c.js`). The delete guard ("has N deals, so it can't be deleted") stays.
+- [x] Public lists: no "N deals" line above the list; store-in-category pages read "All deals from this store in this category" instead of "N today" (`build/listing.template.html`, `build/build.py`, `js/render.js`). The phone filter sheet's "N deals match" line is gone too (Adil); "No deals match these filters." still shows on an empty result (`build/listing.template.html`, `js/listing.js` made null-safe).
+- [ ] Same in `web/`.
+
+### P-18 Blog: no hover box; guide posts without deals (added 2026-11-26, Adil)
+- [x] Header Blog link: the "New on the blog" hover box is gone; the NEW ribbon stays (`build/home.template.html`).
+- [x] Two guide posts with no deals ("How to spot a fake discount before you pay", "When to buy during the big sale weeks") show the blog is not only for deals (`build/blog.json`). A post without deals hides the "Deals in this post" rail and centres the article (`build/build.py`, `css/theme.css`); its share image falls back to the site icon.
+- [ ] Same in `web/` (the blog must accept a post with no deals).
+
+### P-17 Account page: no mobile, plain layout (added 2026-11-26, Adil)
+- [x] Mobile field removed (old site had it; nothing uses it now; less personal data under DPDP). Existing numbers stay in the database untouched.
+- [x] Three stacked cards replaced by one plain page: avatar + "Account" + email at the top, then hairline sections (Profile, Browser alerts, Delete account in red with the same confirm step) (`build/build.py`, `js/site.js`, `css/theme.css`).
+- [ ] Same in `web/`; backend profile update drops `mobile`.
+
+### P-19 FAQ: no chat button (added 2026-11-26, D-155)
+- [x] "Chat with us" button removed (there is no live chat); heading "Still need help?" is now "More help" (UI text is never a question). Contact us stays (`build/build.py`).
+
+### P-20 Home: no "new since your last visit" bar (added 2026-11-26, Adil)
+- [x] Removed from the home heading row; it was not signed scope (D-122) and showed big misleading counts after a long gap or cleared storage (`build/home.template.html`). Scripts skip it when absent.
+- [ ] Same in `web/`.
+
+### P-21 Sorting and filters follow the signed line (added 2026-11-26, Adil)
+Signed: "only this list [today's deals] can be sorted by price or by % off". Replaces the sort part of earlier builds and the sliders of P-03.
+- [x] Top deals: sort menu with Newest (default), % off: high to low, Price: low to high, Price: high to low. Recommended, Biggest saving and Most viewed are gone everywhere.
+- [x] Every other list (Loot, New, Pantry, category, store, search): no sort menu, newest first.
+- [x] Price and discount sliders only on Top deals (Adil: today's list is the one that sorts and filters by price and % off); hidden on every other list. Category, store and deal-type filters stay (`build/listing.template.html`, `build/build.py`).
+- [ ] Same in `web/`.
+
+### P-22 Categories page: icon tiles, no search box (added 2026-11-26, Adil)
+About 30 categories fit on one screen, so the "Find a category" box is gone. Each category is a tile with its icon (same icon map as the home side panel), 2 per row on phones, 3 on tablets, 4 on desktop; top 8 by deals first, then A–Z (`build/build.py` cat_tiles, `js/render.js` renderIndex, `css/theme.css`). The Stores page is unchanged.
+- [x] Not AI-looking (Adil): plain tiles (thin border, 8px radius, no tinted icon chip, no lift or glow); the icon is grey and turns brand colour on hover. Duplicate or generic icons replaced: Electronics monitor-smartphone, Recharge battery-charging, Grocery apple, Beauty brush (was sparkles), Cab car-taxi-front, Home & Decore sofa, Cashback wallet, Others shapes. The home "Shop by category" panel uses the same map.
+- [ ] Same in `web/`.
+
+### P-23 Filter panel polish (added 2026-11-26, Adil)
+- [x] Category group opens by default; on a category page (no Category group) the Store group opens instead (`build/listing.template.html`, `build/build.py`).
+- [x] Each category row shows its icon (same map as the Categories page); each store row shows its logo (a store icon when it has none, e.g. Others) (`opt_mark` in `build/build.py`, `css/theme.css`). The checkbox sits at the right end of these rows (icon, name, checkbox), so it doesn't crowd the icon.
+- [x] Discount slider (Top deals): 1% steps from Any up to the biggest discount on the page, instead of fixed 25/50/75/90 stops (`js/listing.js`). Price slider unchanged (cheapest to dearest deal on the page).
+- [x] Clear all (panel header and phone sheet) is dimmed and not clickable until a filter is on (`js/listing.js`).
+- [ ] Same in `web/`.
+
+### P-24 Admin order by drag; public lists follow it; names fixed (added 2026-11-26, Adil)
+- [x] Admin → Catalogue (Shops, Categories, Deal types): a 9-dot handle on each row; drag (mouse or touch) or arrow keys on the handle to reorder. The Order number field is gone; the first column shows the position (#1, #2…) beside the handle, renumbered after each move. Disabled while the search box has text (`js/admin-c.js`, `css/admin.css`).
+- [x] Every public category/store list follows that order, Others always last: filter options, the Categories page, the Stores page, the home "Shop by category" (first 10) and store rows (`build/build.py` ORD, `js/render.js`). **This replaces the P-22 "top 8 by deals, then A–Z" order** on the Categories page and the home panel. Seed: Bookmyshow moved before Others.
+- [x] An existing shop's or category's Name and a category's page address are not in the edit sheet at all (both are SEO-linked); they are set only when adding one. Deal types have no Delete (each is a site tab and page). Card label stays editable (it only shows on deal cards).
+- [x] No Active on/off for shops or categories (Adil: it's a website, they are always on). The switch column, the "Active only" filter and the edit-sheet checkbox are gone. Deal types lost theirs in P-14.
+- SEO description stays: it is the old site's `shops.description` / `categories.description`, the text Google shows under the page link.
+- [ ] `web/`: the admin drag waits for the admin port; the public order needs the catalogue API to return `order` (backend).
+
+### P-25 Active back as "Show on site"; category icons match the site (added 2026-11-26, Adil)
+- [x] The old site has Active for shops and categories, so it is back as one "Show on site" tick in the edit sheet (no switch column). Delete stays, only for a shop or category with no deals (same as the old site). Overrides the "no Active" line in P-24.
+- [x] Admin category rows show the same lucide icon the site shows (not the old uploaded photo). The edit sheet has an icon picker (the site's map plus spares); the chosen icon is saved on the category and the Categories page uses it (`js/admin-c.js` CAT_ICONS, `js/admin-db.js`, `js/render.js`, `css/admin.css`).
+- [ ] `web/`: admin port + backend `icon` (lucide name) on categories, replacing the old `icon_name` image.
+
+### P-26 No "Deal type" filter (added 2026-11-26, Adil)
+- [x] Search, category and store pages no longer have the Deal type filter group (Posted today / Loot / New / Pantry); the header tabs already cover it. Reverses the facet part of D-075 (`build/build.py` TYPE_HIDDEN always set).
+- [ ] `web/`: drop the type facet from the listing filters.
+
+### P-27 Category page keeps its Category filter, ticked (added 2026-11-26, Adil)
+- [x] On a category page the Category group now shows, with that page's category ticked and locked (not counted as a filter, Clear all leaves it). Its find box is hidden. Store pages are unchanged (`build/build.py` data-page-lock, `js/listing.js`, `css/theme.css`).
+- [ ] `web/`: same on category pages.
+
+### P-28 Store pages keep their Store filter, ticked; "Hidden" label in admin (added 2026-11-26, Adil)
+- [x] Store and store+category pages show the Store group with that page's store ticked and locked, as P-27 does for categories (`build/build.py`, `js/listing.js`). P-27 fix: store+category pages lock the category (lock[-1]), not the store.
+- [x] Admin catalogue rows with Show on site off carry a "Hidden" label (`js/admin-c.js`).
+- [ ] `web/`: same on store pages; admin label with the admin port.
+
+### P-29 Category and store pages list every option, their own ticked (added 2026-11-26, Adil)
+- [x] Replaces the single locked option of P-27/P-28. The Category (or Store) group lists all of them with this page's one ticked. Ticking another, or unticking this one, opens the search page (all deals) with that choice in the link, e.g. Electronics + Mobile goes to `/deals/search?cat=electronics,mobile`. The category and store pages themselves stay: they are the ranked SEO addresses (`build/build.py`, `js/listing.js` query()).
+- [ ] `web/`: same.
+
+### P-30 Filter box opens on its ticked option (added 2026-11-26, Adil)
+- [x] When a Category or Store box scrolls, it opens scrolled to its first ticked option (with the one above peeking), so on e.g. the Kitchen page "Kitchen" is in view. The box scrolls, not the page (`js/listing.js` after readUrl).
+- [ ] `web/`: same.
+
+### P-31 Join tab opens by itself once per visit (added 2026-11-26, Adil)
+- [x] The left-edge join tab (WhatsApp, Telegram, app) opens 1 s after page load and closes 2 s later, unless the visitor's pointer or focus is on it. Once per visit (browser session, sessionStorage `ot-fjoin-peek`): every page load was too much, Adil agreed (`js/site.js`).
+- [ ] `web/`: same.
+
+### P-32 Home "Shop by store" box: fixed height, no scroll trap (added 2026-11-26, Adil)
+- [x] The box is a fixed 4½ rows high (24rem, half a row peeks so the scroll is obvious) and scrolls inside; when its list ends, the wheel carries on to the page (`overscroll-behavior: auto`, was `contain`, which trapped the scroll). Replaces D-158's fill-to-the-deals height. Tested: wheel over the box scrolls it to the end, then the page moves (`css/theme.css`, end of file).
+- [ ] `web/`: same.
+
+### P-33 Top page: Category and Store filters start closed (added 2026-11-26, Adil)
+- [x] Top opens Discount and Price only; Category and Store are closed until tapped. Loot, New and Pantry open Category; category and store pages open Category and Store (P-28 had opened Store everywhere by mistake). `build/build.py`, `build/listing.template.html`.
+- [ ] `web/`: same.
+
+### P-34 · Home: four deal rails, 16 deals each, then View all (26 Nov)
+- Home now has Top, Loot, New and Pantry rails (was Top and Loot only). Same order as the header links.
+- Each rail shows up to 16 deals (4 slides of 4 on desktop). When a list has more, the last slide is a "View all" card (no count, Adil: counts look dull) that opens the full page. An empty rail hides itself.
+- Files: build/build.py (rail(), more()), build/home.template.html (#new, #pantry), js/render.js (playground rails), css/theme.css (.rail-more).
+- Sample data has only 1 New deal, so that rail looks thin here. The live site will have plenty.
+
+### P-35 · No counts on the site, plainer footer, categories can't be deleted (26 Nov)
+- Counts removed (Adil: counts look dull for a deals site): search "See all N results" is now "See all results"; deal page views count gone; comment link and Comments heading lose the number; /categories and /stores headers read "Deals by category" / "Deals by store". Admin keeps its numbers.
+- Footer: one line about OfferTag; app box "OfferTag app · Deal alerts on your phone"; shorter disclaimer; "Privacy & you" is now "Legal"; Blog moved to Deals; the generic "About OfferTag deals" box is gone (category and store pages keep their own SEO text from the old site).
+- Admin: categories have no Delete (deals and page links depend on them); "Show on site" hides one. Shops have no Delete either (Adil, 26 Nov); "Show on site" hides one. Deal types already had no Delete.
+- Files: js/site.js, js/render.js, js/detail.js, build/detail.template.html, build/footer.html, build/build.py, js/admin-c.js.
+
+### P-36 · Pinned chip only on Top deals (26 Nov)
+- Pinned slots were already Top-only (D-104), but the "Pinned" chip showed on the card everywhere: home rails, Loot, category pages, search, deal page. Now it shows only on Top deals; elsewhere a pinned deal is a normal card. css/theme.css only.
+
 ### Notes from the public build (2026-11-25)
 
 **P-01 card research (what we copied and why).** Flipkart, Meesho and Ajio show the price, the struck MRP and "% off" on **one line**, read left to right. Amazon puts "-88%" before the price. Myntra puts "(88% OFF)" after the MRP. DesiDime and Slickdeals put the store and the posting time in a small top line above the title. Our card now follows that common order:

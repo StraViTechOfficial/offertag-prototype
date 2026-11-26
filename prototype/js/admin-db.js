@@ -63,7 +63,7 @@
       saveCatalogue: function (C) {
         var old = {}; DB.get('categories').forEach(function (c) { old[c.id] = c.name; });
         var oldS = {}; DB.get('shops').forEach(function (s) { oldS[s.id] = s.name; });
-        DB.set('categories', C.categories.map(function (c) { var b = DB.get('categories').filter(function (x) { return x.id === c.id; })[0] || {}; return Object.assign({}, b, { id: c.id, name: c.name, slug: c.slug, order: c.order, on: c.on !== false, total: c.n || 0, title: c.title || b.title || '', description: c.seo != null ? c.seo : b.description, page: b.page || '/products/' + c.slug + '-deals', icon: b.icon || 'tag', img: b.img || '' }); }));
+        DB.set('categories', C.categories.map(function (c) { var b = DB.get('categories').filter(function (x) { return x.id === c.id; })[0] || {}; return Object.assign({}, b, { id: c.id, name: c.name, slug: c.slug, order: c.order, icon: c.icon || b.icon || 'tag', on: c.on !== false, total: c.n || 0, title: c.title || b.title || '', description: c.seo != null ? c.seo : b.description, page: b.page || '/products/' + c.slug + '-deals', icon: b.icon || 'tag', img: b.img || '' }); }));
         DB.set('shops', C.shops.map(function (s) { var b = DB.get('shops').filter(function (x) { return x.id === s.id; })[0] || {}; return Object.assign({}, b, { id: s.id, name: s.name, label: s.label, slug: b.slug || H.slug(s.name).replace(/-/g, ''), order: s.order, on: s.on !== false, total: s.n || 0, aff: s.aff, steps: s.steps, description: s.seo != null ? s.seo : b.description, logo: pack(s.logo) || b.logo || '', page: b.page || '/shops/' + (b.slug || H.slug(s.name).replace(/-/g, '')), tint: b.tint, btn: b.btn }); }));
         DB.set('dealtypes', C.dealtypes);
         // a renamed category or shop: its deals move with it
@@ -132,7 +132,7 @@
       var seedC = window.ADM_CAT, byId = function (l, id) { return l.filter(function (x) { return x.id === id; })[0] || {}; };
       window.ADM_CAT = {
         shops: DB.shops(true).map(function (s) { var b = byId(seedC.shops, s.id); return Object.assign({}, b, { id: s.id, name: s.name, label: s.label || s.name.slice(0, 13), slug: s.slug, aff: s.aff != null ? s.aff : b.aff, order: s.order, n: s.total || 0, on: s.on !== false, logo: show(s.logo) || b.logo || '', steps: s.steps || b.steps || DB.steps(), seo: s.description != null ? s.description : b.seo }); }),
-        categories: DB.cats(true).map(function (c) { var b = byId(seedC.categories, c.id); return Object.assign({}, b, { id: c.id, name: c.name, slug: c.slug, order: c.order, n: c.total || 0, on: c.on !== false, img: c.img || b.img || '', title: c.title, seo: c.description }); }),
+        categories: DB.cats(true).map(function (c) { var b = byId(seedC.categories, c.id); return Object.assign({}, b, { id: c.id, name: c.name, slug: c.slug, order: c.order, n: c.total || 0, on: c.on !== false, icon: c.icon || b.icon || 'tag', img: c.img || b.img || '', title: c.title, seo: c.description }); }),
         dealtypes: DB.get('dealtypes') || seedC.dealtypes, types: seedC.types
       };
     }
@@ -174,7 +174,7 @@
         $('ul', pp).innerHTML = pins.slice(0, 6).map(function (d, i) { return '<li><span class="fn-pos">' + (i + 1) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><span class="t-title">' + E(d.t) + '</span><span class="t-meta">card ' + every * (i + 1) + '</span></li>'; }).join('');
       }
       var latest = $('[data-ov-latest] ul');
-      if (latest) latest.innerHTML = live.slice(0, 6).map(function (d) { var t = d.typesAll.filter(function (x) { return x !== 'Fresh'; })[0] || 'New'; return '<li><span class="t-time">' + (d.agemin < 1 ? 'now' : E(d.agetxt)) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><a class="t-title" href="' + E(d.page) + '" target="_blank" rel="noopener">' + E(d.t) + '</a><span class="t-meta">' + E(d.store) + '</span><span class="tchip t-' + t.toLowerCase() + '">' + (t === 'Top' ? 'Top deal' : t) + '</span></li>'; }).join('');
+      if (latest) latest.innerHTML = live.slice(0, 6).map(function (d) { var t = d.typesAll.filter(function (x) { return x !== 'Fresh' && x !== 'Top'; })[0] || 'Top'; return '<li><span class="t-time">' + (d.agemin < 1 ? 'now' : E(d.agetxt)) + '</span><img src="' + E(d.img) + '" alt="" loading="lazy"><a class="t-title" href="' + E(d.page) + '" target="_blank" rel="noopener">' + E(d.t) + '</a><span class="t-meta">' + E(d.store) + '</span><span class="tchip t-' + t.toLowerCase() + '">' + (t === 'Top' ? 'Top deal' : t) + '</span></li>'; }).join('');
     }
 
     /* ---------- the playground note and Reset, on every admin page ---------- */

@@ -10,8 +10,8 @@ def n(x): return int(x.replace(',', ''))
 TYPE_RULES = dict(top=25, loot=75, pantry=['Grocery'], push=90)  # defaults = old live site (W44); js/db.js DB.typeRules() holds the same numbers
 def types_for(pct, cat, agemin=99999):
     t = ['Fresh'] if agemin <= 1440 else []
-    if pct >= TYPE_RULES['top']: t.append('Top')
-    else: t.append('New')
+    t.append('Top')  # 2026-11-26 (Adil): Top deals = every deal (D-114); the number only marks New
+    if pct < TYPE_RULES['top']: t.append('New')
     if pct >= TYPE_RULES['loot']: t.append('Loot')
     if cat in TYPE_RULES['pantry']: t.append('Pantry')
     return t
@@ -31,6 +31,8 @@ extras = json.load(open(os.path.join(HERE, 'deals-extra.json')))  # three multi-
 # Catalogue (Law 15): active categories and shops as stored on the live site, with live totals and the W19 SEO text → build/catalogue.json
 CATALOGUE = json.load(open(os.path.join(HERE, 'catalogue.json')))
 CATS = CATALOGUE['categories']; SHOPS = CATALOGUE['shops']
+ORD = lambda r: (r['name'] == 'Others', r.get('order') or 0, r['name'].lower())  # P-24: the admin order everywhere, Others always last
+CATS.sort(key=ORD); SHOPS.sort(key=ORD)
 cat_by_name = {c['name']: c for c in CATS}; shop_by_name = {x['name']: x for x in SHOPS}; shop_by_slug = {x['slug']: x for x in SHOPS}
 for c in CATS: c['page'] = 'category-' + c['slug'] + '.html'
 for x in SHOPS: x['page'] = 'store-' + x['slug'] + '.html'
@@ -53,7 +55,7 @@ for i, d in enumerate(deals + extras):
     d['store'] = shop_name(d['store'])
     d['order'] = i
     # 2026-11-25 (changes.md A-14, P-07): the old live site's rule (W44) is back and is set in Admin → Catalogue → Deal types:
-    # below 25% off New; 25% or more Top; 75% or more also Loot; Grocery also Pantry; today's posts are Fresh. Replaces D-117.
+    # every deal Top (P-13); below 25% off also New; 75% or more also Loot; Grocery also Pantry; today's posts are Fresh. Replaces D-117.
     d['types'] = types_for(int(d['pct']), d['cat'], d['agemin'])
     d['stem'] = d['file'].rsplit('.', 1)[0]; d['page'] = 'deal-' + d['stem'] + '.html'
     d['id'] = d['slug'].rsplit('-', 1)[-1]
@@ -122,13 +124,13 @@ PIN_EVERY = 3  # D-104, D-114: pinned deals fill every Nth card on Top deals onl
 for d in pinned: d['pinned'] = True
 PAGES = {
     # D-114: Fresh is renamed Top deals and served at /top-deals (the live site's address); the separate Top picks page is removed.
-    'fresh':     dict(title='Top deals', rule='25% off or more, newest first', sort='newest', items=sorted([d for d in deals if 'Top' in d['types']], key=lambda d: d['agemin'])),
+    'fresh':     dict(title='Top deals', rule="Today's deals, newest first", sort='newest', items=sorted([d for d in deals if 'Fresh' in d['types'] or d.get('pinned')], key=lambda d: d['agemin'])),
     'loot':      dict(title='Loot deals', rule='75% off or more', sort='recommended', items=[d for d in by_pct if 'Loot' in d['types']]),
     'new':       dict(title='New deals', rule='Under 25% off, newest first', sort='newest', items=sorted([d for d in deals if 'New' in d['types']], key=lambda d: d['agemin'])),
     'pantry':    dict(title='Pantry', rule='Grocery essentials', sort='recommended', items=[d for d in deals if 'Pantry' in d['types']]),
 }
 cats = [c['name'] for c in CATS]  # 31 active categories, catalogue order (order_no)
-caticon = {"Electronics":"cpu","Mobile":"smartphone","Recharge":"smartphone-charging","Clothing":"shirt","Movies":"clapperboard","Food & Beverage":"utensils","Amazon Pantry":"shopping-basket","Grocery":"shopping-basket","Beauty":"sparkles","Luggage":"luggage","Bags":"briefcase","Kitchen":"cooking-pot","Footwear":"footprints","Watch":"watch","Cab":"car","TV & Appliances":"tv","Washing Machine":"washing-machine","AC":"air-vent","Personal Care":"scissors","Earphones & Headphones":"headphones","Computers & Laptops":"laptop","Deodrants & Perfumes":"spray-can","Speaker":"speaker","Home & Decore":"lamp","Accessories":"cable","Health":"heart-pulse","Baby":"baby","Automotive":"car-front","Books":"book-open","Cashback":"badge-percent","Others":"tag"}
+caticon = {"Electronics":"monitor-smartphone","Mobile":"smartphone","Recharge":"battery-charging","Clothing":"shirt","Movies":"clapperboard","Food & Beverage":"utensils","Amazon Pantry":"shopping-basket","Grocery":"apple","Beauty":"brush","Luggage":"luggage","Bags":"briefcase","Kitchen":"cooking-pot","Footwear":"footprints","Watch":"watch","Cab":"car-taxi-front","TV & Appliances":"tv","Washing Machine":"washing-machine","AC":"air-vent","Personal Care":"scissors","Earphones & Headphones":"headphones","Computers & Laptops":"laptop","Deodrants & Perfumes":"spray-can","Speaker":"speaker","Home & Decore":"sofa","Accessories":"cable","Health":"heart-pulse","Baby":"baby","Automotive":"car-front","Books":"book-open","Cashback":"wallet","Others":"shapes"}
 def catimg(c):
     for d in deals:
         if d['cat'] == c: return d['file']
@@ -270,19 +272,23 @@ def cat_tile(c):  # S16: real photo per category (SAMPLE stock photos, assets/ca
     else: inner, cls = f'<i data-lucide="{caticon.get(c, "tag")}"></i>', ''
     return f'<div class="carousel-item"><a class="cat" href="{cat_page(c)}"><span class="tile{cls}">{inner}</span><span>{E(CN(c))}</span></a></div>'
 home = home.replace('{{CATS}}', carousel(''.join(cat_tile(c) for c in cats[:16]), free=True))
-home = home.replace('{{FRESH}}', carousel(''.join(card(d) for d in PAGES['fresh']['items'][:12])))
-home = home.replace('{{LOOT}}', carousel(''.join(card(d) for d in PAGES['loot']['items'][:10])))
+def more(href, n):  # P-34: the last slide of a home rail opens the full list
+    return f'<div class="carousel-item"><a class="rail-more" href="{href}"><span class="rm-ico"><i data-lucide="arrow-right"></i></span><b>View all</b></a></div>'
+RAIL = 16  # P-34: 4 slides of 4 on desktop, then View all
+def rail(key, href): it = PAGES[key]['items']; return carousel(''.join(card(d) for d in it[:RAIL]) + (more(href, len(it)) if len(it) > RAIL else ''))
+home = home.replace('{{FRESH}}', rail('fresh', 'fresh.html'))  # P-34: 16 deals, then View all
+home = home.replace('{{LOOT}}', rail('loot', 'loot.html')).replace('{{NEW}}', rail('new', 'new.html')).replace('{{PANTRY}}', rail('pantry', 'pantry.html'))  # P-34: New and Pantry rails too
 def store_tile(name, total):  # S16: the store's logo fills the tile; hover turns it navy and shows the count (phones always show the count)
     lg = store_logo(name)
     mark = f'<span class="store-logo"><img src="{lg}" alt=""></span><b class="visually-hidden">{E(name)}</b>' if lg else f'<span class="store-logo store-word">{E(name)}</span><b class="visually-hidden">{E(name)}</b>'
     return f'<a class="card store has-logo" href="{store_page(name)}" aria-label="{E(name)}">{mark}</a>'   # D-155: no deal counts
-home = home.replace('{{STORES}}', ''.join(store_tile(s_, c_) for s_, c_ in sorted(stores, key=lambda s: -s[1])))   # D-155: phone/tablet row, every store
+home = home.replace('{{STORES}}', ''.join(store_tile(s_, c_) for s_, c_ in stores))   # D-155: phone/tablet row, every store
 home = home.replace('{{COUNT}}', str(len(deals)))
 # M-10 side panel (right side, D-107): top categories and stores by live total (same rows as the strips and the index pages)
 def side_panel():
-    top_c = sorted(CATS, key=lambda c: -c['total'])[:10]
+    top_c = CATS[:10]  # P-24: admin order
     cl = ''.join(f'<li><a href="{c["page"]}"><i data-lucide="{caticon.get(c["name"], "tag")}"></i><span>{E(CN(c["name"]))}</span></a></li>' for c in top_c)
-    sl = ''.join(store_tile(n_, t_) for n_, t_ in sorted(stores, key=lambda s: -s[1]))   # D-155: every store, no "All stores" link  # D-107: the Home store tiles (logo, navy hover, count), 2 per row
+    sl = ''.join(store_tile(n_, t_) for n_, t_ in stores)   # D-155: every store, no "All stores" link  # D-107: the Home store tiles (logo, navy hover, count), 2 per row
     return (f'<nav class="hs-box" aria-labelledby="hs-cats"><h2 id="hs-cats">Shop by category</h2><ul>{cl}</ul><a class="hs-all" href="categories.html">All categories <i data-lucide="chevron-right"></i></a></nav>'
             f'<nav class="hs-box" aria-labelledby="hs-stores"><h2 id="hs-stores">Shop by store</h2><div class="hs-stores">{sl}</div></nav>')
 # DEV-030 / D-108: paid sponsored slots. SAMPLE advertisers (fictional); the owner sells the space and adds ads in Admin → Sponsored.
@@ -312,10 +318,14 @@ def build_listings():
     """Listing pages, search, category / store feeds, indexes, deal index. Runs after the detail section because about_block uses clean_html."""
     CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>'
     SLUG = {**{c['name']: c['slug'] for c in CATS}, **{'s:' + x['name']: x['slug'] for x in SHOPS}, 's:Others': 'others'}
+    def opt_mark(name, value):  # P-23: category icon / store logo beside the name
+        if name == 'cat': return f'<i class="opt-ico" data-lucide="{caticon.get(value, "tag")}"></i>'
+        if name == 'store': lg = store_logo(value); return f'<img class="opt-logo" src="{lg}" alt="" loading="lazy">' if lg else '<i class="opt-ico" data-lucide="store"></i>'  # no logo: a store icon, so the checkbox still sits on the right
+        return ''
     def opt(name, value, label, n=None):  # D-118: no deal counts in the filters; data-s is the option's name in the page link
         s = SLUG.get(('s:' if name == 'store' else '') + value) if name in ('cat', 'store') else value.lower().replace('fresh', 'today')
         s = s or re.sub(r'[^a-z0-9]+', '-', value.lower()).strip('-')
-        return f'<label class="opt"><input type="checkbox" name="{name}" value="{E(value)}" data-s="{E(s)}"><span class="box">{CHECK}</span><span class="txt">{E(label)}</span></label>'
+        return f'<label class="opt"><input type="checkbox" name="{name}" value="{E(value)}" data-s="{E(s)}"><span class="box">{CHECK}</span>{opt_mark(name, value)}<span class="txt">{E(label)}</span></label>'
     nearby_cats = sorted(CATS, key=lambda c: -c['total'])
     def nearby_links(exclude=None):
         return ' · '.join(f'<a href="{c["page"]}">{E(c["name"])}</a>' for c in [c for c in nearby_cats if c['name'] != exclude][:3])
@@ -327,19 +337,24 @@ def build_listings():
         """One listing component for type pages, search, category, store and store+category feeds (D-045, D-075)."""
         catcounts = {}; storecounts = {}
         for d in items: catcounts[d['cat']] = catcounts.get(d['cat'], 0) + 1; storecounts[d['store']] = storecounts.get(d['store'], 0) + 1
-        allcats = sorted(catcounts, key=lambda c: -catcounts[c]) + [c for c in cats if c not in catcounts]
+        allcats = cats + [c for c in catcounts if c not in cats]  # P-24: admin order
         cat_opts = ''.join(opt('cat', c, CN(c), catcounts.get(c, 0)) for c in allcats)
         store_opts = ''.join(opt('store', x, x, storecounts.get(x, 0)) for x in [n for n, _ in stores])
-        types = ['Fresh', 'Top', 'Loot', 'New', 'Pantry']  # 2026-11-25: New is again "under 25% off" (old site), so it is a filter; Fresh reads "Posted today"
+        if 'store' in hide and lock:  # P-28: a store page shows its own store, ticked and locked (store is first in lock)
+            store_opts = store_opts.replace(f'name="store" value="{E(lock[0])}"', f'name="store" value="{E(lock[0])}" checked data-page-lock', 1)  # P-29: all stores listed, this one ticked
+        if 'cat' in hide and lock:  # P-27: a category page shows its own category, ticked and locked
+            cat_opts = cat_opts.replace(f'name="cat" value="{E(lock[-1])}"', f'name="cat" value="{E(lock[-1])}" checked data-page-lock', 1)  # P-29: all categories listed, this one ticked  # category is last in lock (store+category pages lock both)
+        types = ['Fresh', 'Loot', 'New', 'Pantry']  # P-13: Top matches every deal, so it is not a filter  # 2026-11-25: New is again "under 25% off" (old site), so it is a filter; Fresh reads "Posted today"
         type_opts = ''.join(opt('type', t, TYPELABEL[t], sum(1 for d in items if t in d['types'])) for t in types)
         crumbs = crumbs or [('index.html', 'Home'), (None, title)]
         crumb_html = '<i data-lucide="chevron-right"></i>'.join(f'<a href="{h}">{E(t)}</a>' if h else f'<span>{E(t)}</span>' for h, t in crumbs)
         locked = ''.join(f'<span class="chip-x is-locked"><i data-lucide="lock"></i>{E(l)}</span>' for l in lock)
         footer = FOOTER
-        if about: footer = re.sub(r'<details><summary>About OfferTag deals</summary>.*?</details>', lambda m: about, footer, count=1, flags=re.S)
-        out = fill(tpl_list, TITLE=E(title), RULE=E(rule), SORT=sort, SLUG=fname.rsplit('.', 1)[0], COUNT=str(len(items)), HEADER=HEADER, FOOTER=footer, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET, NAV=nav(fname), COMMUNITY=community(False),
+        footer = footer.replace('<!--ABOUT-->', about or '', 1)
+        out = fill(tpl_list, TITLE=E(title), RULE=E(rule), SORT=sort if fname == 'fresh.html' else 'newest', SORT_HIDDEN='' if fname == 'fresh.html' else 'hidden', SLUG=fname.rsplit('.', 1)[0], COUNT=str(len(items)), HEADER=HEADER, FOOTER=footer, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET, NAV=nav(fname), COMMUNITY=community(False),
                    PAGE_KIND='listing" data-kind="' + kind, CRUMBS=crumb_html, LOCKED=locked, CAT_OPTS=cat_opts, STORE_OPTS=store_opts, TYPE_OPTS=type_opts,
-                   CAT_HIDDEN='hidden' if 'cat' in hide else '', STORE_HIDDEN='hidden' if 'store' in hide else '', TYPE_HIDDEN='hidden' if 'type' in hide else '',
+                   CAT_HIDDEN='' if fname == 'fresh.html' else 'open', STORE_HIDDEN='open' if hide and 'type' not in hide else '', TYPE_HIDDEN='hidden',  # P-33: Top opens Discount and Price only (Category on other pages, Store on store/category pages); P-26: no Deal type filter
+                  
                    NEARBY=nearby_links(nearby_exclude), FRESH_RAIL=fresh_rail, CARDS=''.join(card(d, wrap=False) for d in items))
         if seo_title: out = out.replace('<title>' + E(title) + ' — OfferTag</title>', '<title>' + E(seo_title) + '</title>', 1)
         if seo_desc: out = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + E(seo_desc) + '">', out, count=1)
@@ -378,17 +393,20 @@ def build_listings():
             ab = about_block(f"{c['name']} from {x['name']}", (c['footer_html'] + x['footer_html']) if wl else (c['footer_html'] or x['footer_html']))
             t = f"OfferTag: {c['name']} Loot Deals & Hot Shopping Deals Online From {x['name']}"
             de = f"{c['name']} Loot Deals & Hot Shopping Deals Online From {x['name']}. Grab Best Discount Deals & Latest Discount Offers On {c['name']} From {x['name']} At OfferTag. Shop Now"
-            build_listing(f"store-{x['slug']}-{c['slug']}.html", f"{c['name']} deals from {x['name']}", f"{len(sub)} today", 'recommended', sub, kind='combo', crumbs=[('index.html', 'Home'), ('stores.html', 'Stores'), (x['page'], x['name']), (None, c['name'])],
+            build_listing(f"store-{x['slug']}-{c['slug']}.html", f"{c['name']} deals from {x['name']}", "All deals from this store in this category", 'recommended', sub, kind='combo', crumbs=[('index.html', 'Home'), ('stores.html', 'Stores'), (x['page'], x['name']), (None, c['name'])],
                           lock=(x['name'], c['name']), hide=('store', 'cat'), seo_title=t, seo_desc=de, about=ab, nearby_exclude=c['name']); combos += 1
     print('store pages', len(SHOPS), '+ combos', combos)
 
     # categories index and stores index (D-065): top 8 by live total, then A–Z; zero greyed, still linked
     tpl_index = open(os.path.join(HERE, 'index-list.template.html')).read()
     def index_rows(rows, avatar=False):
-        top = sorted(rows, key=lambda r: -r['total'])[:8]; rest = sorted([r for r in rows if r not in top], key=lambda r: r['name'].lower())
+        top = sorted(rows, key=ORD); rest = []  # P-24: admin order, Others last
         return ''.join(f'<li class="{"is-zero" if r["total"] == 0 else ""}"><a href="{r["page"]}">{("<span class=\"avatar\" aria-hidden=\"true\">" + E(r["name"][0]) + "</span>") if avatar else ""}<span class="nm">{E(r["name"])}</span><i data-lucide="chevron-right"></i></a></li>' for r in top + rest)
-    open(os.path.join(ROOT, 'categories.html'), 'w').write(fill(tpl_index, TITLE='Categories', DESC='Every deal category on OfferTag.', RULE=f'{len(CATS)} categories', FIND='<label class="input-wrap index-find"><i data-lucide="search"></i><input class="input" type="search" id="index-find" placeholder="Find a category" aria-label="Find a category"></label>', ROWS=index_rows(CATS), NOTE='', HEADER=HEADER, NAV=nav('categories.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
-    open(os.path.join(ROOT, 'stores.html'), 'w').write(fill(tpl_index, TITLE='Stores', DESC='Every store OfferTag tracks.', RULE=f'{len(SHOPS)} stores', FIND='', ROWS=index_rows(SHOPS, avatar=True), NOTE='', HEADER=HEADER, NAV=nav('stores.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
+    def cat_tiles(rows):  # P-22: few categories, so no search box; each one is a tile with its icon
+        top = sorted(rows, key=ORD); rest = []  # P-24: admin order, Others last
+        return ''.join(f'<li class="cat-tile{" is-zero" if r["total"] == 0 else ""}"><a href="{r["page"]}"><span class="ct-ico"><i data-lucide="{caticon.get(r["name"], "tag")}"></i></span><span class="nm">{E(CN(r["name"]))}</span></a></li>' for r in top + rest)
+    open(os.path.join(ROOT, 'categories.html'), 'w').write(fill(tpl_index, TITLE='Categories', DESC='Every deal category on OfferTag.', RULE='Deals by category', FIND='', ROWS=cat_tiles(CATS), NOTE='', HEADER=HEADER, NAV=nav('categories.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
+    open(os.path.join(ROOT, 'stores.html'), 'w').write(fill(tpl_index, TITLE='Stores', DESC='Every store OfferTag tracks.', RULE='Deals by store', FIND='', ROWS=index_rows(SHOPS, avatar=True), NOTE='', HEADER=HEADER, NAV=nav('stores.html'), COMMUNITY=community(True), FOOTER=FOOTER, MENU_SHEET=MENU, SEARCH_SHEET=SEARCH_SHEET))
     print('categories.html', len(CATS), '· stores.html', len(SHOPS))
 
     # deal index for the search sheet and header suggestions (same fields the cards carry)
@@ -623,7 +641,7 @@ for idx, d in enumerate(deals + extras):
     desc = split_blocks(cleaned, d) if not any((d['highlights'], d['specs'], d['links'])) else cleaned
     default_steps, exceptions = steps_split(d)
     audit.append((d['file'], len(d['highlights']), len(d['specs']), len(d['links']), bool(d['note']), d['coupon'], len(text_of(desc))))
-    types = [TYPELABEL[t] for t in d['types'] if t not in ('Fresh', 'New')] or ['New']
+    types = [TYPELABEL[t] for t in d['types'] if t not in ('Fresh', 'Top')]  # P-13: every deal is on Top deals, so no Top tag
     sale = d['p'] <= 0
     share_text = f"{d['t']}\nhttps://www.offertag.in/d/{d['id']}\n" + (f"Up to {d['pct']}% off" if sale else f"MRP {inr(d['m'])} → {inr(d['p'])} ({d['pct']}% off)")
     link = tag_link(d['link']) if d['link'].startswith('http') else d['link']
@@ -686,23 +704,22 @@ def build_auth():
 </div></main>'''
     account = f'''<main><div class="container narrow"><div class="form-col">
   <div class="crumbs"><a href="index.html">Home</a><i data-lucide="chevron-right"></i><span>Account</span></div>
-  <div class="page-head"><h1>Account</h1></div>
-  <form class="card form-sec" id="account-form" novalidate>
+  <!-- P-17: one plain page, no stacked cards; no mobile field (nothing uses it) -->
+  <div class="acct-id"><span class="avatar acct-av" data-user-initial aria-hidden="true"></span><div><h1>Account</h1><p class="acct-mail" data-user-email></p></div></div>
+  <form class="acct-sec" id="account-form" novalidate aria-labelledby="h-prof">
+    <h2 id="h-prof">Profile</h2>
     {field('Display name', 'name', 'type="text" maxlength="255" autocomplete="name"', 'Shown on your comments')}
-    <div class="field-label">Email <span>Your sign-in email</span><p class="form-static" data-user-email></p></div>
-    {field('Mobile', 'mobile', 'type="tel" inputmode="numeric" maxlength="10" autocomplete="tel-national"', 'Optional')}
     <div><button class="btn btn-default" type="submit">Save</button></div>
   </form>
-  <section class="card form-sec">
-    <div class="switch-row"><div><b id="alerts-label">Browser alerts</b><p>Get new deals as alerts on this device.</p></div><button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="alerts-label" id="alerts-switch"><span></span></button></div>
-    <p class="form-note">App alerts are managed in the app.</p>
+  <section class="acct-sec" aria-labelledby="alerts-label">
+    <h2 class="visually-hidden">Alerts</h2>
+    <div class="switch-row"><div><b id="alerts-label">Browser alerts</b><p>New deals as alerts on this device. App alerts are set in the app.</p></div><button class="switch" type="button" role="switch" aria-checked="false" aria-labelledby="alerts-label" id="alerts-switch"><span></span></button></div>
   </section>
-  <section class="card form-sec">
-    <div><b>Delete account</b><p class="form-note">Removes your account and comments. Cannot be undone.</p></div>
-    <div><button class="btn btn-outline" type="button" id="delete-open">Delete my account</button></div>
+  <section class="acct-sec acct-danger" aria-labelledby="h-del">
+    <div class="switch-row"><div><b id="h-del">Delete account</b><p>Removes your account and comments for good.</p></div><button class="btn btn-ghost acct-del" type="button" id="delete-open">Delete</button></div>
     <div class="confirm-panel" id="delete-confirm" hidden>
       <p>This removes your account and comments. It cannot be undone.</p>
-      <div class="confirm-actions"><button class="btn btn-default" type="button" id="delete-yes">Delete my account</button><button class="btn btn-ghost" type="button" id="delete-no">Keep my account</button></div>
+      <div class="confirm-actions"><button class="btn btn-default acct-del-yes" type="button" id="delete-yes">Delete my account</button><button class="btn btn-ghost" type="button" id="delete-no">Keep my account</button></div>
     </div>
   </section>
 </div></div></main>'''
@@ -770,7 +787,7 @@ def build_static():
             ('Does OfferTag sell products?', 'No. We only list deals. When you tap Buy, you go to the store’s own website, and the store handles payment, delivery, returns and warranty.'),
             ('Is OfferTag free?', 'Yes. Links on OfferTag are affiliate links: when you buy through them, the store pays us a small commission at no extra cost to you. <a href="disclaimer.html">How we earn</a>'),
             ('Why is the price different on the store?', 'Store prices and stock change fast, sometimes within minutes. Each deal shows when it was posted; always check the final price on the store before you pay.'),
-            ('What are Top deals and Loot deals?', 'Top deals are 25% off or more, with a few deals our team picks placed along the way. Loot deals are 75% off or more. New deals are under 25% off, and Pantry is grocery.'),
+            ('What are Top deals and Loot deals?', 'Top deals are today\'s deals, newest first (the list starts fresh at 12 am), with a few deals our team picks placed along the way. Loot deals are 75% off or more. New deals are under 25% off, and Pantry is grocery.'),
             ('A deal has expired. How do I tell you?', 'Send us a message from the <a href="contact.html">Contact</a> page with the deal name, and we will remove or update it.'),
         ]),
         ('Alerts and app', [
@@ -787,7 +804,7 @@ def build_static():
   {crumbs(HOME, (None, 'FAQs'))}
   <div class="page-head"><h1>Frequently asked questions</h1><p>Quick answers about deals, alerts and your account</p></div>
   {faq_body}
-  <section class="card form-sec faq-more" aria-label="More help"><div><b>Still need help?</b><p>Write to us and we usually reply within a day.</p></div><div class="contact-actions"><a class="btn btn-default" href="contact.html"><i data-lucide="mail"></i>Contact us</a><a class="btn btn-outline" href="#chat"><i data-lucide="message-circle"></i>Chat with us</a></div></section>
+  <section class="card form-sec faq-more" aria-label="More help"><div><b>More help</b><p>Write to us and we usually reply within a day.</p></div><div class="contact-actions"><a class="btn btn-default" href="contact.html"><i data-lucide="mail"></i>Contact us</a></div></section>
 </div></div></main>'''
     write('faq.html', 'FAQs — OfferTag', 'faq', faq_page, 'Answers to common questions about OfferTag deals, alerts and accounts.')
 
@@ -883,7 +900,7 @@ def build_static():
         lead = f'<p class="post-lead">{E(p["body"][lead_i]["p"])}</p>' if lead_i is not None else ''
         rail = ''.join(embed(d, 'is-rail') for d in p['deals'])
         short = p['title'] if len(p['title']) <= 48 else p['title'][:47].rstrip() + '…'
-        image = f"{SITE}/storage/deal/thumbnail/{p['cover_file'] or p['deals'][0]['file']}"
+        image = f"{SITE}/storage/deal/thumbnail/{cf}" if cf else f"{SITE}/icon-512.png"  # P-18: guide posts can have no deals
         ld = json.dumps({'@context': 'https://schema.org', '@type': 'Article', 'headline': p['title'], 'description': p['summary'], 'datePublished': p['date'], 'image': image, 'url': p['url'], 'author': {'@type': 'Organization', 'name': 'OfferTag'}, 'publisher': {'@type': 'Organization', 'name': 'OfferTag'}}, ensure_ascii=False).replace('</', '<\\/')
         head = f'\n<link rel="canonical" href="{p["url"]}">\n<meta property="og:type" content="article">\n<meta property="og:title" content="{E(p["title"])}">\n<meta property="og:description" content="{E(p["summary"])}">\n<meta property="og:image" content="{image}">\n<meta property="og:url" content="{p["url"]}">\n<script type="application/ld+json">{ld}</script>'
         body = f'''<main><div class="container narrow blog-wrap">
@@ -896,7 +913,7 @@ def build_static():
       </article>
       <section class="section" aria-labelledby="h-rel"><div class="section-head"><h2 id="h-rel">More blogs</h2><a class="view-all" href="blog.html">See all{CH}</a></div><div class="post-cards">{related}</div></section>
     </div>
-    <aside class="post-rail" aria-labelledby="h-rail"><h2 id="h-rail">Deals in this post</h2><div class="rail-list">{rail}</div></aside>
+    {f'<aside class="post-rail" aria-labelledby="h-rail"><h2 id="h-rail">Deals in this post</h2><div class="rail-list">{rail}</div></aside>' if rail else ''}
   </div>
 </div></main>'''
         write(p['file'], p['title'] + ' — OfferTag', 'blog-post', body, p['summary'], head)

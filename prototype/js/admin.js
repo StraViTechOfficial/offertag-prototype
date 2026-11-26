@@ -184,7 +184,7 @@
       return true;
     }
     function cmp(a, b) { var k = S.sort, x = a[k], y = b[k]; return (x < y ? -1 : x > y ? 1 : 0) * S.dir; }
-    var MAIN = ['Loot', 'Top', 'Pantry', 'New'];
+    var MAIN = ['Loot', 'Pantry', 'New', 'Top'];  // P-13: Top is every deal, so it comes last
     function mainType(ts) { for (var i = 0; i < MAIN.length; i++) if (ts.indexOf(MAIN[i]) > -1) return MAIN[i]; return ts[0]; }
     function canDrag() { return S.sort === 'pos' && S.dir === -1; }
     function ib(k, icon, label, t40, on) { return '<button class="btn btn-ghost btn-icon btn-sm q-act' + (on ? ' is-on' : '') + '" type="button" data-quick="' + k + '"' + (on != null ? ' aria-pressed="' + !!on + '"' : '') + ' title="' + label + '" aria-label="' + label + ': ' + t40 + '"><i data-lucide="' + icon + '"></i></button>'; }

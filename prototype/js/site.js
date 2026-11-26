@@ -155,7 +155,7 @@
     CAT.cats.filter(function (c) { return like(c.name, ql); }).slice(0, 2).forEach(function (c) { h += '<a class="ss-row" href="' + c.page + '"><i data-lucide="layout-grid"></i><span><small>Category</small> ' + esc(c.name) + '</span><i data-lucide="chevron-right"></i></a>'; });
     if (hits.length) {
       h += '<div class="ss-sec"><span>Deals</span></div>' + hits.slice(0, 3).map(function (d) { return '<a class="ss-deal" href="' + d.page + '"><img src="' + (d.thumb || '/assets/deals/' + d.file) + '" alt="" width="40" height="40" loading="lazy"><span class="t">' + esc(d.t) + '</span><b>' + inr(d.p) + '</b></a>'; }).join('');
-      h += '<a class="ss-row ss-all" href="' + target(q) + '" data-q="' + esc(q) + '"><span>See all ' + hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for “' + esc(q) + '”</span><i data-lucide="chevron-right"></i></a>';
+      h += '<a class="ss-row ss-all" href="' + target(q) + '" data-q="' + esc(q) + '"><span>See all results for “' + esc(q) + '”</span><i data-lucide="chevron-right"></i></a>';
     } else {
       h += '<p class="ss-none">No deals for “' + esc(q) + '”. Try a store or category above, or <a href="/top-deals">today\'s Top deals</a>.</p>';
     }
@@ -313,6 +313,12 @@
     fjoin.addEventListener('mouseleave', function () { if (!fjoin.classList.contains('is-dragging')) { fset(false); ftab.blur(); } });
     document.addEventListener('click', function (e) { if (fjoin.classList.contains('is-open') && !fjoin.contains(e.target)) fset(false); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && fjoin.classList.contains('is-open')) { fset(false); ftab.focus(); } });
+    // P-31: once per visit (browser session) the tab opens by itself shortly after load and closes again, so people notice it
+    try { if (!sessionStorage.getItem('ot-fjoin-peek')) { sessionStorage.setItem('ot-fjoin-peek', '1'); var touched = false;
+      fjoin.addEventListener('pointerenter', function () { touched = true; }, { once: true });
+      setTimeout(function () { if (!fjoin.classList.contains('is-open')) fset(true);
+        setTimeout(function () { if (!touched && !fjoin.matches(':focus-within')) fset(false); }, 2000); }, 1000);
+    } } catch (e) {}
   }
   // Browser alerts (prototype: the real site asks the browser for permission first)
   document.querySelectorAll('[data-browser-alerts]').forEach(function (b) { b.addEventListener('click', function () { set(LS, 'ot-alerts', '1'); OT.toast('Browser alerts on for this device', 'check'); }); });
@@ -449,15 +455,15 @@
   if (page === 'account') {
     var u = user();
     if (!u) { location.replace('/login?url=' + encodeURIComponent('/user/profile')); return; }
-    var af = document.getElementById('account-form'), nm = af.elements.name, mob = af.elements.mobile, sw = document.getElementById('alerts-switch');
-    nm.value = u.name; mob.value = u.mobile || '';
+    var af = document.getElementById('account-form'), nm = af.elements.name, sw = document.getElementById('alerts-switch');
+    nm.value = u.name;
     function ferr(name, msg) { show(document.querySelector('[data-err="' + name + '"]'), msg); }
     af.addEventListener('submit', function (e) {
-      e.preventDefault(); var n = nm.value.trim(), d = mob.value.trim(), ok = true; ferr('name', ''); ferr('mobile', '');
+      e.preventDefault(); var n = nm.value.trim(), ok = true; ferr('name', '');
       if (!n) { ferr('name', 'Enter a display name.'); ok = false; }
-      if (d && !/^\d{1,10}$/.test(d)) { ferr('mobile', 'Enter your mobile number, up to 10 digits.'); ok = false; }
       if (!ok) return;
-      save({ name: n, email: u.email, mobile: d }); u = user(); paint(); OT.toast('Saved', 'check');
+      save({ name: n, email: u.email }); u = user();  // P-17: no mobile
+      paint(); OT.toast('Saved', 'check');
     });
     function setSw(on) { sw.setAttribute('aria-checked', on ? 'true' : 'false'); }
     try { setSw(localStorage.getItem('ot-alerts') === '1'); } catch (e) {}
