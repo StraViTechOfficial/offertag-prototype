@@ -125,12 +125,12 @@ def build_inbox():
           dict(id=13, reason='Out of stock', deal=R[9]['t'], did=R[9]['id'], page=R[9]['page'], who='sneha@…', when='1 d', note='', done=True)]
     dl = [dict(id=21, name='Arjun V.', email='arjun.v@…', phone='97xxxxxx08', reason='Not using it anymore', when='1 d', done=False),
           dict(id=22, name='Vikram T.', email='vikram@…', phone='90xxxxxx13', reason='Too many notifications', when='9 d', done=True, result='Deleted 6 Nov')]
-    un = lambda xs: sum(1 for x in xs if not x['done'])
+    un = lambda xs: len(xs)   # 2026-11-26: no handled / unhandled; the tab shows how many there are
     body = f'''      <div class="page-h">
         <div><h1>Inbox</h1><p>Messages from the Contact form and account deletion requests from the app and site. Comments are on each deal's page now.</p></div>
       </div>
       <div class="inbox-bar">{tabs('data-itab', [('feedback', 'Feedback', un(fb)), ('deletion', 'Deletion requests', un(dl))], 'feedback')}
-        {ck('data-unhandled checked', 'Unhandled only')}<span class="tag-sample">Sample</span></div>
+        <span class="tag-sample">Sample</span></div>
       <ul class="ibx" data-ibx></ul>
       <p class="empty" data-ibx-empty hidden></p>
       <p class="foot-note" data-ibx-note="deletion" hidden><i data-lucide="info"></i>“Mark deleted” only records that the account was removed. Delete the account on the server first; the app promises removal within 7 days.</p>

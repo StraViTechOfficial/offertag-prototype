@@ -192,7 +192,7 @@
     var list = DB.get(kind) || [];
     item = Object.assign({ id: now(), at: now(), done: false }, item); list.unshift(item); DB.set(kind, list); return item;
   };
-  DB.inboxOpen = function () { return ['feedback', 'deletion'].reduce(function (n, k) { return n + (DB.get(k) || []).filter(function (r) { return !r.done; }).length; }, 0); };
+  DB.inboxOpen = function () { return (DB.get('feedback') || []).length + (DB.get('deletion') || []).filter(function (r) { return !r.done; }).length; };   // feedback has no handled state (2026-11-26)
   DB.whenOf = function (r) { var at = r.at != null ? r.at : EPOCH - (r.ago || 0) * MIN; return H.ago((now() - at) / MIN); };
 
   // ---- catalogue (Admin → Catalogue writes here; the public pages read names, order and on/off) ----

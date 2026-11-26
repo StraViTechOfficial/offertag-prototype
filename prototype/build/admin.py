@@ -4,7 +4,7 @@
 import datetime as _dt
 
 TODAY = _dt.date(2026, 11, 13)
-A_INBOX_COUNT = 3      # SAMPLE: 2 feedback + 1 deletion request (no Reports, changes.md A-11)
+A_INBOX_COUNT = 4      # SAMPLE: 3 feedback messages + 1 open deletion request (no handled state on feedback)
 # D-104: pinned slots are an open list (slot 1, 2, 3…); on Fresh, slot k sits at card k × PIN_EVERY (build.py, admin sets N)
 A_PIN = {d['file']: i + 1 for i, d in enumerate(pinned)}  # the 8 SAMPLE pinned deals the public site uses, in slot order
 
@@ -125,7 +125,7 @@ def build_overview():  # D-160: four counts, then what is live and what is pinne
     latest = sorted(deals, key=lambda d: d['agemin'])[:6]
     kpis = [
         ('Posted today', len(today), 'admin-deals.html?posted=today', 'View deals', 'today'),
-        ('Inbox unhandled', A_INBOX_COUNT, 'admin-inbox.html?tab=feedback', 'Open inbox', 'inbox'),
+        ('Inbox', A_INBOX_COUNT, 'admin-inbox.html?tab=feedback', 'Open inbox', 'inbox'),
         ('Pinned on Top deals', len(A_PIN), 'admin-pinned.html', 'Pinned board', 'pinned'),
     ]
     k = ''.join(f'<a class="kpi" href="{h}" data-kpi="{key}"><span class="kpi-l">{l}</span><b class="kpi-n">{v}</b><span class="kpi-a">{a} <i data-lucide="arrow-right"></i></span></a>' for l, v, h, a, key in kpis)

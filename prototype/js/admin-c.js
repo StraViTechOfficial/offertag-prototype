@@ -118,7 +118,8 @@
 
   /* =================== Inbox =================== */
   if (window.ADM_INBOX) (function () {
-    var D = window.ADM_INBOX, tab = 'feedback', only = $('[data-unhandled]'), list = $('[data-ibx]');
+    // 2026-11-26: no handled / unhandled state on feedback; the Inbox just lists the messages
+    var D = window.ADM_INBOX, tab = 'feedback', only = { checked: false, closest: function () { return null; }, addEventListener: function () {} }, list = $('[data-ibx]');
     var KIND = { Issue: 'k-issue', Suggestion: 'k-sugg', Appreciation: 'k-thanks' };
     // D-153 (plan.md B5): comments from the deal pages, seed + what people post in this browser. Kept apart from D: they need no "handled" step.
     var DAYMS = 864e5;
@@ -127,13 +128,11 @@
       return OTDB.comments().map(function (c) { var d = OTDB.deal(c.deal); return Object.assign({}, c, { dealT: d ? d.t : 'Deal removed', dealPage: d ? d.page : '' }); })
         .sort(function (a, b) { return b.at - a.at; });
     }
-    function counts() { var tot = 0; Object.keys(D).forEach(function (k) { var n = D[k].filter(function (x) { return !x.done; }).length; tot += n; var c = $('[data-tcount="' + k + '"]'); if (c) { c.textContent = n; c.toggleAttribute('data-zero', !n); } }); A.setCount('inbox', tot); var cc = $('[data-tcount="comments"]'), nc = comments().filter(function (c) { return Date.now() - c.at < DAYMS; }).length; if (cc) { cc.textContent = nc; cc.toggleAttribute('data-zero', !nc); } }
-    function hsw(x) { return '<label class="hnd"><span class="switch"><input type="checkbox" role="switch" data-hnd' + (x.done ? ' checked' : '') + ' aria-label="Handled"><span></span></span>Handled</label>'; }
+    function counts() { var tot = 0; Object.keys(D).forEach(function (k) { var n = k === 'feedback' ? D[k].length : D[k].filter(function (x) { return !x.done; }).length; tot += n; var c = $('[data-tcount="' + k + '"]'); if (c) { c.textContent = n; c.toggleAttribute('data-zero', !n); } }); A.setCount('inbox', tot); var cc = $('[data-tcount="comments"]'), nc = comments().filter(function (c) { return Date.now() - c.at < DAYMS; }).length; if (cc) { cc.textContent = nc; cc.toggleAttribute('data-zero', !nc); } }
     function item(x) {
-      var h = '<li class="ib' + (x.done ? ' is-done' : '') + '" data-id="' + x.id + '">';
+      var h = '<li class="ib' + (x.done && tab !== 'feedback' ? ' is-done' : '') + '" data-id="' + x.id + '">';
       if (tab === 'comments') return '<li class="ib ib-cm" data-cid="' + esc(String(x.id)) + '"><div class="ib-top"><b class="ib-name">' + esc(x.name || 'Member') + '</b>' + (x.admin ? '<span class="kind k-sugg">OfferTag</span>' : '') + '<span class="ib-who">' + (x.parent ? 'Reply · ' : '') + esc(x.when) + '</span></div><p class="ib-msg">' + esc(x.text) + '</p><div class="ib-acts">' + (x.dealPage ? '<a class="btn btn-outline btn-sm" href="' + x.dealPage + '#comments" target="_blank" rel="noopener"><i data-lucide="external-link"></i>' + esc(x.dealT.length > 48 ? x.dealT.slice(0, 47) + '…' : x.dealT) + '</a>' : '<span class="pill">' + esc(x.dealT) + '</span>') + '<button class="btn btn-ghost btn-sm danger" type="button" data-cdel><i data-lucide="trash-2"></i>Delete</button></div></li>';
-      if (tab === 'feedback') h += '<div class="ib-top"><span class="kind ' + KIND[x.kind] + '">' + x.kind + '</span><span class="ib-who">' + esc(x.who) + ' · ' + esc(x.when) + '</span></div><p class="ib-msg">' + esc(x.msg) + '</p><div class="ib-acts">' + hsw(x) + '</div>';
-      else if (tab === 'reports') h += '<div class="ib-top"><span class="kind k-rep">' + esc(x.reason) + '</span><span class="ib-who">' + esc(x.who) + ' · ' + esc(x.when) + '</span></div><p class="ib-msg"><a href="' + x.page + '" target="_blank" rel="noopener">' + esc(x.deal) + ' <i data-lucide="arrow-up-right"></i></a>' + (x.note ? '<q>' + esc(x.note) + '</q>' : '') + '</p><div class="ib-acts"><a class="btn btn-outline btn-sm" href="' + A.withRole('admin-post.html?id=' + x.did) + '"><i data-lucide="pencil"></i>Edit deal</a>' + hsw(x) + '</div>';
+      if (tab === 'feedback') h += '<div class="ib-top"><span class="kind ' + KIND[x.kind] + '">' + x.kind + '</span><span class="ib-who">' + esc(x.who) + ' · ' + esc(x.when) + '</span></div><p class="ib-msg">' + esc(x.msg) + '</p>';
       else h += '<div class="ib-top"><b class="ib-name">' + esc(x.name) + '</b><span class="ib-who">' + esc(x.email) + ' · ' + esc(x.phone) + ' · ' + esc(x.when) + '</span></div><p class="ib-msg">“' + esc(x.reason || 'No reason given') + '”</p><div class="ib-acts">'
         + (x.done ? '<span class="pill' + (x.result && x.result.indexOf('Deleted') === 0 ? ' pill-live' : '') + '">' + esc(x.result || 'Handled') + '</span><button class="btn btn-ghost btn-sm" type="button" data-reopen>Reopen</button>'
           : '<button class="btn btn-default btn-sm" type="button" data-mark-del>Mark deleted</button><button class="btn btn-ghost btn-sm" type="button" data-dismiss>Dismiss</button>') + '</div>';
@@ -146,7 +145,7 @@
       if (cm) { var all = comments(), who = (A.params.get('q') || '').trim().toLowerCase(); if (who) all = all.filter(function (c) { return (c.name || '').toLowerCase().indexOf(who) === 0; }); list.innerHTML = (who ? '<li class="ib-filter">Comments by <b>' + esc(A.params.get('q')) + '</b> · <a href="' + A.withRole('/admin/comments') + '">Show all comments</a></li>' : '') + all.map(item).join(''); var e0 = $('[data-ibx-empty]'); e0.hidden = all.length > 0; e0.textContent = 'No comments yet.'; counts(); A.icons(); return; }
       var rows = D[tab].filter(function (x) { return !only.checked || !x.done; });
       list.innerHTML = rows.map(item).join(''); var em = $('[data-ibx-empty]');
-      em.hidden = rows.length > 0; em.textContent = only.checked && D[tab].length ? 'All caught up. Untick “Unhandled only” to see handled ones.' : 'Nothing here yet.';
+      em.hidden = rows.length > 0; em.textContent = 'Nothing here yet.';
       counts(); A.icons();
       if (window.ADM_PG) ADM_PG.saveInbox(D);   // S25 playground
     }
@@ -165,7 +164,6 @@
       toast('Comment deleted from the deal page', { action: 'Undo', onAction: function () { OTDB.restoreComment(id); render(); } });
     });
     if (window.OTDB && OTDB.on) OTDB.on(function (w) { if (tab === 'comments' && (w === 'comments' || w === 'external')) render(); });
-    list.addEventListener('change', function (e) { if (!e.target.matches('[data-hnd]')) return; var x = byId(e.target.closest('[data-id]').dataset.id); setDone(x, e.target.checked, null, e.target.checked ? 'Marked handled' : 'Moved back to unhandled'); });
     list.addEventListener('click', function (e) {
       var b = e.target.closest('button'), row = b && b.closest('[data-id]'); if (!row) return; var x = byId(row.dataset.id);   // D-153: comment rows (data-cid) have their own handler
       var day = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
