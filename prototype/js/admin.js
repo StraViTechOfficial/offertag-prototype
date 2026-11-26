@@ -945,28 +945,26 @@
   if ($('[data-sp-list]')) (function () {
     var list = window.ADM_SPONSORED.slice(), T = window.ADM_TODAY, tab = 'cur', editing = null, imgs = {};
     // changes.md A-07: dates are optional; no dates = on until switched off
-    function status(p) { return !p.on ? 'off' : p.end && p.end < T ? 'ended' : p.start && p.start > T ? 'scheduled' : 'live'; }
+    // 2026-11-26: start date required, end date optional; no view or click numbers
+    function status(p) { return !p.on ? 'off' : p.end && p.end < T ? 'ended' : p.start && p.start > T ? 'soon' : 'live'; }
     function host(l) { if (/^tel:/.test(l || '')) return l.slice(4); try { return new URL(l).hostname.replace(/^www\./, ''); } catch (e) { return l || ''; } }
-    function when(p) { return p.start && p.end ? fmt(p.start) + ' – ' + fmt(p.end) : p.start ? 'From ' + fmt(p.start) : p.end ? 'Until ' + fmt(p.end) : 'Until switched off'; }
-    var SL = { live: 'Live', scheduled: 'Scheduled', ended: 'Ended', off: 'Off' }, PL = { live: 'live', scheduled: 'scheduled', ended: 'withdrawn', off: 'withdrawn' };
+    function when(p) { return (p.start ? fmt(p.start) : 'Now') + ' – ' + (p.end ? fmt(p.end) : 'until switched off'); }
+    var SL = { live: 'Live', ended: 'Ended', off: 'Off' }, PL = { live: 'live', soon: 'scheduled', ended: 'withdrawn', off: 'withdrawn' };
+    function label(p, st) { return st === 'soon' ? 'Starts ' + fmt(p.start) : SL[st]; }
     function fmt(d) { return new Date(d + 'T00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }); }
     function n(x) { return (x || 0).toLocaleString('en-IN'); }
-    function ctr(p) { return p.views ? (100 * p.clicks / p.views).toFixed(1) + '%' : '–'; }
     function snap() { var s = JSON.stringify(list); return function () { list = JSON.parse(s); render(); }; }
     function render() {
       var cur = list.filter(function (p) { return status(p) !== 'ended'; }), past = list.filter(function (p) { return status(p) === 'ended'; }), show = tab === 'cur' ? cur : past;
       if (window.ADM_PG) ADM_PG.saveList('sponsored', list, ['img', 'mimg']);   // S25 playground
       $('[data-scount="cur"]').textContent = cur.length; $('[data-scount="past"]').textContent = past.length;
-      var live = list.filter(function (p) { return status(p) === 'live'; }), v = 0, c = 0; list.forEach(function (p) { v += p.views || 0; c += p.clicks || 0; });
-      $('[data-sp-stats]').innerHTML = '<div><span>Live now</span><b>' + live.length + '</b></div><div><span>Views, all ads</span><b>' + n(v) + '</b></div><div><span>Clicks, all ads</span><b>' + n(c) + '</b></div><div><span>Click rate</span><b>' + (v ? (100 * c / v).toFixed(1) + '%' : '–') + '</b></div>';
       $('[data-sp-list]').innerHTML = show.length ? show.map(function (p) {
         var st = status(p);
         return '<li class="poster-row" data-sid="' + p.id + '"><img class="p-img sp-thumb" src="' + p.img + '" alt="">' +
           '<div class="p-main"><b>' + esc(p.cta || 'Visit') + ' → ' + esc(host(p.link)) + '</b><span>' + when(p) + '</span></div>' +
-          '<div class="sp-nums"><span><b>' + n(p.views) + '</b> views</span><span><b>' + n(p.clicks) + '</b> clicks</span><span><b>' + ctr(p) + '</b> rate</span></div>' +
-          '<span class="pill pill-' + PL[st] + '">' + SL[st] + '</span>' +
+          '<span class="pill pill-' + PL[st] + '">' + label(p, st) + '</span>' +
           (st !== 'ended' ? '<label class="switch" title="Show on Home"><input type="checkbox" data-s-on' + (p.on ? ' checked' : '') + ' aria-label="Show this ad on Home"><span></span></label>' : '') +
-          '<div class="p-acts"><button type="button" class="btn btn-ghost btn-sm" data-s-copy title="Copy a short report for the advertiser">Report</button><button type="button" class="btn btn-ghost btn-sm" data-s-edit>Edit</button><button type="button" class="btn btn-ghost btn-icon btn-sm danger" data-s-del aria-label="Delete ad"><i data-lucide="trash-2"></i></button></div></li>';
+          '<div class="p-acts"><button type="button" class="btn btn-ghost btn-sm" data-s-edit>Edit</button><button type="button" class="btn btn-ghost btn-icon btn-sm danger" data-s-del aria-label="Delete ad"><i data-lucide="trash-2"></i></button></div></li>';
       }).join('') : '<li class="empty">' + (tab === 'cur' ? 'No sponsored ads live or coming up. Home shows no ad card.' : 'No ended ads.') + '</li>';
       icons();
     }
@@ -975,11 +973,7 @@
     $('[data-sp-list]').addEventListener('click', function (e) {
       var row = e.target.closest('[data-sid]'); if (!row) return; var p = byId(+row.dataset.sid);
       if (e.target.closest('[data-s-edit]')) { openEdit(p); return; }
-      if (e.target.closest('[data-s-copy]')) {
-        var txt = 'Your ad on OfferTag (' + when(p) + '): ' + n(p.views) + ' views, ' + n(p.clicks) + ' clicks (' + ctr(p) + ').';
-        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { toast('Report copied'); }, function () { toast(txt); }); return;
-      }
-      if (e.target.closest('[data-s-del]')) { confirmBox('Delete this ad?', 'It is removed from Home and from this list. Its view and click counts go too.', 'Delete ad', function () { var u = snap(); list.splice(list.indexOf(p), 1); render(); toast('Ad deleted', { action: 'Undo', onAction: u }); }, true); }
+      if (e.target.closest('[data-s-del]')) { confirmBox('Delete this ad?', 'It is removed from Home and from this list.', 'Delete ad', function () { var u = snap(); list.splice(list.indexOf(p), 1); render(); toast('Ad deleted', { action: 'Undo', onAction: u }); }, true); }
     });
     $('[data-sp-list]').addEventListener('change', function (e) { var c = e.target.closest('[data-s-on]'); if (!c) return; var p = byId(+c.closest('[data-sid]').dataset.sid), u = snap(); p.on = c.checked; render(); toast(p.on ? 'Ad is on' : 'Ad is off. It stays here but Home won’t show it', { action: 'Undo', onAction: u }); });
     var D = $('[data-se]'), sheet = $('#sp-edit');
@@ -989,7 +983,7 @@
       editing = p || null; $('#se-title').textContent = p ? 'Edit sponsored ad' : 'Add sponsored ad'; D.reset(); $$('.err', D).forEach(function (x) { x.hidden = true; });
       setDrop('d', p ? p.img : '');
       if (p) { ['cta', 'link', 'start', 'end'].forEach(function (k) { D.elements[k].value = (k === 'link' ? (p.link || '').replace(/^tel:/, '') : p[k]) || ''; }); D.elements.on.checked = p.on; }
-      else { D.elements.start.value = ''; D.elements.end.value = ''; }
+      else { D.elements.start.value = T; D.elements.end.value = ''; }
       openSheet(sheet);
     }
     $('[data-sp-new]').addEventListener('click', function () { openEdit(null); });
@@ -999,12 +993,12 @@
       function chk(ok, node) { var e = $('.err', node.closest('.fld')); if (e) e.hidden = ok; if (!ok) bad.push(node); }
       var lk = f.link.value.trim(), phone = /^\+?[\d\s-]{8,}$/.test(lk);
       chk(!!imgs.d, $('[data-drop="d"]', D)); chk(!!f.cta.value.trim(), f.cta);
-      chk(phone || /^https?:\/\/\S+\.\S+/.test(lk), f.link); chk(!(f.start.value && f.end.value && f.end.value < f.start.value), f.end);
+      chk(phone || /^https?:\/\/\S+\.\S+/.test(lk), f.link); chk(!!f.start.value, f.start); chk(!(f.start.value && f.end.value && f.end.value < f.start.value), f.end);
       if (bad.length) { (bad[0].matches('label') ? $('input', bad[0]) : bad[0]).focus(); return; }
       var u = snap(), o = { cta: f.cta.value.trim(), link: phone ? 'tel:' + lk.replace(/[\s-]/g, '') : lk, start: f.start.value, end: f.end.value, on: f.on.checked, img: imgs.d, title: '', line: '', adv: host(phone ? 'tel:' + lk : lk) };
-      if (editing) Object.assign(editing, o); else { o.id = Date.now(); o.views = 0; o.clicks = 0; list.unshift(o); }
+      if (editing) Object.assign(editing, o); else { o.id = Date.now(); list.unshift(o); }
       closeSheet(); tab = status(o) === 'ended' ? 'past' : 'cur'; $$('[data-stab]').forEach(function (x) { x.dataset.state = x.dataset.stab === tab ? 'active' : ''; x.setAttribute('aria-selected', x.dataset.stab === tab); });
-      render(); toast(editing ? 'Ad saved' : 'Ad added' + (status(o) === 'scheduled' ? '. It shows from ' + fmt(o.start) : status(o) === 'live' ? ' and live on Home' : ''), { action: 'Undo', onAction: u });
+      render(); toast(editing ? 'Ad saved' : 'Ad added' + (status(o) === 'soon' ? '. It shows from ' + fmt(o.start) : status(o) === 'live' ? ' and live on Home' : ''), { action: 'Undo', onAction: u });
     });
     render();
   })();
