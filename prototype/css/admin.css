@@ -1692,3 +1692,6 @@ html.admin .btn-outline.btn-sm.keep-ic:hover { border-color: hsl(43 100% 48%); c
 .inc-acts { display: flex; gap: 8px; flex: none; }
 .inc-empty { padding: 32px; text-align: center; color: hsl(var(--muted-foreground)); }
 @media (max-width: 640px) { .inc-row { flex-wrap: wrap; } .inc-acts { width: 100%; } .inc-acts .btn { flex: 1; } }
+
+/* P-75: the wide blog cover drop zone no longer takes the 180px drop height (sideways scroll at 1440) */
+.be-cover.drop.wide { min-height: 0; }

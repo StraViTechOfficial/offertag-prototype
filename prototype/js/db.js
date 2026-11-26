@@ -27,7 +27,7 @@
   }
 
   // the moment this browser first opened the playground: seed times ("10 min ago") are placed relative to it
-  var EPOCH = +get('epoch'); if (!EPOCH) { EPOCH = Date.now(); set('epoch', String(EPOCH)); }
+  var EPOCH = +get('epoch'); if (!EPOCH || isoDay(EPOCH) !== isoDay(Date.now())) { EPOCH = Date.now(); set('epoch', String(EPOCH)); }   // P-76: sample deals start again each day, so they never all fall out of today's Top deals
   var MIN = 60000, DAY = 864e5;
   function now() { return Date.now(); }
   function isoDay(t) { var d = new Date(t); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }

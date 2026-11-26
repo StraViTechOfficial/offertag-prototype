@@ -370,6 +370,12 @@ Adil: the caption showed on the deal page but not in the listings. The old site 
 ### P-74 · Waiting for approval is back (26 Nov)
 Reverses A-03 for Telegram deals: signed scope v3.18 says Telegram deals wait on an approval screen. New tab Deals → Waiting for approval (`/admin/incoming`) with a count on Deals. Each deal shows picture, shop, category, age, title and caption that can be fixed in place, Approve (puts it live, newest on Top deals) and Reject, plus Approve all. Deals posted from the admin form still go live directly. Sample: 3 deals. Files: `build/admin.py` (build_incoming, _SEC, NAV count), `build/routes.py`, `js/admin.js`, `css/admin.css`.
 
+### P-75 · Blog editor cover: no sideways scroll (26 Nov)
+The wide cover drop zone also took `.drop{min-height:180px}`, so the blog editor scrolled sideways by 17px at 1440. `.be-cover.drop.wide{min-height:0}` in `css/admin.css`, same as web/. Found by frontend-ot.
+
+### P-76 · Top deals no longer turns all pinned the next day (26 Nov)
+The sample clock was saved on a visitor's first visit, so a day later every sample deal was older than today and Top deals (today's deals plus pinned) showed only pinned deals, side by side. The sample clock now starts again each new day (`js/db.js` EPOCH). Deals the visitor posted keep their real time. On the real site the same stacking happens only when there are fewer of today's deals than pinned ones.
+
 ### Notes from the public build (2026-11-25)
 
 **P-01 card research (what we copied and why).** Flipkart, Meesho and Ajio show the price, the struck MRP and "% off" on **one line**, read left to right. Amazon puts "-88%" before the price. Myntra puts "(88% OFF)" after the MRP. DesiDime and Slickdeals put the store and the posting time in a small top line above the title. Our card now follows that common order:
