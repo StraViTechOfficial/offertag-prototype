@@ -16,7 +16,7 @@ def soon(label): return 'admin-soon.html?s=' + label.replace(' ', '+')
 # role: 'all' = Super admin + Admin, 'admin' = Super admin only (changes.md A-13). Addresses are unchanged (Law 4); only the menu changes.
 NAV = [
     ('overview', 'Overview', 'layout-dashboard', 'admin.html', 'all', None),
-    ('deals', 'Deals', 'tag', 'admin-deals.html', 'all', None),
+    ('deals', 'Deals', 'tag', 'admin-deals.html', 'all', 3),   # P-74: count = Telegram deals waiting for approval (SAMPLE 3)
     ('promote', 'Sponsored', 'megaphone', 'admin-sponsored.html', 'admin', None),     # 2026-11-25 (changes.md A-06): sale posters gone; featured deals fill Home's hero
     ('alerts', 'Alerts', 'bell', 'admin-alerts.html', 'all', None),
     ('blog', 'Blog', 'newspaper', 'admin-blog.html', 'admin', None),
@@ -26,7 +26,7 @@ NAV = [
 ]
 # Section tabs: page key → (menu key, tabs). Tabs: (page key, label, href, role).
 _SEC = {
-    'deals': [('all', 'All deals', 'admin-deals.html', 'all'), ('pinned', 'Pinned board', 'admin-pinned.html', 'all')],
+    'deals': [('all', 'All deals', 'admin-deals.html', 'all'), ('incoming', 'Waiting for approval', 'admin-incoming.html', 'all'), ('pinned', 'Pinned board', 'admin-pinned.html', 'all')],
     'settings': [('site', 'Site & app', 'admin-site.html', 'admin'), ('tags', 'Affiliate tags', 'admin-tags.html', 'admin'), ('social', 'Social sharing', 'admin-social.html', 'admin'),
                  ('users', 'Users', 'admin-users.html', 'admin')],   # Roles merged into Users (changes.md A-13); P-60: Security tab hidden until backend and website are done
 }
@@ -386,15 +386,12 @@ def build_post():
             <p class="tag-hint" data-tag-hint hidden><i data-lucide="tag"></i><span></span> <a href="admin-catalogue.html?tab=dealtypes">Rules</a></p>
           </div>
           <details class="sec more-sec" data-more>
-            <summary><span><b>More details</b><small>Caption, coupon and extras. Most deals don’t need them.</small></span><i data-lucide="chevron-down"></i></summary>
+            <summary><span><b>More details</b><small>Caption and coupon. Most deals don’t need them.</small></span><i data-lucide="chevron-down"></i></summary>
             <div class="more-body">
             <div class="grid3 g-cap">
               <label class="fld"><span class="lab">Caption <small>≤ 40</small></span><input class="input" type="text" name="caption" maxlength="40" placeholder="e.g. Lowest ever"></label>
               <label class="fld"><span class="lab">Coupon <small>≤ 20</small></span><input class="input upper" type="text" name="coupon" maxlength="20" placeholder="SAVE20"></label>
-              <label class="fld"><span class="lab">Coupon terms <small>≤ 80</small></span><input class="input" type="text" name="terms" maxlength="80" placeholder="On orders above ₹999"></label>
             </div>
-            {bl}
-            <div class="adds" data-adds><span class="lab">Add</span>{adds}</div>
             </div>
           </details>
           <div class="sec">
@@ -544,7 +541,20 @@ def build_sponsored():
       </aside>'''
     shell('admin-sponsored.html', 'Sponsored', 'sponsored', body, scripts=f'<script>window.ADM_SPONSORED = {json.dumps(sp, ensure_ascii=False)}; window.ADM_TODAY = "{TODAY.isoformat()}";</script>\n')
 
-build_post(); build_pinned(); build_alerts(); build_sponsored()
+# ---------- Waiting for approval (P-74, signed: Telegram deals wait on an approval screen) ----------
+def build_incoming():
+    ages = ['4 min', '18 min', '1 h']   # SAMPLE
+    src = [r for r in ADM_ROWS if not r['pin']][-3:]
+    seeds = [dict(id=f'tg{i + 1}', t=r['t'], store=r['store'], cat=r['cat'], p=r['p'], m=r['m'], pct=r['pct'], img=r['img'], link=r['link'], caption='', coupon=r['coupon'], age=ages[i]) for i, r in enumerate(src)]
+    body = '''      <div class="page-h">
+        <div><h1>Waiting for approval</h1><p>Deals sent from Telegram wait here. Approve puts a deal live on the site; reject removes it.</p></div>
+        <div class="page-h-acts"><button class="btn btn-default" type="button" data-inc-all>Approve all</button></div>
+      </div>
+      <div class="inc-list" data-inc-list role="list"></div>
+      <p class="inc-empty" data-inc-empty hidden>Nothing waiting. New Telegram deals show up here.</p>'''
+    shell('admin-incoming.html', 'Waiting for approval', 'incoming', body, scripts=f'<script>window.ADM_INCOMING = {json.dumps(seeds, ensure_ascii=False)};</script>\n')
+
+build_post(); build_pinned(); build_alerts(); build_sponsored(); build_incoming()
 exec(open(os.path.join(HERE, 'admin_c.py')).read())
 exec(open(os.path.join(HERE, 'admin_d.py')).read())
 exec(open(os.path.join(HERE, 'admin_e.py')).read())

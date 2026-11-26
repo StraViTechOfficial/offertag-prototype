@@ -354,6 +354,22 @@ About 30 categories fit on one screen, so the "Find a category" box is gone. Eac
 - Backend: Google sign-in (`google.service.ts`, `GOOGLE_CLIENT_IDS`) is no longer needed; web/ and the Android app drop any Google button.
 - Files: build/admin_login.py, js/admin-login.js, js/site.js.
 
+### P-71 · No coupon terms (26 Nov)
+- Adil: only the coupon code is needed. Deal form loses the "Coupon terms" box; deal pages no longer show a terms line. No "How to get the deal" box either (Adil: not needed, though the old site had `deal_step`).
+- Backend: drop `coupon_terms` from the deal API/form; old `deal_step` is not shown.
+- Files: build/admin.py, build/build.py, js/render.js, js/admin.js.
+
+### P-72 · Deal form: no extra blocks (26 Nov)
+- Adil: Offer details, Highlights, Links, Note and Specs are not in scope; the Description box covers them, as on the old site. "More details" now holds only Caption and Coupon. The public deal page still lays out an old description's highlights/specs when it finds them (display only, from the description text).
+- Backend: no offers/highlights/links/note/specs fields on the deal form API.
+- Files: build/admin.py, js/admin.js.
+
+### P-73 · Caption on deal cards (26 Nov)
+Adil: the caption showed on the deal page but not in the listings. The old site puts `deal_caption` on the card picture (`.dealCaption`), so cards now show it the same way: a band across the middle of the picture, centred text (`.cap-chip`). Files: `build/build.py` card(), `js/render.js` card(), `css/theme.css`.
+
+### P-74 · Waiting for approval is back (26 Nov)
+Reverses A-03 for Telegram deals: signed scope v3.18 says Telegram deals wait on an approval screen. New tab Deals → Waiting for approval (`/admin/incoming`) with a count on Deals. Each deal shows picture, shop, category, age, title and caption that can be fixed in place, Approve (puts it live, newest on Top deals) and Reject, plus Approve all. Deals posted from the admin form still go live directly. Sample: 3 deals. Files: `build/admin.py` (build_incoming, _SEC, NAV count), `build/routes.py`, `js/admin.js`, `css/admin.css`.
+
 ### Notes from the public build (2026-11-25)
 
 **P-01 card research (what we copied and why).** Flipkart, Meesho and Ajio show the price, the struck MRP and "% off" on **one line**, read left to right. Amazon puts "-88%" before the price. Myntra puts "(88% OFF)" after the MRP. DesiDime and Slickdeals put the store and the posting time in a small top line above the title. Our card now follows that common order:

@@ -698,19 +698,14 @@
 
     // draft (new deals only, this device)
     var DK = 'adm-draft';
-    function saveDraft() { if (EDIT || cloneId || F.dataset.loading) return; var o = {}; ['link', 'title', 'store', 'cat', 'p', 'm', 'caption', 'coupon', 'terms'].forEach(function (k) { o[k] = el(k).value; }); o.img = state.img && state.img.length < 200000 ? state.img : ''; store.set(DK, JSON.stringify(o)); $('[data-saved]').textContent = 'Draft saved on this device'; }
+    function saveDraft() { if (EDIT || cloneId || F.dataset.loading) return; var o = {}; ['link', 'title', 'store', 'cat', 'p', 'm', 'caption', 'coupon'].forEach(function (k) { o[k] = el(k).value; }); o.img = state.img && state.img.length < 200000 ? state.img : ''; store.set(DK, JSON.stringify(o)); $('[data-saved]').textContent = 'Draft saved on this device'; }
 
     // fill from a deal (edit / clone) or a draft
     function fill(d, clone) {
       F.dataset.loading = '1';
       if (!clone) { el('link').value = d.link === '#buy' ? '' : d.link; setImg(d.img); }
       el('title').value = d.t; el('store').value = d.store; el('cat').value = d.cat; el('p').value = d.p; el('m').value = d.m;
-      el('caption').value = d.caption || ''; el('coupon').value = d.coupon || ''; el('terms').value = d.terms || '';
-      if (d.offers && d.offers.length) openBlk('offers', d.offers);
-      if (d.highlights && d.highlights.length) openBlk('highlights', d.highlights);
-      if (d.links && d.links.length) openBlk('links', d.links.map(function (l) { return [l.label, l.url]; }));
-      if (d.note) openBlk('note', [d.note]);
-      if (d.specs && d.specs.length) openBlk('specs', d.specs.map(function (x) { return [x.label, x.value]; }));
+      el('caption').value = d.caption || ''; el('coupon').value = d.coupon || '';
       if (d.desc) $('[data-desc]').innerHTML = d.desc;
       el('display').value = String(d.display || 1);
       if (d.pin) { el('pin').checked = true; el('slot').value = d.pin; }
@@ -733,7 +728,7 @@
     // D-160: "More details" opens by itself when the deal already uses any of its fields
     (function () {
       var more = $('[data-more]'); if (!more) return;
-      var has = ['caption', 'coupon', 'terms'].some(function (k) { return el(k).value.trim(); }) || $$('[data-blk]').some(function (b) { return !b.hidden; });
+      var has = ['caption', 'coupon'].some(function (k) { return el(k).value.trim(); }) || $$('[data-blk]').some(function (b) { return !b.hidden; });
       if (has) more.open = true;
     })();
 
@@ -775,7 +770,7 @@
     function record() {
       var p = num(el('p').value) || 0, m = num(el('m').value) || 0;
       var o = { t: el('title').value.trim(), link: el('link').value.trim(), store: el('store').value, cat: el('cat').value || 'Others', p: p, m: m || p, pct: m > p ? Math.round((m - p) / m * 100) : (+el('pct').value || 0),
-        caption: el('caption').value.trim(), coupon: el('coupon').value.trim().toUpperCase(), terms: el('terms').value.trim(),
+        caption: el('caption').value.trim(), coupon: el('coupon').value.trim().toUpperCase(),
         offers: rows('offers').map(function (r) { return r[0]; }), highlights: rows('highlights').map(function (r) { return r[0]; }), note: (rows('note')[0] || [''])[0],
         links: rows('links').map(function (r) { return { label: r[0] || (window.OTDB ? OTDB.H.domain(r[1]) : r[1]), url: r[1] }; }).filter(function (l) { return l.url; }),
         specs: rows('specs').map(function (r) { return { label: r[0], value: r[1] }; }).filter(function (x) { return x.value; }),
@@ -989,5 +984,39 @@
   /* shared helpers for admin-c.js (batch C pages) */
   window.ADM = { chooser: chooser, routes: ROUTES, $: $, $$: $$, icons: icons, store: store, params: params, rs: rs, INR: INR, esc: esc, withRole: withRole, toast: toast, saveBar: saveBar, copy: copy, openSheet: openSheet, closeSheet: closeSheet, confirmBox: confirmBox, setCount: setCount, SUB: SUB };
 
-  icons();
+    /* =================== Waiting for approval (P-74): Telegram deals wait here; Approve puts them live =================== */
+  (function () {
+    var DB = window.OTDB, list = $('[data-inc-list]');
+    function load() { var v = DB && DB.get('incoming'); return Array.isArray(v) ? v : (window.ADM_INCOMING || null); }
+    function count(n) { $$('[data-count="deals"]').forEach(function (b) { b.textContent = n; b.hidden = !n; }); }
+    var items = load(); if (items) count(items.length);
+    if (!list) return;
+    items = items || [];
+    function save() { if (DB) DB.set('incoming', items); count(items.length); }
+    function draw() {
+      list.innerHTML = items.map(function (d, i) {
+        return '<article class="inc-row panel" role="listitem" data-i="' + i + '">' +
+          '<img src="' + esc(d.img || '') + '" alt="" width="72" height="72">' +
+          '<div class="inc-body"><div class="inc-meta"><span>' + esc(d.store) + '</span> · <span>' + esc(d.cat) + '</span> · <span>' + esc(d.age || 'just now') + ' ago, from Telegram</span></div>' +
+          '<input class="input inc-t" value="' + esc(d.t) + '" aria-label="Title">' +
+          '<div class="inc-price"><b>' + rs(d.p) + '</b>' + (d.m > d.p ? ' <s>' + rs(d.m) + '</s> <span class="inc-off">' + d.pct + '% off</span>' : '') +
+          ' <input class="input inc-cap" value="' + esc(d.caption || '') + '" placeholder="Caption (optional)" aria-label="Caption"></div></div>' +
+          '<div class="inc-acts"><button class="btn btn-default" type="button" data-inc-ok>Approve</button><button class="btn btn-ghost" type="button" data-inc-no>Reject</button></div></article>';
+      }).join('');
+      $('[data-inc-empty]').hidden = items.length > 0; $('[data-inc-all]').hidden = !items.length;
+    }
+    function take(i) { var r = $('[data-i="' + i + '"]', list), d = items[i]; if (r) { d.t = $('.inc-t', r).value.trim() || d.t; d.caption = $('.inc-cap', r).value.trim(); } return d; }
+    function approve(d) {
+      if (DB) DB.saveDeal({ t: d.t, link: d.link, store: d.store, cat: d.cat, p: d.p, m: d.m, pct: d.pct, img: d.img, caption: d.caption, coupon: d.coupon, display: 1, postedAt: Date.now(), source: 'telegram', views: 0, uniq: 0, clicks: 0 });
+    }
+    list.addEventListener('click', function (e) {
+      var row = e.target.closest('[data-i]'); if (!row) return; var i = +row.dataset.i;
+      if (e.target.closest('[data-inc-ok]')) { approve(take(i)); items.splice(i, 1); save(); draw(); toast('Deal is live on the site'); }
+      else if (e.target.closest('[data-inc-no]')) { items.splice(i, 1); save(); draw(); toast('Deal rejected'); }
+    });
+    $('[data-inc-all]').addEventListener('click', function () { var n = items.length; items.map(function (d, i) { return take(i); }).forEach(approve); items = []; save(); draw(); toast(n + ' deals are live on the site'); });
+    draw();
+  })();
+
+icons();
 })();

@@ -27,7 +27,7 @@
     var pin = d.pin ? '<span class="pin-chip"><i data-lucide="pin" aria-hidden="true"></i>Pinned</span>' : '';
     var inner = '<article class="card deal" data-id="' + E(d.id) + '" data-page="' + E(d.page) + '" data-q="' + E((d.t + ' ' + d.cat + ' ' + d.store).toLowerCase()) + '"' + (d.pin ? ' data-pinned="1"' : '') +
       ' data-cat="' + E(d.cat) + '" data-store="' + E(d.store) + '" data-pct="' + d.pct + '" data-price="' + d.p + '" data-save="' + d.save + '" data-age="' + d.agemin + '" data-views="' + (d.views || 0) + '" data-types="' + E(d.typesAll.join(',')) + '"' + (d.coupon ? ' data-coupon="1"' : '') + '>\n' +
-      '  <a class="img" href="' + E(d.page) + '" aria-label="' + E(d.t) + '"><img src="' + E(d.img) + '" alt="" loading="lazy" width="300" height="300">' + pin + '</a>\n' +
+      '  <a class="img" href="' + E(d.page) + '" aria-label="' + E(d.t) + '"><img src="' + E(d.img) + '" alt="" loading="lazy" width="300" height="300">' + pin + (d.caption ? '<span class="cap-chip">' + E(d.caption) + '</span>' : '') + '</a>\n' +
       '  <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>\n' +
       '  <div class="body">\n' +
       '    <div class="topline"><span class="meta"><span class="m-cat">' + E(d.cat || 'Others') + '</span><span class="m-dot" aria-hidden="true">·</span><span class="m-age">' + (d.agemin < 1 ? 'Just now' : E(d.agetxt) + '<span class="m-ago"> ago</span>') + '</span></span>' + storeChip(d.store) + '</div>\n' +
@@ -206,7 +206,7 @@
     var types = d.typesAll.filter(function (t) { return t !== 'Fresh' && t !== 'Top'; }).map(function (t) { return TYPELABEL[t]; });  // P-13: every deal is on Top deals, so no Top tag
     var posted = d.posted || postedText(d.postedAt), postedIso = d.posted ? d.postedIso || '' : isoLocal(d.postedAt);
     var waIcon = ($('.sh-wa svg') || { outerHTML: '' }).outerHTML, tgIcon = ($('.sh-tg svg') || { outerHTML: '' }).outerHTML;
-    var coupon = '<div class="coupon"' + (d.coupon ? '' : ' hidden') + '><span class="lbl">Code</span><span class="code">' + E(d.coupon || 'SAVE20') + '</span><button class="btn btn-outline btn-sm" type="button" data-copy="' + E(d.coupon || 'SAVE20') + '"><i data-lucide="copy"></i><span>Copy</span></button></div>' + (d.terms ? '<p class="coupon-terms">' + E(d.terms) + '</p>' : '');
+    var coupon = '<div class="coupon"' + (d.coupon ? '' : ' hidden') + '><span class="lbl">Code</span><span class="code">' + E(d.coupon || 'SAVE20') + '</span><button class="btn btn-outline btn-sm" type="button" data-copy="' + E(d.coupon || 'SAVE20') + '"><i data-lucide="copy"></i><span>Copy</span></button></div>';
     var cm = commentsHTML(d.id);
     document.title = d.t + ' at ' + (sale ? 'Up to ' + pct + '% off' : inr(d.p)) + ' (' + pct + '% off) — OfferTag';
     var md = $('meta[name="description"]'); if (md) md.content = d.t + ' for ' + (sale ? 'Up to ' + pct + '% off' : inr(d.p)) + ' at ' + store + ', MRP ' + inr(d.m) + '. Posted ' + d.agetxt + ' ago on OfferTag.';

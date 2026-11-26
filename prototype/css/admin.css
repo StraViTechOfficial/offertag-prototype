@@ -1678,3 +1678,17 @@ html.admin .btn-ghost.btn-sm:not(.btn-icon):hover, html.admin .btn-outline.btn-s
 /* P-67: Feedback Reply is a real button again (Adil could not see it as text) */
 html.admin .btn-outline.btn-sm.keep-ic { height: 32px; padding: 0 12px; border: 1px solid hsl(var(--foreground) / .22); border-radius: 4px; text-decoration: none; background: none; }
 html.admin .btn-outline.btn-sm.keep-ic:hover { border-color: hsl(43 100% 48%); color: hsl(43 100% 60%); }
+
+/* P-74: Waiting for approval */
+.inc-list { display: grid; gap: 12px; }
+.inc-row { display: flex; gap: 14px; align-items: center; padding: 12px; }
+.inc-row img { width: 72px; height: 72px; object-fit: contain; border-radius: 6px; background: #fff; flex: none; }
+.inc-body { flex: 1; min-width: 0; display: grid; gap: 6px; }
+.inc-meta { font-size: 12px; color: hsl(var(--muted-foreground)); }
+.inc-price { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 14px; }
+.inc-price s { color: hsl(var(--muted-foreground)); }
+.inc-off { color: hsl(142 70% 30%); font-weight: 600; }
+.inc-cap { max-width: 220px; }
+.inc-acts { display: flex; gap: 8px; flex: none; }
+.inc-empty { padding: 32px; text-align: center; color: hsl(var(--muted-foreground)); }
+@media (max-width: 640px) { .inc-row { flex-wrap: wrap; } .inc-acts { width: 100%; } .inc-acts .btn { flex: 1; } }

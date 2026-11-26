@@ -251,6 +251,7 @@
 "/admin/deal/create",
 "/admin/deletion-requests",
 "/admin/feedback",
+"/admin/incoming",
 "/admin/login",
 "/admin/lookup",
 "/admin/pinned",

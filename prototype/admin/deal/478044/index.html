@@ -36,7 +36,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/deal" aria-current="page"><i data-lucide="tag"></i><span>Deals</span></a>
+<a class="adm-link" href="/admin/deal" aria-current="page"><i data-lucide="tag"></i><span>Deals</span><span class="adm-count" data-count="deals">3</span></a>
 <a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
@@ -74,7 +74,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       </div>
     </header>
     <main class="adm-content" id="main">
-      <nav class="sec-tabs" aria-label="Deals"><a href="/admin/deal" aria-current="page">All deals</a><a href="/admin/pinned">Pinned board</a></nav>
+      <nav class="sec-tabs" aria-label="Deals"><a href="/admin/deal" aria-current="page">All deals</a><a href="/admin/incoming">Waiting for approval</a><a href="/admin/pinned">Pinned board</a></nav>
       <a class="back" href="/admin/deal"><i data-lucide="chevron-left"></i>All deals</a>
       <div class="dv" data-deal-view>
         <section class="panel dv-head">

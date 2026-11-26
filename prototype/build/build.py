@@ -87,7 +87,7 @@ def card(d, wrap=True):  # 2026-11-25 (changes.md P-01, P-02): category · age w
     chip = f'<img class="store-chip" src="{lg}" alt="{E(d["store"])}" loading="lazy">' if lg else f'<span class="store-chip is-text">{E(d["store"])}</span>'
     pin = '<span class="pin-chip"><i data-lucide="pin" aria-hidden="true"></i>Pinned</span>' if d.get('pinned') else ''
     inner = f'''<article class="card deal" data-id="{d['id']}" data-page="{d['page']}" data-q="{E((d['t'] + ' ' + d['cat'] + ' ' + d['store']).lower())}"{' data-pinned="1"' if d.get('pinned') else ''} data-cat="{E(d['cat'])}" data-store="{E(d['store'])}" data-pct="{d['pct']}" data-price="{d['p']}" data-save="{d['save']}" data-age="{d['agemin']}" data-views="{d.get('views') or 0}" data-types="{E(','.join(d['types']))}">
-  <a class="img" href="{d['page']}" aria-label="{E(d['t'])}"><img src="{dimg(d)}" alt="" loading="lazy" width="300" height="300">{pin}</a>
+  <a class="img" href="{d['page']}" aria-label="{E(d['t'])}"><img src="{dimg(d)}" alt="" loading="lazy" width="300" height="300">{pin}{f'<span class="cap-chip">{E(d["caption"])}</span>' if d.get('caption') else ''}</a>
   <button class="btn btn-icon card-share" type="button" aria-label="Share"><i data-lucide="share-2"></i></button>
   <div class="body">
     <div class="topline"><span class="meta"><span class="m-cat">{E(CN(d['cat']))}</span><span class="m-dot" aria-hidden="true">·</span><span class="m-age">{E(d['agetxt'])}<span class="m-ago"> ago</span></span></span>{chip}</div>
@@ -646,7 +646,7 @@ for idx, d in enumerate(deals + extras):
     share_text = f"{d['t']}\nhttps://www.offertag.in/d/{d['id']}\n" + (f"Up to {d['pct']}% off" if sale else f"MRP {inr(d['m'])} → {inr(d['p'])} ({d['pct']}% off)")
     link = tag_link(d['link']) if d['link'].startswith('http') else d['link']
     # ---- blocks (each empty string when blank)
-    coupon = f'<div class="coupon"{"" if d["coupon"] else " hidden"}><span class="lbl">Code</span><span class="code">{E(d["coupon"] or "SAVE20")}</span><button class="btn btn-outline btn-sm" type="button" data-copy="{E(d["coupon"] or "SAVE20")}"><i data-lucide="copy"></i><span>Copy</span></button></div>' + (f'<p class="coupon-terms">{E(d["coupon_terms"])}</p>' if d['coupon_terms'] else '')
+    coupon = f'<div class="coupon"{"" if d["coupon"] else " hidden"}><span class="lbl">Code</span><span class="code">{E(d["coupon"] or "SAVE20")}</span><button class="btn btn-outline btn-sm" type="button" data-copy="{E(d["coupon"] or "SAVE20")}"><i data-lucide="copy"></i><span>Copy</span></button></div>'
     coupon_bar = f'<div class="coupon"{"" if d["coupon"] else " hidden"}><span class="code">{E(d["coupon"] or "SAVE20")}</span><button class="btn btn-ghost btn-sm btn-icon" type="button" data-copy="{E(d["coupon"] or "SAVE20")}" aria-label="Copy code"><i data-lucide="copy"></i></button></div>'
     caption = f'<div class="caption"><i data-lucide="trending-down"></i>{E(d["caption"])}</div>' if d['caption'] else ''
     offers = ('<ul class="offers">' + ''.join(f'<li><i data-lucide="badge-percent"></i>{E(o)}</li>' for o in d['offers']) + '</ul>') if d['offers'] else ''

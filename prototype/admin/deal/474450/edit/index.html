@@ -36,7 +36,7 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
       <button class="btn btn-ghost btn-icon adm-close" type="button" data-side-close aria-label="Close menu"><i data-lucide="x"></i></button></div>
     <nav class="adm-nav">
 <a class="adm-link" href="/admin"><i data-lucide="layout-dashboard"></i><span>Overview</span></a>
-<a class="adm-link" href="/admin/deal" aria-current="page"><i data-lucide="tag"></i><span>Deals</span></a>
+<a class="adm-link" href="/admin/deal" aria-current="page"><i data-lucide="tag"></i><span>Deals</span><span class="adm-count" data-count="deals">3</span></a>
 <a class="adm-link" href="/admin/sponsored" data-role="admin"><i data-lucide="megaphone"></i><span>Sponsored</span></a>
 <a class="adm-link" href="/admin/admin-notifications"><i data-lucide="bell"></i><span>Alerts</span></a>
 <a class="adm-link" href="/admin/blog" data-role="admin"><i data-lucide="newspaper"></i><span>Blog</span></a>
@@ -112,40 +112,12 @@ window.addEventListener('storage',function(e){if(e.key===k&&e.newValue){p=e.newV
             <p class="tag-hint" data-tag-hint hidden><i data-lucide="tag"></i><span></span> <a href="/admin/lookup">Rules</a></p>
           </div>
           <details class="sec more-sec" data-more>
-            <summary><span><b>More details</b><small>Caption, coupon and extras. Most deals don’t need them.</small></span><i data-lucide="chevron-down"></i></summary>
+            <summary><span><b>More details</b><small>Caption and coupon. Most deals don’t need them.</small></span><i data-lucide="chevron-down"></i></summary>
             <div class="more-body">
             <div class="grid3 g-cap">
               <label class="fld"><span class="lab">Caption <small>≤ 40</small></span><input class="input" type="text" name="caption" maxlength="40" placeholder="e.g. Lowest ever"></label>
               <label class="fld"><span class="lab">Coupon <small>≤ 20</small></span><input class="input upper" type="text" name="coupon" maxlength="20" placeholder="SAVE20"></label>
-              <label class="fld"><span class="lab">Coupon terms <small>≤ 80</small></span><input class="input" type="text" name="terms" maxlength="80" placeholder="On orders above ₹999"></label>
             </div>
-            <div class="blk" data-blk="offers" data-kind="lines" data-max="4" hidden>
-            <div class="blk-h"><b>Offer details</b><small>up to 4 lines</small><button type="button" class="btn btn-ghost btn-icon btn-sm" data-blk-remove aria-label="Remove Offer details"><i data-lucide="x"></i></button></div>
-            <div class="blk-rows" data-rows-for="offers"></div>
-            <button type="button" class="btn-link add-row" data-add-row>+ Add a row</button>
-            <template data-ph>10% instant discount with HDFC Bank cards</template>
-          </div><div class="blk" data-blk="highlights" data-kind="lines" data-max="6" hidden>
-            <div class="blk-h"><b>Highlights</b><small>up to 6 lines</small><button type="button" class="btn btn-ghost btn-icon btn-sm" data-blk-remove aria-label="Remove Highlights"><i data-lucide="x"></i></button></div>
-            <div class="blk-rows" data-rows-for="highlights"></div>
-            <button type="button" class="btn-link add-row" data-add-row>+ Add a row</button>
-            <template data-ph>One line per highlight</template>
-          </div><div class="blk" data-blk="links" data-kind="pairs" data-max="20" hidden>
-            <div class="blk-h"><b>Links</b><small>up to 20 rows</small><button type="button" class="btn btn-ghost btn-icon btn-sm" data-blk-remove aria-label="Remove Links"><i data-lucide="x"></i></button></div>
-            <div class="blk-rows" data-rows-for="links"></div>
-            <button type="button" class="btn-link add-row" data-add-row>+ Add a row</button>
-            <template data-ph>Label|https://…</template>
-          </div><div class="blk" data-blk="note" data-kind="one" data-max="1" hidden>
-            <div class="blk-h"><b>Note</b><small>one line, up to 140 characters</small><button type="button" class="btn btn-ghost btn-icon btn-sm" data-blk-remove aria-label="Remove Note"><i data-lucide="x"></i></button></div>
-            <div class="blk-rows" data-rows-for="note"></div>
-            
-            <template data-ph>e.g. Price shows after adding to cart</template>
-          </div><div class="blk" data-blk="specs" data-kind="pairs" data-max="12" hidden>
-            <div class="blk-h"><b>Specs</b><small>up to 12 rows</small><button type="button" class="btn btn-ghost btn-icon btn-sm" data-blk-remove aria-label="Remove Specs"><i data-lucide="x"></i></button></div>
-            <div class="blk-rows" data-rows-for="specs"></div>
-            <button type="button" class="btn-link add-row" data-add-row>+ Add a row</button>
-            <template data-ph>Label|Value</template>
-          </div>
-            <div class="adds" data-adds><span class="lab">Add</span><button type="button" class="chip-add" data-blk-add="offers">+ Offer details</button><button type="button" class="chip-add" data-blk-add="highlights">+ Highlights</button><button type="button" class="chip-add" data-blk-add="links">+ Links</button><button type="button" class="chip-add" data-blk-add="note">+ Note</button><button type="button" class="chip-add" data-blk-add="specs">+ Specs</button></div>
             </div>
           </details>
           <div class="sec">
